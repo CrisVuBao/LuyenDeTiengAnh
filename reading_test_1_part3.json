@@ -1,0 +1,121 @@
+{
+  "part7_2": [
+    {
+      "id": 160,
+      "passage": "Đoạn 6 (Câu 158 - 160): Hướng dẫn tham dự sự kiện",
+      "question": "In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong? \"Please refrain from making phone calls or texting at all times.\" (Câu sau đây phù hợp nhất với vị trí nào được đánh dấu [1], [2], [3], và [4]? \"Vui lòng kiềm chế việc gọi điện thoại hoặc nhắn tin vào mọi lúc.\")",
+      "translation": "",
+      "options": { "A": "[1]", "B": "[2]", "C": "[3]", "D": "[4]" },
+      "correctAnswer": "B",
+      "explanation": "Vị trí [2] đứng ngay sau câu mô tả tiếng chuông điện thoại và màn hình sáng gây mất tập trung cho người biểu diễn và khán giả (\"Ringtones and lit screens are very distracting...\"). Việc đưa ra yêu cầu cụ thể \"không gọi điện hay nhắn tin\" ngay sau đó tạo sự mạch lạc logic hoàn hảo."
+    },
+    {
+      "id": 161,
+      "passage": "Đoạn 7 (Câu 161 - 164): Email phản hồi đặt bánh từ Sweeter Specialties",
+      "question": "What is the main purpose of the e-mail?",
+      "translation": "Mục đích chính của email là gì?",
+      "options": { "A": "To request confirmation of an order (Để yêu cầu xác nhận một đơn đặt hàng)", "B": "To adjust some delivery dates (Để điều chỉnh một số ngày giao hàng)", "C": "To announce the expansion of a business (Để thông báo việc mở rộng kinh doanh)", "D": "To promote new dessert products (Để quảng cáo các sản phẩm tráng miệng mới)" },
+      "correctAnswer": "A",
+      "explanation": "Xuyên suốt bức thư, Masae Adachi nhắc lại các yêu cầu đặt bánh của Esplin Electronics và ở cuối đoạn 1 yêu cầu khách hàng: \"Please review the attached order form and return it to me within seven days\" (Vui lòng xem lại đơn đặt hàng đính kèm và gửi lại cho tôi trong vòng 7 ngày). Đây là hành động yêu cầu xác nhận đơn hàng chính thức."
+    },
+    {
+      "id": 162,
+      "passage": "Đoạn 7 (Câu 161 - 164): Email phản hồi đặt bánh từ Sweeter Specialties",
+      "question": "What is suggested about Ms. Ayala?",
+      "translation": "Điều gì được ngầm hiểu về cô Ayala?",
+      "options": { "A": "She is receiving a professional award. (Cô ấy đang nhận một giải thưởng chuyên nghiệp.)", "B": "She has worked as a pastry chef. (Cô ấy đã từng làm thợ làm bánh ngọt.)", "C": "She has been a Sweeter Specialties client in the past. (Cô ấy đã từng là khách hàng của Sweeter Specialties trong quá khứ.)", "D": "She received a positive recommendation about a chef. (Cô ấy đã nhận được một lời giới thiệu tích cực về một đầu bếp.)" },
+      "correctAnswer": "C",
+      "explanation": "Câu \"We are honored that you chose us for a fourth year in a row!\" (Chúng tôi rất vinh dự khi bạn chọn chúng tôi năm thứ tư liên tiếp!) chứng minh cô Ayala (đại diện bên đặt hàng) là một khách hàng quen thuộc, đã mua hàng ở đây nhiều năm."
+    },
+    {
+      "id": 163,
+      "passage": "Đoạn 7 (Câu 161 - 164): Email phản hồi đặt bánh từ Sweeter Specialties",
+      "question": "What is indicated about the multilayer cake?",
+      "translation": "Điều gì được chỉ ra về chiếc bánh nhiều tầng?",
+      "options": { "A": "It has been a best-selling product with clients. (Nó là sản phẩm bán chạy nhất với khách hàng.)", "B": "It is the most expensive cake at Sweeter Specialties. (Nó là chiếc bánh đắt nhất tại Sweeter Specialties.)", "C": "It is baked for Esplin Electronics annually. (Nó được nướng cho Esplin Electronics hàng năm.)", "D": "It is a new flavor combination for Sweeter Specialties. (Nó là một sự kết hợp hương vị mới cho Sweeter Specialties.)" },
+      "correctAnswer": "D",
+      "explanation": "Ở đoạn 2, Masae Adachi nhắc đến chiếc bánh nướng tùy chỉnh giao vào ngày 30 tháng 3 (multilayer cake) và cho biết bếp trưởng làm bánh \"created a sample of the complete recipe earlier today\" (đã tạo ra một mẫu của công thức hoàn chỉnh sớm ngày hôm nay) với vị hạnh nhân nhân mâm xôi. Việc đầu bếp phải tạo ra một mẫu công thức mới chứng tỏ đây là hương vị hoàn toàn mới, chưa từng có sẵn."
+    },
+    {
+      "id": 164,
+      "passage": "Đoạn 7 (Câu 161 - 164): Email phản hồi đặt bánh từ Sweeter Specialties",
+      "question": "The word “judged” in paragraph 2, line 3, is closest in meaning to",
+      "translation": "Từ \"judged\" trong đoạn 2, dòng 3, có nghĩa gần nhất với",
+      "options": { "A": "criticized (chỉ trích)", "B": "settled (giải quyết/ổn định)", "C": "determined (xác định/đánh giá/kết luận)", "D": "described (miêu tả)" },
+      "correctAnswer": "C",
+      "explanation": "Câu văn là \"We have judged it to be a delectable treat\" (Chúng tôi đã đánh giá/kết luận nó là một món ngon khó cưỡng). \"Judged\" mang ý nghĩa đưa ra nhận định, đánh giá phẩm chất (determined) sau khi nếm thử."
+    },
+    {
+      "id": 165,
+      "passage": "Đoạn 8 (Câu 165 - 167): Bài đánh giá máy rửa bát",
+      "question": "Why did Ms. Yakovleva choose the Dish Magic 300 dishwasher?",
+      "translation": "Tại sao cô Yakovleva lại chọn máy rửa bát Dish Magic 300?",
+      "options": { "A": "It was less expensive than most models. (Nó rẻ hơn hầu hết các mẫu máy.)", "B": "It was the largest model available. (Nó là mẫu máy lớn nhất hiện có.)", "C": "It was rated very highly. (Nó được đánh giá rất cao.)", "D": "It was the same brand as her other appliances. (Nó có cùng nhãn hiệu với các thiết bị khác của cô ấy.)" },
+      "correctAnswer": "C",
+      "explanation": "Cô Yakovleva viết: \"It was pricier than other models, but all of the reviews were excellent. So, I decided to spend the extra money.\" (Nó đắt hơn các mẫu khác, nhưng tất cả các bài đánh giá đều xuất sắc. Vì vậy, tôi đã quyết định chi thêm tiền.). Lý do chính là vì nó nhận được đánh giá rất tốt."
+    },
+    {
+      "id": 166,
+      "passage": "Đoạn 8 (Câu 165 - 167): Bài đánh giá máy rửa bát",
+      "question": "The word “running” in paragraph 1, line 7, is closest in meaning to",
+      "translation": "Từ \"running\" trong đoạn 1, dòng 7, có nghĩa gần nhất với",
+      "options": { "A": "adjusting (điều chỉnh)", "B": "controlling (kiểm soát)", "C": "moving (di chuyển)", "D": "operating (hoạt động/vận hành)" },
+      "correctAnswer": "D",
+      "explanation": "Câu đánh giá: \"the machine is so quiet, you do not even know it is running\" (chiếc máy quá êm, bạn thậm chí không biết nó đang chạy). \"Running\" đối với máy móc có nghĩa là đang hoạt động/vận hành (operating)."
+    },
+    {
+      "id": 167,
+      "passage": "Đoạn 8 (Câu 165 - 167): Bài đánh giá máy rửa bát",
+      "question": "What is indicated about Ms. Yakovleva?",
+      "translation": "Điều gì được cho biết về cô Yakovleva?",
+      "options": { "A": "She cares about saving water. (Cô ấy quan tâm đến việc tiết kiệm nước.)", "B": "She recently moved to a new home. (Cô ấy gần đây đã chuyển đến nhà mới.)", "C": "She bought the dishwasher a year ago. (Cô ấy đã mua máy rửa bát một năm trước.)", "D": "She remodels kitchens professionally. (Cô ấy chuyên tu sửa nhà bếp.)" },
+      "correctAnswer": "A",
+      "explanation": "Câu gần cuối bài nhận xét cô ấy viết: \"it is designed to use water efficiently, which is very important to me\" (nó được thiết kế để sử dụng nước hiệu quả, điều này rất quan trọng đối với tôi). Chứng tỏ cô ấy có ý thức bảo vệ tài nguyên nước."
+    },
+    {
+      "id": 168,
+      "passage": "Đoạn 9 (Câu 168 - 171): Lời quảng cáo tuyển dụng của Hãng hàng không Skyler",
+      "question": "For whom is the information intended?",
+      "translation": "Thông tin này dành cho ai?",
+      "options": { "A": "Skyler Airlines employees (Nhân viên của Hãng hàng không Skyler)", "B": "Skyler Airlines customers (Khách hàng của Hãng hàng không Skyler)", "C": "Potential journal subscribers (Những người đăng ký tạp chí tiềm năng)", "D": "Current job seekers (Những người đang tìm việc hiện tại)" },
+      "correctAnswer": "D",
+      "explanation": "Lời quảng cáo nói rõ: \"We're growing fast and have many positions available\" (Chúng tôi đang phát triển nhanh chóng và có nhiều vị trí trống), sau đó liên tục liệt kê những đãi ngộ và phúc lợi (perks) của nhân viên. Đối tượng nhắm đến rõ ràng là những người đang muốn xin việc."
+    },
+    {
+      "id": 169,
+      "passage": "Đoạn 9 (Câu 168 - 171): Lời quảng cáo tuyển dụng của Hãng hàng không Skyler",
+      "question": "In the information, what is NOT mentioned as being offered to employees?",
+      "translation": "Trong đoạn thông tin, điều gì KHÔNG được đề cập như là một thứ được cung cấp cho nhân viên?",
+      "options": { "A": "Payment for educational expenses (Thanh toán chi phí giáo dục)", "B": "Free airline tickets (Vé máy bay miễn phí)", "C": "Opportunities for mentoring (Cơ hội được cố vấn)", "D": "Paid days off (Số ngày nghỉ được trả lương)" },
+      "correctAnswer": "B",
+      "explanation": "(A) có nhắc đến bằng cụm \"tuition reimbursement\" (hoàn trả học phí). (C) có nhắc đến bằng \"mentorship program\" (chương trình cố vấn). (D) có nhắc đến bằng \"Annual paid vacations\" (Kỳ nghỉ hàng năm được trả lương). Hãng bay chỉ có chương trình \"giảm giá\" (discount program) để nhân viên bay với mức giá chỉ bằng \"một phần nhỏ giá vé trung bình\" (a fraction of the average ticket price), chứ KHÔNG cấp vé hoàn toàn miễn phí."
+    },
+    {
+      "id": 170,
+      "passage": "Đoạn 9 (Câu 168 - 171): Lời quảng cáo tuyển dụng của Hãng hàng không Skyler",
+      "question": "What is mentioned about Skyler Airlines?",
+      "translation": "Điều gì được nhắc đến về Hãng hàng không Skyler?",
+      "options": { "A": "It flies to the most destinations around the world. (Hãng bay đến nhiều điểm đến nhất trên thế giới.)", "B": "It is planning to merge with another airline. (Hãng đang có kế hoạch sáp nhập với một hãng hàng không khác.)", "C": "It has been praised by a trade publication. (Hãng đã được ca ngợi bởi một ấn phẩm thương mại.)", "D": "It has replaced its seats with more comfortable ones. (Hãng đã thay thế ghế ngồi của mình bằng loại thoải mái hơn.)" },
+      "correctAnswer": "C",
+      "explanation": "Câu cuối cùng khoe thành tích: \"It's no wonder that Skyler Airlines was named “Best Airline to Work For” by Travel Vista Journal three years in a row\" (Không có gì lạ khi Skyler Airlines được tạp chí Travel Vista Journal vinh danh là “Hãng hàng không làm việc tốt nhất” trong ba năm liên tiếp). Tạp chí chuyên ngành đã khen ngợi họ."
+    },
+    {
+      "id": 171,
+      "passage": "Đoạn 9 (Câu 168 - 171): Lời quảng cáo tuyển dụng của Hãng hàng không Skyler",
+      "question": "In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong? \"Our openings cover a broad range of skill sets.\" (Câu sau đây phù hợp nhất với vị trí nào được đánh dấu [1], [2], [3], và [4]? \"Các vị trí tuyển dụng của chúng tôi bao trùm một phạm vi kỹ năng rộng lớn.\")",
+      "translation": "",
+      "options": { "A": "[1]", "B": "[2]", "C": "[3]", "D": "[4]" },
+      "correctAnswer": "A",
+      "explanation": "Vị trí [1] đứng ngay sau câu \"We're growing fast and have many positions available\" (Chúng tôi có nhiều vị trí đang trống) và ngay trước câu \"So regardless of your background, there's probably a place for you on our team\" (Vì vậy, bất kể xuất thân của bạn là gì, có lẽ vẫn có chỗ cho bạn trong đội ngũ của chúng tôi). Chèn câu \"Tuyển dụng bao quát nhiều kỹ năng\" vào giữa là để tạo cầu nối logic tuyệt đối cho lý luận \"ai cũng có cơ hội\"."
+    },
+    {
+      "id": 172,
+      "passage": "Đoạn 10 (Câu 172 - 175): Chat trực tuyến lên kế hoạch thuyết trình",
+      "question": "What is indicated about a presentation?",
+      "translation": "Điều gì được chỉ ra về một bài thuyết trình?",
+      "options": { "A": "It will be expensive to produce. (Nó sẽ tốn kém để sản xuất.)", "B": "It will highlight some best-selling products. (Nó sẽ làm nổi bật một số sản phẩm bán chạy nhất.)", "C": "It will be Ms. Gowan’s first project. (Nó sẽ là dự án đầu tiên của cô Gowan.)", "D": "It will be sent to multiple locations. (Nó sẽ được gửi đến nhiều địa điểm.)" },
+      "correctAnswer": "D",
+      "explanation": "Ở đoạn tin nhắn đầu tiên, Susan Gowan nói: \"The presentation slides... are almost ready for distribution to our many partner stores\" (Các slide thuyết trình... gần như đã sẵn sàng để phân phối đến nhiều cửa hàng đối tác của chúng ta). Điều này có nghĩa là bài thuyết trình sẽ được gửi đi nhiều nơi."
+    }
+  ]
+}

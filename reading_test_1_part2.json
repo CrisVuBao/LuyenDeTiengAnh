@@ -1,0 +1,155 @@
+{
+  "part6_2": [
+    {
+      "id": 143,
+      "passage": "Đoạn 4 (Câu 143 - 146): Thư chào hàng dịch vụ nhiếp ảnh",
+      "correctAnswer": "B",
+      "text": "Great photographs can make your property stand out.",
+      "translation": "Những bức ảnh tuyệt vời có thể làm cho bất động sản của bạn nổi bật.",
+      "explanation": "Câu trước giới thiệu studio cung cấp dịch vụ nhiếp ảnh cho dân bất động sản. Câu (B) đưa ra lợi ích trực tiếp đánh trúng tâm lý khách hàng. Câu tiếp sau đó khẳng định \"Chúng tôi tự hào về việc căn góc chụp... làm cho bất động sản trông đẹp nhất\" tạo mạch văn cực kỳ trôi chảy."
+    },
+    {
+      "id": 144,
+      "passage": "Đoạn 4 (Câu 143 - 146): Thư chào hàng dịch vụ nhiếp ảnh",
+      "correctAnswer": "B",
+      "text": "creating",
+      "translation": "tạo ra",
+      "explanation": "Cấu trúc spare no effort in + V-ing (không tiếc công sức trong việc làm gì). Studio không tiếc công sức trong việc \"tạo ra\" (creating) hình ảnh kỹ thuật số chất lượng cao."
+    },
+    {
+      "id": 145,
+      "passage": "Đoạn 4 (Câu 143 - 146): Thư chào hàng dịch vụ nhiếp ảnh",
+      "correctAnswer": "D",
+      "text": "Indeed",
+      "translation": "Thực sự/Thực tế là",
+      "explanation": "Câu trước khẳng định studio nỗ lực tạo ra ảnh chất lượng cao. Câu sau liệt kê chi tiết: thiết bị chuyên nghiệp, ánh sáng... cho phép làm nổi bật thuộc tính tốt nhất. \"Indeed\" dùng để bổ sung ý nhấn mạnh, làm rõ thêm cho câu khẳng định trước đó."
+    },
+    {
+      "id": 146,
+      "passage": "Đoạn 4 (Câu 143 - 146): Thư chào hàng dịch vụ nhiếp ảnh",
+      "correctAnswer": "A",
+      "text": "receives",
+      "translation": "nhận được",
+      "explanation": "Mệnh đề bắt đầu bằng \"once\" (khi mà) ở hiện tại đơn (is over), do đó mệnh đề chính diễn tả một sự thật/chân lý cũng phải ở thì hiện tại đơn. Chủ ngữ \"every image\" là số ít nên động từ thêm 's'."
+    }
+  ],
+  "part7_1": [
+    {
+      "id": 147,
+      "passage": "Đoạn 1 (Câu 147 - 148): Hướng dẫn lắp ráp",
+      "question": "Where is the information most likely found?",
+      "translation": "Thông tin này có khả năng được tìm thấy ở đâu nhất?",
+      "options": { "A": "On a door (Trên một cánh cửa)", "B": "On a receipt (Trên một biên lai)", "C": "In a box (Trong một cái hộp)", "D": "On a Web site (Trên một trang web)" },
+      "correctAnswer": "C",
+      "explanation": "Văn bản yêu cầu người đọc: \"As you do the unpacking...\" (Trong khi bạn mở hộp/dỡ đồ...). Lời nhắc nhở này xuất hiện khi người mua vừa mở kiện hàng ra. Do đó tờ giấy chứa thông tin này nằm trong chiếc hộp."
+    },
+    {
+      "id": 148,
+      "passage": "Đoạn 1 (Câu 147 - 148): Hướng dẫn lắp ráp",
+      "question": "What kind of item is most likely discussed?",
+      "translation": "Loại mặt hàng nào có khả năng đang được nói đến nhất?",
+      "options": { "A": "A desktop computer (Máy tính để bàn)", "B": "A piece of furniture (Một món đồ nội thất)", "C": "A household appliance (Đồ gia dụng)", "D": "A power tool (Dụng cụ điện)" },
+      "correctAnswer": "B",
+      "explanation": "Văn bản hướng dẫn: \"Assemble the item...\" (Lắp ráp mặt hàng...), \"Never overtighten any screws or bolts, or you may damage the wood or cushioning\" (Đừng vặn quá chặt ốc vít hoặc bu-lông, nếu không bạn có thể làm hỏng phần gỗ hoặc đệm mút). Mặt hàng cần lắp ráp mà lại có \"gỗ\" (wood) và \"đệm mút\" (cushioning) thì chắc chắn là đồ nội thất."
+    },
+    {
+      "id": 149,
+      "passage": "Đoạn 2 (Câu 149 - 150): Bảng lịch trình giờ họp hai múi giờ",
+      "question": "What is suggested by the schedule?",
+      "translation": "Lịch trình ngầm cho thấy điều gì?",
+      "options": { "A": "A conference has been scheduled. (Một hội nghị đã được lên lịch.)", "B": "A firm has offices in two time zones. (Một công ty có văn phòng ở hai múi giờ.)", "C": "Administrative assistants make travel plans. (Trợ lý hành chính lập kế hoạch đi lại.)", "D": "Some meeting times have been changed. (Một số thời gian họp đã bị thay đổi.)" },
+      "correctAnswer": "B",
+      "explanation": "Bảng chia làm hai cột \"Winnipeg\" và \"Toulouse\", liệt kê hai múi giờ song song tương ứng với nhau (ví dụ: 7:00 A.M ở Winnipeg là 2:00 P.M ở Toulouse). Lời nhắn ghi: \"...for scheduling interoffice meetings\" (...để lên lịch các cuộc họp liên văn phòng). Điều này chứng tỏ công ty có hai văn phòng ở hai múi giờ khác nhau."
+    },
+    {
+      "id": 150,
+      "passage": "Đoạn 2 (Câu 149 - 150): Bảng lịch trình giờ họp hai múi giờ",
+      "question": "What is indicated about 11:00 A.M. Winnipeg time?",
+      "translation": "Điều gì được chỉ ra về lúc 11:00 sáng giờ Winnipeg?",
+      "options": { "A": "It is when the Winnipeg office closes for lunch. (Đó là lúc văn phòng Winnipeg đóng cửa nghỉ trưa.)", "B": "It is when staff in Toulouse begin their workday. (Đó là lúc nhân viên ở Toulouse bắt đầu ngày làm việc.)", "C": "It is not a preferred time to schedule a meeting. (Đó không phải là thời gian được ưu tiên để lên lịch họp.)", "D": "It has just been added to the schedule. (Nó vừa mới được thêm vào lịch trình.)" },
+      "correctAnswer": "C",
+      "explanation": "Lời hướng dẫn nói rất rõ: \"...schedule these meetings during one of the underlined hours, that is, after 7:00 A.M. but before 11:00 A.M.\" (...hãy lên lịch các cuộc họp này vào một trong các giờ được gạch chân, tức là sau 7 giờ sáng nhưng trước 11 giờ sáng). 11 giờ sáng không được gạch chân và nằm ngoài khoảng thời gian được khuyến nghị."
+    },
+    {
+      "id": 151,
+      "passage": "Đoạn 3 (Câu 151 - 152): Tờ quảng cáo về địa điểm tổ chức sự kiện",
+      "question": "What is indicated about the Bryant Foyer?",
+      "translation": "Điều gì được cho biết về Bryant Foyer?",
+      "options": { "A": "It is located on the shores of a lake. (Nó nằm trên bờ một cái hồ.)", "B": "It has recently been renovated. (Nó gần đây đã được cải tạo.)", "C": "It will build a botanical garden for guests. (Nó sẽ xây một vườn bách thảo cho khách.)", "D": "It is reserved solely for corporate events. (Nó được dành riêng cho các sự kiện doanh nghiệp.)" },
+      "correctAnswer": "B",
+      "explanation": "Đoạn văn có câu: \"...until its renovation just over a year ago\" (...cho đến khi nó được cải tạo chỉ hơn một năm trước)."
+    },
+    {
+      "id": 152,
+      "passage": "Đoạn 3 (Câu 151 - 152): Tờ quảng cáo về địa điểm tổ chức sự kiện",
+      "question": "What is suggested about Andito’s?",
+      "translation": "Điều gì được ngầm hiểu về Andito’s?",
+      "options": { "A": "It was started by an international chef. (Nó được bắt đầu bởi một đầu bếp quốc tế.)", "B": "It offers limited menu options. (Nó cung cấp các lựa chọn thực đơn hạn chế.)", "C": "It is now funded by a charitable organization. (Nó hiện được tài trợ bởi một tổ chức từ thiện.)", "D": "It is very popular with local residents. (Nó rất phổ biến với cư dân địa phương.)" },
+      "correctAnswer": "D",
+      "explanation": "Tác giả khen ngợi nhà hàng này và viết thêm: \"Area residents know to plan far in advance to get a seat\" (Cư dân trong khu vực biết phải lên kế hoạch trước từ rất lâu để có được chỗ ngồi). Điều này chứng tỏ nhà hàng rất đắt khách/nổi tiếng đối với người dân địa phương."
+    },
+    {
+      "id": 153,
+      "passage": "Đoạn 4 (Câu 153 - 154): Tin nhắn chat giữa Joan Chi và Mina Evers",
+      "question": "At 1:00 P.M., what does Ms. Chi most likely mean when she writes, “Sure thing, Mina”?",
+      "translation": "Vào lúc 1:00 chiều, cô Chi có khả năng có ý gì nhất khi cô ấy viết \"Chắc chắn rồi, Mina\"?",
+      "options": { "A": "She will bring lunch for Ms. Evers. (Cô ấy sẽ mang bữa trưa về cho cô Evers.)", "B": "She can provide a tool that Ms. Evers needs. (Cô ấy có thể cung cấp một công cụ mà cô Evers cần.)", "C": "Some site coordinates are correct. (Một vài tọa độ công trường là chính xác.)", "D": "Some measurements must be double-checked. (Một vài số đo phải được kiểm tra lại.)" },
+      "correctAnswer": "A",
+      "explanation": "Lúc 12:51, Joan đề nghị: \"Should we bring something back for you?\" (Chúng tôi có nên mang món gì về cho bạn không?). Mina trả lời lúc 12:59: \"Get me a chicken sandwich\" (Mua cho tôi một chiếc bánh mì kẹp thịt gà). Việc Joan đáp lại \"Sure thing\" (Chắc chắn rồi) là lời đồng ý thực hiện yêu cầu mua đồ ăn trưa giùm."
+    },
+    {
+      "id": 154,
+      "passage": "Đoạn 4 (Câu 153 - 154): Tin nhắn chat giữa Joan Chi và Mina Evers",
+      "question": "What will happen next?",
+      "translation": "Điều gì sẽ xảy ra tiếp theo?",
+      "options": { "A": "Ms. Chi will get new site coordinates. (Cô Chi sẽ lấy tọa độ địa điểm mới.)", "B": "Ms. Chi and Ms. Lim will be out for a while. (Cô Chi và cô Lim sẽ ra ngoài một lúc.)", "C": "Ms. Evers will share a recipe. (Cô Evers sẽ chia sẻ một công thức nấu ăn.)", "D": "Ms. Lim will begin taking measurements. (Cô Lim sẽ bắt đầu lấy số đo.)" },
+      "correctAnswer": "B",
+      "explanation": "Mina vừa bảo Joan và Lim cứ đi ăn trưa trước đi (\"go to lunch without me today\"). Joan đồng ý mua đồ ăn về và hẹn \"See you in a while\" (Gặp lại bạn sau một lát). Suy ra hành động tiếp ngay sau đoạn chat là Joan và Lim đi ăn trưa (ra ngoài một lúc)."
+    },
+    {
+      "id": 155,
+      "passage": "Đoạn 5 (Câu 155 - 157): Thông báo thu gom nông sản",
+      "question": "For whom is the notice most likely intended?",
+      "translation": "Thông báo này có khả năng nhất dành cho ai?",
+      "options": { "A": "Farmers (Nông dân)", "B": "Professional chefs (Đầu bếp chuyên nghiệp)", "C": "Truck drivers (Tài xế xe tải)", "D": "Supermarket managers (Quản lý siêu thị)" },
+      "correctAnswer": "A",
+      "explanation": "Đoạn văn mở đầu nhắc đến vụ mùa màng bội thu \"yielded a substantial harvest of fruits and vegetables\", tạo ra lượng nông sản nhiều hơn mức mà người trồng (growers) có thể tìm được người mua. Thông báo kêu gọi \"những người trong số các bạn muốn quyên góp nông sản thừa...\" (Those of you wishing to donate surplus produce...). Những người có nông sản dư thừa chính là nông dân."
+    },
+    {
+      "id": 156,
+      "passage": "Đoạn 5 (Câu 155 - 157): Thông báo thu gom nông sản",
+      "question": "What does the notice indicate about the weather?",
+      "translation": "Thông báo cho biết điều gì về thời tiết?",
+      "options": { "A": "It caused transportation delays. (Nó gây ra sự chậm trễ giao thông.)", "B": "It included heavier rain than usual. (Nó có mưa to hơn bình thường.)", "C": "It was frequently a topic in the local news. (Nó thường là chủ đề trên tin tức địa phương.)", "D": "It was beneficial for crops. (Nó có lợi cho cây trồng.)" },
+      "correctAnswer": "D",
+      "explanation": "Câu mở đầu ghi rõ: \"This season’s excellent weather has yielded a substantial harvest...\" (Thời tiết tuyệt vời của mùa này đã mang lại một vụ thu hoạch lớn...). Do đó, thời tiết tốt đã có lợi cho vụ mùa."
+    },
+    {
+      "id": 157,
+      "passage": "Đoạn 5 (Câu 155 - 157): Thông báo thu gom nông sản",
+      "question": "What service does the notice mention?",
+      "translation": "Thông báo đề cập đến dịch vụ gì?",
+      "options": { "A": "Staffing for local businesses (Tuyển dụng cho các doanh nghiệp địa phương)", "B": "Food collection and distribution (Thu gom và phân phát thực phẩm)", "C": "Farm machinery repair (Sửa chữa máy móc nông nghiệp)", "D": "Gardening workshops (Các buổi hội thảo làm vườn)" },
+      "correctAnswer": "B",
+      "explanation": "Đoạn hai mô tả chi tiết: nếu người quyên góp không thể tự mang đến nơi tập kết, họ sẽ cử tài xế xe tải tình nguyện đến tận nơi thu gom (transport) và nhanh chóng phân phát (distribute) thực phẩm quyên góp cho các nhóm cần thiết."
+    },
+    {
+      "id": 158,
+      "passage": "Đoạn 6 (Câu 158 - 160): Hướng dẫn tham dự sự kiện",
+      "question": "Where most likely is the notice posted?",
+      "translation": "Thông báo có khả năng nhất được dán ở đâu?",
+      "options": { "A": "In an airplane (Trên máy bay)", "B": "In a concert hall (Trong một phòng hòa nhạc)", "C": "At a restaurant (Tại nhà hàng)", "D": "At a post office (Tại bưu điện)" },
+      "correctAnswer": "B",
+      "explanation": "Lời văn nhắc đến \"the performers\" (những người biểu diễn), \"audience members\" (các thành viên khán giả), và \"audio or visual recording of the performance\" (ghi âm hoặc ghi hình buổi biểu diễn). Chỉ có phòng hòa nhạc/rạp hát mới có những yếu tố này."
+    },
+    {
+      "id": 159,
+      "passage": "Đoạn 6 (Câu 158 - 160): Hướng dẫn tham dự sự kiện",
+      "question": "What is stated about large bags?",
+      "translation": "Điều gì được nêu về những chiếc túi lớn?",
+      "options": { "A": "They can be put in a locked box for a fee. (Chúng có thể được để trong một hộp có khóa với một khoản phí.)", "B": "They must be left outside the building. (Chúng phải được để ở ngoài tòa nhà.)", "C": "They will be inspected by an attendant. (Chúng sẽ bị kiểm tra bởi nhân viên.)", "D": "They must be stored under a seat. (Chúng phải được cất dưới ghế.)" },
+      "correctAnswer": "A",
+      "explanation": "Quy định ghi rõ: \"If your bag is too big to fit properly under a seat, consider storing it in a locker for just $2\" (Nếu túi của bạn quá to để nhét vừa dưới ghế, hãy cân nhắc cất nó trong tủ có khóa chỉ với 2 đô la)."
+    }
+  ]
+}

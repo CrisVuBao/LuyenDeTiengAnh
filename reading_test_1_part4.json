@@ -1,0 +1,139 @@
+{
+  "part7_3": [
+    {
+      "id": 173,
+      "passage": "Đoạn 10 (Câu 172 - 175): Chat trực tuyến lên kế hoạch thuyết trình",
+      "question": "At 9:22 A.M., what does Ms. Lorenz imply when she writes, “let’s not overlook that”?",
+      "translation": "Vào lúc 9:22 sáng, cô Lorenz ngầm ý gì khi viết \"đừng bỏ qua điều đó\"?",
+      "options": { "A": "More staff should attend a meeting. (Nên có thêm nhân viên tham dự cuộc họp.)", "B": "Information from the user studies is important. (Thông tin từ các nghiên cứu người dùng là quan trọng.)", "C": "The presentation must run smoothly. (Bài thuyết trình phải chạy suôn sẻ.)", "D": "Partner stores must be notified about an upcoming report. (Các cửa hàng đối tác phải được thông báo về một báo cáo sắp tới.)" },
+      "correctAnswer": "B",
+      "explanation": "Trước đó, Alan nhắn rằng: \"We mainly need the information from the user studies\" (Chúng ta chủ yếu cần thông tin từ các nghiên cứu người dùng). Câu trả lời \"Yes, let's not overlook that\" (Đúng vậy, đừng bỏ qua điều đó) là sự đồng tình, nhấn mạnh tầm quan trọng của cái báo cáo người dùng kia."
+    },
+    {
+      "id": 174,
+      "passage": "Đoạn 10 (Câu 172 - 175): Chat trực tuyến lên kế hoạch thuyết trình",
+      "question": "Who most likely is Mr. Harven?",
+      "translation": "Ông Harven có khả năng nhất là ai?",
+      "options": { "A": "A store manager (Quản lý cửa hàng)", "B": "An amateur athlete (Vận động viên nghiệp dư)", "C": "A product researcher (Một nhà nghiên cứu sản phẩm)", "D": "An advertising executive (Giám đốc quảng cáo)" },
+      "correctAnswer": "C",
+      "explanation": "Alan nói rằng nhóm cần báo cáo từ \"research and development office\" (văn phòng nghiên cứu và phát triển). Tiếp lời, Maggie bảo nếu sợ trễ thì hãy liên hệ \"Matt Harven and remind him to expedite a summary to us\" (liên hệ Matt Harven và nhắc anh ta gửi gấp bản tóm tắt cho chúng ta). Suy ra Matt Harven làm việc trong văn phòng nghiên cứu, có khả năng cao là một nhà nghiên cứu."
+    },
+    {
+      "id": 175,
+      "passage": "Đoạn 10 (Câu 172 - 175): Chat trực tuyến lên kế hoạch thuyết trình",
+      "question": "When do the writers plan to meet to review a slide presentation?",
+      "translation": "Những người nhắn tin dự định gặp nhau để xem lại bản trình bày slide vào lúc nào?",
+      "options": { "A": "On Monday (Vào thứ Hai)", "B": "On Wednesday (Vào thứ Tư)", "C": "On Thursday (Vào thứ Năm)", "D": "On Friday (Vào thứ Sáu)" },
+      "correctAnswer": "C",
+      "explanation": "Susan đề xuất \"Thursday or Friday\". Maggie chốt: \"Let's try for Thursday afternoon\" (Hãy thử vào chiều thứ Năm). Alan đồng ý: \"Fine by me\" (Tôi thấy ổn). Vậy họ chốt gặp thứ Năm."
+    },
+    {
+      "id": 176,
+      "passage": "Đoạn 11 (Câu 176 - 180): Thông cáo báo chí và Review nhà hàng",
+      "question": "What is the purpose of the press release?",
+      "translation": "Mục đích của thông cáo báo chí là gì?",
+      "options": { "A": "To promote the opening of a restaurant (Để quảng cáo việc khai trương một nhà hàng)", "B": "To announce a business partnership (Để thông báo một mối quan hệ đối tác kinh doanh)", "C": "To introduce a travel program (Để giới thiệu một chương trình du lịch)", "D": "To congratulate an award recipient (Để chúc mừng một người nhận giải thưởng)" },
+      "correctAnswer": "B",
+      "explanation": "Câu chủ đạo ngay đoạn 1: \"Kitchen Swifts and Chef Darius Cordero are joining together to give home cooks a new culinary experience\" (Kitchen Swifts và Bếp trưởng Darius Cordero đang cùng nhau mang đến cho những người nấu ăn tại nhà một trải nghiệm ẩm thực mới). Các đoạn sau nói về sự \"partnership\" (quan hệ đối tác) này để thiết kế các công thức nấu ăn giao tận nhà."
+    },
+    {
+      "id": 177,
+      "passage": "Đoạn 11 (Câu 176 - 180): Thông cáo báo chí và Review nhà hàng",
+      "question": "In the press release, the word “reflects” in paragraph 1, line 4, is closest in meaning to",
+      "translation": "Trong thông cáo báo chí, từ \"reflects\" ở đoạn 1, dòng 4, có nghĩa gần nhất với",
+      "options": { "A": "results in (dẫn đến)", "B": "changes (thay đổi)", "C": "shows (phản ánh/thể hiện/cho thấy)", "D": "thinks about (suy nghĩ về)" },
+      "correctAnswer": "C",
+      "explanation": "Câu gốc: \"He says his cooking reflects his Filipino heritage\" (Ông nói rằng cách nấu ăn của ông phản ánh/thể hiện di sản Philippines của mình). Từ đồng nghĩa là \"shows\"."
+    },
+    {
+      "id": 178,
+      "passage": "Đoạn 11 (Câu 176 - 180): Thông cáo báo chí và Review nhà hàng",
+      "question": "What is indicated about Kitchen Swifts?",
+      "translation": "Điều gì được cho biết về Kitchen Swifts?",
+      "options": { "A": "It raised its prices for all customers. (Nó đã tăng giá cho tất cả khách hàng.)", "B": "It revised its delivery schedule. (Nó đã sửa đổi lịch giao hàng.)", "C": "It offers several meal options. (Nó cung cấp nhiều lựa chọn bữa ăn.)", "D": "It has a new vice president. (Nó có một phó chủ tịch mới.)" },
+      "correctAnswer": "C",
+      "explanation": "Đoạn cuối của thông cáo báo chí cho biết công ty này \"supplies menus, recipes, and ingredients for two people, four people, or six people, including a range of vegetarian selections\" (cung cấp thực đơn, công thức và nguyên liệu cho hai, bốn hoặc sáu người, bao gồm một loạt các lựa chọn ăn chay). Điều này chứng minh họ có rất nhiều tùy chọn (meal options)."
+    },
+    {
+      "id": 179,
+      "passage": "Đoạn 11 (Câu 176 - 180): Thông cáo báo chí và Review nhà hàng",
+      "question": "What is most likely true about Ms. Guan?",
+      "translation": "Điều gì có khả năng đúng nhất về cô Guan?",
+      "options": { "A": "She went to Mr. Cordero’s restaurant. (Cô ấy đã đến nhà hàng của ông Cordero.)", "B": "She recently went to Sydney for a vacation. (Cô ấy gần đây đã đến Sydney để nghỉ mát.)", "C": "She is a colleague of Ms. Chambers. (Cô ấy là đồng nghiệp của cô Chambers.)", "D": "She regularly orders from Kitchen Swifts. (Cô ấy thường xuyên đặt món từ Kitchen Swifts.)" },
+      "correctAnswer": "A",
+      "explanation": "(Liên kết 2 đoạn): Bài review do Meili Guan viết cho thấy cô ấy đã đi ăn ở \"Enriqua’s\". Nhìn lên đoạn 1 của thông cáo báo chí, \"Enriqua’s\" được nhắc đến chính là tên nhà hàng mới mở do Đầu bếp Darius Cordero làm chủ (\"is the owner of restaurants... including the recently opened Enriqua’s\"). Do đó, cô Guan đã đi ăn ở nhà hàng của ông Cordero."
+    },
+    {
+      "id": 180,
+      "passage": "Đoạn 11 (Câu 176 - 180): Thông cáo báo chí và Review nhà hàng",
+      "question": "What did Ms. Guan suggest about Enriqua’s in the review?",
+      "translation": "Cô Guan đã gợi ý điều gì về Enriqua's trong bài đánh giá?",
+      "options": { "A": "It has a limited lunch menu. (Nó có thực đơn bữa trưa hạn chế.)", "B": "It takes dinner reservations. (Nó nhận đặt bàn cho bữa tối.)", "C": "It serves bread from a local bakery. (Nó phục vụ bánh mì từ một tiệm bánh địa phương.)", "D": "It has a location in Hong Kong. (Nó có một địa điểm ở Hồng Kông.)" },
+      "correctAnswer": "B",
+      "explanation": "Cô Guan chia sẻ kinh nghiệm trong bài đánh giá: \"It is usually fully booked for dinner; you may need to call months in advance for a table\" (Nó thường kín chỗ cho bữa tối; bạn có thể cần phải gọi điện trước hàng tháng trời để đặt bàn). Suy ra, nhà hàng này có cơ chế nhận đặt bàn trước cho bữa tối."
+    },
+    {
+      "id": 181,
+      "passage": "Đoạn 12 (Câu 181 - 185): Email bán hàng và Vé tàu",
+      "question": "What is the purpose of the e-mail?",
+      "translation": "Mục đích của email là gì?",
+      "options": { "A": "To finalize a plan (Để chốt lại một kế hoạch)", "B": "To accept an invitation (Để chấp nhận một lời mời)", "C": "To promote a new service (Để quảng cáo một dịch vụ mới)", "D": "To request feedback on a policy (Để yêu cầu phản hồi về một chính sách)" },
+      "correctAnswer": "A",
+      "explanation": "Trong email, ông Conor Boyle phản hồi lại khách hàng (Savard) để chốt cách thức giao hàng. Ông ấy từ chối các lựa chọn giao hàng trả phí và chốt kế hoạch: \"I am happy to deliver your items to you in Stranraer myself... I expect to arrive at your house no later than 5 p.m.\" (Tôi rất sẵn lòng tự mình giao hàng cho bạn ở Stranraer... Tôi dự kiến sẽ đến nhà bạn trước 5 giờ chiều)."
+    },
+    {
+      "id": 182,
+      "passage": "Đoạn 12 (Câu 181 - 185): Email bán hàng và Vé tàu",
+      "question": "Why will Mr. Boyle travel from Stranraer to Kirkcolm?",
+      "translation": "Tại sao ông Boyle lại đi từ Stranraer đến Kirkcolm?",
+      "options": { "A": "To make a delivery (Để giao hàng)", "B": "To attend a meeting (Để dự một cuộc họp)", "C": "To drop off a rental car (Để trả một chiếc xe thuê)", "D": "To visit with family members (Để thăm thành viên gia đình)" },
+      "correctAnswer": "D",
+      "explanation": "Trong email, ông kể rằng sau khi giao hàng (Stranraer), ông sẽ đi gặp chị gái và các cháu sống gần đó ở Kirkcolm (\"my sister and her children live nearby in Kirkcolm. Before seeing them, I will drive... and hand deliver...\"). Do đó điểm đến Kirkcolm là để thăm gia đình."
+    },
+    {
+      "id": 183,
+      "passage": "Đoạn 12 (Câu 181 - 185): Email bán hàng và Vé tàu",
+      "question": "What is indicated in the e-mail?",
+      "translation": "Điều gì được nêu trong email?",
+      "options": { "A": "Mr. Boyle’s sister is a cofounder of Ceoleire Classics. (Chị gái ông Boyle là người đồng sáng lập Ceoleire Classics.)", "B": "Mr. Boyle has been disappointed by air- and train-freight companies. (Ông Boyle từng bị thất vọng bởi các công ty vận chuyển hàng không và đường sắt.)", "C": "Ms. Savard has purchased items from Mr. Boyle in the past. (Cô Savard đã mua các mặt hàng từ ông Boyle trong quá khứ.)", "D": "Ms. Savard prefers a specific brand of luggage. (Cô Savard thích một nhãn hiệu hành lý cụ thể.)" },
+      "correctAnswer": "B",
+      "explanation": "Ông Boyle giải thích lý do không gửi hàng qua đường bưu điện: \"Over the years, I've seen too much damage done by inattentive baggage handlers\" (Trong nhiều năm, tôi đã thấy quá nhiều thiệt hại do những người xử lý hành lý thiếu chú ý gây ra). Ông ấy tỏ ra thất vọng/thiếu tin tưởng vào các dịch vụ vận chuyển hành lý sân bay/tàu hỏa (nguyên nhân khiến khách hàng phải trả thêm tiền \"air or train transport\")."
+    },
+    {
+      "id": 184,
+      "passage": "Đoạn 12 (Câu 181 - 185): Email bán hàng và Vé tàu",
+      "question": "What is most likely true about Ms. Savard?",
+      "translation": "Điều gì có khả năng đúng nhất về cô Savard?",
+      "options": { "A": "She often travels for her job. (Cô ấy thường đi du lịch vì công việc.)", "B": "She paid extra to have items hand delivered. (Cô ấy đã trả thêm tiền để có các mặt hàng được giao tận tay.)", "C": "She recently purchased musical instruments. (Cô ấy vừa mua các nhạc cụ.)", "D": "She will meet Mr. Boyle at the rental car office. (Cô ấy sẽ gặp ông Boyle tại văn phòng thuê xe.)" },
+      "correctAnswer": "C",
+      "explanation": "(Liên kết 2 đoạn): Nhìn vào tờ vé tàu phà của ông Boyle (Northern Ireland Ferry Service), mục hành lý (Baggage) khai báo có: \"2 instrument cases (1 mandolin, 1 guitar)\" (2 hộp nhạc cụ: 1 đàn mandolin, 1 đàn guitar). Vì ông ấy đang mang đồ trên chuyến đi này để giao tận tay cho khách (Savard), nên khách hàng này chính là người đã mua đống nhạc cụ đó."
+    },
+    {
+      "id": 185,
+      "passage": "Đoạn 12 (Câu 181 - 185): Email bán hàng và Vé tàu",
+      "question": "How is Mr. Boyle traveling to Cairnryan on June 5?",
+      "translation": "Ông Boyle sẽ di chuyển đến Cairnryan vào ngày 5 tháng 6 bằng phương tiện gì?",
+      "options": { "A": "By car (Bằng ô tô)", "B": "By train (Bằng tàu hỏa)", "C": "By boat (Bằng tàu phà/thuyền)", "D": "By plane (Bằng máy bay)" },
+      "correctAnswer": "C",
+      "explanation": "Tấm vé có tiêu đề \"Northern Ireland Ferry Service\" (Dịch vụ Phà Bắc Ireland) và có ghi chú \"Docking at Cairnryan\" (Cập bến tại Cairnryan). Phà là một loại thuyền/tàu thủy (boat)."
+    },
+    {
+      "id": 186,
+      "passage": "Đoạn 13 (Câu 186 - 190): Quảng cáo đào tạo TTA, Diễn đàn học viên và Đề cương",
+      "question": "What is indicated about TTA?",
+      "translation": "Điều gì được chỉ ra về TTA?",
+      "options": { "A": "It was founded by a graphic designer. (Nó được thành lập bởi một nhà thiết kế đồ họa.)", "B": "It publishes its own online newsletter. (Nó xuất bản bản tin trực tuyến của riêng mình.)", "C": "It offers classes led by industry professionals. (Nó cung cấp các lớp học do các chuyên gia trong ngành dẫn dắt.)", "D": "It has classroom facilities in cities across West Africa. (Nó có cơ sở vật chất lớp học ở các thành phố trên khắp Tây Phi.)" },
+      "correctAnswer": "C",
+      "explanation": "Dòng giới thiệu của TTA ghi rõ: \"All classes include individualized instruction and are taught by recognized professionals in their respective fields\" (Tất cả các lớp học bao gồm hướng dẫn cá nhân hóa và được giảng dạy bởi các chuyên gia được công nhận trong lĩnh vực tương ứng của họ)."
+    },
+    {
+      "id": 187,
+      "passage": "Đoạn 13 (Câu 186 - 190): Quảng cáo đào tạo TTA, Diễn đàn học viên và Đề cương",
+      "question": "According to the advertisement, what does TTA provide to students who finish a class?",
+      "translation": "Theo quảng cáo, TTA cung cấp gì cho sinh viên hoàn thành lớp học?",
+      "options": { "A": "A résumé-writing workshop (Một hội thảo viết sơ yếu lý lịch)", "B": "A discount on a follow-up class (Giảm giá cho một lớp học tiếp theo)", "C": "A list of current job postings (Một danh sách các tin tuyển dụng hiện tại)", "D": "A certification document (Một tài liệu chứng nhận)" },
+      "correctAnswer": "D",
+      "explanation": "Bài quảng cáo ghi: \"Upon successful completion of a class, you will receive an official Certificate of Training\" (Khi hoàn thành thành công một lớp học, bạn sẽ nhận được Chứng chỉ Đào tạo chính thức)."
+    }
+  ]
+}

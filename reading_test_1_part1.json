@@ -1,0 +1,343 @@
+{
+  "testId": "READING_TEST_1",
+  "part5": [
+    {
+      "id": 101,
+      "question": "Former Sendai Company CEO Ken Nakata spoke about ------- career experiences.",
+      "translation": "Cựu CEO công ty Sendai, Ken Nakata, đã nói về những kinh nghiệm nghề nghiệp của -------.",
+      "options": { "A": "he (anh ấy - đại từ nhân xưng chủ ngữ)", "B": "his (của anh ấy - tính từ sở hữu)", "C": "him (anh ấy - đại từ nhân xưng tân ngữ)", "D": "himself (chính anh ấy - đại từ phản thân)" },
+      "correctAnswer": "B",
+      "explanation": "Vị trí chỗ trống đứng trước cụm danh từ \"career experiences\" (kinh nghiệm nghề nghiệp), nên ta cần một tính từ sở hữu để bổ nghĩa. Cựu CEO Nakata nói về những kinh nghiệm của chính ông ấy."
+    },
+    {
+      "id": 102,
+      "question": "Passengers who will be taking a ------- domestic flight should go to Terminal A.",
+      "translation": "Hành khách sẽ thực hiện chuyến bay nội địa ------- nên đi đến Nhà ga A.",
+      "options": { "A": "connectivity (sự kết nối - danh từ)", "B": "connects (kết nối - động từ chia s)", "C": "connect (kết nối - động từ nguyên thể)", "D": "connecting (kết nối - hiện tại phân từ/tính từ)" },
+      "correctAnswer": "D",
+      "explanation": "Vị trí chỗ trống đứng trước cụm danh từ \"domestic flight\" (chuyến bay nội địa), ta cần một tính từ hoặc phân từ đóng vai trò tính từ để bổ nghĩa. \"Connecting flight\" là một cụm danh từ cố định có nghĩa là \"chuyến bay nối chuyến\"."
+    },
+    {
+      "id": 103,
+      "question": "Fresh and ------- apple-cider donuts are available at Oakcrest Orchard’s retail shop for £6 per dozen.",
+      "translation": "Những chiếc bánh rán vị rượu táo tươi và ------- có sẵn tại cửa hàng bán lẻ của Oakcrest Orchard với giá 6 bảng một tá.",
+      "options": { "A": "eaten (được ăn)", "B": "open (mở)", "C": "tasty (ngon)", "D": "free (miễn phí)" },
+      "correctAnswer": "C",
+      "explanation": "Câu sử dụng liên từ \"and\" (và) nối hai tính từ bổ nghĩa cho \"apple-cider donuts\" (bánh rán rượu táo). \"Fresh\" (tươi) mang nghĩa tích cực, do đó cần một tính từ tích cực khác để miêu tả đồ ăn. \"Tasty\" (ngon) là lựa chọn hợp lý nhất."
+    },
+    {
+      "id": 104,
+      "question": "Zahn Flooring has the widest selection of ------- in the United Kingdom.",
+      "translation": "Zahn Flooring có nhiều lựa chọn ------- nhất ở Vương quốc Anh.",
+      "options": { "A": "paints (sơn)", "B": "tiles (gạch lát)", "C": "furniture (đồ nội thất)", "D": "curtains (rèm cửa)" },
+      "correctAnswer": "B",
+      "explanation": "Tên công ty \"Zahn Flooring\" (Flooring = việc lát sàn) cho thấy họ hoạt động trong lĩnh vực sàn nhà. Trong các lựa chọn, \"tiles\" (gạch lát) là sản phẩm liên quan trực tiếp đến lĩnh vực này."
+    },
+    {
+      "id": 105,
+      "question": "One responsibility of the IT department is to ensure that the company is using ------- software.",
+      "translation": "Một trách nhiệm của bộ phận CNTT là đảm bảo rằng công ty đang sử dụng phần mềm -------.",
+      "options": { "A": "update (cập nhật - động từ)", "B": "updating (đang cập nhật - V-ing)", "C": "updates (các bản cập nhật - danh từ)", "D": "updated (được cập nhật - V-ed/tính từ)" },
+      "correctAnswer": "D",
+      "explanation": "Cần một tính từ bổ nghĩa cho danh từ \"software\" (phần mềm). Phân từ hai \"updated\" đóng vai trò như tính từ, tạo thành cụm \"updated software\" (phần mềm đã được cập nhật/phiên bản mới nhất)."
+    },
+    {
+      "id": 106,
+      "question": "It is wise to check a company’s dress code ------- visiting its head office.",
+      "translation": "Thật khôn ngoan khi kiểm tra quy định về trang phục của công ty ------- đến thăm trụ sở chính của công ty đó.",
+      "options": { "A": "so (vì vậy)", "B": "how (như thế nào)", "C": "like (giống như)", "D": "before (trước khi)" },
+      "correctAnswer": "D",
+      "explanation": "Đây là cấu trúc rút gọn mệnh đề trạng ngữ chỉ thời gian (before + V-ing). Việc kiểm tra trang phục phải được thực hiện trước khi (before) đến thăm công ty."
+    },
+    {
+      "id": 107,
+      "question": "Wexler Store’s management team expects that employees will ------- support any new hires.",
+      "translation": "Đội ngũ quản lý của Cửa hàng Wexler mong đợi rằng nhân viên sẽ hỗ trợ ------- bất kỳ nhân viên mới nào.",
+      "options": { "A": "enthusiastically (một cách nhiệt tình - trạng từ)", "B": "enthusiasm (sự nhiệt tình - danh từ)", "C": "enthusiastic (nhiệt tình - tính từ)", "D": "enthused (phấn khích - phân từ/tính từ)" },
+      "correctAnswer": "A",
+      "explanation": "Vị trí chỗ trống nằm giữa trợ động từ \"will\" và động từ chính \"support\", do đó ta cần một trạng từ để bổ nghĩa cho động từ chính (hỗ trợ một cách nhiệt tình)."
+    },
+    {
+      "id": 108,
+      "question": "Wheel alignments and brake system ------- are part of our vehicle service plan.",
+      "translation": "Việc cân chỉnh bánh xe và ------- hệ thống phanh là một phần trong gói dịch vụ xe của chúng tôi.",
+      "options": { "A": "inspects (kiểm tra - động từ chia s)", "B": "inspector (thanh tra viên - danh từ chỉ người)", "C": "inspected (đã kiểm tra - V-ed)", "D": "inspections (sự kiểm tra - danh từ số nhiều)" },
+      "correctAnswer": "D",
+      "explanation": "Liên từ \"and\" nối hai cụm danh từ ngang hàng. Phía trước là \"Wheel alignments\" (cụm danh từ số nhiều), nên phía sau \"brake system\" cũng cần một danh từ số nhiều để tạo thành cụm danh từ ghép chỉ hoạt động bảo dưỡng."
+    },
+    {
+      "id": 109,
+      "question": "Registration for the Marketing Coalition Conference is now open ------- September 30.",
+      "translation": "Việc đăng ký cho Hội nghị Liên minh Tiếp thị hiện mở cửa ------- ngày 30 tháng 9.",
+      "options": { "A": "until (cho đến khi)", "B": "into (vào trong)", "C": "yet (chưa)", "D": "while (trong khi)" },
+      "correctAnswer": "A",
+      "explanation": "Cần một giới từ chỉ thời gian để biểu thị khoảng thời gian sự kiện diễn ra. \"Until\" (cho đến) là lựa chọn hợp lý, chỉ hạn chót đăng ký."
+    },
+    {
+      "id": 110,
+      "question": "Growth in the home entertainment industry has been ------- this quarter.",
+      "translation": "Sự tăng trưởng trong ngành giải trí gia đình đã ------- trong quý này.",
+      "options": { "A": "separate (riêng biệt)", "B": "limited (bị hạn chế/ít)", "C": "willing (sẵn lòng)", "D": "assorted (hỗn hợp/đủ loại)" },
+      "correctAnswer": "B",
+      "explanation": "Câu mô tả tình trạng \"Growth\" (Sự tăng trưởng). Trong các lựa chọn, \"limited\" (bị hạn chế) là tính từ phù hợp nhất để miêu tả mức độ tăng trưởng (tăng trưởng chậm/thấp)."
+    },
+    {
+      "id": 111,
+      "question": "Hawson Furniture will be making ------- on the east side of town on Thursday.",
+      "translation": "Hawson Furniture sẽ thực hiện ------- ở phía đông thị trấn vào thứ Năm.",
+      "options": { "A": "deliveries (việc giao hàng)", "B": "delivered (được giao - V-ed)", "C": "deliver (giao hàng - động từ)", "D": "deliverable (có thể giao được - tính từ)" },
+      "correctAnswer": "A",
+      "explanation": "Đứng sau cụm \"making\" (thực hiện/làm) cần một danh từ làm tân ngữ. \"Make deliveries\" là cụm từ phổ biến mang nghĩa là \"tiến hành giao hàng\"."
+    },
+    {
+      "id": 112,
+      "question": "The Marlton City Council does not have the authority to ------- parking on city streets.",
+      "translation": "Hội đồng Thành phố Marlton không có thẩm quyền để ------- việc đỗ xe trên các đường phố.",
+      "options": { "A": "drive (lái xe)", "B": "prohibit (cấm)", "C": "bother (làm phiền)", "D": "travel (đi lại)" },
+      "correctAnswer": "B",
+      "explanation": "Dựa vào ngữ cảnh pháp lý \"authority to...\" (thẩm quyền để làm gì đó đối với việc đỗ xe). \"Prohibit\" (cấm) là động từ phù hợp nhất."
+    },
+    {
+      "id": 113,
+      "question": "Project Earth Group is ------- for ways to reduce transport-related greenhouse gas emissions.",
+      "translation": "Nhóm Project Earth đang ------- các cách để giảm lượng khí thải nhà kính liên quan đến giao thông.",
+      "options": { "A": "looking (tìm kiếm)", "B": "seeing (nhìn thấy)", "C": "driving (lái)", "D": "leaning (dựa vào)" },
+      "correctAnswer": "A",
+      "explanation": "Cụm động từ cố định (phrasal verb): look for (tìm kiếm). Công ty đang \"tìm kiếm các cách\" (looking for ways)."
+    },
+    {
+      "id": 114,
+      "question": "Our skilled tailors are happy to design a custom-made suit that fits your style and budget -------.",
+      "translation": "Những thợ may lành nghề của chúng tôi rất vui được thiết kế một bộ vest may đo vừa vặn với phong cách và ngân sách của bạn -------.",
+      "options": { "A": "perfect (hoàn hảo - tính từ)", "B": "perfects (hoàn hảo - động từ chia s)", "C": "perfectly (một cách hoàn hảo - trạng từ)", "D": "perfection (sự hoàn hảo - danh từ)" },
+      "correctAnswer": "C",
+      "explanation": "Vị trí ở cuối mệnh đề, bổ nghĩa cho động từ \"fits\" (vừa vặn) nên cần một trạng từ (vừa vặn một cách hoàn hảo)."
+    },
+    {
+      "id": 115,
+      "question": "Project manager Hannah Chung has proved to be very ------- with completing company projects.",
+      "translation": "Quản lý dự án Hannah Chung đã chứng tỏ sự ------- trong việc hoàn thành các dự án của công ty.",
+      "options": { "A": "helpfulness (sự hữu ích - danh từ)", "B": "help (sự giúp đỡ - danh từ/động từ)", "C": "helpfully (một cách hữu ích - trạng từ)", "D": "helpful (hữu ích/có ích - tính từ)" },
+      "correctAnswer": "D",
+      "explanation": "Cấu trúc prove to be + Tính từ (chứng tỏ/được chứng minh là như thế nào). Sau trạng từ chỉ mức độ \"very\" ta cần một tính từ."
+    },
+    {
+      "id": 116,
+      "question": "Lehua Vacation Club members will receive double points ------- the month of August at participating hotels.",
+      "translation": "Các thành viên của Câu lạc bộ Lehua Vacation sẽ nhận được gấp đôi điểm thưởng ------- tháng 8 tại các khách sạn tham gia chương trình.",
+      "options": { "A": "onto (lên trên)", "B": "above (bên trên)", "C": "during (trong suốt)", "D": "between (ở giữa)" },
+      "correctAnswer": "C",
+      "explanation": "Cần một giới từ chỉ thời gian đi với \"the month of August\" (tháng 8). \"During\" (trong suốt khoảng thời gian) là lựa chọn duy nhất hợp lý."
+    },
+    {
+      "id": 117,
+      "question": "The costumes were not received ------- enough to be used in the first dress rehearsal.",
+      "translation": "Trang phục đã không được nhận ------- đủ để sử dụng trong buổi tổng duyệt đầu tiên.",
+      "options": { "A": "far (xa)", "B": "very (rất)", "C": "almost (hầu như)", "D": "soon (sớm)" },
+      "correctAnswer": "D",
+      "explanation": "Cấu trúc trạng từ + enough to V (đủ... để làm gì). Phù hợp với ngữ cảnh nhận hàng bị trễ, ta cần trạng từ \"soon\" (không nhận được đủ sớm để dùng)."
+    },
+    {
+      "id": 118,
+      "question": "As a former publicist for several renowned orchestras, Mr. Wu would excel in the role of event -------.",
+      "translation": "Là cựu nhân viên PR cho một số dàn nhạc danh tiếng, ông Wu sẽ xuất sắc trong vai trò ------- sự kiện.",
+      "options": { "A": "organized (được tổ chức - V-ed/tính từ)", "B": "organizer (người tổ chức - danh từ)", "C": "organizes (tổ chức - động từ chia s)", "D": "organizational (thuộc về tổ chức - tính từ)" },
+      "correctAnswer": "B",
+      "explanation": "Sau giới từ \"of\" cần một danh từ để tạo thành cụm từ chỉ chức danh: \"event organizer\" (người tổ chức sự kiện)."
+    },
+    {
+      "id": 119,
+      "question": "The northbound lane on Davis Street will be ------- closed because of the city’s bridge reinforcement project.",
+      "translation": "Làn đường hướng bắc trên phố Davis sẽ bị đóng cửa ------- do dự án gia cố cầu của thành phố.",
+      "options": { "A": "temporarily (tạm thời)", "B": "competitively (một cách cạnh tranh)", "C": "recently (gần đây)", "D": "collectively (một cách tập thể)" },
+      "correctAnswer": "A",
+      "explanation": "Cần trạng từ bổ nghĩa cho tính từ/phân từ \"closed\" (bị đóng cửa). Việc đóng đường để sửa chữa thường chỉ diễn ra \"tạm thời\" (temporarily)."
+    },
+    {
+      "id": 120,
+      "question": "Airline representatives must handle a wide range of passenger issues, ------- missed connections to lost luggage.",
+      "translation": "Đại diện hãng hàng không phải xử lý rất nhiều vấn đề của hành khách, ------- việc nhỡ chuyến bay nối tiếp cho đến mất hành lý.",
+      "options": { "A": "from (từ)", "B": "under (dưới)", "C": "on (trên)", "D": "against (chống lại)" },
+      "correctAnswer": "A",
+      "explanation": "Cấu trúc cố định: from... to... (từ cái này... cho đến cái kia), liệt kê các vấn đề."
+    },
+    {
+      "id": 121,
+      "question": "The meeting notes were ------- deleted, but Mr. Hahm was able to recreate them from memory.",
+      "translation": "Các ghi chú cuộc họp đã bị xóa -------, nhưng ông Hahm đã có thể tạo lại chúng từ trí nhớ.",
+      "options": { "A": "accident (tai nạn - danh từ)", "B": "accidental (tình cờ/vô ý - tính từ)", "C": "accidents (các tai nạn - danh từ số nhiều)", "D": "accidentally (một cách tình cờ/vô ý - trạng từ)" },
+      "correctAnswer": "D",
+      "explanation": "Vị trí giữa \"were\" và \"deleted\" cần một trạng từ để bổ nghĩa cho động từ bị động (bị xóa một cách vô ý/nhầm lẫn)."
+    },
+    {
+      "id": 122,
+      "question": "The current issue of Farming Scene magazine predicts that the price of corn will rise 5 percent over the ------- year.",
+      "translation": "Số phát hành hiện tại của tạp chí Farming Scene dự đoán rằng giá ngô sẽ tăng 5% trong năm -------.",
+      "options": { "A": "next (tới/tiếp theo)", "B": "with (với)", "C": "which (cái nào)", "D": "now (bây giờ)" },
+      "correctAnswer": "A",
+      "explanation": "Động từ chính \"will rise\" (sẽ tăng) chỉ tương lai, kết hợp với \"over the...\" chỉ một khoảng thời gian. \"Over the next year\" mang nghĩa là \"trong năm tới\"."
+    },
+    {
+      "id": 123,
+      "question": "Anyone who still ------- to take the fire safety training should do so before the end of the month.",
+      "translation": "Bất cứ ai vẫn ------- tham gia khóa đào tạo an toàn phòng cháy chữa cháy thì nên thực hiện điều đó trước cuối tháng.",
+      "options": { "A": "needing (cần - V-ing)", "B": "needs (cần - động từ số ít)", "C": "has needed (đã cần - hiện tại hoàn thành)", "D": "were needing (đang cần - quá khứ tiếp diễn)" },
+      "correctAnswer": "B",
+      "explanation": "Mệnh đề quan hệ bắt đầu bằng \"who\" thay thế cho đại từ bất định \"Anyone\" (Bất cứ ai - luôn được coi là số ít). Do đó, động từ theo sau phải chia số ít ở thì hiện tại đơn để chỉ một thực tế hiện tại."
+    },
+    {
+      "id": 124,
+      "question": "Emerging technologies have ------- begun to transform the shipping industry in ways that were once unimaginable.",
+      "translation": "Các công nghệ mới nổi đã ------- bắt đầu biến đổi ngành vận tải biển theo những cách mà trước đây không thể tưởng tượng được.",
+      "options": { "A": "already (đã... rồi)", "B": "exactly (chính xác)", "C": "hardly (hầu như không)", "D": "closely (chặt chẽ)" },
+      "correctAnswer": "A",
+      "explanation": "Thì hiện tại hoàn thành (have + P2). Trạng từ \"already\" thường được dùng để nhấn mạnh hành động đã bắt đầu/xảy ra rồi."
+    },
+    {
+      "id": 125,
+      "question": "The company handbook outlines the high ------- that employees are expected to meet every day.",
+      "translation": "Sổ tay công ty phác thảo các ------- cao mà nhân viên được kỳ vọng sẽ đáp ứng mỗi ngày.",
+      "options": { "A": "experts (chuyên gia)", "B": "accounts (tài khoản)", "C": "recommendations (khuyến nghị)", "D": "standards (tiêu chuẩn)" },
+      "correctAnswer": "D",
+      "explanation": "Sự kết hợp từ (collocation): \"meet the standards\" (đáp ứng các tiêu chuẩn). Cụm \"high standards\" nghĩa là tiêu chuẩn cao."
+    },
+    {
+      "id": 126,
+      "question": "Because ------- of the board members have scheduling conflicts, the board meeting will be moved to a date when all can attend.",
+      "translation": "Bởi vì ------- các thành viên hội đồng quản trị bị trùng lịch, cuộc họp hội đồng sẽ được chuyển sang một ngày mà tất cả có thể tham dự.",
+      "options": { "A": "any (bất kỳ)", "B": "everybody (mọi người)", "C": "those (những... đó)", "D": "some (một vài)" },
+      "correctAnswer": "D",
+      "explanation": "Động từ \"have\" chia số nhiều nên ta loại (B). \"Any\" dùng trong câu phủ định/nghi vấn. \"Those\" thường đi kèm mệnh đề quan hệ (Those who...). \"Some\" (Một vài) hoàn toàn phù hợp về ngữ pháp và ý nghĩa."
+    },
+    {
+      "id": 127,
+      "question": "The project ------- the collaboration of several teams across the company.",
+      "translation": "Dự án ------- sự hợp tác của một số nhóm trên toàn công ty.",
+      "options": { "A": "passed (vượt qua)", "B": "decided (quyết định)", "C": "required (đòi hỏi/yêu cầu)", "D": "performed (thực hiện)" },
+      "correctAnswer": "C",
+      "explanation": "Về mặt ngữ nghĩa, một dự án quy mô lớn thì sẽ \"đòi hỏi\" (required) sự hợp tác của nhiều nhóm."
+    },
+    {
+      "id": 128,
+      "question": "We cannot send the store’s coupon booklet to the printers until it ------- by Ms. Jeon.",
+      "translation": "Chúng tôi không thể gửi sổ phiếu giảm giá của cửa hàng đến xưởng in cho đến khi nó ------- bởi cô Jeon.",
+      "options": { "A": "is approving (đang phê duyệt)", "B": "approves (phê duyệt - chủ động)", "C": "has been approved (đã được phê duyệt - bị động)", "D": "will be approved (sẽ được phê duyệt)" },
+      "correctAnswer": "C",
+      "explanation": "Trong mệnh đề thời gian bắt đầu bằng \"until\", không dùng thì tương lai. Chủ ngữ \"it\" (sổ phiếu) mang nghĩa bị động (được phê duyệt). Thì hiện tại hoàn thành bị động được dùng để nhấn mạnh hành động phải hoàn tất trước khi hành động khác diễn ra."
+    },
+    {
+      "id": 129,
+      "question": "------- the closure of Verdigold Transport Services, we are looking for a new shipping company.",
+      "translation": "------- việc đóng cửa của Verdigold Transport Services, chúng tôi đang tìm kiếm một công ty vận chuyển mới.",
+      "options": { "A": "In spite of (Mặc dù)", "B": "Just as (Ngay khi)", "C": "In light of (Bởi vì/Xét đến việc)", "D": "According to (Theo như)" },
+      "correctAnswer": "C",
+      "explanation": "Câu này thể hiện mối quan hệ nguyên nhân - kết quả. \"Bởi vì/Xét đến việc\" đối tác cũ đóng cửa nên phải tìm đối tác mới."
+    },
+    {
+      "id": 130,
+      "question": "The ------- information provided by Uniss Bank’s brochure helps applicants understand the terms of their loans.",
+      "translation": "Thông tin ------- được cung cấp bởi tài liệu quảng cáo của Uniss Bank giúp người nộp đơn hiểu các điều khoản khoản vay của họ.",
+      "options": { "A": "arbitrary (tùy tiện)", "B": "supplemental (bổ sung/phụ thêm)", "C": "superfluous (thừa thãi)", "D": "potential (tiềm năng)" },
+      "correctAnswer": "B",
+      "explanation": "Tài liệu quảng cáo thường chứa các thông tin mang tính \"bổ sung\" (supplemental information) để giải thích rõ hơn cho khách hàng."
+    }
+  ],
+  "part6": [
+    {
+      "id": 131,
+      "passage": "Đoạn 1 (Câu 131 - 134): Lớp học làm vườn",
+      "correctAnswer": "D",
+      "text": "Next Saturday at 4 P.M., we are hosting a free workshop for the public.",
+      "translation": "Thứ Bảy tới lúc 4 giờ chiều, chúng tôi sẽ tổ chức một hội thảo miễn phí cho công chúng.",
+      "explanation": "Câu trước giới thiệu chung \"Hãy đến Trung tâm Maxley... và học cách...\". Câu cần điền phải cung cấp thông tin cụ thể về sự kiện học tập đó (thời gian, tính chất). Câu (D) hoàn toàn khớp với mạch văn."
+    },
+    {
+      "id": 132,
+      "passage": "Đoạn 1 (Câu 131 - 134): Lớp học làm vườn",
+      "correctAnswer": "D",
+      "text": "that uses",
+      "translation": "cái mà sử dụng",
+      "explanation": "Đây là mệnh đề quan hệ thay thế cho \"a shallow sunken garden\". Chủ ngữ số ít nên động từ dùng \"uses\". Vườn mưa là một khu vườn trũng nông \"sử dụng\" hỗn hợp đất đặc biệt."
+    },
+    {
+      "id": 133,
+      "passage": "Đoạn 1 (Câu 131 - 134): Lớp học làm vườn",
+      "correctAnswer": "D",
+      "text": "As a matter of fact",
+      "translation": "Thực tế là/Trên thực tế",
+      "explanation": "Câu trước giải thích vườn mưa có thể được trồng cây và hoa bản địa. Câu có chỗ trống khẳng định vườn mưa luôn có lợi cho môi trường. Cụm \"As a matter of fact\" dùng để nhấn mạnh tính xác thực của thông tin tiếp theo."
+    },
+    {
+      "id": 134,
+      "passage": "Đoạn 1 (Câu 131 - 134): Lớp học làm vườn",
+      "correctAnswer": "B",
+      "text": "they",
+      "translation": "chúng",
+      "explanation": "Vị trí này cần đại từ nhân xưng chủ ngữ số nhiều để thay thế cho cụm \"rain gardens\" (vườn mưa) ở câu trước. \"Chúng (vườn mưa) cải thiện khả năng thoát nước...\"."
+    },
+    {
+      "id": 135,
+      "passage": "Đoạn 2 (Câu 135 - 138): Thư cảm ơn của Hiệp hội Thiết kế Thời trang",
+      "correctAnswer": "C",
+      "text": "amazing",
+      "translation": "tuyệt vời/đáng kinh ngạc",
+      "explanation": "Cần một tính từ (V-ing) bổ nghĩa cho danh từ \"opening gala\" (một buổi tiệc khai mạc tuyệt vời). \"Amazed\" (cảm thấy kinh ngạc) thường dùng cho người."
+    },
+    {
+      "id": 136,
+      "passage": "Đoạn 2 (Câu 135 - 138): Thư cảm ơn của Hiệp hội Thiết kế Thời trang",
+      "correctAnswer": "A",
+      "text": "attention",
+      "translation": "sự chú ý",
+      "explanation": "Câu trước nói khách tham dự rất thích các thiết kế. Hệ quả logic trên mạng xã hội là các thiết kế này nhận được rất nhiều \"sự chú ý\" (attention)."
+    },
+    {
+      "id": 137,
+      "passage": "Đoạn 2 (Câu 135 - 138): Thư cảm ơn của Hiệp hội Thiết kế Thời trang",
+      "correctAnswer": "B",
+      "text": "Thank you also for your flexibility in planning the event.",
+      "translation": "Cũng xin cảm ơn bạn vì sự linh hoạt trong việc lên kế hoạch cho sự kiện.",
+      "explanation": "Câu tiếp theo nói \"Tôi nhận ra rằng sự chậm trễ nhiều lần khiến việc lập kế hoạch không dễ dàng chút nào\". Lời khen \"sự linh hoạt\" (flexibility) tạo ra sự liên kết logic hoàn hảo với bối cảnh đối mặt với \"nhiều lần chậm trễ\" (multiple delays)."
+    },
+    {
+      "id": 138,
+      "passage": "Đoạn 2 (Câu 135 - 138): Thư cảm ơn của Hiệp hội Thiết kế Thời trang",
+      "correctAnswer": "B",
+      "text": "to benefit",
+      "translation": "để gây quỹ cho / mang lại lợi ích cho",
+      "explanation": "Cấu trúc: Danh từ (The auction) + to-V (to benefit...). Cuộc đấu giá \"nhằm mục đích gây quỹ/mang lại lợi ích cho\" chương trình Giải thưởng Nhà thiết kế trẻ."
+    },
+    {
+      "id": 139,
+      "passage": "Đoạn 3 (Câu 139 - 142): Thông báo hết hạn thẻ thư viện",
+      "correctAnswer": "A",
+      "text": "It",
+      "translation": "Nó",
+      "explanation": "Cần đại từ nhân xưng chủ ngữ thay thế cho \"library card\" (thẻ thư viện) ở câu trước. \"Nó (thẻ) phải được gia hạn...\"."
+    },
+    {
+      "id": 140,
+      "passage": "Đoạn 3 (Câu 139 - 142): Thông báo hết hạn thẻ thư viện",
+      "correctAnswer": "C",
+      "text": "Renewal must be completed at least one week before your card expires.",
+      "translation": "Việc gia hạn phải được hoàn tất ít nhất một tuần trước khi thẻ hết hạn.",
+      "explanation": "Câu văn chứa chỗ trống 140 đang đề cập đến thao tác mà người dùng phải thực hiện. Tuy nhiên, nhìn vào đáp án được cung cấp trong file PDF:\n(A) To sign up for a card, visit your local library branch.\n(B) For questions about library membership, please visit our Web site.\n(C) Renewal must be completed at least one week before your card expires.\n(D) You may opt out of this program at any time.\nPhía trước người ta đang yêu cầu \"gia hạn\" (must be renewed). Vì thế câu (C) \"Việc gia hạn phải được hoàn tất ít nhất một tuần trước khi thẻ hết hạn\" là logic nhất với luồng thông tin."
+    },
+    {
+      "id": 141,
+      "passage": "Đoạn 3 (Câu 139 - 142): Thông báo hết hạn thẻ thư viện",
+      "correctAnswer": "B",
+      "text": "Should",
+      "translation": "Nếu",
+      "explanation": "Đây là cấu trúc đảo ngữ của câu điều kiện loại 1 (Should + S + V). Bằng với \"If you decide to...\". \"Nếu bạn quyết định đóng tài khoản, bạn không cần làm gì cả\"."
+    },
+    {
+      "id": 142,
+      "passage": "Đoạn 3 (Câu 139 - 142): Thông báo hết hạn thẻ thư viện",
+      "correctAnswer": "C",
+      "text": "specified",
+      "translation": "được chỉ định/đã nêu",
+      "explanation": "Vị trí giữa mạo từ \"the\" và danh từ \"date\", ta cần phân từ hai làm tính từ: \"the specified date\" (ngày đã được chỉ định/quy định ở trên)."
+    }
+  ]
+}
