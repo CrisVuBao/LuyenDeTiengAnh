@@ -17,10 +17,25 @@ const STORAGE_KEY = 'toeic_hack_tests';
 function App() {
   // --- Multi-test state ---
   const [tests, setTests] = useState([]);           // Array of test objects
-  const [activeTestIdx, setActiveTestIdx] = useState(0);
-  const [activeTab, setActiveTab] = useState('p5');
+  const [activeTestIdx, setActiveTestIdx] = useState(() => parseInt(localStorage.getItem('toeic_activeTestIdx') || '0', 10));
+  const [activeTab, setActiveTab] = useState(() => localStorage.getItem('toeic_activeTab') || 'p5');
   const [showTestMenu, setShowTestMenu] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Sync state to localStorage
+  useEffect(() => {
+    localStorage.setItem('toeic_activeTestIdx', activeTestIdx);
+    localStorage.setItem('toeic_activeTab', activeTab);
+  }, [activeTestIdx, activeTab]);
+
+  // Handle Scroll Restoration on Reload
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      sessionStorage.setItem('toeic_scrollPos', window.scrollY.toString());
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, []);
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -83,6 +98,19 @@ function App() {
       });
   }, []);
 
+  // Restore scroll position after tests are loaded and UI is rendered
+  useEffect(() => {
+    if (tests.length > 0) {
+      const scrollPos = sessionStorage.getItem('toeic_scrollPos');
+      if (scrollPos) {
+        setTimeout(() => {
+          window.scrollTo(0, parseInt(scrollPos, 10));
+          sessionStorage.removeItem('toeic_scrollPos');
+        }, 100); // 100ms delay to allow children components to render
+      }
+    }
+  }, [tests, activeTab]);
+
   const activeTest = tests[activeTestIdx] || null;
   const testId = activeTest?.testId || 'default';
   const { getProgressOutOfTotal } = useConfidence(testId);
@@ -133,6 +161,7 @@ function App() {
   const handleTabClick = (id) => {
     setActiveTab(id);
     setIsMobileMenuOpen(false); // Auto collapse on mobile when tab is clicked
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // --- Tab config ---
@@ -245,7 +274,7 @@ function App() {
               )}
               
               <button 
-                onClick={() => setActiveTab('admin')}
+                onClick={() => handleTabClick('admin')}
                 className={`flex items-center justify-center p-1.5 md:px-4 md:py-2 rounded-lg font-bold text-sm transition-all duration-200 ${
                   activeTab === 'admin' 
                     ? 'bg-purple-600 text-white shadow-md' 
