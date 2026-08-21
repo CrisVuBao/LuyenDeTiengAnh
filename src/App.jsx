@@ -84,7 +84,20 @@ function App() {
 
   const activeTest = tests[activeTestIdx] || null;
   const testId = activeTest?.testId || 'default';
-  const { getProgress } = useConfidence(testId);
+  const { getProgressOutOfTotal } = useConfidence(testId);
+
+  // Tính tổng số câu hỏi của đề hiện tại
+  const totalQuestions = activeTest ? (
+    (activeTest.part1?.length || 0) + 
+    (activeTest.part2?.length || 0) + 
+    (activeTest.part3?.length || 0) + 
+    (activeTest.part4?.length || 0) + 
+    (activeTest.part5?.length || 0) + 
+    (activeTest.part6?.length || 0) + 
+    (activeTest.part7?.length || 0)
+  ) : 0;
+  
+  const currentProgress = getProgressOutOfTotal(totalQuestions);
 
   // --- Persist helper ---
   const persistTests = (newTests) => {
@@ -173,7 +186,7 @@ function App() {
                             >
                               {i === activeTestIdx && '✅ '}{t.testId}
                               <span className="text-xs text-gray-400 ml-2">
-                                ({(t.part5?.length || 0) + (t.part6?.length || 0) + (t.part7?.length || 0)} câu)
+                                ({(t.part1?.length || 0) + (t.part2?.length || 0) + (t.part3?.length || 0) + (t.part4?.length || 0) + (t.part5?.length || 0) + (t.part6?.length || 0) + (t.part7?.length || 0)} câu)
                               </span>
                             </span>
                             <button 
@@ -201,10 +214,10 @@ function App() {
             {/* Progress & Admin Button */}
             <div className="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end">
               {activeTab !== 'admin' && (
-                <div className="flex items-center gap-2 md:gap-3">
-                  <span className="text-sm font-bold text-green-600 whitespace-nowrap">{getProgress()}% đã nhớ</span>
+                <div className="flex items-center gap-2 md:gap-3" title={`${currentProgress}% of all questions in this test`}>
+                  <span className="text-sm font-bold text-green-600 whitespace-nowrap">{currentProgress}% đã nhớ</span>
                   <div className="w-20 md:w-28 h-2.5 bg-gray-200 rounded-full overflow-hidden">
-                    <div className="h-full bg-gradient-to-r from-green-400 to-emerald-500 transition-all duration-500" style={{ width: `${getProgress()}%` }}></div>
+                    <div className="h-full bg-gradient-to-r from-green-400 to-emerald-500 transition-all duration-500" style={{ width: `${currentProgress}%` }}></div>
                   </div>
                 </div>
               )}

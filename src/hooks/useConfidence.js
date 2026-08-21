@@ -42,14 +42,29 @@ export default function useConfidence(testId) {
     window.dispatchEvent(new Event('confidence_sync'));
   };
 
+  // Reset confidence for specific questions (used when resetting a specific Part)
+  const resetConfidenceForQuestions = (questionIds) => {
+    const newData = { ...confidenceData };
+    let hasChanges = false;
+    
+    questionIds.forEach(id => {
+      if (newData[id] !== undefined) {
+        delete newData[id];
+        hasChanges = true;
+      }
+    });
+
+    if (hasChanges) {
+      setConfidenceData(newData);
+      localStorage.setItem(`confidence_${testId}`, JSON.stringify(newData));
+      window.dispatchEvent(new Event('confidence_sync'));
+    }
+  };
+
   const getProgress = () => {
     const totalMarked = Object.keys(confidenceData).length;
     if (totalMarked === 0) return 0;
     const confidentCount = Object.values(confidenceData).filter(v => v).length;
-    // We can't know the exact total questions of the test easily here, 
-    // but the original logic was calculating % based on answered questions.
-    // Let's keep the original logic: (confident / totalMarked) * 100
-    // Or better, it should be calculated based on ALL questions, but passing all questions here is hard.
     return Math.round((confidentCount / totalMarked) * 100);
   };
 
@@ -64,5 +79,13 @@ export default function useConfidence(testId) {
     return !!confidenceData[questionId];
   };
 
-  return { confidenceData, markConfident, getProgress, getProgressOutOfTotal, isConfident, resetConfidence };
+  return { 
+    confidenceData, 
+    markConfident, 
+    getProgress, 
+    getProgressOutOfTotal, 
+    isConfident, 
+    resetConfidence,
+    resetConfidenceForQuestions 
+  };
 }

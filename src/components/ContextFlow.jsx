@@ -9,7 +9,7 @@ export default function ContextFlow({ data, testId }) {
   const [questions, setQuestions] = useState([]);
   const [filterUnsure, setFilterUnsure] = useState(false);
   
-  const { isConfident, markConfident } = useConfidence(testId);
+  const { isConfident, markConfident, resetConfidenceForQuestions } = useConfidence(testId);
   const { revealed, setRevealed, resetStudyState } = useStudyState(testId, 'part6');
 
   useEffect(() => {
@@ -26,6 +26,7 @@ export default function ContextFlow({ data, testId }) {
 
   const handleReset = () => {
     resetStudyState();
+    resetConfidenceForQuestions(data.map(q => q.id));
   };
 
   const filteredQuestions = filterUnsure 

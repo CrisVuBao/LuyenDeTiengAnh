@@ -10,7 +10,7 @@ export default function GrammarReflex({ data, testId }) {
   const [filterUnsure, setFilterUnsure] = useState(false);
   const [isChantingMode, setIsChantingMode] = useState(false);
   
-  const { isConfident, markConfident } = useConfidence(testId);
+  const { isConfident, markConfident, resetConfidenceForQuestions } = useConfidence(testId);
   const { selectedAnswers, setSelectedAnswers, resetStudyState } = useStudyState(testId, 'part5');
 
   useEffect(() => {
@@ -33,8 +33,7 @@ export default function GrammarReflex({ data, testId }) {
 
   const handleReset = () => {
     resetStudyState();
-    // Confidence is test-wide, so if user wants to reset confidence, they can use another button. 
-    // But usually "Làm lại từ đầu" just means wiping selected answers & reveals.
+    resetConfidenceForQuestions(data.map(q => q.id));
   };
 
   const renderFilledQuestion = (question, options, correctAnswer) => {

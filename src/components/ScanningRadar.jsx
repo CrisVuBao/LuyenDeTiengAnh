@@ -9,7 +9,7 @@ export default function ScanningRadar({ data, testId }) {
   const [questions, setQuestions] = useState([]);
   const [filterUnsure, setFilterUnsure] = useState(false);
   
-  const { isConfident, markConfident } = useConfidence(testId);
+  const { isConfident, markConfident, resetConfidenceForQuestions } = useConfidence(testId);
   const { revealed, setRevealed, resetStudyState } = useStudyState(testId, 'part7');
   
   // Note: activeHighlight doesn't need to be persisted to localStorage because it's just a temporary UI effect,
@@ -31,6 +31,7 @@ export default function ScanningRadar({ data, testId }) {
   const handleReset = () => {
     resetStudyState();
     setActiveHighlight(null);
+    resetConfidenceForQuestions(data.map(q => q.id));
   };
 
   const filteredQuestions = filterUnsure 
