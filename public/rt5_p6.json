@@ -1,0 +1,277 @@
+{
+  "testId": "READING_TEST_5",
+  "part6": [
+    {
+      "id": 131,
+      "passageTitle": "Đoạn 1 (Câu 131 - 134): Email từ Independent Television Broadcasting",
+      "question": "We want to thank you for your recent e-mail ------- last week's airing of our documentary on Moroccan street markets.",
+      "translation": "Chúng tôi muốn cảm ơn bạn vì e-mail gần đây của bạn liên quan đến buổi phát sóng phim tài liệu tuần trước...",
+      "options": {
+        "A": "regarded",
+        "B": "regards",
+        "C": "regarding",
+        "D": "to regard"
+      },
+      "correctAnswer": "C",
+      "grammarTag": "Giới từ",
+      "recognitionKey": "email + regarding (về việc/liên quan đến)",
+      "explanation": "Trong ngữ cảnh này, 'regarding' đóng vai trò như một giới từ (nghĩa là 'about' - về, liên quan đến). E-mail về việc phát sóng...",
+      "trap": "Chọn regarded vì tưởng là động từ chia quá khứ."
+    },
+    {
+      "id": 132,
+      "passageTitle": "Đoạn 1 (Câu 131 - 134): Email từ Independent Television Broadcasting",
+      "question": "He currently ------- to correct this, and the documentary will be uploaded online with the correct translation.",
+      "translation": "Anh ấy hiện đang làm việc để sửa lỗi này, và bộ phim tài liệu sẽ được tải lên mạng với bản dịch chính xác.",
+      "options": {
+        "A": "worked",
+        "B": "is working",
+        "C": "will be working",
+        "D": "has worked"
+      },
+      "correctAnswer": "B",
+      "grammarTag": "Thì hiện tại tiếp diễn",
+      "recognitionKey": "currently + Hiện tại tiếp diễn (is/are V-ing)",
+      "explanation": "Trạng từ 'currently' (hiện tại) là dấu hiệu rõ ràng của thì hiện tại tiếp diễn.",
+      "trap": "Thiếu cảnh giác với từ 'currently'."
+    },
+    {
+      "id": 133,
+      "passageTitle": "Đoạn 1 (Câu 131 - 134): Email từ Independent Television Broadcasting",
+      "question": "------- As such, we will be sending you a station tote bag along with a water bottle.",
+      "translation": "------- Do đó, chúng tôi sẽ gửi cho bạn một túi tote của đài truyền hình cùng với một chai nước.",
+      "options": {
+        "A": "Not everyone enjoyed the show. (Không phải ai cũng thích chương trình.)",
+        "B": "Do you speak Arabic? (Bạn có nói tiếng Ả Rập không?)",
+        "C": "We appreciate your help in fixing this error. (Chúng tôi đánh giá cao sự giúp đỡ của bạn trong việc sửa lỗi này.)",
+        "D": "We are accepting applications now. (Chúng tôi hiện đang nhận đơn đăng ký.)"
+      },
+      "correctAnswer": "C",
+      "grammarTag": "Điền câu mạch văn",
+      "recognitionKey": "Câu trước nhắc đến error (lỗi) + Câu sau tặng quà (As such...) -> Cảm ơn vì đã giúp sửa lỗi.",
+      "explanation": "Đoạn văn nói về việc khán giả phát hiện lỗi dịch thuật. Câu C 'Chúng tôi cảm kích sự giúp đỡ của bạn...' ghép với câu tiếp theo 'Do đó (As such), chúng tôi sẽ tặng quà...' tạo thành mạch nhân quả hoàn hảo.",
+      "trap": "Nếu không đọc câu tặng quà đằng sau sẽ rất khó đoán câu nào hợp lý."
+    },
+    {
+      "id": 134,
+      "passageTitle": "Đoạn 1 (Câu 131 - 134): Email từ Independent Television Broadcasting",
+      "question": "Please accept these gifts of our -------.",
+      "translation": "Xin hãy nhận những món quà này để thể hiện lòng biết ơn của chúng tôi.",
+      "options": {
+        "A": "gratitude (lòng biết ơn - n)",
+        "B": "gratification (sự hài lòng - n)",
+        "C": "gratis (miễn phí - adj/adv)",
+        "D": "gratifying (làm hài lòng - adj)"
+      },
+      "correctAnswer": "A",
+      "grammarTag": "Từ vựng",
+      "recognitionKey": "gifts of our gratitude (những món quà tri ân)",
+      "explanation": "Cụm 'our gratitude' (lòng biết ơn của chúng tôi) đi cùng với 'gifts' rất hợp lý ngữ cảnh thư xin lỗi và cảm ơn khán giả.",
+      "trap": "Nhầm lẫn giữa các từ chung gốc 'grat-'."
+    },
+    {
+      "id": 135,
+      "passageTitle": "Đoạn 2 (Câu 135 - 138): Whitby Annual Carnival",
+      "question": "------- the weeklong carnival, the town of Whitby held various competitions, from raffles to trivia contests.",
+      "translation": "Trong suốt lễ hội kéo dài một tuần, thị trấn Whitby đã tổ chức nhiều cuộc thi khác nhau...",
+      "options": {
+        "A": "While (Trong khi - đi với mệnh đề)",
+        "B": "On (Trên/Vào - đi với ngày)",
+        "C": "During (Trong suốt - đi với danh từ)",
+        "D": "Along (Dọc theo)"
+      },
+      "correctAnswer": "C",
+      "grammarTag": "Giới từ",
+      "recognitionKey": "During + Danh từ/Cụm danh từ (the weeklong carnival)",
+      "explanation": "'the weeklong carnival' là một cụm danh từ chỉ thời kỳ. 'During' đi với danh từ để chỉ 'trong suốt khoảng thời gian'. 'While' phải đi với mệnh đề (chủ ngữ + động từ).",
+      "trap": "Hay nhầm While và During do dịch tiếng Việt đều là 'trong khi/trong lúc'."
+    },
+    {
+      "id": 136,
+      "passageTitle": "Đoạn 2 (Câu 135 - 138): Whitby Annual Carnival",
+      "question": "------- resident of Whitby was automatically entered into the main raffle contest.",
+      "translation": "Mỗi cư dân của Whitby đều tự động được tham gia vào cuộc thi xổ số chính.",
+      "options": {
+        "A": "Each (Mỗi - + N đếm được số ít)",
+        "B": "Most (Hầu hết - + N số nhiều)",
+        "C": "Almost (Gần như - Adv)",
+        "D": "All (Tất cả - + N số nhiều)"
+      },
+      "correctAnswer": "A",
+      "grammarTag": "Lượng từ",
+      "recognitionKey": "Danh từ đếm được SỐ ÍT (resident) -> Each",
+      "explanation": "Danh từ 'resident' (cư dân) ở dạng số ít, do đó chỉ có 'Each' là phù hợp.",
+      "trap": "Không chú ý danh từ số ít hay số nhiều sẽ dễ chọn All hoặc Most."
+    },
+    {
+      "id": 137,
+      "passageTitle": "Đoạn 2 (Câu 135 - 138): Whitby Annual Carnival",
+      "question": "------- But we also want to take a moment to mention a special winner.",
+      "translation": "------- Nhưng chúng tôi cũng muốn dành một khoảnh khắc để nhắc đến một người chiến thắng đặc biệt.",
+      "options": {
+        "A": "We were surprised by the results. (Chúng tôi rất ngạc nhiên bởi kết quả.)",
+        "B": "The carnival is open from 9 to 5. (Lễ hội mở cửa từ 9 đến 5.)",
+        "C": "We would like to congratulate all of our winners. (Chúng tôi muốn chúc mừng tất cả những người chiến thắng.)",
+        "D": "If you do not accept your award, it will be given to the runner-up. (Nếu bạn không nhận giải, nó sẽ được trao cho người về nhì.)"
+      },
+      "correctAnswer": "C",
+      "grammarTag": "Điền câu mạch văn",
+      "recognitionKey": "Trước đó liệt kê 1 loạt giải -> Chúc mừng tất cả -> NHƯNG (But) muốn nhắc riêng 1 người.",
+      "explanation": "Đoạn trước liệt kê danh sách những người thắng giải. Câu (C) 'Chúc mừng TẤT CẢ...' là câu chốt danh sách. Câu ngay sau chỗ trống bắt đầu bằng 'But... a special winner' (Nhưng... một người thắng giải đặc biệt) tạo sự chuyển ý rất mượt mà.",
+      "trap": "Chọn A vì nghĩ kết quả đặc biệt nên ngạc nhiên."
+    },
+    {
+      "id": 138,
+      "passageTitle": "Đoạn 2 (Câu 135 - 138): Whitby Annual Carnival",
+      "question": "------- your prize, please call the Town Hall Social Services office at 555-8389.",
+      "translation": "Để nhận giải thưởng của bạn, vui lòng gọi văn phòng Dịch vụ Xã hội Tòa thị chính...",
+      "options": {
+        "A": "Claim (Động từ nguyên mẫu)",
+        "B": "Having claimed (Phân từ hoàn thành)",
+        "C": "Claiming (Danh động từ)",
+        "D": "To claim (Động từ nguyên mẫu có to)"
+      },
+      "correctAnswer": "D",
+      "grammarTag": "To-infinitive chỉ mục đích",
+      "recognitionKey": "Đứng đầu câu + dấu phẩy + V-imperative -> To V (Để...)",
+      "explanation": "Để chỉ mục đích 'Để nhận giải...', ta dùng động từ nguyên mẫu có To đứng đầu câu.",
+      "trap": "Dùng Claim như câu mệnh lệnh, nhưng câu mệnh lệnh đã là 'please call' ở phía sau."
+    },
+    {
+      "id": 139,
+      "passageTitle": "Đoạn 3 (Câu 139 - 142): Email Charity Gala",
+      "question": "It is with great ------- that we invite you to the Read for the Future Charity Gala...",
+      "translation": "Với niềm hân hạnh lớn lao, chúng tôi kính mời bạn tham dự Dạ tiệc Từ thiện...",
+      "options": {
+        "A": "fun (niềm vui - không trang trọng)",
+        "B": "hope (hy vọng)",
+        "C": "pleasure (niềm hân hạnh/vinh dự)",
+        "D": "sense (giác quan/ý thức)"
+      },
+      "correctAnswer": "C",
+      "grammarTag": "Cụm từ cố định (Collocation)",
+      "recognitionKey": "It is with great + pleasure + that",
+      "explanation": "Đây là một cụm từ cố định rất trang trọng dùng trong thư mời: 'It is with great pleasure that...' (Với niềm hân hạnh lớn lao...).",
+      "trap": "Chọn 'fun' hoặc 'hope' theo cách dịch word-by-word."
+    },
+    {
+      "id": 140,
+      "passageTitle": "Đoạn 3 (Câu 139 - 142): Email Charity Gala",
+      "question": "The event ------- live entertainment and a three-course meal. The festivities will begin at 7 p.m.",
+      "translation": "Sự kiện sẽ có các tiết mục giải trí trực tiếp và bữa ăn 3 món. Các hoạt động lễ hội sẽ bắt đầu lúc 7 giờ tối.",
+      "options": {
+        "A": "will feature (sẽ có - tương lai)",
+        "B": "featuring (hiện tại phân từ)",
+        "C": "was featured (quá khứ bị động)",
+        "D": "featured (quá khứ đơn)"
+      },
+      "correctAnswer": "A",
+      "grammarTag": "Thì tương lai đơn",
+      "recognitionKey": "Sự kiện chưa diễn ra (nhìn câu sau: will begin) -> Tương lai (will feature)",
+      "explanation": "Câu sau 'will begin' chỉ ra rằng sự kiện này diễn ra trong tương lai, nên động từ ở chỗ trống phải dùng thì tương lai.",
+      "trap": "Chọn featured nghĩ là đã lên kế hoạch."
+    },
+    {
+      "id": 141,
+      "passageTitle": "Đoạn 3 (Câu 139 - 142): Email Charity Gala",
+      "question": "------- The proceeds from this will go toward the library expansion project.",
+      "translation": "------- Số tiền thu được từ việc này sẽ được chuyển vào dự án mở rộng thư viện.",
+      "options": {
+        "A": "We ask that each person who attends the dinner give a donation of $50 or more to the organization.",
+        "B": "Families with children under the age of 10 are asked to leave their children at home.",
+        "C": "Those with special dietary restrictions are asked to mention their preference on their RSVP.",
+        "D": "Dinner will be held in the outdoor terrace beginning at 8 p.m."
+      },
+      "correctAnswer": "A",
+      "grammarTag": "Điền câu mạch văn",
+      "recognitionKey": "Câu sau có 'proceeds' (tiền thu được) + 'this' (việc này) -> Câu trước phải nhắc đến việc GÓP TIỀN ($50 donation).",
+      "explanation": "'proceeds from this' ám chỉ tiền thu được từ sự kiện được nhắc tới ở câu trước. Chỉ có câu A (yêu cầu quyên góp $50) mới sinh ra 'tiền thu được' (proceeds).",
+      "trap": "Không để ý từ 'proceeds' (tiền thu được)."
+    },
+    {
+      "id": 142,
+      "passageTitle": "Đoạn 3 (Câu 139 - 142): Email Charity Gala",
+      "question": "We look forward to having an ------- evening with you.",
+      "translation": "Chúng tôi mong muốn có một buổi tối khó quên cùng bạn.",
+      "options": {
+        "A": "unfortunate (không may)",
+        "B": "ecstatic (ngây ngất - thường tả cảm xúc người)",
+        "C": "unforgettable (không thể nào quên/đáng nhớ)",
+        "D": "optimistic (lạc quan)"
+      },
+      "correctAnswer": "C",
+      "grammarTag": "Từ vựng (Tính từ)",
+      "recognitionKey": "an + adj + evening (buổi tối sự kiện) -> unforgettable",
+      "explanation": "Để miêu tả một buổi tiệc/sự kiện, người ta thường dùng từ 'unforgettable' (đáng nhớ, khó quên).",
+      "trap": "Chọn 'ecstatic' nhưng từ này thường diễn tả cảm xúc con người (he was ecstatic), ít dùng tả buổi tối."
+    },
+    {
+      "id": 143,
+      "passageTitle": "Đoạn 4 (Câu 143 - 146): Super Savers Weekly Specials",
+      "question": "This week, we have some great offers for all of ------- customers, no matter what your tastes are.",
+      "translation": "Tuần này, chúng tôi có những ưu đãi tuyệt vời cho tất cả các khách hàng của mình, bất kể khẩu vị của bạn là gì.",
+      "options": {
+        "A": "yours (của bạn - đại từ)",
+        "B": "ours (của chúng tôi - đại từ)",
+        "C": "your (của bạn - tính từ sở hữu)",
+        "D": "our (của chúng tôi - tính từ sở hữu)"
+      },
+      "correctAnswer": "D",
+      "grammarTag": "Tính từ sở hữu",
+      "recognitionKey": "Trống + danh từ (customers) -> Cần TÍNH TỪ SỞ HỮU",
+      "explanation": "Đứng trước danh từ 'customers' cần tính từ sở hữu. 'our' (của chúng tôi) hợp lý vì siêu thị đang nói với khách hàng về 'khách hàng CỦA CHÚNG TÔI' (our customers).",
+      "trap": "Chọn your vì câu sau có chữ 'your tastes', nhưng 'your customers' sẽ thành 'khách hàng của bạn'."
+    },
+    {
+      "id": 144,
+      "passageTitle": "Đoạn 4 (Câu 143 - 146): Super Savers Weekly Specials",
+      "question": "Buy three fruit yogurts and get a fourth FREE! (This offer is ------- valid for the Banone brand.)",
+      "translation": "Mua 3 sữa chua trái cây tặng 1 miễn phí! (Ưu đãi này KHÔNG áp dụng cho thương hiệu Banone.)",
+      "options": {
+        "A": "none",
+        "B": "not",
+        "C": "no",
+        "D": "nothing"
+      },
+      "correctAnswer": "B",
+      "grammarTag": "Phủ định",
+      "recognitionKey": "is + not + valid (tính từ)",
+      "explanation": "Để phủ định một tính từ ('valid' - có hiệu lực), ta dùng phó từ phủ định 'not' đứng sau to be (is not valid).",
+      "trap": "Chọn 'no' nhưng 'no' thường dùng trước danh từ (no money)."
+    },
+    {
+      "id": 145,
+      "passageTitle": "Đoạn 4 (Câu 143 - 146): Super Savers Weekly Specials",
+      "question": "You know our prices are ------- better than the other stores'!",
+      "translation": "Bạn biết giá của chúng tôi tốt hơn nhiều so với các cửa hàng khác!",
+      "options": {
+        "A": "more",
+        "B": "much",
+        "C": "some",
+        "D": "any"
+      },
+      "correctAnswer": "B",
+      "grammarTag": "Nhấn mạnh so sánh hơn",
+      "recognitionKey": "much/far/a lot + so sánh hơn (better)",
+      "explanation": "'better' là tính từ so sánh hơn. Để nhấn mạnh mức độ, ta dùng 'much'.",
+      "trap": "Rất dễ chọn 'more' nhưng 'more better' là sai ngữ pháp căn bản."
+    },
+    {
+      "id": 146,
+      "passageTitle": "Đoạn 4 (Câu 143 - 146): Super Savers Weekly Specials",
+      "question": "Offers valid June 2nd to 9th. ------- Due to conditions beyond our control, items advertised may not be available.",
+      "translation": "Ưu đãi có hiệu lực từ ngày 2 đến ngày 9 tháng 6. ------- Do điều kiện ngoài tầm kiểm soát, các mặt hàng quảng cáo có thể không có sẵn.",
+      "options": {
+        "A": "The more you buy, the more you save. (Càng mua nhiều càng tiết kiệm.)",
+        "B": "All bakery items are non-refundable. (Đồ bánh mì không được hoàn tiền.)",
+        "C": "Selections may vary from store to store. (Lựa chọn hàng hóa có thể thay đổi tùy từng cửa hàng.)",
+        "D": "Please see the manager to sign up for our membership program. (Gặp quản lý để đăng ký thành viên.)"
+      },
+      "correctAnswer": "C",
+      "grammarTag": "Điền câu mạch văn",
+      "recognitionKey": "Câu sau nói về rủi ro 'hết hàng / không có sẵn' -> Câu trước nói về sự 'không đồng đều / thay đổi tùy cửa hàng' (may vary).",
+      "explanation": "Các dòng chữ nhỏ cuối quảng cáo thường là điều khoản miễn trừ trách nhiệm (disclaimer). Câu (C) 'Hàng hóa có thể khác nhau tùy cửa hàng' nối tiếp rất logic với câu 'hàng quảng cáo có thể không có sẵn' do hết hàng.",
+      "trap": "Chọn A vì nghe giống khẩu hiệu quảng cáo siêu thị, nhưng không hợp mạch văn 'những hạn chế' đằng sau."
+    }
+  ]
+}

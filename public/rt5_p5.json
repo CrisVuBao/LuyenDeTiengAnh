@@ -1,0 +1,485 @@
+{
+  "testId": "READING_TEST_5",
+  "part5": [
+    {
+      "id": 101,
+      "question": "I need you to finish those reports ------- next Thursday.",
+      "translation": "Tôi cần bạn hoàn thành những báo cáo đó trước thứ Năm tuần sau.",
+      "options": {
+        "A": "then (sau đó)",
+        "B": "by (trước / cho đến lúc)",
+        "C": "until (cho đến khi)",
+        "D": "till (cho đến khi)"
+      },
+      "correctAnswer": "B",
+      "grammarTag": "Giới từ thời gian",
+      "recognitionKey": "finish/complete + mốc thời gian -> dùng 'by'",
+      "explanation": "Động từ 'finish' (hoàn thành) là một hành động mang tính kết thúc tại một thời điểm, nên ta dùng 'by' (hoàn thành TRƯỚC mốc thời gian). 'Until/till' dùng cho hành động kéo dài liên tục (ví dụ: wait until...).",
+      "trap": "Rất dễ nhầm với until nếu dịch tiếng Việt là 'cho đến thứ Năm'."
+    },
+    {
+      "id": 102,
+      "question": "Nowadays, ------- households in the developed world have at least one computer.",
+      "translation": "Ngày nay, hầu hết các hộ gia đình ở thế giới phát triển đều có ít nhất một máy tính.",
+      "options": {
+        "A": "most (hầu hết)",
+        "B": "every (mỗi)",
+        "C": "each (mỗi)",
+        "D": "much (nhiều)"
+      },
+      "correctAnswer": "A",
+      "grammarTag": "Từ chỉ số lượng",
+      "recognitionKey": "Danh từ số nhiều (households) -> dùng 'most'",
+      "explanation": "'households' (hộ gia đình) là danh từ đếm được số nhiều. 'every' và 'each' cộng với danh từ đếm được số ít. 'much' cộng với danh từ không đếm được. Do đó chỉ có 'most' là phù hợp.",
+      "trap": "Nếu không chú ý chữ 's' ở households, có thể chọn nhầm every/each."
+    },
+    {
+      "id": 103,
+      "question": "The company hadn’t experienced ------- high call volumes before and were ill-equipped to handle them all.",
+      "translation": "Công ty chưa từng trải qua khối lượng cuộc gọi cao như vậy trước đây và không được trang bị tốt để xử lý tất cả.",
+      "options": {
+        "A": "so (như vậy/rất)",
+        "B": "a lot (nhiều)",
+        "C": "such (như vậy)",
+        "D": "as (như)"
+      },
+      "correctAnswer": "C",
+      "grammarTag": "Cấu trúc nhấn mạnh",
+      "recognitionKey": "such + (a/an) + adj + noun",
+      "explanation": "Cụm 'high call volumes' là (Tính từ + Danh từ). Để nhấn mạnh cho một cụm danh từ, ta dùng 'such' (such + adj + noun). Nếu muốn dùng 'so', cấu trúc phải là 'so + adj' (không có danh từ theo sau).",
+      "trap": "Rất hay chọn 'so' vì dịch theo thói quen 'so high'."
+    },
+    {
+      "id": 104,
+      "question": "The Hoverton Commercial Committee ------- advertising and marketing methods in the region.",
+      "translation": "Ủy ban Thương mại Hoverton quy định các phương pháp quảng cáo và tiếp thị trong khu vực.",
+      "options": {
+        "A": "refuses (từ chối)",
+        "B": "insists (khăng khăng)",
+        "C": "conditions (điều kiện hóa)",
+        "D": "regulates (quy định/điều chỉnh)"
+      },
+      "correctAnswer": "D",
+      "grammarTag": "Từ vựng",
+      "recognitionKey": "Committee (ủy ban) + hành động về luật lệ/phương pháp -> regulate",
+      "explanation": "Dựa vào nghĩa của câu, một ủy ban (committee) thường có chức năng quản lý, quy định (regulate) các hoạt động trong khu vực của họ.",
+      "trap": "Không có bẫy rõ ràng, thuần túy kiểm tra từ vựng."
+    },
+    {
+      "id": 105,
+      "question": "This program is ------- harder to get accustomed to than the old one.",
+      "translation": "Chương trình này khó làm quen hơn nhiều so với chương trình cũ.",
+      "options": {
+        "A": "such (như vậy)",
+        "B": "so (rất)",
+        "C": "very (rất)",
+        "D": "much (nhiều)"
+      },
+      "correctAnswer": "D",
+      "grammarTag": "Nhấn mạnh so sánh hơn",
+      "recognitionKey": "Tính từ so sánh hơn (harder) -> thêm 'much' phía trước",
+      "explanation": "Từ 'harder' là tính từ so sánh hơn. Để nhấn mạnh mức độ của so sánh hơn, ta dùng 'much', 'far', 'a lot' (khó HƠN NHIỀU). Không dùng 'very' hay 'so' trước so sánh hơn.",
+      "trap": "Thói quen dịch tiếng Việt 'rất khó hơn' dễ làm bạn chọn 'very'."
+    },
+    {
+      "id": 106,
+      "question": "When the manager arrived at the office, she was relieved to see that the technician ------- her computer.",
+      "translation": "Khi người quản lý đến văn phòng, cô ấy rất nhẹ nhõm khi thấy rằng kỹ thuật viên đang sửa máy tính của cô ấy.",
+      "options": {
+        "A": "fix (sửa)",
+        "B": "fixes (sửa)",
+        "C": "fixing (đang sửa)",
+        "D": "was fixing (đang sửa)"
+      },
+      "correctAnswer": "D",
+      "grammarTag": "Thì quá khứ tiếp diễn",
+      "recognitionKey": "When + QKĐ (arrived) -> Vế kia thường là QKTD (was/were V-ing)",
+      "explanation": "Sự việc 'đến văn phòng' (arrived - thì quá khứ đơn) cắt ngang một hành động đang diễn ra trong quá khứ là 'kỹ thuật viên đang sửa máy tính'. Do đó dùng quá khứ tiếp diễn 'was fixing'.",
+      "trap": "Chọn 'fixing' vì thiếu to be 'was'."
+    },
+    {
+      "id": 107,
+      "question": "Many of the product samples brought for demonstration at the convention ------- on the plane ride.",
+      "translation": "Nhiều mẫu sản phẩm được mang đến để trình diễn tại hội nghị đã bị mất trên chuyến bay.",
+      "options": {
+        "A": "lose (đánh mất - hiện tại)",
+        "B": "lost (đánh mất - quá khứ)",
+        "C": "are losing (đang đánh mất)",
+        "D": "were lost (bị mất)"
+      },
+      "correctAnswer": "D",
+      "grammarTag": "Câu bị động (Passive Voice)",
+      "recognitionKey": "Vật (samples) + hành động làm mất (lose) -> Bị động",
+      "explanation": "Chủ ngữ chính là 'product samples' (các mẫu sản phẩm - vật). Vật không thể tự thực hiện hành động 'lose' (làm mất) mà phải là 'bị mất' (be lost). 'brought...' chỉ là mệnh đề quan hệ rút gọn bổ nghĩa cho chủ ngữ. Chia ở quá khứ do chuyến bay đã xảy ra.",
+      "trap": "Tưởng 'brought' là động từ chính nên chọn 'lost' làm động từ liên tiếp."
+    },
+    {
+      "id": 108,
+      "question": "Even after the terrible fiscal year they had, there was still $1.5 million in -------.",
+      "translation": "Ngay cả sau một năm tài chính tồi tệ mà họ đã trải qua, vẫn có 1,5 triệu đô la tiền lợi nhuận.",
+      "options": {
+        "A": "profitably (một cách sinh lời - adv)",
+        "B": "profitable (sinh lời - adj)",
+        "C": "profits (lợi nhuận - noun)",
+        "D": "profiting (sinh lời - v-ing)"
+      },
+      "correctAnswer": "C",
+      "grammarTag": "Từ loại",
+      "recognitionKey": "Giới từ (in) + Danh từ",
+      "explanation": "Sau giới từ 'in' ta cần một danh từ. 'profits' (lợi nhuận) là danh từ duy nhất hợp lý. Cụm 'in profits' nghĩa là 'tính bằng lợi nhuận'.",
+      "trap": "Nhìn thấy số tiền tưởng cần tính từ miêu tả số tiền đó."
+    },
+    {
+      "id": 109,
+      "question": "------- this problem before, the maintenance technician knew exactly which tool to use to fix the appliance.",
+      "translation": "Vì đã từng thấy vấn đề này trước đây, kỹ thuật viên bảo trì biết chính xác loại công cụ nào cần dùng để sửa thiết bị.",
+      "options": {
+        "A": "Seen (Được thấy - bị động)",
+        "B": "Seeing (Thấy - chủ động hiện tại)",
+        "C": "Having seen (Đã thấy - chủ động hoàn thành)",
+        "D": "Having been seen (Đã được thấy - bị động hoàn thành)"
+      },
+      "correctAnswer": "C",
+      "grammarTag": "Rút gọn mệnh đề đồng chủ ngữ",
+      "recognitionKey": "Hành động xảy ra TRƯỚC (nhấn mạnh) + Chủ động -> Having V3/ed",
+      "explanation": "Chủ ngữ của 2 vế là một (the maintenance technician). Người kỹ thuật viên chủ động 'nhìn thấy' vấn đề, nên dùng dạng chủ động. Việc 'nhìn thấy trước đây' (before) xảy ra trước việc 'biết' (knew) ở quá khứ, nên dùng phân từ hoàn thành 'Having + V3/ed' để nhấn mạnh sự trước sau.",
+      "trap": "Chọn 'Seeing' thì chưa đủ mạnh để nhấn mạnh sự việc đã hoàn tất trong quá khứ so với mệnh đề chính."
+    },
+    {
+      "id": 110,
+      "question": "In addition to English, the vice-president can fluently ------- in both French and Spanish.",
+      "translation": "Ngoài tiếng Anh, phó chủ tịch có thể giao tiếp trôi chảy bằng cả tiếng Pháp và tiếng Tây Ban Nha.",
+      "options": {
+        "A": "convene (triệu tập)",
+        "B": "convey (truyền đạt/chuyên chở)",
+        "C": "converse (nói chuyện/giao tiếp)",
+        "D": "convert (chuyển đổi)"
+      },
+      "correctAnswer": "C",
+      "grammarTag": "Từ vựng",
+      "recognitionKey": "fluently + ngôn ngữ (in French) -> giao tiếp (converse)",
+      "explanation": "Trong 4 từ, chỉ có 'converse' (giao tiếp, nói chuyện) là nội động từ đi kèm với giới từ 'in' (converse in a language = nói chuyện bằng ngôn ngữ nào đó).",
+      "trap": "Có thể nhầm với 'convey' (truyền đạt) nhưng convey cần tân ngữ trực tiếp (convey a message)."
+    },
+    {
+      "id": 111,
+      "question": "Though at first glance the products seem very much alike, they are ------- in many ways.",
+      "translation": "Mặc dù thoạt nhìn các sản phẩm có vẻ rất giống nhau, nhưng chúng lại khác biệt về nhiều mặt.",
+      "options": {
+        "A": "different (khác biệt - adj)",
+        "B": "difficult (khó khăn - adj)",
+        "C": "differed (đã khác - v-ed)",
+        "D": "differentiated (được phân biệt - v-ed)"
+      },
+      "correctAnswer": "A",
+      "grammarTag": "Từ loại",
+      "recognitionKey": "Động từ 'are' + Tính từ mô tả trạng thái",
+      "explanation": "Phía trước có 'though' (mặc dù) và 'alike' (giống nhau), nên vế sau phải tương phản (khác nhau). Cần một tính từ đứng sau to be 'are' để chỉ tính chất: 'are different'.",
+      "trap": "Dùng 'differed' là dạng động từ, trong khi 'are' cần đi với tính từ để mô tả."
+    },
+    {
+      "id": 112,
+      "question": "The law firm is looking for a new office building that is neither old ------- located outside of town.",
+      "translation": "Công ty luật đang tìm kiếm một tòa nhà văn phòng mới không cũ cũng không nằm ngoài thị trấn.",
+      "options": {
+        "A": "or (hoặc)",
+        "B": "nor (cũng không)",
+        "C": "and (và)",
+        "D": "but (nhưng)"
+      },
+      "correctAnswer": "B",
+      "grammarTag": "Liên từ tương quan",
+      "recognitionKey": "neither ... -> nor",
+      "explanation": "Cấu trúc đi đôi cố định: neither A nor B (không A cũng không B).",
+      "trap": "Cực kỳ dễ. Nhưng dễ nhìn nhót 'neither' thành 'either' rồi chọn 'or'."
+    },
+    {
+      "id": 113,
+      "question": "Please do not cross the yellow line on the platform ------- the train has come to a complete stop.",
+      "translation": "Vui lòng không vượt qua vạch màu vàng trên sân ga cho đến khi đoàn tàu đã dừng lại hoàn toàn.",
+      "options": {
+        "A": "by (bởi/trước khi)",
+        "B": "until (cho đến khi)",
+        "C": "so (vì vậy)",
+        "D": "therefore (do đó)"
+      },
+      "correctAnswer": "B",
+      "grammarTag": "Liên từ",
+      "recognitionKey": "Hành động cấm (not do) + hành động mốc thời gian -> until",
+      "explanation": "'until' nối hai mệnh đề, diễn tả việc KHÔNG ĐƯỢC làm gì CHO TỚI KHI một điều kiện xảy ra (tàu dừng). 'by' là giới từ, chỉ đứng trước danh từ/cụm danh từ, không nối 2 mệnh đề.",
+      "trap": "Chọn 'by' vì dịch là 'trước khi', nhưng 'by' không đi với mệnh đề (clause)."
+    },
+    {
+      "id": 114,
+      "question": "Although Janet and Sam are both excellent managers, there are slight ------- in the way they do their jobs.",
+      "translation": "Mặc dù Janet và Sam đều là những người quản lý xuất sắc, nhưng có những khác biệt nhỏ trong cách họ làm công việc của mình.",
+      "options": {
+        "A": "variations (những sự khác biệt/biến thể - n)",
+        "B": "varieties (sự đa dạng/các loại - n)",
+        "C": "various (đa dạng - adj)",
+        "D": "varies (thay đổi - v)"
+      },
+      "correctAnswer": "A",
+      "grammarTag": "Từ vựng (dễ nhầm lẫn)",
+      "recognitionKey": "slight (nhỏ) + sự khác biệt về cách thức -> variations",
+      "explanation": "Cần một danh từ số nhiều đi sau 'are slight'. 'variations' nghĩa là sự khác biệt nhẹ, sự biến đổi nhẹ (phù hợp với 'slight'). 'varieties' nghĩa là chủng loại (ví dụ: varieties of plants - các loại cây).",
+      "trap": "Rất dễ nhầm giữa variations và varieties vì cùng gốc từ."
+    },
+    {
+      "id": 115,
+      "question": "------- business successfully internationally, we must learn the importance of respecting cultural differences.",
+      "translation": "Để kinh doanh thành công trên phạm vi quốc tế, chúng ta phải học tầm quan trọng của việc tôn trọng sự khác biệt văn hóa.",
+      "options": {
+        "A": "To do (Để làm)",
+        "B": "Does (Làm)",
+        "C": "Doing (Làm)",
+        "D": "Done (Đã làm)"
+      },
+      "correctAnswer": "A",
+      "grammarTag": "Động từ nguyên mẫu chỉ mục đích",
+      "recognitionKey": "Đứng đầu câu + dấu phẩy + mệnh đề chính -> To V (Để...)",
+      "explanation": "Khi muốn diễn tả mục đích 'Để làm việc gì đó, ai đó phải...', ta dùng động từ nguyên mẫu có 'To' (To V) đứng ở đầu câu.",
+      "trap": "Chọn 'Doing' (Danh động từ làm chủ ngữ) nhưng nếu là chủ ngữ thì sau nó phải là động từ chính chứ không phải dấu phẩy."
+    },
+    {
+      "id": 116,
+      "question": "If you require further -------, please feel free to contact us at 555-3333.",
+      "translation": "Nếu bạn cần thêm thông tin, vui lòng liên hệ với chúng tôi theo số 555-3333.",
+      "options": {
+        "A": "informational (thuộc về thông tin - adj)",
+        "B": "informed (được thông báo - adj)",
+        "C": "informative (nhiều thông tin - adj)",
+        "D": "information (thông tin - noun)"
+      },
+      "correctAnswer": "D",
+      "grammarTag": "Từ loại",
+      "recognitionKey": "require + further (adj) + Danh từ",
+      "explanation": "Sau động từ 'require' (cần) và tính từ 'further' (thêm nữa) bắt buộc phải là một danh từ đóng vai trò tân ngữ. 'information' là danh từ duy nhất.",
+      "trap": "Chỉ cần nắm vững từ loại là không sập bẫy."
+    },
+    {
+      "id": 117,
+      "question": "It has not rained for weeks, ------- my boss brings an umbrella to work every day.",
+      "translation": "Nhiều tuần nay trời không mưa, thế nhưng sếp tôi ngày nào cũng mang ô đi làm.",
+      "options": {
+        "A": "yet (nhưng/tuy nhiên)",
+        "B": "so (vì vậy)",
+        "C": "because (bởi vì)",
+        "D": "since (kể từ khi/vì)"
+      },
+      "correctAnswer": "A",
+      "grammarTag": "Liên từ",
+      "recognitionKey": "Hai vế đối lập (không mưa <-> mang ô) -> yet = but",
+      "explanation": "Liên từ 'yet' ở giữa hai mệnh đề có nghĩa là 'nhưng', 'thế mà' (tương đương với 'but'). Thể hiện sự đối lập giữa việc trời không mưa và việc mang ô.",
+      "trap": "Ít người biết 'yet' có thể dùng như 'but' ở giữa câu, thường chỉ biết 'yet' dùng ở cuối câu trong thì Hiện tại hoàn thành."
+    },
+    {
+      "id": 118,
+      "question": "The customer was not satisfied with the service and asked to talk to the manager -------.",
+      "translation": "Khách hàng không hài lòng với dịch vụ và yêu cầu nói chuyện với người quản lý ngay lập tức.",
+      "options": {
+        "A": "instantly (ngay tức khắc - thường dùng cho máy móc/vật)",
+        "B": "internally (bên trong nội bộ)",
+        "C": "immediately (ngay lập tức)",
+        "D": "indirectly (gián tiếp)"
+      },
+      "correctAnswer": "C",
+      "grammarTag": "Từ vựng (Trạng từ)",
+      "recognitionKey": "Yêu cầu khẩn cấp/tức giận -> immediately",
+      "explanation": "'immediately' là trạng từ phổ biến nhất dùng khi muốn ai đó làm việc gì ngay lập tức (đặc biệt trong giao tiếp con người). 'instantly' cũng có nghĩa tương tự nhưng thường dùng cho phản ứng tự động, phép thuật, hoặc đồ ăn liền (instant noodles).",
+      "trap": "Nhầm lẫn sắc thái nghĩa giữa instantly và immediately."
+    },
+    {
+      "id": 119,
+      "question": "Most people who are elected to government positions come from ------- families.",
+      "translation": "Hầu hết những người được bầu vào các vị trí chính phủ đều xuất thân từ những gia đình danh giá/đáng kính.",
+      "options": {
+        "A": "respect (tôn trọng - v/n)",
+        "B": "respecting (tôn trọng - v-ing)",
+        "C": "respectable (đáng kính - adj)",
+        "D": "respective (tương ứng - adj)"
+      },
+      "correctAnswer": "C",
+      "grammarTag": "Từ vựng (Tính từ dễ nhầm)",
+      "recognitionKey": "families (gia đình) -> cần tính từ miêu tả phẩm chất -> respectable",
+      "explanation": "Đứng trước danh từ 'families' cần tính từ. Có 2 tính từ là 'respectable' (đáng kính, danh giá) và 'respective' (tương ứng, riêng rẽ). Xét về nghĩa, 'gia đình đáng kính/danh giá' là hợp lý nhất.",
+      "trap": "Rất dễ chọn nhầm 'respective' vì nhìn giống 'respect'."
+    },
+    {
+      "id": 120,
+      "question": "This is the third time this week that each photocopier ------- broken down.",
+      "translation": "Đây là lần thứ ba trong tuần này mỗi máy photocopy bị hỏng.",
+      "options": {
+        "A": "are",
+        "B": "has",
+        "C": "have",
+        "D": "were"
+      },
+      "correctAnswer": "B",
+      "grammarTag": "Sự hòa hợp Chủ - Vị & Thì Hiện tại hoàn thành",
+      "recognitionKey": "third time (HTHT) + each (số ít) -> has",
+      "explanation": "Cấu trúc 'This is the first/second/third time...' bắt buộc mệnh đề sau phải dùng thì Hiện tại hoàn thành (have/has + V3). Chủ ngữ là 'each photocopier' (có từ each) nên phải chia số ít -> 'has'.",
+      "trap": "Thấy 'photocopier' có vẻ chung chung, chọn 'have' hoặc thấy 'this week' chọn quá khứ 'were'."
+    },
+    {
+      "id": 121,
+      "question": "The electrical wires ------- by the terrible windstorm last night, leaving hundreds of customers without power.",
+      "translation": "Các đường dây điện đã bị hư hỏng bởi cơn bão gió khủng khiếp đêm qua, khiến hàng trăm khách hàng không có điện.",
+      "options": {
+        "A": "are damaged (bị hỏng - HTĐ)",
+        "B": "were damaged (bị hỏng - QKĐ)",
+        "C": "damaged (làm hỏng - QKĐ chủ động)",
+        "D": "damages (làm hỏng - HTĐ chủ động)"
+      },
+      "correctAnswer": "B",
+      "grammarTag": "Thì & Bị động",
+      "recognitionKey": "last night (Quá khứ) + by (Bị động) -> were damaged",
+      "explanation": "Chủ ngữ 'wires' (dây điện) chỉ vật, bị bão (by windstorm) làm hỏng nên dùng bị động (be + V3). Dấu hiệu thời gian 'last night' yêu cầu thì quá khứ đơn -> 'were damaged'.",
+      "trap": "Không để ý chữ 'by' nên chọn chủ động 'damaged'."
+    },
+    {
+      "id": 122,
+      "question": "This was his fourth time taking his accounting certification exam, and he wanted ------- this time.",
+      "translation": "Đây là lần thứ tư anh ấy tham gia kỳ thi chứng chỉ kế toán, và anh ấy không muốn thi trượt lần này.",
+      "options": {
+        "A": "to not fail",
+        "B": "not to fail",
+        "C": "failing to not",
+        "D": "failing not to"
+      },
+      "correctAnswer": "B",
+      "grammarTag": "Động từ nguyên mẫu phủ định",
+      "recognitionKey": "want + not to V",
+      "explanation": "Động từ 'want' theo sau là 'to V'. Nếu muốn ở dạng phủ định, 'not' phải đứng TRƯỚC 'to' -> 'not to V'.",
+      "trap": "Lỗi văn phong nói thông thường hay dùng 'to not fail', nhưng trong ngữ pháp chuẩn TOEIC phải là 'not to fail'."
+    },
+    {
+      "id": 123,
+      "question": "------- the research uncovered some problems, the company decided to stop the project.",
+      "translation": "Vì nghiên cứu đã phát hiện ra một số vấn đề, công ty quyết định dừng dự án.",
+      "options": {
+        "A": "Since (Bởi vì)",
+        "B": "Therefore (Vì vậy)",
+        "C": "Despite (Mặc dù)",
+        "D": "Even though (Mặc dù)"
+      },
+      "correctAnswer": "A",
+      "grammarTag": "Liên từ nguyên nhân",
+      "recognitionKey": "Vế 1 (nguyên nhân) phẩy Vế 2 (kết quả) -> Since = Because",
+      "explanation": "'Since' đứng đầu câu đóng vai trò như 'Because' (bởi vì). 'Therefore' (Vì vậy) là trạng từ liên kết, thường đứng sau dấu chấm phẩy hoặc dấu chấm, không dùng ở đầu câu nối 2 mệnh đề bằng dấu phẩy. 'Despite' đi với Danh từ. 'Even though' mang nghĩa tương phản không hợp ngữ cảnh.",
+      "trap": "Biết nghĩa là 'vì vậy' nên chọn 'Therefore' sai ngữ pháp."
+    },
+    {
+      "id": 124,
+      "question": "We need greater cooperation from everyone involved in order to meet the -------.",
+      "translation": "Chúng tôi cần sự hợp tác lớn hơn từ tất cả những người tham gia để đáp ứng đúng thời hạn.",
+      "options": {
+        "A": "deadline (thời hạn)",
+        "B": "termination (sự kết thúc)",
+        "C": "boundary (ranh giới)",
+        "D": "limitations (những hạn chế)"
+      },
+      "correctAnswer": "A",
+      "grammarTag": "Cụm từ cố định (Collocation)",
+      "recognitionKey": "meet + the deadline",
+      "explanation": "Cụm từ cố định rất phổ biến trong tiếng Anh thương mại: 'meet the deadline' = hoàn thành công việc đúng thời hạn.",
+      "trap": "Chọn bừa từ loại vì không biết cụm collocation này."
+    },
+    {
+      "id": 125,
+      "question": "With just a little more work, he ------- well-prepared for his sales presentation on Friday.",
+      "translation": "Chỉ với một chút nỗ lực nữa, anh ấy sẽ được chuẩn bị tốt cho buổi thuyết trình bán hàng của mình vào thứ Sáu.",
+      "options": {
+        "A": "will be",
+        "B": "was being",
+        "C": "has been",
+        "D": "is being"
+      },
+      "correctAnswer": "A",
+      "grammarTag": "Thì tương lai đơn",
+      "recognitionKey": "on Friday (chưa xảy ra) -> Tương lai (will be)",
+      "explanation": "Ngữ cảnh 'with a little more work' (thêm chút việc nữa - ngụ ý điều kiện cho tương lai) và 'on Friday' cho thấy sự việc chưa diễn ra. Dùng thì tương lai 'will be'.",
+      "trap": "Không nhận ra dấu hiệu tương lai."
+    },
+    {
+      "id": 126,
+      "question": "Every time I need to use the photocopier, I find it needs -------.",
+      "translation": "Mỗi lần tôi cần sử dụng máy photocopy, tôi đều thấy nó cần được sửa.",
+      "options": {
+        "A": "to fix",
+        "B": "fixes",
+        "C": "fixing",
+        "D": "to be fixing"
+      },
+      "correctAnswer": "C",
+      "grammarTag": "Cấu trúc Need mang nghĩa bị động",
+      "recognitionKey": "Vật (it = photocopier) + need + V-ing",
+      "explanation": "Khi chủ ngữ là vật, 'need' mang nghĩa bị động và có 2 cách viết: need to be V3/ed HOẶC need V-ing. 'needs fixing' = cần được sửa.",
+      "trap": "Chọn 'to fix' (cần sửa) áp dụng theo cấu trúc chủ động của người (I need to fix)."
+    },
+    {
+      "id": 127,
+      "question": "Because of the partnership, Bob and Miles phone ------- several times a day.",
+      "translation": "Vì quan hệ đối tác, Bob và Miles gọi điện cho nhau vài lần một ngày.",
+      "options": {
+        "A": "theirs (của họ - đại từ sở hữu)",
+        "B": "them (họ - tân ngữ)",
+        "C": "each other (lẫn nhau)",
+        "D": "every other (mỗi thứ khác)"
+      },
+      "correctAnswer": "C",
+      "grammarTag": "Đại từ tương hỗ",
+      "recognitionKey": "2 người (Bob và Miles) có hành động qua lại -> each other",
+      "explanation": "'each other' dùng để chỉ hành động có lại giữa 2 đối tượng (gọi cho nhau).",
+      "trap": "Chọn 'them' -> Bob và Miles gọi cho 'bọn họ' (một nhóm người thứ 3) -> sai logic ngữ cảnh."
+    },
+    {
+      "id": 128,
+      "question": "Let’s take another ------- at the sales figures.",
+      "translation": "Hãy cùng xem lại/liếc nhìn lại các số liệu bán hàng.",
+      "options": {
+        "A": "view (tầm nhìn/quan điểm)",
+        "B": "scene (cảnh vật/hiện trường)",
+        "C": "glance (cái nhìn lướt qua)",
+        "D": "vision (thị lực/tầm nhìn xa)"
+      },
+      "correctAnswer": "C",
+      "grammarTag": "Cụm từ cố định (Collocation)",
+      "recognitionKey": "take a + glance + at",
+      "explanation": "Cụm từ 'take a glance at' (liếc nhìn, xem qua). Có thể dùng 'take a look at', nhưng trong 4 đáp án chỉ có 'glance' là tạo thành collocation đúng.",
+      "trap": "Chọn 'view' vì dịch là 'xem', nhưng không có cụm 'take a view at'."
+    },
+    {
+      "id": 129,
+      "question": "It is reported that the boat ------- about 60 miles off the coast of South Africa last week.",
+      "translation": "Có thông tin cho rằng chiếc thuyền đã biến mất cách bờ biển Nam Phi khoảng 60 dặm vào tuần trước.",
+      "options": {
+        "A": "disappeared (biến mất - QKĐ chủ động)",
+        "B": "was disappeared (biến mất - QKĐ bị động)",
+        "C": "disappears (biến mất - HTĐ)",
+        "D": "has been disappeared (biến mất - HTHT bị động)"
+      },
+      "correctAnswer": "A",
+      "grammarTag": "Nội động từ & Thì quá khứ đơn",
+      "recognitionKey": "last week -> Quá khứ + disappear KHÔNG có bị động",
+      "explanation": "'disappear' (biến mất) là nội động từ (không có tân ngữ), do đó KHÔNG BAO GIỜ dùng ở thể bị động. Vì có 'last week' nên chia quá khứ đơn chủ động.",
+      "trap": "Thấy vật (boat) nên quen tay chọn bị động 'was disappeared'."
+    },
+    {
+      "id": 130,
+      "question": "Since this is our slow season, I am considering ------- to vacation next month.",
+      "translation": "Vì đây là mùa ế ẩm của chúng ta, tôi đang cân nhắc việc đi nghỉ dưỡng vào tháng tới.",
+      "options": {
+        "A": "to go",
+        "B": "going",
+        "C": "go",
+        "D": "gone"
+      },
+      "correctAnswer": "B",
+      "grammarTag": "Động từ theo sau động từ",
+      "recognitionKey": "consider + V-ing",
+      "explanation": "Động từ 'consider' (cân nhắc) luôn yêu cầu một Danh động từ (V-ing) theo sau.",
+      "trap": "Theo thói quen tiếng Việt 'cân nhắc để đi' sẽ chọn 'to go'."
+    }
+  ]
+}

@@ -1,0 +1,119 @@
+{
+  "testId": "READING_TEST_5",
+  "part7": [
+    {
+      "id": 147,
+      "passageTitle": "Đoạn 1 (Câu 147 - 148): Ventura Toys",
+      "passageText": "Ventura Toys Announces CEO Retirement and New Appointee\n\nVentura Toys Corporation announced Monday that Paolo Lucas will retire as chief executive officer on October 30. However, Lucas will continue to serve as chairman of the board. The board of directors elected Manuel Garza as Lucas’s successor, effective on October 31. Garza currently serves as president and chief operating officer.\n\nLucas has played a variety of roles at the company, including senior attorney, product manager, and treasurer. He has served on the board of directors since 2004. Lucas was appointed president of Ventura Toys in 2008 and CEO in 2009. Under Lucas’s leadership, the company has grown through strategic acquisitions and a strong emphasis on new product development.\n\nLucas said of his successor, “I’m confident that Ventura will continue its growth under Manuel’s leadership.” Manuel Garza is a 20-year veteran of the company who has served as COO since 2012. In that role, he led all of Ventura’s global operations.",
+      "question": "What is NOT stated about the retiring CEO?",
+      "translation": "Điều gì KHÔNG được đề cập về vị CEO sắp nghỉ hưu?",
+      "options": {
+        "A": "He will remain on the board of directors.",
+        "B": "He has held several jobs at the company.",
+        "C": "He has been with Ventura for 20 years.",
+        "D": "He focused on creating new products as CEO."
+      },
+      "correctAnswer": "C",
+      "correctAnswerText": "He has been with Ventura for 20 years. (Ông ấy đã ở Ventura 20 năm)",
+      "evidenceInPassage": "Manuel Garza is a 20-year veteran of the company",
+      "recognitionKey": "Câu hỏi NOT -> Tìm 3 ý có trong bài, ý còn lại là đáp án sai.",
+      "explanation": "Trong bài viết, người có thâm niên 20 năm (20-year veteran) là Manuel Garza (người kế nhiệm), KHÔNG PHẢI Paolo Lucas (CEO sắp nghỉ). Các ý A, B, D đều có trong bài.",
+      "trap": "Thấy số 20 years trong bài là khoanh luôn mà không để ý nó đang nói về người khác (Garza)."
+    },
+    {
+      "id": 148,
+      "passageTitle": "Đoạn 1 (Câu 147 - 148): Ventura Toys",
+      "passageText": "(Như trên)",
+      "question": "The word \"effective\" in paragraph 1, line 3, is closest in meaning to",
+      "translation": "Từ 'effective' ở đoạn 1, dòng 3 gần nghĩa nhất với từ nào?",
+      "options": {
+        "A": "successful",
+        "B": "operative",
+        "C": "intentional",
+        "D": "sufficient"
+      },
+      "correctAnswer": "B",
+      "correctAnswerText": "operative (có hiệu lực / đi vào hoạt động)",
+      "evidenceInPassage": "effective on October 31",
+      "recognitionKey": "effective on [Date] = operative (bắt đầu có hiệu lực)",
+      "explanation": "Từ 'effective' khi đi kèm với một mốc thời gian (effective on October 31) có nghĩa là 'bắt đầu có hiệu lực từ ngày...'. Từ đồng nghĩa sát nhất trong trường hợp này là 'operative'.",
+      "trap": "Nghĩa phổ biến nhất của effective là 'hiệu quả' (successful), nhưng trong ngữ cảnh hợp đồng/bổ nhiệm thì nó mang nghĩa 'có hiệu lực'."
+    },
+    {
+      "id": 149,
+      "passageTitle": "Đoạn 2 (Câu 149 - 150): Meryl K / Ellen B",
+      "passageText": "Meryl K 11:42 a.m.\nHow about going out to lunch for a change? I'm tired of the cafeteria food. There's a Thai place a few blocks away that looks good. Not too expensive, and lots of vegetarian options for you, too.\n\nEllen B 11:44 a.m.\nI wish we could do that, but there's the CFO visit at 1:00, remember? Everyone is supposed to be here, and I don't think we could make it back in time. Maybe tomorrow?\n\nMeryl K 11:45 a.m.\nOh, I guess you didn't see the e-mail that went around about an hour ago. The visit's been moved to 3:00, so it's not a problem.\n\nEllen B 11:48 a.m.\nJust read it. Thai food it is, then.",
+      "question": "What is suggested about Ellen B?",
+      "translation": "Điều gì được gợi ý về Ellen B?",
+      "options": {
+        "A": "She is willing to miss the CFO visit.",
+        "B": "She prefers the cafeteria food.",
+        "C": "She did not receive an e-mail.",
+        "D": "She does not eat meat."
+      },
+      "correctAnswer": "D",
+      "correctAnswerText": "She does not eat meat. (Cô ấy không ăn thịt.)",
+      "evidenceInPassage": "lots of vegetarian options for you",
+      "recognitionKey": "vegetarian options for you -> người đó ăn chay (không ăn thịt)",
+      "explanation": "Meryl viết cho Ellen rằng quán Thái đó có 'nhiều lựa chọn đồ ăn chay cho bạn' (lots of vegetarian options for you). Điều này ngụ ý rằng Ellen là người ăn chay (không ăn thịt).",
+      "trap": "Chọn C vì Ellen chưa đọc email (nhưng cô ấy có nhận được, chỉ là chưa đọc: 'Just read it')."
+    },
+    {
+      "id": 150,
+      "passageTitle": "Đoạn 2 (Câu 149 - 150): Meryl K / Ellen B",
+      "passageText": "(Như trên)",
+      "question": "At 11:48, what does Ellen B mean when she writes, \"Thai food it is, then\"?",
+      "translation": "Lúc 11:48, Ellen B có ý gì khi viết 'Thai food it is, then' (Vậy thì ăn đồ Thái nhé)?",
+      "options": {
+        "A": "She wants to try the restaurant another time.",
+        "B": "She will go to the restaurant for lunch.",
+        "C": "She wants to know more about Thai food.",
+        "D": "She especially enjoys Thai food."
+      },
+      "correctAnswer": "B",
+      "correctAnswerText": "She will go to the restaurant for lunch. (Cô ấy sẽ đến nhà hàng ăn trưa.)",
+      "evidenceInPassage": "Thai food it is, then.",
+      "recognitionKey": "[X] it is, then = Quyết định chọn [X]",
+      "explanation": "Cụm từ '[Something] it is' là một thành ngữ mang nghĩa 'Vậy thì chốt chọn [Something] nhé'. Ở đây nghĩa là cô ấy đồng ý đi ăn đồ Thái vào bữa trưa nay.",
+      "trap": "Dịch word by word sẽ không hiểu thành ngữ này."
+    },
+    {
+      "id": 151,
+      "passageTitle": "Đoạn 3 (Câu 151 - 152): MINT DESIGN Invoice",
+      "passageText": "MINT DESIGN\nInvoice Date: 08/02\nBalance Due: $1,937.01\n...\nPre-tax Total: 3,625.00\nTax: 299.06\nShipping: 12.95\nTotal: 3,937.01\nPayments: -2,000.00\nBalance: 1,937.01",
+      "question": "How much has Vista Hotel already paid?",
+      "translation": "Vista Hotel ĐÃ thanh toán bao nhiêu tiền?",
+      "options": {
+        "A": "$299.06",
+        "B": "$1,937.01",
+        "C": "$2,000.00",
+        "D": "$3,625.00"
+      },
+      "correctAnswer": "C",
+      "correctAnswerText": "$2,000.00",
+      "evidenceInPassage": "Payments: -2,000.00",
+      "recognitionKey": "already paid (đã trả) = Payments (tiền đã thanh toán)",
+      "explanation": "Nhìn vào dòng 'Payments' ở cuối hóa đơn có ghi '-2,000.00'. Điều này nghĩa là họ đã trả trước 2000 đô la.",
+      "trap": "Dễ chọn $1,937.01 vì đó là Balance Due (Số tiền CÒN LẠI phải trả)."
+    },
+    {
+      "id": 152,
+      "passageTitle": "Đoạn 3 (Câu 151 - 152): MINT DESIGN Invoice",
+      "passageText": "(Như trên)",
+      "question": "Which is true about Mint Design?",
+      "translation": "Điều gì là ĐÚNG về Mint Design?",
+      "options": {
+        "A": "It shipped the items on 08/02.",
+        "B": "It charges a set price per project.",
+        "C": "It does not specify a payment method.",
+        "D": "It does not charge late fees."
+      },
+      "correctAnswer": "B",
+      "correctAnswerText": "It charges a set price per project. (Tính giá cố định theo từng dự án.)",
+      "evidenceInPassage": "Unit: project | Price: 3,500.00",
+      "recognitionKey": "Unit: project -> tính tiền theo gói dự án.",
+      "explanation": "Trong bảng chi tiết, dòng 'Design services' có cột Unit (Đơn vị tính) ghi là 'project', với giá là 3500. Điều này chứng tỏ họ tính giá cố định theo từng dự án. Các ý khác sai (ví dụ Ship Date là 07/23, có chỉ định trả bằng 'check only', có tính phí trễ hạn 'late payments are subject to 5%').",
+      "trap": "Không đọc kỹ các dòng chữ nhỏ (fine print) ở góc dưới cùng bên trái hóa đơn."
+    }
+  ]
+}

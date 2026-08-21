@@ -6,107 +6,228 @@ import GrammarReflex from './components/GrammarReflex';
 import ContextFlow from './components/ContextFlow';
 import ScanningRadar from './components/ScanningRadar';
 import AdminPanel from './components/AdminPanel';
-import { Volume2, FileSearch, BookOpen, Radar, Edit3, Image as ImageIcon, Headphones, CheckSquare } from 'lucide-react';
 import useConfidence from './hooks/useConfidence';
+import { 
+  Image as ImageIcon, Headphones, Volume2, CheckSquare, 
+  BookOpen, Radar, Edit3, ChevronDown, Plus, Trash2 
+} from 'lucide-react';
+
+const STORAGE_KEY = 'toeic_hack_tests';
 
 function App() {
-  const [data, setData] = useState(null);
-  const [activeTab, setActiveTab] = useState('p1');
+  // --- Multi-test state ---
+  const [tests, setTests] = useState([]);           // Array of test objects
+  const [activeTestIdx, setActiveTestIdx] = useState(0);
+  const [activeTab, setActiveTab] = useState('p5');
+  const [showTestMenu, setShowTestMenu] = useState(false);
 
-  // Khởi tạo dữ liệu từ localStorage hoặc file JSON
+  // Load from localStorage on mount
   useEffect(() => {
-    const localData = localStorage.getItem('toeic_hack_data');
-    if (localData) {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
       try {
-        setData(JSON.parse(localData));
-        return;
-      } catch (e) {
-        console.error("Lỗi parse local data", e);
-      }
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setTests(parsed);
+          return;
+        }
+      } catch (e) { /* fall through */ }
     }
 
+    // First time: load from data.json as a seed
     fetch('/data.json')
       .then(res => res.json())
       .then(jsonData => {
-        setData(jsonData);
-        // Lưu vào local để admin có thể sửa
-        localStorage.setItem('toeic_hack_data', JSON.stringify(jsonData));
+        const initialTests = [jsonData];
+        setTests(initialTests);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(initialTests));
       })
-      .catch(err => console.error("Lỗi khi tải data.json:", err));
+      .catch(() => {
+        // Empty shell
+        const emptyTest = { testId: 'ĐỀ_1', part1: [], part2: [], part3: [], part4: [], part5: [], part6: [], part7: [] };
+        setTests([emptyTest]);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify([emptyTest]));
+      });
   }, []);
 
-  const { getProgress } = useConfidence(data?.testId || 'default');
+  const activeTest = tests[activeTestIdx] || null;
+  const testId = activeTest?.testId || 'default';
+  const { getProgress } = useConfidence(testId);
 
-  if (!data) {
+  // --- Persist helper ---
+  const persistTests = (newTests) => {
+    setTests(newTests);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(newTests));
+  };
+
+  const updateActiveTest = (updatedTest) => {
+    const newTests = [...tests];
+    newTests[activeTestIdx] = updatedTest;
+    persistTests(newTests);
+  };
+
+  const addNewTest = () => {
+    const num = tests.length + 1;
+    const newTest = { testId: `ĐỀ_${num}`, part1: [], part2: [], part3: [], part4: [], part5: [], part6: [], part7: [] };
+    const newTests = [...tests, newTest];
+    persistTests(newTests);
+    setActiveTestIdx(newTests.length - 1);
+    setShowTestMenu(false);
+  };
+
+  const deleteTest = (idx) => {
+    if (tests.length <= 1) return alert('Phải có ít nhất 1 đề!');
+    if (!confirm(`Xóa đề "${tests[idx].testId}"?`)) return;
+    const newTests = tests.filter((_, i) => i !== idx);
+    persistTests(newTests);
+    if (activeTestIdx >= newTests.length) setActiveTestIdx(newTests.length - 1);
+    setShowTestMenu(false);
+  };
+
+  // --- Tab config ---
+  const tabs = [
+    { id: 'p1', label: 'Part 1', icon: <ImageIcon size={16} />, color: 'blue' },
+    { id: 'p2', label: 'Part 2', icon: <Headphones size={16} />, color: 'blue' },
+    { id: 'p34', label: 'Part 3 & 4', icon: <Volume2 size={16} />, color: 'teal' },
+    { id: 'p5', label: 'Part 5', icon: <CheckSquare size={16} />, color: 'green' },
+    { id: 'p6', label: 'Part 6', icon: <BookOpen size={16} />, color: 'green' },
+    { id: 'p7', label: 'Part 7', icon: <Radar size={16} />, color: 'green' },
+    { id: 'admin', label: '📝 Nhập Liệu', icon: <Edit3 size={16} />, color: 'purple' },
+  ];
+
+  if (!activeTest) {
     return <div className="flex justify-center items-center h-screen font-bold text-xl text-gray-500 animate-pulse">Đang nạp dữ liệu Hack-Speed...</div>;
   }
 
-  const tabs = [
-    { id: 'p1', label: 'Part 1', icon: <ImageIcon size={18} /> },
-    { id: 'p2', label: 'Part 2', icon: <Headphones size={18} /> },
-    { id: 'p34', label: 'Part 3&4', icon: <Volume2 size={18} /> },
-    { id: 'p5', label: 'Part 5', icon: <CheckSquare size={18} /> },
-    { id: 'p6', label: 'Part 6', icon: <BookOpen size={18} /> },
-    { id: 'p7', label: 'Part 7', icon: <Radar size={18} /> },
-    { id: 'admin', label: 'Nhập Liệu', icon: <Edit3 size={18} />, bg: 'bg-purple-600 text-white' }
-  ];
-
-  const updateData = (newData) => {
-    setData(newData);
-    localStorage.setItem('toeic_hack_data', JSON.stringify(newData));
-  };
-
   return (
     <div className="min-h-screen bg-gray-50 pb-20 font-sans">
+      {/* ===== HEADER ===== */}
       <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-4 md:px-8 py-4">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div>
-              <h1 className="text-3xl font-black bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+        <div className="max-w-7xl mx-auto px-4 md:px-8">
+          {/* Row 1: Logo + Test Selector + Progress */}
+          <div className="flex items-center justify-between py-3 border-b border-gray-100">
+            <div className="flex items-center gap-4">
+              <h1 className="text-2xl font-black bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent whitespace-nowrap">
                 TOEIC Hack-Speed
               </h1>
-              <div className="flex items-center gap-4 mt-1">
-                <p className="text-sm font-semibold text-gray-500 uppercase tracking-widest">
-                  {data.testId} - 3 Days Survival
-                </p>
-                {/* Progress bar tổng */}
-                {activeTab !== 'admin' && (
-                  <div className="hidden md:flex items-center gap-2">
-                    <span className="text-xs font-bold text-green-600">Đã nhớ: {getProgress()}%</span>
-                    <div className="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
-                      <div className="h-full bg-green-500" style={{ width: `${getProgress()}%` }}></div>
+              
+              {/* Test selector dropdown */}
+              <div className="relative">
+                <button 
+                  onClick={() => setShowTestMenu(!showTestMenu)}
+                  className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg font-bold text-gray-800 transition-colors"
+                >
+                  📄 {activeTest.testId}
+                  <ChevronDown size={16} className={`transition-transform ${showTestMenu ? 'rotate-180' : ''}`} />
+                </button>
+                
+                {showTestMenu && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setShowTestMenu(false)}></div>
+                    <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-xl shadow-xl border border-gray-200 z-50 overflow-hidden">
+                      <div className="p-2 border-b border-gray-100 bg-gray-50">
+                        <p className="text-xs font-bold text-gray-500 uppercase px-2">Chọn đề thi</p>
+                      </div>
+                      <div className="max-h-60 overflow-y-auto">
+                        {tests.map((t, i) => (
+                          <div 
+                            key={i}
+                            className={`flex items-center justify-between px-4 py-3 cursor-pointer transition-colors ${
+                              i === activeTestIdx ? 'bg-blue-50 text-blue-700' : 'hover:bg-gray-50 text-gray-700'
+                            }`}
+                          >
+                            <span 
+                              className="flex-1 font-semibold"
+                              onClick={() => { setActiveTestIdx(i); setShowTestMenu(false); }}
+                            >
+                              {i === activeTestIdx && '✅ '}{t.testId}
+                              <span className="text-xs text-gray-400 ml-2">
+                                ({(t.part5?.length || 0) + (t.part6?.length || 0) + (t.part7?.length || 0)} câu)
+                              </span>
+                            </span>
+                            <button 
+                              onClick={(e) => { e.stopPropagation(); deleteTest(i); }}
+                              className="text-red-400 hover:text-red-600 p-1 rounded hover:bg-red-50 transition-colors"
+                              title="Xóa đề này"
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                      <button 
+                        onClick={addNewTest}
+                        className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-green-50 hover:bg-green-100 text-green-700 font-bold border-t border-gray-200 transition-colors"
+                      >
+                        <Plus size={16} /> Tạo đề mới
+                      </button>
                     </div>
-                  </div>
+                  </>
                 )}
               </div>
             </div>
-            
-            <nav className="flex gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 hide-scrollbar">
-              {tabs.map(tab => (
+
+            {/* Progress */}
+            {activeTab !== 'admin' && (
+              <div className="hidden md:flex items-center gap-3">
+                <span className="text-sm font-bold text-green-600">{getProgress()}% đã nhớ</span>
+                <div className="w-28 h-2.5 bg-gray-200 rounded-full overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-green-400 to-emerald-500 transition-all duration-500" style={{ width: `${getProgress()}%` }}></div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Row 2: Part tabs — NO scrolling, wrapped naturally */}
+          <nav className="flex flex-wrap gap-1.5 py-2.5">
+            {tabs.map(tab => {
+              const isActive = activeTab === tab.id;
+              let activeClass = '';
+              if (isActive) {
+                if (tab.color === 'purple') activeClass = 'bg-purple-600 text-white shadow-md';
+                else if (tab.color === 'teal') activeClass = 'bg-teal-600 text-white shadow-md';
+                else if (tab.color === 'green') activeClass = 'bg-emerald-600 text-white shadow-md';
+                else activeClass = 'bg-blue-600 text-white shadow-md';
+              }
+
+              // Count items for this tab
+              let count = 0;
+              if (tab.id === 'p1') count = activeTest.part1?.length || 0;
+              else if (tab.id === 'p2') count = activeTest.part2?.length || 0;
+              else if (tab.id === 'p34') count = (activeTest.part3?.length || 0) + (activeTest.part4?.length || 0);
+              else if (tab.id === 'p5') count = activeTest.part5?.length || 0;
+              else if (tab.id === 'p6') count = activeTest.part6?.length || 0;
+              else if (tab.id === 'p7') count = activeTest.part7?.length || 0;
+
+              return (
                 <button 
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg font-bold text-sm whitespace-nowrap transition-all duration-300
-                    ${activeTab === tab.id 
-                      ? (tab.bg || 'bg-blue-600 text-white shadow-md scale-105')
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                  className={`flex items-center gap-1.5 px-3 py-2 rounded-lg font-bold text-sm transition-all duration-200
+                    ${isActive ? activeClass : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
                 >
                   {tab.icon} {tab.label}
+                  {tab.id !== 'admin' && count > 0 && (
+                    <span className={`text-[10px] font-black px-1.5 py-0.5 rounded-full ${isActive ? 'bg-white/25 text-white' : 'bg-gray-200 text-gray-500'}`}>
+                      {count}
+                    </span>
+                  )}
                 </button>
-              ))}
-            </nav>
-          </div>
+              );
+            })}
+          </nav>
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 md:px-8 mt-12">
-        {activeTab === 'p1' && <Part1PhotoFlash data={data.part1 || []} testId={data.testId} />}
-        {activeTab === 'p2' && <Part2CursorRecall data={data.part2 || []} testId={data.testId} />}
-        {activeTab === 'p34' && <ParaphraseMapper data={[...(data.part3 || []), ...(data.part4 || [])]} testId={data.testId} />}
-        {activeTab === 'p5' && <GrammarReflex data={data.part5 || []} testId={data.testId} />}
-        {activeTab === 'p6' && <ContextFlow data={data.part6 || []} testId={data.testId} />}
-        {activeTab === 'p7' && <ScanningRadar data={data.part7 || []} testId={data.testId} />}
-        {activeTab === 'admin' && <AdminPanel data={data} onUpdateData={updateData} />}
+      {/* ===== MAIN CONTENT ===== */}
+      <main className="max-w-7xl mx-auto px-4 md:px-8 mt-8">
+        {activeTab === 'p1' && <Part1PhotoFlash data={activeTest.part1 || []} testId={testId} />}
+        {activeTab === 'p2' && <Part2CursorRecall data={activeTest.part2 || []} testId={testId} />}
+        {activeTab === 'p34' && <ParaphraseMapper data={[...(activeTest.part3 || []), ...(activeTest.part4 || [])]} testId={testId} />}
+        {activeTab === 'p5' && <GrammarReflex data={activeTest.part5 || []} testId={testId} />}
+        {activeTab === 'p6' && <ContextFlow data={activeTest.part6 || []} testId={testId} />}
+        {activeTab === 'p7' && <ScanningRadar data={activeTest.part7 || []} testId={testId} />}
+        {activeTab === 'admin' && <AdminPanel data={activeTest} onUpdateData={updateActiveTest} />}
       </main>
     </div>
   );
