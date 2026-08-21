@@ -26,8 +26,16 @@ export default function useConfidence(testId) {
     return () => window.removeEventListener('confidence_sync', handleSync);
   }, [loadData]);
 
-  const markConfident = (questionId, isConfident) => {
-    const newData = { ...confidenceData, [questionId]: isConfident };
+  const markConfident = (questionId, isConfidentVal) => {
+    const newData = { ...confidenceData };
+    
+    // Toggle logic: if clicking the same button, remove the selection
+    if (newData[questionId] === isConfidentVal) {
+      delete newData[questionId];
+    } else {
+      newData[questionId] = isConfidentVal;
+    }
+    
     setConfidenceData(newData);
     localStorage.setItem(`confidence_${testId}`, JSON.stringify(newData));
     
