@@ -51,77 +51,97 @@ export default function ContextFlow({ data, testId }) {
     <div>
       <Toolbar onShuffle={shuffle} filterUnsure={filterUnsure} setFilterUnsure={setFilterUnsure} onReset={handleReset} />
       
-      <div className="space-y-8 md:space-y-12 max-w-5xl mx-auto">
-        {Object.values(grouped).map((group, idx) => (
-          <div key={idx} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            
-            <div className="bg-blue-50 border-b border-blue-100 p-5 md:p-6">
-              <h3 className="font-bold text-blue-900 text-base md:text-lg mb-2 break-words">📖 {group.title}</h3>
-              {group.passageContext && (
-                <div className="text-gray-800 leading-relaxed italic bg-white p-4 rounded-lg border border-blue-100 shadow-sm text-sm md:text-base break-words">
-                  {group.passageContext}
-                </div>
-              )}
-              {group.audioUrl && (
-                <div className="mt-4 max-w-md w-full">
-                  <AudioPlayer audioUrl={group.audioUrl} />
-                </div>
-              )}
-            </div>
+      <div className="bg-white max-w-4xl mx-auto border-2 border-black p-4 md:p-8 shadow-xl mb-12 font-serif text-gray-900">
+        <div className="mb-8">
+          <h3 className="text-xl font-bold mb-2">PART 6</h3>
+          <p className="text-sm md:text-base leading-relaxed">
+            <span className="font-bold">Directions:</span> Read the texts that follow. A word, phrase, or sentence is missing in parts of each text. Four answer choices for each question are given below the text. Select the best answer to complete the text. Then mark the letter (A), (B), (C), or (D) on your answer sheet.
+          </p>
+        </div>
 
-            <div className="p-5 md:p-8 space-y-8 divide-y divide-gray-100">
-              {group.questions.map(q => (
-                <div key={q.id} className="pt-8 first:pt-0 flex flex-col md:flex-row gap-4 min-w-0">
-                  <span className="w-8 h-8 rounded-full bg-blue-100 text-blue-800 flex items-center justify-center font-bold flex-shrink-0 mt-1">
-                    {q.id}
-                  </span>
-                  
-                  <div className="flex-1 min-w-0">
-                    <p className="text-lg md:text-xl text-gray-800 font-medium mb-4 break-words">{q.question || q.text}</p>
-                    {q.translation && <p className="text-gray-500 italic mb-4 text-sm md:text-base break-words">{q.translation}</p>}
-                    
-                    {!revealed[q.id] ? (
-                      <button 
-                        onClick={() => handleReveal(q.id)}
-                        className="w-full md:w-auto px-6 md:px-8 py-3 md:py-4 bg-gray-900 hover:bg-gray-800 text-white rounded-xl text-base md:text-lg font-bold transition-all shadow-md cursor-pointer text-center"
-                      >
-                        🔒 LẬT ĐÁP ÁN
-                      </button>
-                    ) : (
-                      <div className="bg-green-50 p-5 md:p-6 rounded-xl border border-green-200 animate-fade-in space-y-4 min-w-0">
-                        <div className="min-w-0">
-                          <span className="text-xs font-bold text-green-800 uppercase tracking-wider block mb-1">Đáp án đúng</span>
-                          <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-1">
-                            {q.correctAnswer && <span className="bg-green-600 text-white font-bold px-2 py-0.5 rounded w-max">{q.correctAnswer}</span>}
-                            <p className="text-lg md:text-xl font-bold text-green-900 break-words">{q.correctAnswerText || (q.options && q.options[q.correctAnswer])}</p>
-                          </div>
-                          {q.correctAnswerTextVi && <p className="text-green-700 mt-1 text-sm md:text-base break-words">{q.correctAnswerTextVi}</p>}
-                        </div>
-
-                        {(q.recognitionKey || q.explanation) && (
-                          <div className="p-4 bg-white rounded-lg border border-green-100 text-sm md:text-base min-w-0">
-                            {q.recognitionKey && <p className="font-bold text-blue-900 mb-2 break-words">🔑 {q.recognitionKey}</p>}
-                            {q.explanation && <p className="text-gray-700 break-words">{q.explanation}</p>}
-                          </div>
-                        )}
-
-                        <ConfidenceButtons 
-                          isConfident={isConfident(q.id)} 
-                          onMark={(val) => markConfident(q.id, val)} 
-                        />
-                      </div>
-                    )}
+        <div className="space-y-12">
+          {Object.values(grouped).map((group, idx) => (
+            <div key={idx} className="mb-12">
+              <div className="flex flex-col md:flex-row gap-8 items-start">
+                
+                {/* Passage Column */}
+                <div className="w-full md:w-1/2">
+                  <h4 className="font-bold mb-2 uppercase text-sm">{group.title}</h4>
+                  <div className="border-2 border-black p-5 md:p-6 bg-white leading-loose text-base md:text-lg text-justify">
+                    {group.passageContext ? group.passageContext.split('\n').map((line, i) => (
+                      <React.Fragment key={i}>
+                        {line}
+                        <br />
+                      </React.Fragment>
+                    )) : ""}
                   </div>
+                  {group.audioUrl && (
+                    <div className="mt-4 max-w-sm">
+                      <AudioPlayer audioUrl={group.audioUrl} />
+                    </div>
+                  )}
                 </div>
-              ))}
+
+                {/* Questions Column */}
+                <div className="w-full md:w-1/2 space-y-8">
+                  {group.questions.map(q => (
+                    <div key={q.id} className="relative">
+                      
+                      <div className="flex gap-2 mb-2">
+                        <span className="font-bold text-lg">{q.id}.</span>
+                        <div className="text-lg leading-relaxed break-words w-full">
+                          {q.question || q.text}
+                          
+                          {!revealed[q.id] ? (
+                            <div 
+                              onClick={() => handleReveal(q.id)}
+                              className="mt-4 border border-dashed border-gray-400 p-3 text-center text-gray-500 cursor-pointer hover:bg-gray-50 text-sm font-sans"
+                            >
+                              [ Click to Reveal Answer & Analysis ]
+                            </div>
+                          ) : (
+                            <div className="mt-4 p-4 border border-gray-300 bg-gray-50/80 font-sans text-sm md:text-base shadow-inner">
+                              <div className="mb-3">
+                                <span className="font-bold uppercase text-green-700 block mb-1">Correct Answer</span>
+                                <div className="flex items-center gap-2">
+                                  {q.correctAnswer && <span className="font-bold border border-green-600 text-green-700 px-1.5">[ {q.correctAnswer} ]</span>}
+                                  <span className="font-bold text-gray-800">{q.correctAnswerText || (q.options && q.options[q.correctAnswer])}</span>
+                                </div>
+                              </div>
+                              
+                              {q.translation && <p className="text-gray-600 italic mb-3">{q.translation}</p>}
+                              {q.correctAnswerTextVi && <p className="text-gray-600 italic mb-3">{q.correctAnswerTextVi}</p>}
+
+                              {(q.recognitionKey || q.explanation) && (
+                                <div className="mt-2 border-t border-gray-200 pt-2">
+                                  {q.recognitionKey && <p className="font-bold text-gray-900 mb-1">🔑 {q.recognitionKey}</p>}
+                                  {q.explanation && <p className="text-gray-700">{q.explanation}</p>}
+                                </div>
+                              )}
+
+                              <div className="border-t border-gray-200 pt-3 mt-3">
+                                <ConfidenceButtons 
+                                  isConfident={isConfident(q.id)} 
+                                  onMark={(val) => markConfident(q.id, val)} 
+                                />
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+              </div>
             </div>
-          </div>
-        ))}
-        {filteredQuestions.length === 0 && (
-          <div className="text-center py-20 text-gray-500 font-bold text-xl px-4">
-            Không có câu hỏi nào (hoặc bạn đã nhớ hết các câu!)
-          </div>
-        )}
+          ))}
+          {filteredQuestions.length === 0 && (
+            <div className="text-center py-20 text-gray-500 font-bold text-xl font-sans">
+              No questions found
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

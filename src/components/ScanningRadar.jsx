@@ -75,107 +75,107 @@ export default function ScanningRadar({ data, testId }) {
     <div>
       <Toolbar onShuffle={shuffle} filterUnsure={filterUnsure} setFilterUnsure={setFilterUnsure} onReset={handleReset} />
       
-      <div className="space-y-8 md:space-y-12 max-w-6xl mx-auto">
-        {Object.values(grouped).map((group, idx) => (
-          <div key={idx} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            
-            <div className="grid lg:grid-cols-2 gap-0 divide-y lg:divide-y-0 lg:divide-x divide-gray-100">
-              
-              {/* Cột trái: Bài đọc */}
-              <div className="bg-blue-50/50 p-5 md:p-8 flex flex-col min-w-0 h-full">
-                <div className="sticky top-4">
-                  <h3 className="font-bold text-blue-900 text-lg md:text-xl mb-4 break-words">📖 {group.title}</h3>
+      <div className="bg-white max-w-5xl mx-auto border-2 border-black p-4 md:p-8 shadow-xl mb-12 font-serif text-gray-900">
+        <div className="mb-8">
+          <h3 className="text-xl font-bold mb-2">PART 7</h3>
+          <p className="text-sm md:text-base leading-relaxed">
+            <span className="font-bold">Directions:</span> In this part you will read a selection of texts, such as magazine and newspaper articles, e-mails, and instant messages. Each text or set of texts is followed by several questions. Select the best answer for each question and mark the letter (A), (B), (C), or (D) on your answer sheet.
+          </p>
+        </div>
+
+        <div className="space-y-12">
+          {Object.values(grouped).map((group, idx) => (
+            <div key={idx} className="mb-12">
+              <div className="flex flex-col gap-6">
+                
+                {/* Passage */}
+                <div className="w-full">
+                  <h4 className="font-bold mb-2 uppercase text-sm text-center">{group.title}</h4>
+                  <div className="border-2 border-black p-5 md:p-6 bg-white leading-loose text-base md:text-lg text-justify mx-auto max-w-3xl">
+                    {group.passageText && renderPassage(group.passageText, activeHighlight)}
+                  </div>
                   {group.audioUrl && (
-                    <div className="mb-4">
+                    <div className="mt-4 max-w-sm mx-auto">
                       <AudioPlayer audioUrl={group.audioUrl} />
                     </div>
                   )}
-                  {group.passageText && (
-                    <div className="text-gray-800 leading-relaxed font-serif bg-white p-5 md:p-6 rounded-xl border border-blue-100 shadow-sm text-sm md:text-base max-h-[40vh] lg:max-h-[70vh] overflow-y-auto hide-scrollbar break-words">
-                      {renderPassage(group.passageText, activeHighlight)}
-                    </div>
-                  )}
                 </div>
-              </div>
 
-              {/* Cột phải: Câu hỏi */}
-              <div className="p-5 md:p-8 space-y-8">
-                {group.questions.map(q => (
-                  <div key={q.id} 
-                    className={`border-b border-gray-100 pb-8 last:border-0 last:pb-0 transition-all min-w-0 ${activeHighlight === q.evidenceInPassage ? 'ring-2 ring-yellow-300 p-4 rounded-xl bg-yellow-50/30' : ''}`}
-                    onMouseEnter={() => revealed[q.id] && q.evidenceInPassage && setActiveHighlight(q.evidenceInPassage)}
-                    onMouseLeave={() => setActiveHighlight(null)}
-                  >
-                    <div className="flex gap-4 items-start min-w-0">
-                      <span className="w-8 h-8 rounded-full bg-blue-100 text-blue-800 flex items-center justify-center font-bold flex-shrink-0 mt-1">
-                        {q.id}
-                      </span>
-                      
-                      <div className="flex-1 min-w-0">
-                        <p className="text-lg md:text-xl text-gray-800 font-medium mb-2 break-words">{q.question}</p>
-                        {q.translation && <p className="text-gray-500 italic mb-4 text-sm md:text-base break-words">{q.translation}</p>}
-                        
-                        {!revealed[q.id] ? (
-                          <button 
-                            onClick={() => handleReveal(q.id)}
-                            className="w-full md:w-auto px-6 md:px-8 py-3 md:py-4 bg-gray-900 hover:bg-gray-800 text-white rounded-xl text-base md:text-lg font-bold transition-all shadow-md cursor-pointer text-center"
-                          >
-                            🔒 LẬT ĐÁP ÁN & TÌM DẪN CHỨNG
-                          </button>
-                        ) : (
-                          <div className="bg-green-50 p-5 md:p-6 rounded-xl border border-green-200 animate-fade-in space-y-4 min-w-0">
-                            <div className="min-w-0">
-                              <span className="text-xs font-bold text-green-800 uppercase tracking-wider block mb-1">Đáp án đúng</span>
-                              <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-1">
-                                {q.correctAnswer && <span className="bg-green-600 text-white font-bold px-2 py-0.5 rounded w-max">{q.correctAnswer}</span>}
-                                <p className="text-lg md:text-xl font-bold text-green-900 break-words">{q.correctAnswerText || (q.options && q.options[q.correctAnswer])}</p>
+                {/* Questions */}
+                <div className="w-full space-y-8 mt-6">
+                  {group.questions.map(q => (
+                    <div key={q.id} 
+                      className={`relative transition-all min-w-0 ${activeHighlight === q.evidenceInPassage ? 'bg-yellow-50/50 outline outline-2 outline-yellow-200 p-2 -m-2' : ''}`}
+                      onMouseEnter={() => revealed[q.id] && q.evidenceInPassage && setActiveHighlight(q.evidenceInPassage)}
+                      onMouseLeave={() => setActiveHighlight(null)}
+                    >
+                      <div className="flex gap-2">
+                        <span className="font-bold text-lg">{q.id}.</span>
+                        <div className="text-lg leading-relaxed break-words w-full">
+                          {q.question}
+                          
+                          {!revealed[q.id] ? (
+                            <div 
+                              onClick={() => handleReveal(q.id)}
+                              className="mt-4 border border-dashed border-gray-400 p-3 text-center text-gray-500 cursor-pointer hover:bg-gray-50 text-sm font-sans w-full max-w-md"
+                            >
+                              [ Click to Reveal Answer & Evidence ]
+                            </div>
+                          ) : (
+                            <div className="mt-4 p-4 border border-gray-300 bg-gray-50/80 font-sans text-sm md:text-base shadow-inner w-full">
+                              <div className="mb-3">
+                                <span className="font-bold uppercase text-green-700 block mb-1">Correct Answer</span>
+                                <div className="flex items-center gap-2">
+                                  {q.correctAnswer && <span className="font-bold border border-green-600 text-green-700 px-1.5">[ {q.correctAnswer} ]</span>}
+                                  <span className="font-bold text-gray-800">{q.correctAnswerText || (q.options && q.options[q.correctAnswer])}</span>
+                                </div>
+                              </div>
+                              
+                              {q.translation && <p className="text-gray-600 italic mb-3">{q.translation}</p>}
+
+                              {q.evidenceInPassage && (
+                                <div className="mt-3 p-3 bg-yellow-100/50 border border-yellow-300">
+                                  <span className="font-bold text-yellow-900 block mb-1">🎯 Evidence in text:</span>
+                                  <p className="text-yellow-900 italic">"...{q.evidenceInPassage}..."</p>
+                                </div>
+                              )}
+
+                              {(q.recognitionKey || q.explanation) && (
+                                <div className="mt-3 border-t border-gray-200 pt-3">
+                                  {q.recognitionKey && <p className="font-bold text-gray-900 mb-1">🔑 {q.recognitionKey}</p>}
+                                  {q.explanation && <p className="text-gray-700">{q.explanation}</p>}
+                                </div>
+                              )}
+                              
+                              {q.trap && (
+                                <div className="mt-3 p-2 bg-red-50 border border-red-200 text-red-800">
+                                  <span className="font-bold text-red-900">⚠️ Trap: </span>{q.trap}
+                                </div>
+                              )}
+
+                              <div className="border-t border-gray-200 pt-3 mt-3">
+                                <ConfidenceButtons 
+                                  isConfident={isConfident(q.id)} 
+                                  onMark={(val) => markConfident(q.id, val)} 
+                                />
                               </div>
                             </div>
-
-                            {/* Dẫn chứng (Evidence Radar) */}
-                            {q.evidenceInPassage && (
-                              <div className="p-3 md:p-4 bg-yellow-100/50 rounded-lg border border-yellow-300 min-w-0">
-                                <span className="font-bold text-yellow-900 flex items-center gap-2 text-sm md:text-base mb-1">
-                                  🎯 Dẫn chứng trong bài:
-                                </span>
-                                <p className="text-yellow-800 italic text-sm md:text-base break-words">"...{q.evidenceInPassage}..."</p>
-                              </div>
-                            )}
-
-                            {(q.recognitionKey || q.explanation) && (
-                              <div className="p-4 bg-white rounded-lg border border-green-100 text-sm md:text-base min-w-0">
-                                {q.recognitionKey && <p className="font-bold text-blue-900 mb-2 break-words">🔑 {q.recognitionKey}</p>}
-                                {q.explanation && <p className="text-gray-700 break-words">{q.explanation}</p>}
-                              </div>
-                            )}
-                            
-                            {q.trap && (
-                              <div className="mt-2 p-3 bg-red-50 rounded-lg border border-red-200 text-sm md:text-base min-w-0">
-                                <span className="font-bold text-red-900">⚠️ Bẫy: </span>
-                                <span className="text-red-800 break-words">{q.trap}</span>
-                              </div>
-                            )}
-
-                            <ConfidenceButtons 
-                              isConfident={isConfident(q.id)} 
-                              onMark={(val) => markConfident(q.id, val)} 
-                            />
-                          </div>
-                        )}
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
 
+              </div>
             </div>
-          </div>
-        ))}
-        {filteredQuestions.length === 0 && (
-          <div className="text-center py-20 text-gray-500 font-bold text-xl px-4">
-            Không có câu hỏi nào (hoặc bạn đã nhớ hết các câu!)
-          </div>
-        )}
+          ))}
+          {filteredQuestions.length === 0 && (
+            <div className="text-center py-20 text-gray-500 font-bold text-xl font-sans">
+              No questions found
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

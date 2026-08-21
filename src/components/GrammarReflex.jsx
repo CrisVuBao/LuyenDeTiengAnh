@@ -64,110 +64,135 @@ export default function GrammarReflex({ data, testId }) {
         
         <button 
           onClick={() => setIsChantingMode(!isChantingMode)}
-          className="w-full md:w-auto flex justify-center items-center gap-2 bg-purple-100 text-purple-800 px-5 py-2.5 rounded-xl font-bold hover:bg-purple-200 transition-colors shadow-sm"
+          className="w-full md:w-auto flex justify-center items-center gap-2 bg-purple-100 text-purple-800 px-5 py-2.5 rounded-none border-2 border-purple-800 font-bold hover:bg-purple-200 transition-colors"
         >
           {isChantingMode ? <ToggleRight size={24} className="text-purple-600" /> : <ToggleLeft size={24} />}
-          Chế độ đọc tụng (Chanting)
+          Chế độ Đọc Tụng (Chanting)
         </button>
       </div>
 
-      <div className="grid gap-6 max-w-4xl mx-auto">
-        {filteredQuestions.map(q => {
-          const isAnswered = !!selectedAnswers[q.id];
-          const selected = selectedAnswers[q.id];
-          const isCorrect = selected === q.correctAnswer;
+      <div className="bg-white max-w-4xl mx-auto border-2 border-black p-4 md:p-8 font-serif text-gray-900 shadow-xl mb-12">
+        {/* TOEIC Directions Box */}
+        <div className="mb-8 border-b-2 border-black pb-6">
+          <h2 className="text-2xl font-bold mb-2">READING TEST</h2>
+          <p className="text-sm md:text-base leading-relaxed mb-4">
+            In the Reading test, you will read a variety of texts and answer several different types of reading comprehension questions. The entire Reading test will last 75 minutes. There are three parts, and directions are given for each part. You are encouraged to answer as many questions as possible within the time allowed.
+          </p>
+          <p className="text-sm md:text-base leading-relaxed">
+            You must mark your answers on the separate answer sheet. Do not write your answers in your test book.
+          </p>
+        </div>
 
-          return (
-            <div key={q.id} className="bg-white p-5 md:p-8 rounded-2xl shadow-sm border border-gray-100 flex gap-4 items-start">
-              <span className="w-10 h-10 rounded-full bg-blue-100 text-blue-800 flex items-center justify-center font-bold flex-shrink-0 mt-1">
-                {q.id}
-              </span>
-              
-              <div className="flex-1 w-full min-w-0">
+        <div className="mb-10">
+          <h3 className="text-xl font-bold mb-2">PART 5</h3>
+          <p className="text-sm md:text-base leading-relaxed">
+            <span className="font-bold">Directions:</span> A word or phrase is missing in each of the sentences below. Four answer choices are given below each sentence. Select the best answer to complete the sentence. Then mark the letter (A), (B), (C), or (D) on your answer sheet.
+          </p>
+        </div>
+
+        <div className="space-y-10">
+          {filteredQuestions.map((q, idx) => {
+            const isAnswered = !!selectedAnswers[q.id];
+            const selected = selectedAnswers[q.id];
+            const isCorrect = selected === q.correctAnswer;
+
+            return (
+              <div key={q.id} className="relative">
                 {isChantingMode ? (
-                  // CHANTING MODE
-                  <div className="space-y-4">
-                    <p className="text-lg md:text-xl text-gray-800 font-medium leading-relaxed break-words">
-                      {renderFilledQuestion(q.question, q.options, q.correctAnswer)}
-                    </p>
-                    {q.translation && <p className="text-gray-500 italic text-sm md:text-base">{q.translation}</p>}
+                  // CHANTING MODE (Paper overlay)
+                  <div className="p-4 bg-yellow-50/50 border border-yellow-200">
+                    <div className="flex gap-2 mb-3">
+                      <span className="font-bold text-lg">{q.id}.</span>
+                      <p className="text-lg leading-relaxed break-words">
+                        {renderFilledQuestion(q.question, q.options, q.correctAnswer)}
+                      </p>
+                    </div>
+                    {q.translation && <p className="text-gray-600 italic text-sm md:text-base pl-8 mb-4">{q.translation}</p>}
                     
-                    <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-xl">
-                      {q.grammarTag && <span className="inline-block bg-blue-200 text-blue-900 text-xs font-bold px-2 py-1 rounded mb-2">#{q.grammarTag}</span>}
+                    <div className="pl-8 mb-4">
+                      {q.grammarTag && <span className="inline-block border border-gray-400 text-gray-700 text-xs font-bold px-2 py-1 mb-2">#{q.grammarTag}</span>}
                       {q.recognitionKey && (
-                        <p className="font-bold text-blue-900 text-base md:text-lg mb-2">🔑 {q.recognitionKey}</p>
+                        <p className="font-bold text-gray-900 text-base mb-1">🔑 {q.recognitionKey}</p>
                       )}
-                      {q.explanation && <p className="text-blue-800 text-sm">{q.explanation}</p>}
+                      {q.explanation && <p className="text-gray-800 text-sm">{q.explanation}</p>}
                     </div>
 
-                    <ConfidenceButtons 
-                      isConfident={isConfident(q.id)} 
-                      onMark={(val) => markConfident(q.id, val)} 
-                    />
+                    <div className="pl-8">
+                      <ConfidenceButtons 
+                        isConfident={isConfident(q.id)} 
+                        onMark={(val) => markConfident(q.id, val)} 
+                      />
+                    </div>
                   </div>
                 ) : (
-                  // ACTIVE RECALL MODE
-                  <div className="space-y-6">
-                    <p className="text-lg md:text-xl text-gray-800 font-medium leading-relaxed break-words">
-                      {q.question}
-                    </p>
+                  // ACTIVE RECALL MODE (Paper test style)
+                  <div>
+                    <div className="flex gap-2 mb-2">
+                      <span className="font-bold text-lg">{q.id}.</span>
+                      <p className="text-lg leading-relaxed break-words">
+                        {q.question}
+                      </p>
+                    </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div className="pl-8 grid grid-cols-1 md:grid-cols-2 gap-y-2 gap-x-4">
                       {q.options && Object.entries(q.options).map(([key, text]) => {
-                        let btnClass = "bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100";
+                        let btnClass = "hover:bg-gray-100 cursor-pointer";
+                        let keyText = `(${key})`;
+                        
                         if (isAnswered) {
                           if (key === q.correctAnswer) {
-                            btnClass = "bg-green-100 border-green-500 text-green-800 shadow-md ring-2 ring-green-400";
+                            btnClass = "bg-green-100 font-bold text-green-900";
+                            keyText = `[ ${key} ]`; // Checkmark style
                           } else if (key === selected && !isCorrect) {
-                            btnClass = "bg-red-50 border-red-300 text-red-600 line-through opacity-70";
+                            btnClass = "bg-gray-200 text-gray-400 line-through";
+                            keyText = `( X )`;
                           } else {
-                            btnClass = "bg-gray-50 border-gray-200 text-gray-400 opacity-50";
+                            btnClass = "text-gray-400";
                           }
                         }
 
                         return (
-                          <button
+                          <div
                             key={key}
                             onClick={() => handleSelect(q.id, key)}
-                            disabled={isAnswered}
-                            className={`p-4 rounded-xl border text-left font-medium transition-all ${btnClass} break-words`}
+                            className={`p-1.5 -ml-1.5 transition-all text-base md:text-lg break-words ${btnClass}`}
                           >
-                            <span className="font-bold mr-2">{key}.</span> {text}
-                          </button>
+                            <span className="font-bold mr-2">{keyText}</span> {text}
+                          </div>
                         );
                       })}
                     </div>
 
                     {isAnswered && (
-                      <div className="animate-fade-in space-y-4 mt-6">
-                        <div className={`p-5 rounded-xl border ${isCorrect ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
-                          <h4 className={`text-lg md:text-xl font-black mb-2 ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
-                            {isCorrect ? '✅ CHÍNH XÁC!' : `❌ SAI RỒI! Đáp án là ${q.correctAnswer}`}
-                          </h4>
-                          
-                          {q.recognitionKey && (
-                            <p className="font-bold text-gray-900 text-base md:text-lg mb-2">🔑 {q.recognitionKey}</p>
-                          )}
-                          {q.explanation && <p className="text-gray-700 text-sm md:text-base">{q.explanation}</p>}
+                      <div className="mt-6 ml-8 p-4 border border-gray-300 bg-gray-50/80 font-sans shadow-inner">
+                        <h4 className={`text-sm md:text-base font-bold mb-2 uppercase ${isCorrect ? 'text-green-700' : 'text-red-600'}`}>
+                          {isCorrect ? '✓ CORRECT' : `✗ INCORRECT (Correct: ${q.correctAnswer})`}
+                        </h4>
+                        
+                        {q.recognitionKey && (
+                          <p className="font-bold text-gray-900 text-sm md:text-base mb-2">🔑 {q.recognitionKey}</p>
+                        )}
+                        {q.explanation && <p className="text-gray-700 text-sm md:text-base mb-4">{q.explanation}</p>}
+                        
+                        <div className="border-t border-gray-200 pt-4 mt-2">
+                          <ConfidenceButtons 
+                            isConfident={isConfident(q.id)} 
+                            onMark={(val) => markConfident(q.id, val)} 
+                          />
                         </div>
-
-                        <ConfidenceButtons 
-                          isConfident={isConfident(q.id)} 
-                          onMark={(val) => markConfident(q.id, val)} 
-                        />
                       </div>
                     )}
                   </div>
                 )}
               </div>
+            );
+          })}
+          {filteredQuestions.length === 0 && (
+            <div className="text-center py-20 text-gray-500 font-bold text-xl font-sans">
+              No questions found
             </div>
-          );
-        })}
-        {filteredQuestions.length === 0 && (
-          <div className="text-center py-20 text-gray-500 font-bold text-xl">
-            Không có câu hỏi nào (hoặc bạn đã nhớ hết các câu!)
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
