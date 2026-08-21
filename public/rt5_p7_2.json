@@ -1,0 +1,366 @@
+{
+  "testId": "READING_TEST_5",
+  "part7": [
+    {
+      "id": 153,
+      "passageTitle": "Đoạn 4 (Câu 153 - 154): FOR SALE",
+      "passageText": "FOR SALE\n\nI'm selling my 1986 Celebrity Eurosport because my company is transferring me overseas. This car has very low mileage, and I am its only owner. I have treated this car with great care.\n\nDon't miss this one!\n• Classic F-platform with original doors and GM/Delco stereo!\n• New exhaust, shocks, tires, and brakes—all replaced within the last six months\n• Needs a paint touch-up and some minor repair work on fenders, rear bumper, and engine\n• Seat covers and window shades included\n• Reliable transportation for a student or as a second car\n• $400 O.B.O.\n• Cash only please\n\nCall Randy, 389-3412, weekdays before 5 p.m.",
+      "question": "Why is Randy selling his car?",
+      "translation": "Tại sao Randy lại bán chiếc xe của mình?",
+      "options": {
+        "A": "It is too old.",
+        "B": "He needs money.",
+        "C": "It needs repairs.",
+        "D": "He is moving abroad."
+      },
+      "correctAnswer": "D",
+      "correctAnswerText": "He is moving abroad. (Anh ấy sắp chuyển ra nước ngoài.)",
+      "evidenceInPassage": "because my company is transferring me overseas.",
+      "recognitionKey": "transferring me overseas = moving abroad (ra nước ngoài)",
+      "explanation": "Câu đầu tiên Randy viết là: 'Tôi bán xe vì công ty đang chuyển tôi ra nước ngoài làm việc'. 'overseas' đồng nghĩa với 'abroad'.",
+      "trap": "Chọn C vì thấy bài viết có ghi 'Needs a paint touch-up...' nhưng đó là tình trạng xe chứ không phải lý do bán chính."
+    },
+    {
+      "id": 154,
+      "passageTitle": "Đoạn 4 (Câu 153 - 154): FOR SALE",
+      "passageText": "(Như trên)",
+      "question": "What is stated about the car?",
+      "translation": "Điều gì được tuyên bố về chiếc xe?",
+      "options": {
+        "A": "It needs brand-new tires.",
+        "B": "It has its original stereo.",
+        "C": "It comes without seat covers.",
+        "D": "It has a new coat of paint."
+      },
+      "correctAnswer": "B",
+      "correctAnswerText": "It has its original stereo. (Nó có dàn âm thanh nổi nguyên bản.)",
+      "evidenceInPassage": "original doors and GM/Delco stereo!",
+      "recognitionKey": "original... stereo = dàn âm thanh nguyên bản",
+      "explanation": "Chiếc xe được miêu tả là có 'original doors and GM/Delco stereo!' (cửa nguyên bản và dàn stereo GM/Delco). Lốp xe (tires) đã được thay mới chứ không phải 'cần' lốp mới. Nó cần sơn lại (needs paint touch-up) chứ không phải đã sơn mới. Nó CÓ bao gồm bọc ghế (seat covers included) chứ không phải không có (without).",
+      "trap": "Nhìn lướt qua thấy chữ 'tires' hoặc 'paint' rồi chọn bừa mà không đọc động từ đi kèm (needs vs has)."
+    },
+    {
+      "id": 155,
+      "passageTitle": "Đoạn 5 (Câu 155 - 157): E-mail Flight delay",
+      "passageText": "To: Saul Leganza <sleganza@guzziimports.com>\nFrom: Peter Brown <pbrown@mel-mart.com>\nSubject: Re: Flight delay\nDate: August 15\n\nHi, Saul.\n\n[1] This is just to confirm that I have received your phone message. [2] I will now be leaving Concord early tomorrow morning and arriving in Los Angeles on Star Airways flight 77 tomorrow night around 8:00. Because it’s a last-minute booking, the only affordable flights had multiple stops (Philadelphia and Las Vegas), so it is going to take a lot longer than I had anticipated. [3] I am sorry for any trouble this will cause you. [4] Hopefully, we can reschedule our meetings for the day after I get there, the 17th. I have attached my new itinerary. Please call me if you have any questions; otherwise, see you soon!\n\nRegards,\nPeter",
+      "question": "Where is Mr. Brown now?",
+      "translation": "Ông Brown hiện đang ở đâu?",
+      "options": {
+        "A": "Los Angeles",
+        "B": "Philadelphia",
+        "C": "Las Vegas",
+        "D": "Concord"
+      },
+      "correctAnswer": "D",
+      "correctAnswerText": "Concord",
+      "evidenceInPassage": "I will now be leaving Concord early tomorrow morning",
+      "recognitionKey": "leaving [Place] tomorrow = hiện tại đang ở [Place]",
+      "explanation": "Peter viết 'Tôi sẽ rời Concord vào sáng sớm ngày mai'. Điều đó có nghĩa là hiện tại anh ấy đang ở Concord.",
+      "trap": "Chọn Los Angeles vì đó là điểm đến (arriving in), hoặc chọn các thành phố quá cảnh (multiple stops)."
+    },
+    {
+      "id": 156,
+      "passageTitle": "Đoạn 5 (Câu 155 - 157): E-mail Flight delay",
+      "passageText": "(Như trên)",
+      "question": "In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong? \"My flight to California has been canceled because of bad weather.\"",
+      "translation": "Câu 'Chuyến bay của tôi đến California đã bị hủy do thời tiết xấu' phù hợp nhất ở vị trí nào?",
+      "options": {
+        "A": "[1]",
+        "B": "[2]",
+        "C": "[3]",
+        "D": "[4]"
+      },
+      "correctAnswer": "B",
+      "correctAnswerText": "[2]",
+      "evidenceInPassage": "[1] (nhận được tin nhắn). [2] Chuyến bay bị huỷ... (Do đó) tôi sẽ rời Concord vào sáng sớm mai... bằng máy bay Star Airways.",
+      "recognitionKey": "canceled (bị huỷ) -> Dẫn đến hành động đặt lại chuyến mới (leaving tomorrow on Star Airways)",
+      "explanation": "Vị trí [2] là hoàn hảo vì nó giải thích LÝ DO tại sao ngay sau đó Peter lại phải thông báo lịch trình bay mới ('I will now be leaving...').",
+      "trap": "Đặt vào [3] hoặc [4] sẽ làm đứt gãy mạch liên kết giữa nguyên nhân và kết quả."
+    },
+    {
+      "id": 157,
+      "passageTitle": "Đoạn 5 (Câu 155 - 157): E-mail Flight delay",
+      "passageText": "(Như trên)",
+      "question": "When will Mr. Brown arrive?",
+      "translation": "Ông Brown sẽ đến nơi khi nào?",
+      "options": {
+        "A": "August 1",
+        "B": "August 15",
+        "C": "August 16",
+        "D": "August 17"
+      },
+      "correctAnswer": "C",
+      "correctAnswerText": "August 16",
+      "evidenceInPassage": "Date: August 15 | arriving in Los Angeles... tomorrow night",
+      "recognitionKey": "Hôm nay là August 15 + tomorrow night = August 16",
+      "explanation": "Email được viết vào ngày 15 tháng 8. Peter nói sẽ đến vào 'đêm mai' (tomorrow night), tức là ngày 16 tháng 8. Ngoài ra ông ấy cũng nhắc đến việc dời cuộc họp sang ngày sau khi đến nơi là ngày 17.",
+      "trap": "Chọn ngày 15 (ngày viết mail) hoặc ngày 17 (ngày họp)."
+    },
+    {
+      "id": 158,
+      "passageTitle": "Đoạn 6 (Câu 158 - 160): Movies at the Marquis",
+      "passageText": "Movies at the Marquis\n\nThe Marquis is proud to announce our special feature week.\n\nFor one week per month, we will show movies from a particular genre. This month, we have chosen horror. We want to know what YOU want to see, so fill in an audience choice form next time you visit. We will select our next genre based on the results of the survey.\n\nHorror Week\nGhostly Monsters (1956)\nKip McVities, Rosie Ranger\nMonday, 6:00 p.m.\n\nThe Bilge and the Brine (1943)\nMack Jangler, Gregory Ryan\nTuesday and Wednesday, 7:30 p.m.\n\nElvis and the Swamp Monster (1978)\nMike Myron, Roger Paul\nThursday and Friday, 8:00 p.m.\n\nDigstown (1987)\nLou Rosette, Jr., D. Hasbro Wiseman\nFriday through Sunday, 9:00 p.m., 12.00 a.m.",
+      "question": "On what day are two movies shown?",
+      "translation": "Vào ngày nào có hai bộ phim được chiếu?",
+      "options": {
+        "A": "Monday",
+        "B": "Tuesday",
+        "C": "Thursday",
+        "D": "Friday"
+      },
+      "correctAnswer": "D",
+      "correctAnswerText": "Friday",
+      "evidenceInPassage": "Elvis... Thursday and Friday | Digstown... Friday through Sunday",
+      "recognitionKey": "Tìm ngày lặp lại ở 2 bộ phim khác nhau",
+      "explanation": "Phim 'Elvis and the Swamp Monster' được chiếu vào Thứ Năm và Thứ Sáu. Phim 'Digstown' được chiếu từ Thứ Sáu đến Chủ Nhật. Do đó, vào Thứ Sáu (Friday), cả hai bộ phim này đều được chiếu.",
+      "trap": "Chỉ nhìn thời gian của từng bộ phim mà không đối chiếu các ngày giao nhau."
+    },
+    {
+      "id": 159,
+      "passageTitle": "Đoạn 6 (Câu 158 - 160): Movies at the Marquis",
+      "passageText": "(Như trên)",
+      "question": "How will the theater choose the theme of the next special feature week?",
+      "translation": "Rạp chiếu phim sẽ chọn chủ đề cho tuần chiếu đặc biệt tiếp theo như thế nào?",
+      "options": {
+        "A": "By asking about customer preferences",
+        "B": "By measuring box office popularity",
+        "C": "By reading critics' recommendations",
+        "D": "By asking staff members"
+      },
+      "correctAnswer": "A",
+      "correctAnswerText": "By asking about customer preferences (Bằng cách hỏi về sở thích của khách hàng)",
+      "evidenceInPassage": "We will select our next genre based on the results of the survey.",
+      "recognitionKey": "audience choice form / survey = customer preferences",
+      "explanation": "Bài viết nói rõ: 'Chúng tôi muốn biết BẠN muốn xem gì, vì vậy hãy điền vào phiếu lựa chọn của khán giả... Chúng tôi sẽ chọn thể loại tiếp theo dựa trên kết quả khảo sát (survey)'. Điều này tương đương với việc hỏi sở thích khách hàng.",
+      "trap": "Chọn B (box office) vì nghĩ chọn theo doanh thu."
+    },
+    {
+      "id": 160,
+      "passageTitle": "Đoạn 6 (Câu 158 - 160): Movies at the Marquis",
+      "passageText": "(Như trên)",
+      "question": "What is the latest time that one can see a movie?",
+      "translation": "Thời gian muộn nhất mà một người có thể xem phim là khi nào?",
+      "options": {
+        "A": "Noon",
+        "B": "8:00 p.m.",
+        "C": "9:00 p.m.",
+        "D": "Midnight"
+      },
+      "correctAnswer": "D",
+      "correctAnswerText": "Midnight (Nửa đêm)",
+      "evidenceInPassage": "Digstown... 9:00 p.m., 12.00 a.m.",
+      "recognitionKey": "12.00 a.m. = Midnight",
+      "explanation": "Suất chiếu cuối cùng được liệt kê là 12.00 a.m. (12 giờ đêm), đồng nghĩa với Midnight.",
+      "trap": "Chọn 9:00 p.m. vì không hiểu 12.00 a.m. là nửa đêm."
+    },
+    {
+      "id": 161,
+      "passageTitle": "Đoạn 7 (Câu 161 - 163): Bugs and Beans Coffee Shop",
+      "passageText": "Museum of Natural Sciences...\nMr. Tomi Galoob\nGaloob Ceramics\n\nDear Mr. Galoob,\n\nThank you for sending me a copy of your latest ceramics catalog... I was amazed yet again at the variety and creativity that you have displayed in your work. Your vases and bowls are quite exquisite! They really do resemble the plants and animals that they are modeled after. I will probably purchase 50 or more of the ladybug bowls. They are perfect for holding sugar cubes. However, it was the scorpion cups that really grabbed my attention. According to the catalog, they are available in small, medium, and extra-large sizes. I am interested in purchasing approximately 25 of the extra-large scorpion cups. Please send me information on your available stock. I would appreciate receiving the information by e-mail. I look forward to hearing from you.\n\nSincerely,\nLinda Trent",
+      "question": "What does Linda Trent request?",
+      "translation": "Linda Trent yêu cầu điều gì?",
+      "options": {
+        "A": "A copy of the catalog",
+        "B": "A reply by e-mail",
+        "C": "A set of bowls",
+        "D": "A large cup"
+      },
+      "correctAnswer": "B",
+      "correctAnswerText": "A reply by e-mail (Một câu trả lời qua e-mail)",
+      "evidenceInPassage": "I would appreciate receiving the information by e-mail.",
+      "recognitionKey": "request (yêu cầu) = would appreciate (sẽ rất trân trọng nếu...)",
+      "explanation": "Linda viết: 'Tôi sẽ rất cảm kích nếu nhận được thông tin qua e-mail'.",
+      "trap": "Chọn A (Catalog) vì cô ấy có nhắc đến catalog, nhưng là để cảm ơn vì ĐÃ NHẬN được, chứ không phải yêu cầu mới."
+    },
+    {
+      "id": 162,
+      "passageTitle": "Đoạn 7 (Câu 161 - 163): Bugs and Beans Coffee Shop",
+      "passageText": "(Như trên)",
+      "question": "What is Linda Trent's opinion of Galoob Ceramics?",
+      "translation": "Ý kiến của Linda Trent về Galoob Ceramics là gì?",
+      "options": {
+        "A": "Their products have become expensive.",
+        "B": "Their products are very attractive.",
+        "C": "Their products used to be better.",
+        "D": "Their products lack any variety."
+      },
+      "correctAnswer": "B",
+      "correctAnswerText": "Their products are very attractive. (Sản phẩm của họ rất thu hút.)",
+      "evidenceInPassage": "Your vases and bowls are quite exquisite!",
+      "recognitionKey": "exquisite (tuyệt đẹp) = very attractive (rất thu hút)",
+      "explanation": "Linda khen ngợi sự sáng tạo và đa dạng, và nhận xét 'Your vases and bowls are quite exquisite!' (Các bình và bát của bạn khá tuyệt mỹ/tinh xảo!). Điều này cho thấy cô thấy chúng rất hấp dẫn.",
+      "trap": "Chọn D (thiếu đa dạng) nếu không biết từ 'exquisite' mang nghĩa khen ngợi."
+    },
+    {
+      "id": 163,
+      "passageTitle": "Đoạn 7 (Câu 161 - 163): Bugs and Beans Coffee Shop",
+      "passageText": "(Như trên)",
+      "question": "What will the coffee shop use to hold sugar?",
+      "translation": "Quán cà phê sẽ sử dụng cái gì để đựng đường?",
+      "options": {
+        "A": "Scorpion cups",
+        "B": "Ceramic vases",
+        "C": "Ladybug bowls",
+        "D": "Small cups"
+      },
+      "correctAnswer": "C",
+      "correctAnswerText": "Ladybug bowls (Bát hình con bọ rùa)",
+      "evidenceInPassage": "ladybug bowls. They are perfect for holding sugar cubes.",
+      "recognitionKey": "holding sugar cubes (đựng đường)",
+      "explanation": "Linda viết rõ ràng: 'Tôi có thể sẽ mua 50 cái bát hình bọ rùa (ladybug bowls) hoặc nhiều hơn. Chúng rất hoàn hảo để đựng các viên đường.'",
+      "trap": "Chọn Scorpion cups vì cô ấy nói rất bị thu hút bởi chúng."
+    },
+    {
+      "id": 164,
+      "passageTitle": "Đoạn 8 (Câu 164 - 167): Chat Sam, Rob, Tina",
+      "passageText": "Sam Kliff: 9:41 a.m.\nHi, Rob & Tina. Sorry to bother you on a Saturday, but it's kind of an emergency. I've been looking over the brochures for the trade fair, and there are some serious errors in them. Some photos are wrong, and two of the pages are out of order.\n\nRob Martin: 9:44 a.m.\nAnd we need those for the trade fair by the 16th! This isn't good.\n\nTina Zakaria: 9:46 a.m.\nIt's strange—somebody must have checked the proofs before they were printed. What happened?\n\nSam Kliff: 9:45 a.m.\nI haven't been able to trace the error yet... Do we order 400 new copies?\n\nTina Zakaria: 9:46 a.m.\nI think we have to. We can't go to the fair without them.\n\nSam Kliff: 9:55 a.m.\nI just got off the phone with the printer. The only way to get the corrected brochures done in time is to pay for their rush service, which isn't cheap. But I can't do that without approval from someone higher up.\n\nRob Martin: 9:56 a.m.\nYeah, we have to get approval from Peter. I'll call him. He's probably working from home today anyway.\n\nTina Zakaria: 9:57 a.m.\nExactly, he almost never takes a day off. And I'm sure he'll OK it. It's our only option at this point.",
+      "question": "What does Sam Kliff apologize for?",
+      "translation": "Sam Kliff xin lỗi về việc gì?",
+      "options": {
+        "A": "Spending too much money",
+        "B": "Forgetting to check the brochures",
+        "C": "Texting his coworkers on the weekend",
+        "D": "Making mistakes on the brochures"
+      },
+      "correctAnswer": "C",
+      "correctAnswerText": "Texting his coworkers on the weekend (Nhắn tin cho đồng nghiệp vào cuối tuần)",
+      "evidenceInPassage": "Sorry to bother you on a Saturday",
+      "recognitionKey": "Saturday (Thứ 7) = weekend (cuối tuần)",
+      "explanation": "Câu đầu tiên Sam nhắn là 'Sorry to bother you on a Saturday' (Xin lỗi vì đã làm phiền các bạn vào Thứ Bảy). Thứ Bảy là cuối tuần.",
+      "trap": "Chọn D vì Sam phát hiện ra lỗi, nhưng người làm sai chưa chắc là Sam (anh ấy nói 'chưa tìm ra nguyên nhân lỗi do ai')."
+    },
+    {
+      "id": 165,
+      "passageTitle": "Đoạn 8 (Câu 164 - 167): Chat Sam, Rob, Tina",
+      "passageText": "(Như trên)",
+      "question": "What is suggested about Peter?",
+      "translation": "Điều gì được gợi ý về Peter?",
+      "options": {
+        "A": "He is new to the company.",
+        "B": "He often works on weekends.",
+        "C": "He has a low-level position.",
+        "D": "He worked on the brochures."
+      },
+      "correctAnswer": "B",
+      "correctAnswerText": "He often works on weekends. (Anh ấy thường làm việc vào cuối tuần.)",
+      "evidenceInPassage": "He's probably working from home today anyway. Exactly, he almost never takes a day off.",
+      "recognitionKey": "today (Saturday) + never takes a day off = often works on weekends",
+      "explanation": "Rob nói 'anh ấy có lẽ vẫn đang làm việc ở nhà hôm nay (Thứ 7)'. Tina thêm vào: 'Chính xác, anh ấy hầu như không bao giờ nghỉ một ngày nào'. Điều này ngụ ý Peter thường xuyên làm việc cả cuối tuần.",
+      "trap": "Chọn C vì nghĩ anh ta phải làm nhiều việc nên cấp thấp, nhưng anh ta là sếp (someone higher up, người cần phê duyệt)."
+    },
+    {
+      "id": 166,
+      "passageTitle": "Đoạn 8 (Câu 164 - 167): Chat Sam, Rob, Tina",
+      "passageText": "(Như trên)",
+      "question": "What will Rob Martin most likely do next?",
+      "translation": "Rob Martin có khả năng sẽ làm gì tiếp theo?",
+      "options": {
+        "A": "Call Peter",
+        "B": "Call the printer",
+        "C": "Correct the brochures",
+        "D": "Send the digital file"
+      },
+      "correctAnswer": "A",
+      "correctAnswerText": "Call Peter (Gọi cho Peter)",
+      "evidenceInPassage": "Rob: ...I'll call him (Peter).",
+      "recognitionKey": "I'll call him",
+      "explanation": "Rob nói rõ ràng ở 9:56 a.m. là 'Yeah, we have to get approval from Peter. I'll call him.' (Chúng ta phải xin phép Peter. Tôi sẽ gọi anh ấy.)",
+      "trap": "Nhầm hành động của Sam (check file, call printer) với hành động của Rob."
+    },
+    {
+      "id": 167,
+      "passageTitle": "Đoạn 8 (Câu 164 - 167): Chat Sam, Rob, Tina",
+      "passageText": "(Như trên)",
+      "question": "At 9:57 a.m., what does Tina Zakaria imply when she writes, \"It's our only option at this point\"?",
+      "translation": "Vào lúc 9:57 sáng, Tina Zakaria ám chỉ điều gì khi viết, 'Đó là lựa chọn duy nhất của chúng ta vào lúc này'?",
+      "options": {
+        "A": "They have to ask for approval.",
+        "B": "They have to call another printer.",
+        "C": "The company has to go to the trade fair.",
+        "D": "The company has to pay the extra cost."
+      },
+      "correctAnswer": "D",
+      "correctAnswerText": "The company has to pay the extra cost. (Công ty phải trả thêm chi phí.)",
+      "evidenceInPassage": "The only way to get the corrected brochures done in time is to pay for their rush service",
+      "recognitionKey": "rush service (dịch vụ khẩn cấp - đắt tiền) = extra cost (trả thêm chi phí)",
+      "explanation": "Trước đó Sam nói muốn in kịp thì phải dùng dịch vụ khẩn (rush service) rất tốn kém (isn't cheap). Tina trả lời 'đó là lựa chọn duy nhất', nghĩa là họ đành chấp nhận tốn tiền để có hàng kịp hội chợ.",
+      "trap": "Nghĩ 'lựa chọn duy nhất' là gọi cho sếp (A)."
+    },
+    {
+      "id": 168,
+      "passageTitle": "Đoạn 9 (Câu 168 - 171): Dream Vacation",
+      "passageText": "Dream Vacation\nGolden sandy beaches, deep blue seas, peace and quiet, and delicious food.\nWould you like to take the vacation of a lifetime? [1] Have you always thought about getting away on a romantic cruise but could never afford it? Now your dream can become a reality.\n\n[2] Get away with Dazzle Tours! [3] Why not take one of our mini-breaks? You will find that a seven-day break costs a lot less than you thought. [4] For a limited time, we are offering a Caribbean cruise with stops in Jamaica, Aruba, and Puerto Rico for only $799 (plus taxes). Service charges and visa fees are included.\n\nYour Dazzle Tour includes:\n• Round-trip airfare from Palm Beach to Belize\n• All meals and on-board entertainment\n• Choice of breakfasts, a buffet lunch, and a three-course dinner menu\n• Full use of our sports center, sauna, and casino\n• Jet-skiing and scuba diving\n• Savings on shopping\n• Book of discount coupons...\n• Guided tours at destination cities...",
+      "question": "What is the purpose of this advertisement?",
+      "translation": "Mục đích của quảng cáo này là gì?",
+      "options": {
+        "A": "To advertise a buffet",
+        "B": "To offer store discounts",
+        "C": "To promote a cruise",
+        "D": "To introduce a casino"
+      },
+      "correctAnswer": "C",
+      "correctAnswerText": "To promote a cruise (Để quảng bá một chuyến du thuyền)",
+      "evidenceInPassage": "romantic cruise | offering a Caribbean cruise",
+      "recognitionKey": "cruise = chuyến du ngoạn trên biển",
+      "explanation": "Từ khóa chính của bài quảng cáo là 'cruise' (chuyến du thuyền/du ngoạn) trên biển Caribe.",
+      "trap": "Trong gói tour CÓ bao gồm buffet, discount, casino... nên các đáp án còn lại dễ gây nhiễu, nhưng mục đích chính yếu là bán cả tour du thuyền."
+    },
+    {
+      "id": 169,
+      "passageTitle": "Đoạn 9 (Câu 168 - 171): Dream Vacation",
+      "passageText": "(Như trên)",
+      "question": "In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong? \"If you book now, you can get away for even less.\"",
+      "translation": "Câu 'Nếu bạn đặt ngay bây giờ, bạn có thể đi nghỉ với giá thậm chí còn rẻ hơn' phù hợp nhất ở vị trí nào?",
+      "options": {
+        "A": "[1]",
+        "B": "[2]",
+        "C": "[3]",
+        "D": "[4]"
+      },
+      "correctAnswer": "D",
+      "correctAnswerText": "[4]",
+      "evidenceInPassage": "You will find that a seven-day break costs a lot less than you thought. [4] For a limited time, we are offering a Caribbean cruise... for only $799",
+      "recognitionKey": "get away for even less (rẻ hơn) -> nối tiếp vào chương trình khuyến mãi (limited time... only $799)",
+      "explanation": "Câu trước đó nói về việc giá cả 'rẻ hơn bạn nghĩ'. Chèn câu 'Nếu đặt ngay, giá còn rẻ hơn nữa' vào vị trí [4] là bước đệm hoàn hảo để dẫn vào câu giới thiệu giá khuyến mãi đặc biệt ($799 for a limited time) ngay sau đó.",
+      "trap": "Đặt vào [1] hoặc [2] thì mạch văn sẽ bị ngắt quãng."
+    },
+    {
+      "id": 170,
+      "passageTitle": "Đoạn 9 (Câu 168 - 171): Dream Vacation",
+      "passageText": "(Như trên)",
+      "question": "How can reservations be made?",
+      "translation": "Làm thế nào để đặt chỗ?",
+      "options": {
+        "A": "By e-mailing Dazzle Tours",
+        "B": "By visiting the airport",
+        "C": "By telephoning an agent",
+        "D": "By faxing the company"
+      },
+      "correctAnswer": "C",
+      "correctAnswerText": "By telephoning an agent (Bằng cách gọi điện thoại cho đại lý)",
+      "evidenceInPassage": "Call one of our agents to reserve your place now! Dazzle Tours: 1-800-455-2222",
+      "recognitionKey": "Call... agents = telephoning",
+      "explanation": "Dòng cuối cùng của quảng cáo hướng dẫn rõ ràng: 'Hãy gọi (call) cho một trong các đại lý của chúng tôi để đặt chỗ ngay!'",
+      "trap": "Chỉ dựa vào cảm tính mà không đọc câu cuối."
+    },
+    {
+      "id": 171,
+      "passageTitle": "Đoạn 9 (Câu 168 - 171): Dream Vacation",
+      "passageText": "(Như trên)",
+      "question": "How long does a Dazzle Tour last?",
+      "translation": "Một chuyến du lịch Dazzle kéo dài bao lâu?",
+      "options": {
+        "A": "Six days",
+        "B": "One week",
+        "C": "Two weeks",
+        "D": "One month"
+      },
+      "correctAnswer": "B",
+      "correctAnswerText": "One week (Một tuần)",
+      "evidenceInPassage": "All tours last seven days and six nights.",
+      "recognitionKey": "seven days = one week",
+      "explanation": "Trong bài viết có ghi 'Tất cả các tour kéo dài 7 ngày 6 đêm'. Bảy ngày tương đương với một tuần (One week).",
+      "trap": "Thấy số 6 (six nights) và 2 (two weeks in advance) nên nhầm lẫn các con số."
+    }
+  ]
+}

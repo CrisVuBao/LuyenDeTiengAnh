@@ -1,0 +1,271 @@
+{
+  "testId": "READING_TEST_5",
+  "part7": [
+    {
+      "id": 172,
+      "passageTitle": "Đoạn 10 (Câu 172 - 175): Tips for Shopping Online",
+      "passageText": "Tips for Shopping Online\nShopping online gives you access to thousands of goods... Here are some tips to help protect yourself when you shop on the Web.\n• Before placing your first order, research other people's opinions of the company. There are many websites dedicated to reviewing online companies...\n• Next, read all the available information... Check whether you will have to pay for shipping if you need to return the goods.\n• Always include shipping costs and sales tax in the final price...\n• Keep records of your order. Print out your e-receipt... This proof-of-purchase will help you in the event that your item is damaged or not what you ordered.\nIf you encounter any problems with an online company, contact a consumer advocacy group...",
+      "question": "What should you do before making an online purchase?",
+      "translation": "Bạn nên làm gì trước khi mua hàng trực tuyến?",
+      "options": {
+        "A": "Ask about discounts",
+        "B": "Compare similar websites",
+        "C": "Check the pictures of the item",
+        "D": "Find out about shipping costs"
+      },
+      "correctAnswer": "D",
+      "correctAnswerText": "Find out about shipping costs (Tìm hiểu về chi phí vận chuyển)",
+      "evidenceInPassage": "Always include shipping costs... Check whether you will have to pay for shipping",
+      "recognitionKey": "Tips khuyên bạn phải luôn kiểm tra/tính toán chi phí vận chuyển (shipping costs)",
+      "explanation": "Trong các gạch đầu dòng, bài viết liên tục nhắc nhở người mua phải kiểm tra phí vận chuyển (shipping) khi hoàn hàng và khi tính tổng giá cuối cùng.",
+      "trap": "Chọn B vì bài có khuyên đọc đánh giá công ty (review), nhưng không bảo 'so sánh các website tương tự' (compare websites)."
+    },
+    {
+      "id": 173,
+      "passageTitle": "Đoạn 10 (Câu 172 - 175): Tips for Shopping Online",
+      "passageText": "(Như trên)",
+      "question": "Why should an online shopper keep the receipts?",
+      "translation": "Tại sao người mua hàng trực tuyến nên giữ lại biên lai?",
+      "options": {
+        "A": "For recycling purposes",
+        "B": "In case there are disputes",
+        "C": "To show for the shipping",
+        "D": "To prove his or her identity"
+      },
+      "correctAnswer": "B",
+      "correctAnswerText": "In case there are disputes (Phòng trường hợp có tranh chấp)",
+      "evidenceInPassage": "This proof-of-purchase will help you in the event that your item is damaged or not what you ordered.",
+      "recognitionKey": "damaged / not what you ordered = có tranh chấp, khiếu nại (disputes)",
+      "explanation": "Bài viết nói nên in và giữ lại biên lai (e-receipt) vì nó là bằng chứng mua hàng giúp ích khi hàng bị hỏng hoặc giao sai (tức là khi có tranh chấp khiếu nại xảy ra).",
+      "trap": "Đọc lướt chữ 'proof' (bằng chứng) rồi chọn D (chứng minh danh tính)."
+    },
+    {
+      "id": 174,
+      "passageTitle": "Đoạn 10 (Câu 172 - 175): Tips for Shopping Online",
+      "passageText": "(Như trên)",
+      "question": "The word \"encounter\" in paragraph 6, line 1, is closest in meaning to",
+      "translation": "Từ 'encounter' (đối mặt/gặp phải) gần nghĩa nhất với từ nào?",
+      "options": {
+        "A": "face (đối mặt)",
+        "B": "solve (giải quyết)",
+        "C": "cause (gây ra)",
+        "D": "dislike (không thích)"
+      },
+      "correctAnswer": "A",
+      "correctAnswerText": "face",
+      "evidenceInPassage": "If you encounter any problems...",
+      "recognitionKey": "encounter problems = face problems (đối mặt với vấn đề)",
+      "explanation": "Từ 'encounter' nghĩa là vô tình gặp phải, đối mặt với một khó khăn hay vấn đề nào đó. Đồng nghĩa với từ 'face'.",
+      "trap": "Nhầm encounter thành giải quyết (solve)."
+    },
+    {
+      "id": 175,
+      "passageTitle": "Đoạn 10 (Câu 172 - 175): Tips for Shopping Online",
+      "passageText": "(Như trên)",
+      "question": "Whom should you contact if you have problems?",
+      "translation": "Bạn nên liên hệ với ai nếu gặp sự cố?",
+      "options": {
+        "A": "The review websites",
+        "B": "The shipping company",
+        "C": "A customer watchdog",
+        "D": "Your Internet provider"
+      },
+      "correctAnswer": "C",
+      "correctAnswerText": "A customer watchdog (Tổ chức bảo vệ người tiêu dùng)",
+      "evidenceInPassage": "contact a consumer advocacy group.",
+      "recognitionKey": "consumer advocacy group = customer watchdog (tổ chức bảo vệ/đại diện người tiêu dùng)",
+      "explanation": "Bài viết khuyên nếu gặp rắc rối, hãy liên hệ với 'consumer advocacy group' (nhóm bảo vệ quyền lợi người tiêu dùng). Từ đồng nghĩa chính xác nhất trong các lựa chọn là 'customer watchdog'.",
+      "trap": "Chọn B (công ty vận chuyển) vì nhắc nhiều đến shipping ở trên."
+    },
+    {
+      "id": 176,
+      "passageTitle": "Đoạn 11 (Câu 176 - 180): Park Board Meeting",
+      "passageText": "Park Board Meeting\nThe City Park Board open meeting is scheduled for Wednesday, October 17, at 6 p.m. in conference room B of the public library. Current agenda items include the following: regular committee reports, funding for the purchase of snow blowers, construction of a temporary outdoor ice rink for the winter, and next month's Winterfest Bonfire Ball...\n\nSchedule:\nI. Call to Order\nII. Committee Reports\nIII. Purchase of Snow Blowers\nIV. Cedar Lake Beach Improvements\nV. Ice Rink Construction (7:20 p.m.)\nVI. Winterfest Bonfire Ball (8:20 p.m.)",
+      "question": "Where will the park board meet?",
+      "translation": "Ban quản lý công viên sẽ họp ở đâu?",
+      "options": {
+        "A": "At the ice rink",
+        "B": "In the library",
+        "C": "At the office",
+        "D": "In the park"
+      },
+      "correctAnswer": "B",
+      "correctAnswerText": "In the library (Tại thư viện)",
+      "evidenceInPassage": "in conference room B of the public library.",
+      "recognitionKey": "public library = in the library",
+      "explanation": "Đoạn đầu tiên nêu rõ cuộc họp diễn ra tại 'phòng hội nghị B của thư viện công cộng' (public library).",
+      "trap": "Thấy tiêu đề 'Park Board' nên chọn bừa D (In the park)."
+    },
+    {
+      "id": 177,
+      "passageTitle": "Đoạn 11 (Câu 176 - 180): Park Board Meeting",
+      "passageText": "(Như trên)",
+      "question": "What change is planned regarding the park?",
+      "translation": "Sự thay đổi nào được lên kế hoạch liên quan đến công viên?",
+      "options": {
+        "A": "Hiring a snow removal company",
+        "B": "Keeping it open throughout the year",
+        "C": "Constructing an ice rink",
+        "D": "Installing a new pond"
+      },
+      "correctAnswer": "C",
+      "correctAnswerText": "Constructing an ice rink (Xây dựng một sân trượt băng)",
+      "evidenceInPassage": "have decided to convert the central pond into an ice rink.",
+      "recognitionKey": "convert... into an ice rink = Constructing an ice rink",
+      "explanation": "Bài viết nói rằng họ quyết định cải tạo cái hồ trung tâm thành một sân trượt băng (ice rink). Đây là sự thay đổi vật lý trực tiếp đối với công viên.",
+      "trap": "Chọn B (mở cửa quanh năm) - thực ra công viên đã mở mùa đông rồi, máy thổi tuyết chỉ giúp nó đối phó bão tuyết tốt hơn chứ không phải là một sự thay đổi quy hoạch chính."
+    },
+    {
+      "id": 178,
+      "passageTitle": "Đoạn 11 (Câu 176 - 180): Park Board Meeting",
+      "passageText": "(Như trên)",
+      "question": "Which people should call Glen Tuber?",
+      "translation": "Những ai nên gọi cho Glen Tuber?",
+      "options": {
+        "A": "People wanting to attend the meeting",
+        "B": "People wanting to buy festival tickets",
+        "C": "People wanting to speak at the meeting",
+        "D": "People wanting to borrow library books"
+      },
+      "correctAnswer": "C",
+      "correctAnswerText": "People wanting to speak at the meeting (Người muốn phát biểu tại cuộc họp)",
+      "evidenceInPassage": "if you would like to add an item to the agenda, speak at the meeting... please contact Glen Tuber",
+      "recognitionKey": "speak at the meeting -> contact Glen Tuber",
+      "explanation": "Bài viết hướng dẫn: 'Tuy nhiên, nếu bạn muốn thêm một mục vào chương trình nghị sự, PHÁT BIỂU TẠI CUỘC HỌP... vui lòng liên hệ với Glen Tuber'.",
+      "trap": "Chọn A vì nghĩ đi dự họp phải xin phép, nhưng đoạn trên có ghi 'It is not necessary to notify us of your attendance in advance' (Không cần báo trước nếu chỉ đến dự)."
+    },
+    {
+      "id": 179,
+      "passageTitle": "Đoạn 11 (Câu 176 - 180): Park Board Meeting",
+      "passageText": "(Như trên)",
+      "question": "How long is the discussion of the ice rink expected to last?",
+      "translation": "Phần thảo luận về sân trượt băng dự kiến kéo dài bao lâu?",
+      "options": {
+        "A": "10 minutes",
+        "B": "20 minutes",
+        "C": "30 minutes",
+        "D": "60 minutes"
+      },
+      "correctAnswer": "D",
+      "correctAnswerText": "60 minutes (60 phút)",
+      "evidenceInPassage": "V. Ice Rink Construction 7:20 p.m. | VI. Winterfest Bonfire Ball 8:20 p.m.",
+      "recognitionKey": "7:20 đến 8:20 = 1 tiếng = 60 phút",
+      "explanation": "Dựa vào bảng lịch trình (Agenda), mục Ice Rink bắt đầu lúc 7:20 p.m, và mục tiếp theo bắt đầu lúc 8:20 p.m. Vậy phần thảo luận này kéo dài 1 tiếng, tức 60 phút.",
+      "trap": "Lười làm toán trừ thời gian."
+    },
+    {
+      "id": 180,
+      "passageTitle": "Đoạn 11 (Câu 176 - 180): Park Board Meeting",
+      "passageText": "(Như trên)",
+      "question": "Which item was added to the original agenda?",
+      "translation": "Mục nào đã được THÊM vào chương trình nghị sự ban đầu?",
+      "options": {
+        "A": "Cedar Lake Beach Improvements",
+        "B": "Purchase of Snow Blowers",
+        "C": "Winterfest Bonfire Ball",
+        "D": "Committee Reports"
+      },
+      "correctAnswer": "A",
+      "correctAnswerText": "Cedar Lake Beach Improvements",
+      "evidenceInPassage": "So sánh đoạn văn mô tả ban đầu và Bảng Agenda chính thức.",
+      "recognitionKey": "Mục có trong Bảng nhưng KHÔNG có trong đoạn văn giới thiệu -> là mục mới thêm vào.",
+      "explanation": "Đoạn văn liệt kê các mục ban đầu: committee reports, snow blowers, ice rink, Winterfest Bonfire Ball. Nhưng nhìn vào cái bảng Schedule ở bên phải, tự dưng mọc ra mục 'IV. Cedar Lake Beach Improvements'. Suy ra mục này đã được thêm vào sau đó.",
+      "trap": "Đây là câu hỏi so sánh thông tin giữa đoạn text và bảng biểu. Thường thí sinh sẽ bối rối không biết tìm bằng chứng ở đâu."
+    },
+    {
+      "id": 181,
+      "passageTitle": "Đoạn 12 (Câu 181 - 185): Sunshine Holidays",
+      "passageText": "MEMO: To All Branch Managers, From Marketing.\nMore than 1,000 British people were recently surveyed by Sunshine Holidays about their vacation plans for the coming summer... Participants over 55 chose Britain as their first choice... However, overall, France was the most popular destination...\n\nEMAIL: To Nigel, Yasmin, Greg. From Olivia Benn.\n...I think it makes sense to divide into two teams: Greg and I will work on target A. Nigel and Yasmin, I'd like you to tackle target B. Let's meet as teams tomorrow at 4:30 and start brainstorming...",
+      "question": "What were the people mainly surveyed about?",
+      "translation": "Mọi người chủ yếu được khảo sát về vấn đề gì?",
+      "options": {
+        "A": "Their vacation plans",
+        "B": "Countries they had visited",
+        "C": "Ski resorts in Europe",
+        "D": "Concerns about overseas travel"
+      },
+      "correctAnswer": "A",
+      "correctAnswerText": "Their vacation plans (Kế hoạch đi nghỉ mát của họ)",
+      "evidenceInPassage": "surveyed by Sunshine Holidays about their vacation plans for the coming summer.",
+      "recognitionKey": "surveyed... about their vacation plans",
+      "explanation": "Ngay dòng đầu tiên của bản ghi nhớ (Memo) đã nói rõ: 'Hơn 1.000 người Anh gần đây đã được khảo sát về kế hoạch kỳ nghỉ của họ (vacation plans) cho mùa hè tới.'",
+      "trap": "Chọn D vì bài có nhắc đến nỗi lo sợ khi ra nước ngoài của người già, nhưng đó chỉ là lý do phụ, không phải mục tiêu chính của khảo sát."
+    },
+    {
+      "id": 182,
+      "passageTitle": "Đoạn 12 (Câu 181 - 185): Sunshine Holidays",
+      "passageText": "(Như trên)",
+      "question": "Why was the memo written?",
+      "translation": "Bản ghi nhớ (memo) được viết với mục đích gì?",
+      "options": {
+        "A": "To describe Sunshine Holidays",
+        "B": "To introduce a marketing contest",
+        "C": "To announce the winner of a contest",
+        "D": "To discuss new countries to visit"
+      },
+      "correctAnswer": "B",
+      "correctAnswerText": "To introduce a marketing contest (Để giới thiệu một cuộc thi marketing)",
+      "evidenceInPassage": "we have decided to launch a staff competition. Please submit your ideas...",
+      "recognitionKey": "launch a staff competition (phát động cuộc thi nhân viên) = introduce a contest",
+      "explanation": "Đoạn thứ 3 của Memo ghi: '...chúng tôi đang phát động một cuộc thi nhân viên (staff competition). Vui lòng gửi ý tưởng của bạn để tăng lượng khách hàng...'. Mục đích là kêu gọi nhân viên tham gia thi ý tưởng marketing.",
+      "trap": "Chọn C vì tưởng cuộc thi đã kết thúc. Nhưng thực ra đang kêu gọi nộp ý tưởng (submit your ideas)."
+    },
+    {
+      "id": 183,
+      "passageTitle": "Đoạn 12 (Câu 181 - 185): Sunshine Holidays",
+      "passageText": "(Như trên)",
+      "question": "What is stated about the contest?",
+      "translation": "Điều gì được tuyên bố về cuộc thi?",
+      "options": {
+        "A": "Only one person can win.",
+        "B": "The prize is extra time off.",
+        "C": "It involves marketing to one age group.",
+        "D": "A deadline has not been chosen yet."
+      },
+      "correctAnswer": "B",
+      "correctAnswerText": "The prize is extra time off. (Phần thưởng là có thêm thời gian nghỉ phép.)",
+      "evidenceInPassage": "All staff at the branch with the winning ideas will get five additional paid vacation days.",
+      "recognitionKey": "five additional paid vacation days = extra time off",
+      "explanation": "Bài viết nêu phần thưởng cho đội thắng cuộc là 'có thêm 5 ngày nghỉ phép hưởng lương' (additional paid vacation days), tương đương với cụm từ 'extra time off'.",
+      "trap": "Chọn D vì nghĩ chưa có hạn chót, nhưng hạn là 'until March 27'."
+    },
+    {
+      "id": 184,
+      "passageTitle": "Đoạn 12 (Câu 181 - 185): Sunshine Holidays",
+      "passageText": "(Như trên)",
+      "question": "In the e-mail, the word \"tackle\" in line 3 is closest in meaning to",
+      "translation": "Trong e-mail, từ 'tackle' (giải quyết/đảm nhận) ở dòng 3 có nghĩa gần nhất với:",
+      "options": {
+        "A": "finish (hoàn thành)",
+        "B": "explain (giải thích)",
+        "C": "handle (xử lý/đảm nhận)",
+        "D": "challenge (thách thức)"
+      },
+      "correctAnswer": "C",
+      "correctAnswerText": "handle",
+      "evidenceInPassage": "I'd like you to tackle target B.",
+      "recognitionKey": "tackle a target/problem = handle a problem (xử lý/đảm nhận)",
+      "explanation": "Trong môi trường làm việc, 'tackle a task/target' có nghĩa là bắt tay vào xử lý, đảm nhận công việc đó. Từ đồng nghĩa sát nhất là 'handle'.",
+      "trap": "Trong bóng đá 'tackle' là tranh bóng/thử thách (challenge), nhưng trong công việc thì không phải."
+    },
+    {
+      "id": 185,
+      "passageTitle": "Đoạn 12 (Câu 181 - 185): Sunshine Holidays",
+      "passageText": "(Như trên)",
+      "question": "What will Olivia Benn do this week?",
+      "translation": "Olivia Benn sẽ làm gì trong tuần này?",
+      "options": {
+        "A": "Prepare slides on marketing ideas",
+        "B": "Give a presentation to the marketing department",
+        "C": "Work on ideas for marketing trips to young people",
+        "D": "Think of ways to market Spanish vacations"
+      },
+      "correctAnswer": "D",
+      "correctAnswerText": "Think of ways to market Spanish vacations (Nghĩ cách tiếp thị các kỳ nghỉ ở Tây Ban Nha)",
+      "evidenceInPassage": "Memo: increase number of older customers visiting Spain (target A). Email: Greg and I (Olivia) will work on target A... start brainstorming.",
+      "recognitionKey": "Olivia làm Target A = Tìm ý tưởng bán tour đi Tây Ban Nha",
+      "explanation": "Đây là câu hỏi liên kết thông tin. Memo chỉ định Target A là 'tăng lượng khách hàng đến Tây Ban Nha (Spain)'. Trong Email, Olivia nói 'Tôi và Greg sẽ làm Target A... bắt đầu brainstorming (tư duy/nghĩ ý tưởng)'. Suy ra cô ấy sẽ ngồi nghĩ cách tiếp thị tour Tây Ban Nha.",
+      "trap": "Chọn A vì thấy nhắc đến 'slide deck', nhưng việc gom các ý tưởng vào slide là do TRỢ LÝ (assistant) của cô ấy làm."
+    }
+  ]
+}

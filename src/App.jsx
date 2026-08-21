@@ -23,27 +23,59 @@ function App() {
 
   // Load from localStorage on mount
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setTests(parsed);
-          return;
-        }
-      } catch (e) { /* fall through */ }
-    }
-
-    // First time: load from data.json as a seed
+    // 1. Fetch data.json first to ensure we have the latest master tests
     fetch('/data.json')
       .then(res => res.json())
       .then(jsonData => {
-        const initialTests = [jsonData];
-        setTests(initialTests);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(initialTests));
+        const serverTests = Array.isArray(jsonData) ? jsonData : [jsonData];
+        
+        // 2. Read local storage
+        const saved = localStorage.getItem(STORAGE_KEY);
+        let localTests = [];
+        if (saved) {
+          try {
+            localTests = JSON.parse(saved);
+            if (!Array.isArray(localTests)) localTests = [];
+          } catch (e) { localTests = []; }
+        }
+
+        // 3. Merge strategy: serverTests take precedence for matching testIds, 
+        // localTests are kept if they don't exist on server (custom created on device)
+        const mergedMap = new Map();
+        
+        // Add local tests first
+        localTests.forEach(t => {
+          if (t && t.testId) mergedMap.set(t.testId, t);
+        });
+
+        // Overwrite/Add server tests (Server is source of truth for hardcoded tests)
+        serverTests.forEach(t => {
+          if (t && t.testId) mergedMap.set(t.testId, t);
+        });
+
+        const mergedTests = Array.from(mergedMap.values());
+        
+        if (mergedTests.length === 0) {
+          const emptyTest = { testId: 'ĐỀ_1', part1: [], part2: [], part3: [], part4: [], part5: [], part6: [], part7: [] };
+          mergedTests.push(emptyTest);
+        }
+
+        setTests(mergedTests);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(mergedTests));
       })
-      .catch(() => {
-        // Empty shell
+      .catch((e) => {
+        console.error("Lỗi fetch data.json", e);
+        // Fallback to local storage only
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          try {
+            const parsed = JSON.parse(saved);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              setTests(parsed);
+              return;
+            }
+          } catch (err) {}
+        }
         const emptyTest = { testId: 'ĐỀ_1', part1: [], part2: [], part3: [], part4: [], part5: [], part6: [], part7: [] };
         setTests([emptyTest]);
         localStorage.setItem(STORAGE_KEY, JSON.stringify([emptyTest]));
@@ -91,8 +123,7 @@ function App() {
     { id: 'p34', label: 'Part 3 & 4', icon: <Volume2 size={16} />, color: 'teal' },
     { id: 'p5', label: 'Part 5', icon: <CheckSquare size={16} />, color: 'green' },
     { id: 'p6', label: 'Part 6', icon: <BookOpen size={16} />, color: 'green' },
-    { id: 'p7', label: 'Part 7', icon: <Radar size={16} />, color: 'green' },
-    { id: 'admin', label: '📝 Nhập Liệu', icon: <Edit3 size={16} />, color: 'purple' },
+    { id: 'p7', label: 'Part 7', icon: <Radar size={16} />, color: 'green' }
   ];
 
   if (!activeTest) {
@@ -104,10 +135,10 @@ function App() {
       {/* ===== HEADER ===== */}
       <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
-          {/* Row 1: Logo + Test Selector + Progress */}
-          <div className="flex items-center justify-between py-3 border-b border-gray-100">
-            <div className="flex items-center gap-4">
-              <h1 className="text-2xl font-black bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent whitespace-nowrap">
+          {/* Row 1: Logo + Test Selector + Progress + Admin */}
+          <div className="flex flex-wrap items-center justify-between py-3 border-b border-gray-100 gap-4">
+            <div className="flex flex-wrap items-center gap-3 md:gap-4 w-full md:w-auto">
+              <h1 className="text-xl md:text-2xl font-black bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent whitespace-nowrap">
                 TOEIC Hack-Speed
               </h1>
               
@@ -115,7 +146,7 @@ function App() {
               <div className="relative">
                 <button 
                   onClick={() => setShowTestMenu(!showTestMenu)}
-                  className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg font-bold text-gray-800 transition-colors"
+                  className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 md:px-4 md:py-2 rounded-lg font-bold text-gray-800 text-sm md:text-base transition-colors"
                 >
                   📄 {activeTest.testId}
                   <ChevronDown size={16} className={`transition-transform ${showTestMenu ? 'rotate-180' : ''}`} />
@@ -167,15 +198,28 @@ function App() {
               </div>
             </div>
 
-            {/* Progress */}
-            {activeTab !== 'admin' && (
-              <div className="hidden md:flex items-center gap-3">
-                <span className="text-sm font-bold text-green-600">{getProgress()}% đã nhớ</span>
-                <div className="w-28 h-2.5 bg-gray-200 rounded-full overflow-hidden">
-                  <div className="h-full bg-gradient-to-r from-green-400 to-emerald-500 transition-all duration-500" style={{ width: `${getProgress()}%` }}></div>
+            {/* Progress & Admin Button */}
+            <div className="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end">
+              {activeTab !== 'admin' && (
+                <div className="flex items-center gap-2 md:gap-3">
+                  <span className="text-sm font-bold text-green-600 whitespace-nowrap">{getProgress()}% đã nhớ</span>
+                  <div className="w-20 md:w-28 h-2.5 bg-gray-200 rounded-full overflow-hidden">
+                    <div className="h-full bg-gradient-to-r from-green-400 to-emerald-500 transition-all duration-500" style={{ width: `${getProgress()}%` }}></div>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+              
+              <button 
+                onClick={() => setActiveTab('admin')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 md:px-4 md:py-2 rounded-lg font-bold text-sm transition-all duration-200 ${
+                  activeTab === 'admin' 
+                    ? 'bg-purple-600 text-white shadow-md' 
+                    : 'bg-purple-100 text-purple-700 hover:bg-purple-200'
+                }`}
+              >
+                <Edit3 size={16} /> <span className="hidden sm:inline">Nhập Liệu</span>
+              </button>
+            </div>
           </div>
 
           {/* Row 2: Part tabs — NO scrolling, wrapped naturally */}

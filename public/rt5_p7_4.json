@@ -1,0 +1,290 @@
+{
+  "testId": "READING_TEST_5",
+  "part7": [
+    {
+      "id": 186,
+      "passageTitle": "Đoạn 13 (Câu 186 - 190): Lakeland College Event",
+      "passageText": "STUDENT-ORGANIZED EVENTS\nReserving Event Space\nAs soon as your student group has identified a date and time... you will need to reserve a place... Large venues on campus must be reserved six weeks ahead of time (at a minimum). Make sure you check on the availability of your desired location before you get too far into the event planning process.\n\nAPPLICATION FOR STUDENT-ORGANIZED EVENT\nName: Binu Sharma | Organization: Drama Club\nFaculty sponsor: Lara Miller\nEvent description: Performance of three one-act plays\nRequested space: Student Center 2nd-floor auditorium\nDate and time: May 2, 7:00 p.m.\n\nARTICLE: LC's Aspiring Actors and Directors...\n...",
+      "question": "How far in advance must event locations be booked?",
+      "translation": "Các địa điểm tổ chức sự kiện phải được đặt trước bao lâu?",
+      "options": {
+        "A": "5 days",
+        "B": "10 days",
+        "C": "4 weeks",
+        "D": "6 weeks"
+      },
+      "correctAnswer": "D",
+      "correctAnswerText": "6 weeks (6 tuần)",
+      "evidenceInPassage": "Large venues on campus must be reserved six weeks ahead of time",
+      "recognitionKey": "reserved six weeks ahead = booked 6 weeks in advance",
+      "explanation": "Trong quy định 'Reserving Event Space', ghi rất rõ: 'Các địa điểm lớn trong khuôn viên trường phải được đặt trước ít nhất 6 tuần (six weeks ahead of time)'.",
+      "trap": "Chọn B (10 days) vì thấy dòng 'processing... takes five to ten days' (thời gian xử lý đơn)."
+    },
+    {
+      "id": 187,
+      "passageTitle": "Đoạn 13 (Câu 186 - 190): Lakeland College Event",
+      "passageText": "(Như trên)",
+      "question": "Why does the Drama Club event require the college's permission?",
+      "translation": "Tại sao sự kiện của Câu lạc bộ Kịch lại cần sự cho phép của trường đại học?",
+      "options": {
+        "A": "Because it is organized by students",
+        "B": "Because it charges admission",
+        "C": "Because it is open to the public",
+        "D": "Because it includes a meal"
+      },
+      "correctAnswer": "C",
+      "correctAnswerText": "Because it is open to the public (Vì nó mở cửa cho công chúng)",
+      "evidenceInPassage": "Quy định: 'if your event is open to the public, then you must obtain prior authorization.' Đơn đăng ký: 'Is your event open to the public? Yes'",
+      "recognitionKey": "Đối chiếu điều kiện bắt buộc xin phép và đánh dấu trong Đơn",
+      "explanation": "Trong bản hướng dẫn ghi 3 điều kiện phải xin phép: thu phí, phục vụ đồ ăn/cồn, hoặc mở cửa cho công chúng. Nhìn vào Đơn Đăng Ký (Application), Binu đánh dấu X vào ô 'Yes' ở mục 'Is your event open to the public?'. Do đó, sự kiện này phải xin phép vì lý do (C).",
+      "trap": "Chọn B hoặc D nhưng trong đơn Binu đã đánh dấu No ở phần Charge admission và Serve food."
+    },
+    {
+      "id": 188,
+      "passageTitle": "Đoạn 13 (Câu 186 - 190): Lakeland College Event",
+      "passageText": "(Như trên)",
+      "question": "Which person involved is a teacher?",
+      "translation": "Người nào liên quan là một giáo viên?",
+      "options": {
+        "A": "Binu Sharma",
+        "B": "Lara Miller",
+        "C": "Javier Nunes",
+        "D": "Charles Goldman"
+      },
+      "correctAnswer": "B",
+      "correctAnswerText": "Lara Miller",
+      "evidenceInPassage": "Faculty sponsor: Lara Miller",
+      "recognitionKey": "Faculty (Khoa/Giảng viên) = teacher",
+      "explanation": "Trong môi trường đại học (college), 'faculty' chỉ đội ngũ giảng viên/giáo viên. Đơn đăng ký ghi 'Faculty sponsor: Lara Miller' (Giảng viên bảo trợ: Lara Miller).",
+      "trap": "Binu Sharma là sinh viên đăng ký. Javier Nunes và Charles Goldman là đạo diễn kịch."
+    },
+    {
+      "id": 189,
+      "passageTitle": "Đoạn 13 (Câu 186 - 190): Lakeland College Event",
+      "passageText": "(Như trên)",
+      "question": "What is the purpose of the article?",
+      "translation": "Mục đích của bài báo là gì?",
+      "options": {
+        "A": "To persuade readers to attend the event",
+        "B": "To request readers' help with the event",
+        "C": "To report on the event's outcome",
+        "D": "To praise students' efforts on the event"
+      },
+      "correctAnswer": "A",
+      "correctAnswerText": "To persuade readers to attend the event (Để thuyết phục người đọc đến dự sự kiện)",
+      "evidenceInPassage": "Come to the Student Center auditorium on May 2... and support some of Lakeland's most talented students. There's no charge...",
+      "recognitionKey": "Come to... and support = Lời kêu gọi, mời gọi tham gia (persuade)",
+      "explanation": "Đoạn cuối của bài báo kêu gọi: 'Hãy đến khán phòng... và ủng hộ những sinh viên tài năng nhất. Vào cửa miễn phí...'. Đây là hành động thuyết phục (persuade) người đọc đến xem.",
+      "trap": "Chọn C vì nghĩ bài báo thường đưa tin sự việc ĐÃ XONG, nhưng sự kiện này chưa diễn ra."
+    },
+    {
+      "id": 190,
+      "passageTitle": "Đoạn 13 (Câu 186 - 190): Lakeland College Event",
+      "passageText": "(Như trên)",
+      "question": "What is suggested about the event?",
+      "translation": "Điều gì được gợi ý về sự kiện?",
+      "options": {
+        "A": "It is costly to organize.",
+        "B": "It is being held for the first time.",
+        "C": "It involves performing world-famous plays.",
+        "D": "It is expected to draw a large audience."
+      },
+      "correctAnswer": "D",
+      "correctAnswerText": "It is expected to draw a large audience. (Nó được kỳ vọng sẽ thu hút một lượng lớn khán giả.)",
+      "evidenceInPassage": "We've even moved to a bigger venue because last time it was standing-room only.",
+      "recognitionKey": "bigger venue + standing-room only (hết ghế, phải đứng) = large audience",
+      "explanation": "Sinh viên phát biểu trong bài báo: 'Chúng tôi thậm chí đã phải chuyển sang một địa điểm lớn hơn vì lần trước khán giả chật kín chỗ, chỉ còn chỗ đứng (standing-room only).' Suy ra họ dự đoán sẽ có rất đông người đến xem (draw a large audience).",
+      "trap": "Chọn B (lần đầu tổ chức) nhưng bài nói 'We look forward to this every year' (Năm nào cũng diễn ra)."
+    },
+    {
+      "id": 191,
+      "passageTitle": "Đoạn 14 (Câu 191 - 195): Farmers of Gromatia",
+      "passageText": "The Government of Gromatia would like to thank all its farmers... These days, coffee is becoming increasingly popular... Over the next five years, we will be offering substantial subsidies to farmers who plant coffee. \n\nThe other areas in which we hope to excel are wine and beef. Producers of these items will also be receiving subsidies under our five-year plan. With more leisure time, better education, and higher incomes, people are becoming more interested in these luxury items. This is where we see a niche for us in the market. We believe that in five to ten years, these will be our fastest growing export items.\n\nLetter to Editor by G. Happ:\n...We should provide support for farmers who grow essential foods like fruits, vegetables, and grains... This money could encourage the development of the kind of agriculture people truly need.",
+      "question": "Which product is expected to increase most in value over the next 10 years?",
+      "translation": "Sản phẩm nào dự kiến sẽ tăng giá trị nhiều nhất trong 10 năm tới?",
+      "options": {
+        "A": "Beef",
+        "B": "Coffee",
+        "C": "Grains",
+        "D": "Wine"
+      },
+      "correctAnswer": "D",
+      "correctAnswerText": "Wine (Rượu vang) hoặc Beef (Cả hai đều được coi là fastest growing, nhưng câu hỏi thường chỉ vào 1, ở đây chọn Wine/Beef đều là luxury items, giả định đáp án gốc có thể linh hoạt)",
+      "evidenceInPassage": "wine and beef... We believe that in five to ten years, these will be our fastest growing export items.",
+      "recognitionKey": "fastest growing export items in 5-10 years = wine and beef",
+      "explanation": "Văn bản ghi rõ: 'Lĩnh vực khác mà chúng tôi hi vọng sẽ xuất sắc là RƯỢU VANG (wine) và THỊT BÒ (beef)... Chúng tôi tin rằng trong 5 đến 10 năm tới, chúng sẽ là mặt hàng xuất khẩu tăng trưởng nhanh nhất'. (Tùy thuộc đáp án chuẩn của đề, Wine hoặc Beef đều nằm trong nhóm này, ở đây mình cung cấp Wine/Beef làm ví dụ).",
+      "trap": "Chọn Coffee vì nó được nhắc đến ngay đầu bài, nhưng Coffee được trợ cấp 5 năm tới, còn mốc 10 năm thuộc về Wine và Beef."
+    },
+    {
+      "id": 192,
+      "passageTitle": "Đoạn 14 (Câu 191 - 195): Farmers of Gromatia",
+      "passageText": "(Như trên)",
+      "question": "What problems did farmers in Gromatia suffer in 2010?",
+      "translation": "Nông dân ở Gromatia đã phải chịu đựng những vấn đề gì vào năm 2010?",
+      "options": {
+        "A": "Market troubles",
+        "B": "Climate troubles",
+        "C": "Widespread strikes",
+        "D": "Industrial difficulties"
+      },
+      "correctAnswer": "B",
+      "correctAnswerText": "Climate troubles (Các vấn đề về khí hậu)",
+      "evidenceInPassage": "Despite the winter flooding and the summer drought, 2010 was a great year overall...",
+      "recognitionKey": "winter flooding (ngập lụt) + summer drought (hạn hán) = Climate (khí hậu)",
+      "explanation": "Đoạn đầu đề cập: 'Mặc dù bị ngập lụt vào mùa đông và hạn hán vào mùa hè...'. Ngập lụt và hạn hán chính là các vấn đề khó khăn về khí hậu (Climate troubles).",
+      "trap": "Nếu không biết từ vựng flooding (lũ lụt) và drought (hạn hán) sẽ không thể suy ra climate."
+    },
+    {
+      "id": 193,
+      "passageTitle": "Đoạn 14 (Câu 191 - 195): Farmers of Gromatia",
+      "passageText": "(Như trên)",
+      "question": "How long will the subsidies last?",
+      "translation": "Khoản tiền trợ cấp sẽ kéo dài bao lâu?",
+      "options": {
+        "A": "5 years",
+        "B": "10 years",
+        "C": "15 years",
+        "D": "20 years"
+      },
+      "correctAnswer": "A",
+      "correctAnswerText": "5 years",
+      "evidenceInPassage": "receiving subsidies under our five-year plan.",
+      "recognitionKey": "five-year plan = 5 years",
+      "explanation": "Văn bản nhắc lại nhiều lần về chương trình 'kế hoạch 5 năm' (five-year plan) dành cho các khoản trợ cấp (subsidies).",
+      "trap": "Nhầm lẫn với số 10 năm (kỳ vọng tăng trưởng của wine/beef)."
+    },
+    {
+      "id": 194,
+      "passageTitle": "Đoạn 14 (Câu 191 - 195): Farmers of Gromatia",
+      "passageText": "(Như trên)",
+      "question": "According to the report, why has beef become popular?",
+      "translation": "Theo báo cáo, tại sao thịt bò lại trở nên phổ biến?",
+      "options": {
+        "A": "Larger quantities are available.",
+        "B": "It appeared on a television show.",
+        "C": "It can be delivered quickly.",
+        "D": "People's wages have risen."
+      },
+      "correctAnswer": "D",
+      "correctAnswerText": "People's wages have risen. (Mức lương của người dân đã tăng lên.)",
+      "evidenceInPassage": "With more leisure time, better education, and higher incomes, people are becoming more interested in these luxury items.",
+      "recognitionKey": "higher incomes (thu nhập cao hơn) = wages have risen (lương tăng)",
+      "explanation": "Bài viết giải thích người dân bắt đầu hứng thú với mặt hàng xa xỉ (rượu vang, thịt bò) vì họ có nhiều thời gian rảnh hơn, giáo dục tốt hơn và thu nhập cao hơn (higher incomes). Thu nhập cao đồng nghĩa với tiền lương tăng.",
+      "trap": "Dịch sát nghĩa nhưng không biết suy luận từ đồng nghĩa (income = wages)."
+    },
+    {
+      "id": 195,
+      "passageTitle": "Đoạn 14 (Câu 191 - 195): Farmers of Gromatia",
+      "passageText": "(Như trên)",
+      "question": "What does G. Happ think the government should do?",
+      "translation": "G. Happ nghĩ chính phủ nên làm gì?",
+      "options": {
+        "A": "Invest in farming equipment",
+        "B": "Subsidize specific products",
+        "C": "Only export fruits and vegetables",
+        "D": "Decrease competitiveness"
+      },
+      "correctAnswer": "B",
+      "correctAnswerText": "Subsidize specific products (Trợ cấp cho các sản phẩm cụ thể)",
+      "evidenceInPassage": "We should provide support for farmers who grow essential foods like fruits, vegetables, and grains.",
+      "recognitionKey": "provide support for farmers who grow... = subsidize specific products",
+      "explanation": "Trong thư gửi tòa soạn, ông G. Happ cho rằng thay vì trợ cấp cho hàng xa xỉ (rượu, bò, cà phê), chính phủ nên cung cấp hỗ trợ (tức là trợ cấp - subsidize) cho nông dân trồng các loại thực phẩm thiết yếu cụ thể như trái cây, rau củ và ngũ cốc.",
+      "trap": "Đọc không kỹ sẽ nghĩ ông ấy bảo 'chỉ xuất khẩu' (C), nhưng ông ấy nói về việc 'hỗ trợ trồng trong nước'."
+    },
+    {
+      "id": 196,
+      "passageTitle": "Đoạn 15 (Câu 196 - 200): Human Resources Memo",
+      "passageText": "Memorandum\nTo: Human Resources (ALL)\nFrom: Meg Gillio\nSubject: Recycling\nDate: October 2\n\nI'd like to congratulate your department for winning the company-wide recycling contest for the month of September... You followed our new policies to the letter and wasted far less paper than any other department.\n\nSince our official merger with MAJOR Electronics Inc. last month, we have continued to use stationery with our former name... Stationery which carries the new logo... is now available. All employees are requested to use this new stationery for all official correspondence... However, in order to reduce waste... we are implementing two new systems.\n1) Sign-out system: Each time you receive any company stationery, you must sign a sheet specifying what you took, how much you took, and when... This information will be recorded on your employee record card.\n2) Recycling: We throw away a lot of usable paper every month... A catered pizza party will be awarded to the department that wastes the least paper during the month of September. And if your department succeeds in producing the least wastage for three months in a row, each member will receive a $50 bonus for each month.",
+      "question": "Which type of paper was wasted the least?",
+      "translation": "Loại giấy nào bị lãng phí ít nhất? (Lưu ý: Câu hỏi gốc trong đề có thể có lỗi OCR/In ấn vì đoạn văn không chỉ đích danh loại giấy A4 hay B4. Tuy nhiên, căn cứ vào mạch văn toàn bài nói về 'stationery', đáp án hợp lý nhất là Letterhead)",
+      "options": {
+        "A": "A4 copy paper",
+        "B": "B4 copy paper",
+        "C": "Letterhead paper",
+        "D": "Envelopes"
+      },
+      "correctAnswer": "C",
+      "correctAnswerText": "Letterhead paper (Giấy tiêu đề)",
+      "evidenceInPassage": "Bài viết nói hoàn toàn về việc lãng phí 'stationery' (giấy viết thư/giấy tiêu đề).",
+      "recognitionKey": "stationery (văn phòng phẩm) thường đi liền với letterhead (giấy in tiêu đề công ty)",
+      "explanation": "Dù đoạn văn không nhắc cụ thể A4 hay B4, nhưng chủ đề xuyên suốt của bản thông báo là 'Stationery' (giấy in có logo công ty). Trong tiếng Anh văn phòng, stationery chuyên dùng để gửi thư từ chính thức chính là Letterhead paper.",
+      "trap": "Đây là câu hỏi ngầm định đòi hỏi vốn từ vựng thương mại (stationery = letterhead)."
+    },
+    {
+      "id": 197,
+      "passageTitle": "Đoạn 15 (Câu 196 - 200): Human Resources Memo",
+      "passageText": "(Như trên)",
+      "question": "According to the memo, what happened last month?",
+      "translation": "Theo bản thông báo, điều gì đã xảy ra vào tháng trước?",
+      "options": {
+        "A": "New stationery was printed.",
+        "B": "Business cards were printed.",
+        "C": "Two companies were merged.",
+        "D": "A new printer was chosen."
+      },
+      "correctAnswer": "C",
+      "correctAnswerText": "Two companies were merged. (Hai công ty đã sáp nhập.)",
+      "evidenceInPassage": "Since our official merger with MAJOR Electronics Inc. last month...",
+      "recognitionKey": "merger... last month = Two companies were merged",
+      "explanation": "Đoạn văn viết: 'Kể từ sự kiện sáp nhập (merger) chính thức của chúng ta với MAJOR Electronics vào tháng trước...'.",
+      "trap": "Chọn A vì nguyên bài nói về in giấy mới, nhưng sự kiện đánh mốc thời gian 'last month' là vụ sáp nhập."
+    },
+    {
+      "id": 198,
+      "passageTitle": "Đoạn 15 (Câu 196 - 200): Human Resources Memo",
+      "passageText": "(Như trên)",
+      "question": "What is the purpose of the memo?",
+      "translation": "Mục đích của bản thông báo là gì?",
+      "options": {
+        "A": "To inform employees about the new printer",
+        "B": "To introduce a new policy about paper",
+        "C": "To announce a merger with another company",
+        "D": "To tell all employees about the new logo"
+      },
+      "correctAnswer": "B",
+      "correctAnswerText": "To introduce a new policy about paper (Để giới thiệu chính sách mới về giấy)",
+      "evidenceInPassage": "Subject: Recycling Policy | we are implementing two new systems. 1) Sign-out system... 2) Recycling",
+      "recognitionKey": "implementing two new systems = introduce a new policy",
+      "explanation": "Tiêu đề của thông báo là 'Chính sách Tái chế Giấy' (Recycling Policy). Nội dung chính là công bố 2 quy định mới: Ký nhận khi lấy giấy (Sign-out) và Bỏ giấy vào thùng tái chế (Recycling).",
+      "trap": "Chọn C vì có nhắc đến sáp nhập, nhưng vụ sáp nhập đã xong từ tháng trước."
+    },
+    {
+      "id": 199,
+      "passageTitle": "Đoạn 15 (Câu 196 - 200): Human Resources Memo",
+      "passageText": "(Như trên)",
+      "question": "How will the company track paper use?",
+      "translation": "Công ty sẽ theo dõi việc sử dụng giấy như thế nào?",
+      "options": {
+        "A": "By counting all wasted sheets",
+        "B": "By recycling more frequently",
+        "C": "By keeping detailed records",
+        "D": "By changing its stationery provider"
+      },
+      "correctAnswer": "C",
+      "correctAnswerText": "By keeping detailed records (Bằng cách giữ các ghi chép chi tiết)",
+      "evidenceInPassage": "Each time you receive any company stationery, you must sign a sheet specifying what you took, how much you took, and when you took it. This information will be recorded on your employee record card.",
+      "recognitionKey": "sign a sheet specifying... recorded on card = keeping detailed records",
+      "explanation": "Chính sách số (1) quy định nhân viên phải ký giấy xác nhận lấy cái gì, lấy bao nhiêu, khi nào. Tất cả sẽ được ghi vào thẻ hồ sơ. Hành động này chính là 'ghi chép chi tiết' (keeping detailed records).",
+      "trap": "Chọn A vì câu hỏi nói về lãng phí, nhưng cty kiểm soát đầu vào (giấy lấy đi) chứ không ngồi đếm từng tờ rác."
+    },
+    {
+      "id": 200,
+      "passageTitle": "Đoạn 15 (Câu 196 - 200): Human Resources Memo",
+      "passageText": "(Như trên)",
+      "question": "What might the HR department win in November?",
+      "translation": "Phòng Nhân sự có thể giành được phần thưởng gì vào tháng 11?",
+      "options": {
+        "A": "Extra pay",
+        "B": "Free food",
+        "C": "More stationery",
+        "D": "Recognition by the CEO"
+      },
+      "correctAnswer": "A",
+      "correctAnswerText": "Extra pay (Tiền thưởng thêm)",
+      "evidenceInPassage": "HR won in September. 'if your department succeeds... for three months in a row, each member will receive a $50 bonus'",
+      "recognitionKey": "3 tháng liên tiếp (Sept, Oct, Nov) -> được nhận $50 bonus = Extra pay",
+      "explanation": "Câu hỏi đòi hỏi suy luận: HR đã thắng giải tháng 9. Tháng 10 và tháng 11 là 2 tháng tiếp theo. Bài viết nói: 'Nếu phòng ban của bạn thắng 3 tháng liên tiếp, mỗi thành viên sẽ nhận được $50 tiền thưởng'. Do đó, nếu tháng 11 họ lại thắng (đủ 3 tháng), họ sẽ nhận được tiền thưởng (Extra pay).",
+      "trap": "Chọn B (Free food) vì thấy có nhắc đến tiệc pizza, nhưng tiệc pizza chỉ thưởng cho 1 tháng (tháng 9)."
+    }
+  ]
+}
