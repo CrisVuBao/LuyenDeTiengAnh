@@ -237,7 +237,7 @@ function App() {
             <div className="flex items-center gap-3">
               {activeTab !== 'admin' && (
                 <div className="flex items-center gap-1.5 md:gap-3" title={`${currentProgress}% of all questions in this test`}>
-                  <span className="text-xs md:text-sm font-bold text-green-600 whitespace-nowrap">{currentProgress}%</span>
+                  {/* <span className="text-xs md:text-sm font-bold text-green-600 whitespace-nowrap">{currentProgress}%</span> */}
                   <div className="w-16 md:w-28 h-2 md:h-2.5 bg-gray-200 rounded-full overflow-hidden">
                     <div className="h-full bg-gradient-to-r from-green-400 to-emerald-500 transition-all duration-500" style={{ width: `${currentProgress}%` }}></div>
                   </div>
