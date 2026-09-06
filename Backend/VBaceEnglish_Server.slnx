@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="VBaceEnglish.Api/VBaceEnglish.Api.csproj" />
+  <Project Path="VBaceEnglish.Application/VBaceEnglish.Application.csproj" />
+  <Project Path="VBaceEnglish.Domain/VBaceEnglish.Domain.csproj" />
+  <Project Path="VBaceEnglish.Infrastructure/VBaceEnglish.Infrastructure.csproj" />
+</Solution>

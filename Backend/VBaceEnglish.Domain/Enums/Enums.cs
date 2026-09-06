@@ -1,0 +1,20 @@
+﻿namespace VBaceEnglish.Domain.Enums;
+
+public enum UserRole
+{
+    Admin,
+    Teacher,
+    Student
+}
+
+public enum PartType
+{
+    Part1 = 1,
+    Part2 = 2,
+    Part3 = 3,
+    Part4 = 4,
+    Part5 = 5,
+    Part6 = 6,
+    Part7 = 7
+}
+

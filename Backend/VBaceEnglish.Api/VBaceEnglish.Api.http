@@ -1,0 +1,6 @@
+@VBaceEnglish.Api_HostAddress = http://localhost:5199
+
+GET {{VBaceEnglish.Api_HostAddress}}/api/toeictest
+Accept: application/json
+
+###
