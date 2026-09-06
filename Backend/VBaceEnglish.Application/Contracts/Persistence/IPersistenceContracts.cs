@@ -32,11 +32,39 @@ public interface IUserProgressRepository
     void UpdateSummary(UserTestSummary summary);
 }
 
+public interface IBinoBookRepository
+{
+    Task<BinoBook?> GetBookWithChaptersAsync(string slug = "chem-tieng-anh-khong-can-dong-nao");
+    Task<Chapter?> GetChapterWithLessonsAsync(int chapterNumber);
+    Task<ChapterBonus?> GetChapterBonusAsync(int chapterNumber);
+    Task<DialogueLesson?> GetDialogueLessonAsync(int id);
+    Task<DialogueLesson?> GetDialogueLessonByNumberAsync(int chapterNumber, int dialogueNumber);
+    Task<IEnumerable<DialogueVocabulary>> GetVocabulariesByLessonAsync(int lessonId);
+    Task<IEnumerable<DialogueVocabulary>> GetAllVocabulariesAsync();
+}
+
+public interface IBinoLearningRepository
+{
+    Task<UserDialogueProgress?> GetProgressAsync(int userId, int dialogueLessonId);
+    Task<IEnumerable<UserDialogueProgress>> GetProgressByUserAsync(int userId);
+    Task AddProgressAsync(UserDialogueProgress progress);
+    void UpdateProgress(UserDialogueProgress progress);
+
+    Task<UserSRSReview?> GetSRSReviewAsync(int userId, int vocabularyId);
+    Task<IEnumerable<UserSRSReview>> GetDueSRSReviewsAsync(int userId);
+    Task<IEnumerable<UserSRSReview>> GetAllSRSReviewsByUserAsync(int userId);
+    Task AddSRSReviewAsync(UserSRSReview review);
+    void UpdateSRSReview(UserSRSReview review);
+}
+
 public interface IUnitOfWork : IDisposable
 {
     IToeicTestRepository ToeicTests { get; }
     IUserProgressRepository UserProgresses { get; }
+    IBinoBookRepository BinoBooks { get; }
+    IBinoLearningRepository BinoLearning { get; }
     Task<int> CompleteAsync();
     Task<IDbContextTransaction> BeginTransactionAsync();
 }
+
 

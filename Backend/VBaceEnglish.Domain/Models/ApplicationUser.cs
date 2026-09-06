@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 
 namespace VBaceEnglish.Domain.Models;
 
@@ -12,6 +12,8 @@ public class ApplicationUser : IdentityUser<int>
     public ICollection<UserStudyProgress> StudyProgresses { get; set; } = new List<UserStudyProgress>();
     public ICollection<UserTestSummary> TestSummaries { get; set; } = new List<UserTestSummary>();
     public ICollection<AiChatHistory> AiChatHistories { get; set; } = new List<AiChatHistory>();
+    public ICollection<UserDialogueProgress> DialogueProgresses { get; set; } = new List<UserDialogueProgress>();
+    public ICollection<UserSRSReview> SRSReviews { get; set; } = new List<UserSRSReview>();
 }
 
 public class Role : IdentityRole<int>

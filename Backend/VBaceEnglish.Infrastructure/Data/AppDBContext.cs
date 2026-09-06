@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using VBaceEnglish.Domain.Models;
 
@@ -25,6 +25,16 @@ public class AppDBContext : IdentityDbContext<ApplicationUser, Role, int>
     public DbSet<UserStudyProgress> UserStudyProgresses => Set<UserStudyProgress>();
     public DbSet<UserTestSummary> UserTestSummaries => Set<UserTestSummary>();
     public DbSet<AiChatHistory> AiChatHistories => Set<AiChatHistory>();
+
+    // Bino's English Book System
+    public DbSet<BinoBook> BinoBooks => Set<BinoBook>();
+    public DbSet<Chapter> Chapters => Set<Chapter>();
+    public DbSet<ChapterBonus> ChapterBonuses => Set<ChapterBonus>();
+    public DbSet<DialogueLesson> DialogueLessons => Set<DialogueLesson>();
+    public DbSet<DialogueVocabulary> DialogueVocabularies => Set<DialogueVocabulary>();
+    public DbSet<DialogueLine> DialogueLines => Set<DialogueLine>();
+    public DbSet<UserDialogueProgress> UserDialogueProgresses => Set<UserDialogueProgress>();
+    public DbSet<UserSRSReview> UserSRSReviews => Set<UserSRSReview>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -103,6 +113,71 @@ public class AppDBContext : IdentityDbContext<ApplicationUser, Role, int>
             .HasMany(p => p.Questions)
             .WithOne(q => q.Passage)
             .HasForeignKey(q => q.PassageId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // ==========================================
+        // Bino's English Book System Configurations
+        // ==========================================
+        builder.Entity<BinoBook>().HasIndex(b => b.Slug).IsUnique();
+
+        builder.Entity<Chapter>().HasIndex(c => new { c.BookId, c.ChapterNumber }).IsUnique();
+        builder.Entity<Chapter>()
+            .HasOne(c => c.Book)
+            .WithMany(b => b.Chapters)
+            .HasForeignKey(c => c.BookId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<ChapterBonus>()
+            .HasOne(b => b.Chapter)
+            .WithOne(c => c.Bonus)
+            .HasForeignKey<ChapterBonus>(b => b.ChapterId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<DialogueLesson>().HasIndex(d => new { d.ChapterId, d.DialogueNumber }).IsUnique();
+        builder.Entity<DialogueLesson>()
+            .HasOne(d => d.Chapter)
+            .WithMany(c => c.DialogueLessons)
+            .HasForeignKey(d => d.ChapterId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<DialogueVocabulary>().HasIndex(v => v.Word);
+        builder.Entity<DialogueVocabulary>().HasIndex(v => new { v.DialogueLessonId, v.OrderIndex });
+        builder.Entity<DialogueVocabulary>()
+            .HasOne(v => v.DialogueLesson)
+            .WithMany(d => d.Vocabularies)
+            .HasForeignKey(v => v.DialogueLessonId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<DialogueLine>().HasIndex(l => new { l.DialogueLessonId, l.OrderIndex });
+        builder.Entity<DialogueLine>()
+            .HasOne(l => l.DialogueLesson)
+            .WithMany(d => d.DialogueLines)
+            .HasForeignKey(l => l.DialogueLessonId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<UserDialogueProgress>().HasIndex(p => new { p.UserId, p.DialogueLessonId }).IsUnique();
+        builder.Entity<UserDialogueProgress>()
+            .HasOne(p => p.User)
+            .WithMany(u => u.DialogueProgresses)
+            .HasForeignKey(p => p.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+        builder.Entity<UserDialogueProgress>()
+            .HasOne(p => p.DialogueLesson)
+            .WithMany(d => d.UserProgresses)
+            .HasForeignKey(p => p.DialogueLessonId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<UserSRSReview>().HasIndex(r => new { r.UserId, r.NextReviewDate });
+        builder.Entity<UserSRSReview>().HasIndex(r => new { r.UserId, r.VocabularyId }).IsUnique();
+        builder.Entity<UserSRSReview>()
+            .HasOne(r => r.User)
+            .WithMany(u => u.SRSReviews)
+            .HasForeignKey(r => r.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+        builder.Entity<UserSRSReview>()
+            .HasOne(r => r.Vocabulary)
+            .WithMany(v => v.SRSReviews)
+            .HasForeignKey(r => r.VocabularyId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

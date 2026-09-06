@@ -86,7 +86,7 @@ export default function StudentHome() {
           </button>
         </div>
 
-        {/* Big Action Card */}
+        {/* Big Action Card: TOEIC */}
         <div 
           onClick={() => navigate('/toeic')}
           className="glass-card p-6 md:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 hover:border-blue-500 dark:hover:border-blue-500 cursor-pointer group transition-all shadow-sm hover:shadow-xl relative overflow-hidden"
@@ -123,6 +123,70 @@ export default function StudentHome() {
             <div className="flex-shrink-0 w-full md:w-auto">
               <button className="w-full md:w-auto px-6 py-3.5 bg-blue-600 text-white rounded-2xl font-bold text-xs shadow-lg shadow-blue-500/25 group-hover:scale-105 transition-transform flex items-center justify-center gap-2">
                 <span>Vào Làm Bài Ngay</span>
+                <ArrowRight size={16} />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Feature Showcase: Sách Bino "Chém Tiếng Anh không cần động não" */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-xl md:text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2">
+              <Sparkles size={24} className="text-amber-500" /> Sách "Chém Tiếng Anh Không Cần Động Não"
+            </h2>
+            <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400">
+              Chương trình giao tiếp đời thực của Bino: 12 Chương, 72 Bài hội thoại, Video & Audio riêng, Luyện nói 1:1, Ebook EPUB & PDF
+            </p>
+          </div>
+
+          <button
+            onClick={() => navigate('/bino')}
+            className="hidden sm:flex items-center gap-1 text-xs font-bold text-amber-600 dark:text-amber-400 hover:underline"
+          >
+            Khám phá 12 chương <ArrowRight size={14} />
+          </button>
+        </div>
+
+        {/* Big Action Card: Bino Book */}
+        <div 
+          onClick={() => navigate('/bino')}
+          className="glass-card p-6 md:p-8 rounded-3xl border border-amber-200 dark:border-amber-900/60 hover:border-amber-500 dark:hover:border-amber-500 cursor-pointer group transition-all shadow-sm hover:shadow-xl relative overflow-hidden bg-gradient-to-br from-amber-500/10 via-orange-500/5 to-transparent"
+        >
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div className="space-y-3 max-w-xl">
+              <div className="flex items-center gap-2">
+                <span className="px-3 py-1 rounded-full text-xs font-extrabold uppercase bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300">
+                  Tác Giả Bino • 12 Chương
+                </span>
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300">
+                  Dual Ebook (EPUB & PDF)
+                </span>
+              </div>
+
+              <h3 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+                Luyện Nói Phản Xạ 1:1 Tự Nhiên Không Cần Động Não
+              </h3>
+
+              <p className="text-xs md:text-sm text-slate-500 dark:text-slate-300 leading-relaxed">
+                Tạm biệt tiếng Anh đơ cứng! Học từ vựng theo giấy note ghim kèm chibi Bino, luyện nói 1:1 nhập vai theo kịch bản hội thoại đời thường và ôn tập thông minh bằng thuật toán lặp lại ngắt quãng SRS (SM-2).
+              </p>
+
+              <div className="flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-500 pt-2">
+                <span className="flex items-center gap-1.5 text-slate-700 dark:text-slate-300">
+                  ✓ Mỗi bài có 1 Video MP4 & 1 Audio MP3 riêng
+                </span>
+                <span className="flex items-center gap-1.5 text-slate-700 dark:text-slate-300">
+                  ✓ Kèm Góc Tiếng Lóng & Mẹo Văn Hóa Cuối Chương
+                </span>
+              </div>
+            </div>
+
+            <div className="flex-shrink-0 w-full md:w-auto">
+              <button className="w-full md:w-auto px-6 py-3.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-2xl font-bold text-xs shadow-lg shadow-orange-500/25 group-hover:scale-105 transition-transform flex items-center justify-center gap-2">
+                <span>Vào Khóa Học Bino Ngay</span>
                 <ArrowRight size={16} />
               </button>
             </div>

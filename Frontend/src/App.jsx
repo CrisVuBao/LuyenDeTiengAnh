@@ -18,7 +18,15 @@ const StudyProgressPage = lazy(() => import("./features/progress/components/Stud
 const AdminDashboard = lazy(() => import("./features/admin/components/AdminDashboard"));
 const AdminTests = lazy(() => import("./features/admin/components/AdminTests"));
 const AdminStudents = lazy(() => import("./features/admin/components/AdminStudents"));
+const AdminBinoManager = lazy(() => import("./features/admin/components/AdminBinoManager"));
 const Profile = lazy(() => import("./pages/Profile"));
+
+// Bino Book Learning System
+const BinoBookOverviewPage = lazy(() => import("./features/bino/BinoBookOverviewPage"));
+const BinoDialogueStudyPage = lazy(() => import("./features/bino/BinoDialogueStudyPage"));
+const BinoEbookViewerPage = lazy(() => import("./features/bino/BinoEbookViewerPage"));
+const BinoFlashcardReviewPage = lazy(() => import("./features/bino/BinoFlashcardReviewPage"));
+const BinoChapterBonusPage = lazy(() => import("./features/bino/BinoChapterBonusPage"));
 
 const ProtectedRoute = ({ children }) => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -72,6 +80,13 @@ function App() {
             <Route path="/dashboard" element={<Home />} />
             <Route path="/progress" element={<StudyProgressPage />} />
             <Route path="/profile" element={<Profile />} />
+
+            {/* Bino Book Learning System Routes */}
+            <Route path="/bino" element={<BinoBookOverviewPage />} />
+            <Route path="/bino/dialogue/:id" element={<BinoDialogueStudyPage />} />
+            <Route path="/bino/reader" element={<BinoEbookViewerPage />} />
+            <Route path="/bino/flashcards" element={<BinoFlashcardReviewPage />} />
+            <Route path="/bino/chapter/:chapterNumber/bonus" element={<BinoChapterBonusPage />} />
           </Route>
 
           {/* ======================================================== */}
@@ -88,6 +103,7 @@ function App() {
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/admin/tests" element={<AdminTests />} />
             <Route path="/admin/students" element={<AdminStudents />} />
+            <Route path="/admin/bino" element={<AdminBinoManager />} />
           </Route>
 
           <Route path="*" element={<Navigate to="/" replace />} />

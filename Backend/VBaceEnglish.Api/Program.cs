@@ -1,4 +1,4 @@
-﻿using System.IO.Compression;
+using System.IO.Compression;
 using System.Text;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.IdentityModel.Tokens;
 using VBaceEnglish.Api.Hubs;
+using VBaceEnglish.Api.Services;
 using VBaceEnglish.Application;
+using VBaceEnglish.Application.Contracts.Services;
 using VBaceEnglish.Domain.Models;
 using VBaceEnglish.Infrastructure;
 using VBaceEnglish.Infrastructure.Data;
@@ -33,6 +35,7 @@ builder.Services.AddControllers().AddJsonOptions(options => {
     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 });
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddProblemDetails();
 
 // 4. Clean Architecture DI (A.4)

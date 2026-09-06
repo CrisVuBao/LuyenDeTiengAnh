@@ -1,4 +1,4 @@
-﻿using VBaceEnglish.Domain.Models;
+using VBaceEnglish.Domain.Models;
 
 namespace VBaceEnglish.Application.Contracts.Services;
 
@@ -25,4 +25,11 @@ public interface ICurrentUserService
     string? Email { get; }
     bool IsAuthenticated { get; }
 }
+
+public interface IFileStorageService
+{
+    Task<string> SaveFileAsync(Stream fileStream, string originalFileName, string subFolder);
+    Task<bool> DeleteFileAsync(string fileUrl);
+}
+
 

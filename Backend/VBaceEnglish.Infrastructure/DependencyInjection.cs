@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using VBaceEnglish.Application.Contracts.Persistence;
@@ -24,12 +24,15 @@ public static class DependencyInjection
         // Repositories & Unit of Work
         services.AddScoped<IToeicTestRepository, ToeicTestRepository>();
         services.AddScoped<IUserProgressRepository, UserProgressRepository>();
+        services.AddScoped<IBinoBookRepository, BinoBookRepository>();
+        services.AddScoped<IBinoLearningRepository, BinoLearningRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         // External Services
         services.AddSingleton<IDateTimeProvider, VietnamDateTimeProvider>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddHttpClient<IAiChatService, GeminiAiChatService>();
+        services.AddScoped<IFileStorageService, LocalFileStorageService>();
 
         return services;
     }

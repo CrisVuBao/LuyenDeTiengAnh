@@ -29,8 +29,8 @@ export default defineConfig({
   server: {
     port: 4100,
     proxy: {
-      '/api': { target: 'https://localhost:7141', changeOrigin: true, secure: false },
-      '/notificationHub': { target: 'https://localhost:7141', changeOrigin: true, secure: false, ws: true }
+      '/api': { target: 'http://localhost:5199', changeOrigin: true, secure: false },
+      '/notificationHub': { target: 'http://localhost:5199', changeOrigin: true, secure: false, ws: true }
     }
   }
 })

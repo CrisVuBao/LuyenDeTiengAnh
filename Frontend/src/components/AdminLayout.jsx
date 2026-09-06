@@ -31,12 +31,14 @@ export default function AdminLayout() {
     { to: '/admin/dashboard', label: 'Bảng Quản Trị', icon: <ShieldCheck size={20} /> },
     { to: '/admin/tests', label: 'Quản Lý Đề Thi', icon: <BookOpen size={20} /> },
     { to: '/admin/students', label: 'Quản Lý Học Viên', icon: <Users size={20} /> },
+    { to: '/admin/bino', label: 'Quản Lý Sách Bino', icon: <Sparkles size={20} /> },
   ];
 
   const getPageTitle = () => {
     if (location.pathname.startsWith('/admin/dashboard')) return 'Trung Tâm Quản Trị';
     if (location.pathname.startsWith('/admin/tests')) return 'Quản Lý Đề Thi';
     if (location.pathname.startsWith('/admin/students')) return 'Quản Lý Học Viên';
+    if (location.pathname.startsWith('/admin/bino')) return 'Quản Lý Sách Bino & Media';
     return 'Bảng Quản Trị VBaceEnglish';
   };
 
