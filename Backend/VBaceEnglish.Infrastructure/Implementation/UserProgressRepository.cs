@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using VBaceEnglish.Application.Contracts.Persistence;
 using VBaceEnglish.Domain.Models;
 using VBaceEnglish.Infrastructure.Data;
@@ -48,6 +48,27 @@ public class UserProgressRepository : IUserProgressRepository
             .Include(s => s.ToeicTest)
             .Where(s => s.UserId == userId)
             .ToListAsync();
+    }
+
+    public async Task<IEnumerable<UserTestSummary>> GetAllSummariesAsync()
+    {
+        return await _context.UserTestSummaries
+            .AsNoTracking()
+            .Include(s => s.ToeicTest)
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<UserStudyProgress>> GetAllProgressByUserAsync(int userId)
+    {
+        return await _context.UserStudyProgresses
+            .AsNoTracking()
+            .Where(p => p.UserId == userId)
+            .ToListAsync();
+    }
+
+    public async Task<int> GetTotalInteractionCountAsync()
+    {
+        return await _context.UserStudyProgresses.CountAsync();
     }
 
     public async Task AddSummaryAsync(UserTestSummary summary) => await _context.UserTestSummaries.AddAsync(summary);

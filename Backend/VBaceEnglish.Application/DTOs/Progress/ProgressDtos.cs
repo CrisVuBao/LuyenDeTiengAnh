@@ -1,4 +1,4 @@
-﻿namespace VBaceEnglish.Application.DTOs.Progress;
+namespace VBaceEnglish.Application.DTOs.Progress;
 
 public class UserProgressDto
 {
@@ -37,3 +37,16 @@ public class TestSummaryDto
     public DateTime LastAccessedAt { get; set; }
 }
 
+public class UnsureQuestionDto
+{
+    public int ToeicTestId { get; set; }
+    public string TestCode { get; set; } = string.Empty;
+    public string TestTitle { get; set; } = string.Empty;
+    public int PartNumber { get; set; }
+    public int QuestionNumber { get; set; }
+    public string? QuestionText { get; set; }
+    public string? Translation { get; set; }
+    public string? CorrectAnswer { get; set; }
+    public string? Explanation { get; set; }
+    public DateTime UpdatedAt { get; set; }
+}

@@ -11,6 +11,19 @@ export default function Auth() {
   const setAuth = useAuthStore((state) => state.setAuth);
   const navigate = useNavigate();
 
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const user = useAuthStore((state) => state.user);
+
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      if (user?.role === 'Admin') {
+        navigate('/admin/dashboard', { replace: true });
+      } else {
+        navigate('/home', { replace: true });
+      }
+    }
+  }, [isAuthenticated, user, navigate]);
+
   const [loginData, setLoginData] = useState({ emailOrPhone: '', password: '' });
   const [registerData, setRegisterData] = useState({
     fullName: '',
@@ -33,7 +46,11 @@ export default function Auth() {
       if (res?.data) {
         setAuth(res.data.user, res.data.token);
         toast.success(res.message || 'Đăng nhập thành công!');
-        navigate('/dashboard');
+        if (res.data.user?.role === 'Admin') {
+          navigate('/admin/dashboard');
+        } else {
+          navigate('/home');
+        }
       }
     } catch (err) {
       toast.error(err.message || 'Đăng nhập thất bại');

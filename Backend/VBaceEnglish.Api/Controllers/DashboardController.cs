@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
@@ -20,7 +20,6 @@ public class DashboardController : ControllerBase
     }
 
     [HttpGet("stats")]
-    [OutputCache(PolicyName = "Dashboard")]
     public async Task<IActionResult> GetStats()
     {
         var idStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -30,5 +29,20 @@ public class DashboardController : ControllerBase
         var result = await _dashboardService.GetStatsAsync(userId);
         return Ok(result);
     }
-}
 
+    [HttpGet("admin-stats")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> GetAdminStats()
+    {
+        var result = await _dashboardService.GetAdminStatsAsync();
+        return Ok(result);
+    }
+
+    [HttpGet("admin-students")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> GetAdminStudents()
+    {
+        var result = await _dashboardService.GetAdminStudentsAsync();
+        return Ok(result);
+    }
+}

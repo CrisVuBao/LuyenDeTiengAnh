@@ -47,12 +47,20 @@ export default function Home() {
           </p>
         </div>
 
-        <button
-          onClick={() => navigate('/toeic')}
-          className="relative z-10 px-6 py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-2xl shadow-xl shadow-blue-500/25 flex items-center gap-2.5 transition-all active:scale-95"
-        >
-          <BookOpen size={18} /> Vào Luyện Đề Ngay <ArrowRight size={18} />
-        </button>
+        <div className="relative z-10 flex flex-wrap items-center gap-3">
+          <button
+            onClick={() => navigate('/toeic')}
+            className="px-6 py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-2xl shadow-xl shadow-blue-500/25 flex items-center gap-2.5 transition-all active:scale-95 text-sm"
+          >
+            <BookOpen size={18} /> Luyện Đề TOEIC <ArrowRight size={18} />
+          </button>
+          <button
+            onClick={() => navigate('/progress')}
+            className="px-5 py-3.5 bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center gap-2 transition-all active:scale-95 text-sm"
+          >
+            <TrendingUp size={18} className="text-emerald-500" /> Quá Trình Học
+          </button>
+        </div>
       </div>
 
       {/* 4 Stat Cards */}

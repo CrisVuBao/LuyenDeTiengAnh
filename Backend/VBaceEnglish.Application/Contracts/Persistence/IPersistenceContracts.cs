@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.EntityFrameworkCore.Storage;
 using VBaceEnglish.Domain.Models;
 
 namespace VBaceEnglish.Application.Contracts.Persistence;
@@ -25,6 +25,9 @@ public interface IUserProgressRepository
 
     Task<UserTestSummary?> GetSummaryAsync(int userId, int toeicTestId);
     Task<IEnumerable<UserTestSummary>> GetSummariesByUserAsync(int userId);
+    Task<IEnumerable<UserTestSummary>> GetAllSummariesAsync();
+    Task<IEnumerable<UserStudyProgress>> GetAllProgressByUserAsync(int userId);
+    Task<int> GetTotalInteractionCountAsync();
     Task AddSummaryAsync(UserTestSummary summary);
     void UpdateSummary(UserTestSummary summary);
 }

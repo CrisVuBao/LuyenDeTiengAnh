@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VBaceEnglish.Application.DTOs.Progress;
@@ -35,6 +35,26 @@ public class UserProgressController : ControllerBase
         return Ok(result);
     }
 
+    [HttpGet("all-summaries")]
+    public async Task<IActionResult> GetAllSummaries()
+    {
+        int userId = GetCurrentUserId();
+        if (userId == 0) return Unauthorized(Response<string>.Failure("Chưa xác thực"));
+
+        var result = await _progressService.GetAllSummariesAsync(userId);
+        return Ok(result);
+    }
+
+    [HttpGet("unsure-questions")]
+    public async Task<IActionResult> GetUnsureQuestions([FromQuery] int? testId)
+    {
+        int userId = GetCurrentUserId();
+        if (userId == 0) return Unauthorized(Response<string>.Failure("Chưa xác thực"));
+
+        var result = await _progressService.GetUnsureQuestionsAsync(userId, testId);
+        return Ok(result);
+    }
+
     [HttpPost("mark")]
     public async Task<IActionResult> MarkProgress([FromBody] MarkProgressDto model)
     {
@@ -55,4 +75,3 @@ public class UserProgressController : ControllerBase
         return Ok(result);
     }
 }
-
