@@ -36,11 +36,33 @@ public interface IBinoBookRepository
 {
     Task<BinoBook?> GetBookWithChaptersAsync(string slug = "chem-tieng-anh-khong-can-dong-nao");
     Task<Chapter?> GetChapterWithLessonsAsync(int chapterNumber);
+    Task<Chapter?> GetChapterByIdAsync(int id);
+    Task<IEnumerable<Chapter>> GetAllChaptersAsync(string slug = "chem-tieng-anh-khong-can-dong-nao");
+    Task AddChapterAsync(Chapter chapter);
+    void UpdateChapter(Chapter chapter);
+    void RemoveChapter(Chapter chapter);
+
     Task<ChapterBonus?> GetChapterBonusAsync(int chapterNumber);
+    Task<ChapterBonus?> GetChapterBonusByIdAsync(int chapterId);
+    Task AddChapterBonusAsync(ChapterBonus bonus);
+    void UpdateChapterBonus(ChapterBonus bonus);
+
     Task<DialogueLesson?> GetDialogueLessonAsync(int id);
     Task<DialogueLesson?> GetDialogueLessonByNumberAsync(int chapterNumber, int dialogueNumber);
+    Task<IEnumerable<DialogueLesson>> GetDialoguesByChapterIdAsync(int chapterId);
+    Task AddDialogueLessonAsync(DialogueLesson lesson);
+    void UpdateDialogueLesson(DialogueLesson lesson);
+    void RemoveDialogueLesson(DialogueLesson lesson);
+
     Task<IEnumerable<DialogueVocabulary>> GetVocabulariesByLessonAsync(int lessonId);
     Task<IEnumerable<DialogueVocabulary>> GetAllVocabulariesAsync();
+    Task AddVocabularyAsync(DialogueVocabulary vocabulary);
+    void RemoveVocabulary(DialogueVocabulary vocabulary);
+    void RemoveVocabularies(IEnumerable<DialogueVocabulary> vocabularies);
+
+    Task AddDialogueLineAsync(DialogueLine line);
+    void RemoveDialogueLine(DialogueLine line);
+    void RemoveDialogueLines(IEnumerable<DialogueLine> lines);
 }
 
 public interface IBinoLearningRepository

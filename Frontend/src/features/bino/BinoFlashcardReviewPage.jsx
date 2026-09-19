@@ -6,6 +6,8 @@ import {
 } from 'lucide-react';
 import binoApi from '../../api/binoApi';
 import PageLoader from '../../components/PageLoader';
+import VoiceSettingsModal from '../../components/VoiceSettingsModal';
+import speechService from '../../utils/speechService';
 import toast from 'react-hot-toast';
 
 export default function BinoFlashcardReviewPage() {
@@ -16,6 +18,13 @@ export default function BinoFlashcardReviewPage() {
   const [isFlipped, setIsFlipped] = useState(false);
   const [reviewedCount, setReviewedCount] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
+  const [isVoiceSettingsOpen, setIsVoiceSettingsOpen] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      speechService.stop();
+    };
+  }, []);
 
   useEffect(() => {
     binoApi.getDueSRSCards()
@@ -32,11 +41,7 @@ export default function BinoFlashcardReviewPage() {
   }, []);
 
   const speakText = (text) => {
-    if (!window.speechSynthesis) return;
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'en-US';
-    window.speechSynthesis.speak(u);
+    speechService.speakWord(text);
   };
 
   const handleGrade = async (grade) => {
@@ -76,6 +81,14 @@ export default function BinoFlashcardReviewPage() {
         </button>
 
         <div className="flex items-center gap-2">
+          <button
+            onClick={() => setIsVoiceSettingsOpen(true)}
+            className="px-3 py-1 rounded-full text-xs font-bold border border-amber-300 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/50 hover:bg-amber-100 text-amber-900 dark:text-amber-200 flex items-center gap-1 shadow-sm transition-all active:scale-95"
+            title="Cài đặt giọng đọc Studio"
+          >
+            <Sparkles size={13} className="text-amber-500" />
+            <span>Giọng Studio AI 🎙️</span>
+          </button>
           <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 flex items-center gap-1 shadow-sm">
             <Flame size={14} className="text-orange-500" /> Thuật toán SM-2 (SRS)
           </span>
@@ -234,6 +247,12 @@ export default function BinoFlashcardReviewPage() {
           )}
         </div>
       )}
+
+      {/* Voice Settings Modal */}
+      <VoiceSettingsModal
+        isOpen={isVoiceSettingsOpen}
+        onClose={() => setIsVoiceSettingsOpen(false)}
+      />
     </div>
   );
 }

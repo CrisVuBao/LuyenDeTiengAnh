@@ -21,4 +21,10 @@
     <ProjectReference Include="..\VBaceEnglish.Infrastructure\VBaceEnglish.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="bino_real_data.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

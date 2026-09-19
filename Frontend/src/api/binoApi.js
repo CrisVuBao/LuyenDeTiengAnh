@@ -1,7 +1,7 @@
 import axiosClient from './axiosClient';
 
 export const binoApi = {
-  // Sách & Chương trình học
+  // Sách & Chương trình học (Học viên)
   getBookOverview: (slug = 'chem-tieng-anh-khong-can-dong-nao') =>
     axiosClient.get(`/bino/book?slug=${encodeURIComponent(slug)}`),
 
@@ -30,6 +30,40 @@ export const binoApi = {
 
   submitSRSReview: (vocabularyId, grade) =>
     axiosClient.post('/bino/srs/review', { vocabularyId, grade }),
+
+  // ================= ADMIN CMS API =================
+  // Quản lý Chương (Admin)
+  adminGetChapters: () =>
+    axiosClient.get('/admin/bino/chapters'),
+
+  adminGetChapter: (id) =>
+    axiosClient.get(`/admin/bino/chapter/${id}`),
+
+  adminCreateChapter: (data) =>
+    axiosClient.post('/admin/bino/chapter', data),
+
+  adminUpdateChapter: (id, data) =>
+    axiosClient.put(`/admin/bino/chapter/${id}`, data),
+
+  adminDeleteChapter: (id) =>
+    axiosClient.delete(`/admin/bino/chapter/${id}`),
+
+  // Quản lý Bài Hội Thoại (Admin)
+  adminGetDialogue: (id) =>
+    axiosClient.get(`/admin/bino/dialogue/${id}`),
+
+  adminCreateDialogue: (data) =>
+    axiosClient.post('/admin/bino/dialogue', data),
+
+  adminUpdateDialogue: (id, data) =>
+    axiosClient.put(`/admin/bino/dialogue/${id}`, data),
+
+  adminDeleteDialogue: (id) =>
+    axiosClient.delete(`/admin/bino/dialogue/${id}`),
+
+  // Đồng bộ dữ liệu thật từ TiengAnhBi.epub
+  adminSyncRealData: () =>
+    axiosClient.post('/admin/bino/sync-real-data'),
 
   // Quản lý Media (Admin)
   uploadMedia: (formData, folder = 'audios') =>

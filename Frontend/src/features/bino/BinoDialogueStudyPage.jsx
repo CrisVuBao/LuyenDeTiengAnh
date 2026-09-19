@@ -1,12 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { 
   ArrowLeft, Play, Pause, Volume2, Bookmark, CheckCircle2, 
   RotateCcw, Sparkles, Mic, Eye, EyeOff, BookOpen, MessageSquare, 
-  HelpCircle, ChevronRight, Layers, Award, FileText, Check, Copy
+  HelpCircle, ChevronRight, Layers, Award, FileText, Check, Copy, Settings
 } from 'lucide-react';
 import binoApi from '../../api/binoApi';
 import PageLoader from '../../components/PageLoader';
+import VoiceSettingsModal from '../../components/VoiceSettingsModal';
+import speechService from '../../utils/speechService';
 import toast from 'react-hot-toast';
 
 export default function BinoDialogueStudyPage() {
@@ -18,18 +20,40 @@ export default function BinoDialogueStudyPage() {
   const [showVietsub, setShowVietsub] = useState(true);
   const [addedVocabs, setAddedVocabs] = useState({});
   const [isCompleted, setIsCompleted] = useState(false);
+  const [isVoiceSettingsOpen, setIsVoiceSettingsOpen] = useState(false);
 
   // Audio state
   const [isPlayingAll, setIsPlayingAll] = useState(false);
   const [activeLineIndex, setActiveLineIndex] = useState(null);
-  const [audioSpeed, setAudioSpeed] = useState(1);
+  const [audioSpeed, setAudioSpeed] = useState(0.95);
+
+  // Stop speech when unmounting
+  useEffect(() => {
+    return () => {
+      speechService.stop();
+    };
+  }, []);
 
   // Roleplay state
-  const [selectedRole, setSelectedRole] = useState('NEW FRIEND');
+  const [selectedRole, setSelectedRole] = useState('');
   const [roleplayStep, setRoleplayStep] = useState(0);
   const [roleplayRunning, setRoleplayRunning] = useState(false);
   const [userTranscript, setUserTranscript] = useState('');
   const [isListening, setIsListening] = useState(false);
+
+  // Dynamic roles extraction from real dialogue lines
+  const availableRoles = useMemo(() => {
+    if (!lesson?.dialogueLines?.length) return ['BẠN BÈ / ĐỒNG NGHIỆP'];
+    const roles = [...new Set(lesson.dialogueLines.map(l => l.characterName?.trim()).filter(Boolean))];
+    const nonBino = roles.filter(r => !r.toUpperCase().includes('BINO'));
+    return nonBino.length > 0 ? nonBino : roles;
+  }, [lesson?.dialogueLines]);
+
+  useEffect(() => {
+    if (availableRoles.length > 0 && (!selectedRole || !availableRoles.includes(selectedRole))) {
+      setSelectedRole(availableRoles[0]);
+    }
+  }, [availableRoles, selectedRole]);
 
   // Dictation state
   const [dictationIndex, setDictationIndex] = useState(0);
@@ -56,17 +80,17 @@ export default function BinoDialogueStudyPage() {
       .finally(() => setLoading(false));
   }, [id]);
 
-  // Speech synthesis for pronunciation
-  const speakText = (text, rate = 1) => {
-    if (!window.speechSynthesis) {
-      toast.error('Trình duyệt không hỗ trợ phát âm');
-      return;
-    }
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US';
-    utterance.rate = rate;
-    window.speechSynthesis.speak(utterance);
+  // Speech synthesis for pronunciation (using speechService with natural neural voices)
+  const speakText = (text, characterName = 'BINO', speed = null) => {
+    speechService.speakLine({
+      text,
+      characterName,
+      speed: speed || audioSpeed
+    });
+  };
+
+  const speakVocab = (word) => {
+    speechService.speakWord(word, audioSpeed);
   };
 
   // Add word to SRS
@@ -96,11 +120,11 @@ export default function BinoDialogueStudyPage() {
     }
   };
 
-  // Play dialogue lines in sequence
+  // Play dialogue lines in sequence with dramatized character voices
   const playAllLines = () => {
     if (!lesson?.dialogueLines?.length) return;
     if (isPlayingAll) {
-      window.speechSynthesis.cancel();
+      speechService.stop();
       setIsPlayingAll(false);
       setActiveLineIndex(null);
       return;
@@ -118,18 +142,19 @@ export default function BinoDialogueStudyPage() {
 
       setActiveLineIndex(index);
       const line = lesson.dialogueLines[index];
-      const utterance = new SpeechSynthesisUtterance(line.englishText);
-      utterance.lang = 'en-US';
-      utterance.rate = audioSpeed;
-      utterance.onend = () => {
-        index++;
-        setTimeout(playNext, 600);
-      };
-      utterance.onerror = () => {
-        setIsPlayingAll(false);
-        setActiveLineIndex(null);
-      };
-      window.speechSynthesis.speak(utterance);
+      speechService.speakLine({
+        text: line.englishText,
+        characterName: line.characterName,
+        speed: audioSpeed,
+        onEnd: () => {
+          index++;
+          setTimeout(playNext, 500);
+        },
+        onError: () => {
+          setIsPlayingAll(false);
+          setActiveLineIndex(null);
+        }
+      });
     };
 
     playNext();
@@ -209,10 +234,10 @@ export default function BinoDialogueStudyPage() {
 
       {/* Global Audio / Media Toolbar */}
       <div className="glass-card p-4 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 shadow-sm bg-gradient-to-r from-blue-50/50 via-white to-amber-50/50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={playAllLines}
-            className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all ${
+            className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all active:scale-95 ${
               isPlayingAll
                 ? 'bg-amber-500 text-white shadow-md shadow-amber-500/25 animate-pulse'
                 : 'bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-500/25'
@@ -224,12 +249,12 @@ export default function BinoDialogueStudyPage() {
 
           {/* Speed selector */}
           <div className="flex items-center rounded-xl bg-slate-100 dark:bg-slate-800 p-1 text-[11px] font-bold">
-            {[0.75, 1, 1.25].map(speed => (
+            {[0.8, 0.95, 1.1].map(speed => (
               <button
                 key={speed}
                 onClick={() => setAudioSpeed(speed)}
                 className={`px-2 py-0.5 rounded-lg transition-colors ${
-                  audioSpeed === speed
+                  Math.abs(audioSpeed - speed) < 0.01
                     ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm'
                     : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
                 }`}
@@ -238,6 +263,16 @@ export default function BinoDialogueStudyPage() {
               </button>
             ))}
           </div>
+
+          {/* Studio Voice Settings Button */}
+          <button
+            onClick={() => setIsVoiceSettingsOpen(true)}
+            className="px-3 py-2 rounded-xl border border-amber-300 dark:border-amber-800 bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/50 dark:hover:bg-amber-900/60 text-amber-900 dark:text-amber-200 text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm active:scale-95"
+            title="Tùy chỉnh giọng đọc Studio Neural"
+          >
+            <Sparkles size={14} className="text-amber-500" />
+            <span>Giọng Đọc Studio AI 🎙️</span>
+          </button>
         </div>
 
         {/* Toggle vietsub */}
@@ -338,9 +373,9 @@ export default function BinoDialogueStudyPage() {
                       <div className="flex items-center gap-1.5 shrink-0">
                         {/* Speaker button */}
                         <button
-                          onClick={() => speakText(v.word)}
+                          onClick={() => speakVocab(v.word)}
                           className="p-2 rounded-xl text-slate-500 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950 transition-colors"
-                          title="Nghe phát âm"
+                          title="Nghe phát âm chuẩn"
                         >
                           <Volume2 size={16} />
                         </button>
@@ -418,9 +453,9 @@ export default function BinoDialogueStudyPage() {
 
                       {/* Line Audio Play Button */}
                       <button
-                        onClick={() => speakText(line.englishText, audioSpeed)}
+                        onClick={() => speakText(line.englishText, line.characterName)}
                         className="p-2 rounded-xl text-slate-400 hover:text-amber-600 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors shrink-0"
-                        title="Nghe câu này"
+                        title="Nghe câu này theo giọng nhân vật"
                       >
                         <Volume2 size={16} />
                       </button>
@@ -452,7 +487,7 @@ export default function BinoDialogueStudyPage() {
           {/* Role selector */}
           <div className="flex flex-wrap items-center gap-3">
             <span className="text-xs font-bold text-slate-500">Bạn muốn đóng vai:</span>
-            {['NEW FRIEND', 'RACHEL', 'JEREMY', 'COLLEAGUE'].map(r => (
+            {availableRoles.map(r => (
               <button
                 key={r}
                 onClick={() => { setSelectedRole(r); setRoleplayStep(0); }}
@@ -520,7 +555,7 @@ export default function BinoDialogueStudyPage() {
                       </button>
 
                       <button
-                        onClick={() => speakText(lesson.dialogueLines[roleplayStep].englishText)}
+                        onClick={() => speakText(lesson.dialogueLines[roleplayStep].englishText, selectedRole)}
                         className="px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-200 flex items-center gap-1.5"
                       >
                         <Volume2 size={14} /> Nghe mẫu
@@ -536,10 +571,10 @@ export default function BinoDialogueStudyPage() {
                   </div>
                 ) : (
                   <button
-                    onClick={() => speakText(lesson.dialogueLines[roleplayStep].englishText)}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-sm"
+                    onClick={() => speakText(lesson.dialogueLines[roleplayStep].englishText, lesson.dialogueLines[roleplayStep].characterName)}
+                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-sm active:scale-95 transition-all"
                   >
-                    <Volume2 size={15} /> Phát giọng Bino
+                    <Volume2 size={15} /> Phát giọng {lesson.dialogueLines[roleplayStep].characterName}
                   </button>
                 )}
 
@@ -596,8 +631,8 @@ export default function BinoDialogueStudyPage() {
               </span>
 
               <button
-                onClick={() => speakText(currentDictationLine.englishText, 0.85)}
-                className="px-4 py-2 bg-blue-600 text-white font-bold rounded-xl text-xs flex items-center gap-2 shadow-md shadow-blue-500/20 active:scale-95"
+                onClick={() => speakText(currentDictationLine.englishText, currentDictationLine.characterName, 0.85)}
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs flex items-center gap-2 shadow-md shadow-blue-500/20 active:scale-95 transition-all"
               >
                 <Volume2 size={16} /> Nghe Lại (Tốc độ chậm)
               </button>
@@ -692,6 +727,12 @@ export default function BinoDialogueStudyPage() {
           </div>
         </div>
       )}
+
+      {/* Studio Voice Settings Modal */}
+      <VoiceSettingsModal
+        isOpen={isVoiceSettingsOpen}
+        onClose={() => setIsVoiceSettingsOpen(false)}
+      />
 
     </div>
   );

@@ -22,6 +22,7 @@ public class BinoBookController : ControllerBase
     }
 
     [HttpGet("book")]
+    [AllowAnonymous]
     public async Task<ActionResult<Response<BinoBookDto>>> GetBookOverview([FromQuery] string slug = "chem-tieng-anh-khong-can-dong-nao")
     {
         var userId = _currentUser.UserId ?? 0;
@@ -31,6 +32,7 @@ public class BinoBookController : ControllerBase
     }
 
     [HttpGet("chapter/{chapterNumber}")]
+    [AllowAnonymous]
     public async Task<ActionResult<Response<ChapterDetailDto>>> GetChapterDetail(int chapterNumber)
     {
         var userId = _currentUser.UserId ?? 0;
@@ -40,6 +42,7 @@ public class BinoBookController : ControllerBase
     }
 
     [HttpGet("chapter/{chapterNumber}/bonus")]
+    [AllowAnonymous]
     public async Task<ActionResult<Response<ChapterBonusDto>>> GetChapterBonus(int chapterNumber)
     {
         var result = await _binoService.GetChapterBonusAsync(chapterNumber);
@@ -48,6 +51,7 @@ public class BinoBookController : ControllerBase
     }
 
     [HttpGet("dialogue/{id}")]
+    [AllowAnonymous]
     public async Task<ActionResult<Response<DialogueLessonDetailDto>>> GetDialogueLessonDetail(int id)
     {
         var userId = _currentUser.UserId ?? 0;
@@ -57,6 +61,7 @@ public class BinoBookController : ControllerBase
     }
 
     [HttpGet("chapter/{chapterNumber}/dialogue/{dialogueNumber}")]
+    [AllowAnonymous]
     public async Task<ActionResult<Response<DialogueLessonDetailDto>>> GetDialogueLessonByNumber(int chapterNumber, int dialogueNumber)
     {
         var userId = _currentUser.UserId ?? 0;
