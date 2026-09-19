@@ -26,6 +26,17 @@ export default function BinoDialogueStudyPage() {
   const [isPlayingAll, setIsPlayingAll] = useState(false);
   const [activeLineIndex, setActiveLineIndex] = useState(null);
   const [audioSpeed, setAudioSpeed] = useState(0.95);
+  const lineRefs = useRef({});
+
+  // Tự động scroll mượt mà đến câu thoại tương ứng khi đang phát audio
+  useEffect(() => {
+    if (activeLineIndex !== null && lineRefs.current[activeLineIndex]) {
+      lineRefs.current[activeLineIndex].scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+    }
+  }, [activeLineIndex]);
 
   // Stop speech when unmounting
   useEffect(() => {
@@ -244,7 +255,11 @@ export default function BinoDialogueStudyPage() {
             }`}
           >
             {isPlayingAll ? <Pause size={15} /> : <Play size={15} fill="currentColor" />}
-            <span>{isPlayingAll ? 'Tạm Dừng Nghe' : 'Nghe Toàn Bài Hội Thoại'}</span>
+            <span>
+              {isPlayingAll
+                ? `Tạm Dừng (${activeLineIndex !== null ? `Câu ${activeLineIndex + 1}/${lesson?.dialogueLines?.length || 0}` : 'Đang phát...'})`
+                : 'Nghe Toàn Bài Hội Thoại'}
+            </span>
           </button>
 
           {/* Speed selector */}
@@ -355,7 +370,7 @@ export default function BinoDialogueStudyPage() {
                             {v.word}
                           </span>
                           {v.phonetic && (
-                            <span className="text-xs text-amber-700 dark:text-amber-400 font-serif italic">
+                            <span className="text-xs text-amber-700 dark:text-amber-400 font-vietsub font-medium">
                               {v.phonetic}
                             </span>
                           )}
@@ -417,12 +432,13 @@ export default function BinoDialogueStudyPage() {
                 return (
                   <div
                     key={line.id}
-                    className={`p-4 sm:p-5 rounded-2xl transition-all border ${
+                    ref={(el) => { if (el) lineRefs.current[idx] = el; }}
+                    className={`p-4 sm:p-5 rounded-2xl transition-all duration-300 border ${
                       isActive
-                        ? 'bg-amber-50 dark:bg-amber-950/40 border-amber-400 shadow-md ring-2 ring-amber-400/30'
+                        ? 'bg-amber-50 dark:bg-amber-950/40 border-amber-400 shadow-md ring-2 ring-amber-400/40 scale-[1.01]'
                         : isBino
-                        ? 'bg-orange-50/40 dark:bg-slate-800/80 border-orange-200/60 dark:border-slate-700/80'
-                        : 'bg-white dark:bg-slate-800/60 border-slate-200 dark:border-slate-700/60'
+                        ? 'bg-orange-50/40 dark:bg-slate-800/80 border-orange-200/60 dark:border-slate-700/80 hover:border-orange-300'
+                        : 'bg-white dark:bg-slate-800/60 border-slate-200 dark:border-slate-700/60 hover:border-slate-300'
                     }`}
                   >
                     <div className="flex items-start justify-between gap-3">
@@ -443,9 +459,9 @@ export default function BinoDialogueStudyPage() {
                           "{line.englishText}"
                         </p>
 
-                        {/* Vietnamese Translation (Styled in reddish-italic as in book) */}
+                        {/* Vietnamese Translation (Chuẩn font Be Vietnam Pro, không lỗi dãn dấu 'đế m') */}
                         {showVietsub && line.vietnameseText && (
-                          <p className="text-xs sm:text-sm text-red-700 dark:text-red-400 font-serif italic leading-relaxed">
+                          <p className="text-xs sm:text-sm text-rose-600 dark:text-rose-400 font-vietsub font-medium leading-relaxed tracking-normal">
                             ({line.vietnameseText})
                           </p>
                         )}
@@ -453,8 +469,19 @@ export default function BinoDialogueStudyPage() {
 
                       {/* Line Audio Play Button */}
                       <button
-                        onClick={() => speakText(line.englishText, line.characterName)}
-                        className="p-2 rounded-xl text-slate-400 hover:text-amber-600 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors shrink-0"
+                        onClick={() => {
+                          if (isPlayingAll) {
+                            speechService.stop();
+                            setIsPlayingAll(false);
+                          }
+                          setActiveLineIndex(idx);
+                          speakText(line.englishText, line.characterName);
+                        }}
+                        className={`p-2 rounded-xl transition-colors shrink-0 ${
+                          isActive
+                            ? 'text-amber-600 bg-amber-100/80 dark:bg-amber-900/50'
+                            : 'text-slate-400 hover:text-amber-600 hover:bg-slate-100 dark:hover:bg-slate-700'
+                        }`}
                         title="Nghe câu này theo giọng nhân vật"
                       >
                         <Volume2 size={16} />
@@ -532,7 +559,7 @@ export default function BinoDialogueStudyPage() {
                     "{lesson.dialogueLines[roleplayStep].englishText}"
                   </p>
                   {showVietsub && (
-                    <p className="text-xs sm:text-sm text-red-700 dark:text-red-400 italic mt-1 font-serif">
+                    <p className="text-xs sm:text-sm text-rose-600 dark:text-rose-400 font-vietsub font-medium mt-1">
                       ({lesson.dialogueLines[roleplayStep].vietnameseText})
                     </p>
                   )}
@@ -678,7 +705,7 @@ export default function BinoDialogueStudyPage() {
                 <p className="text-sm font-bold text-slate-900 dark:text-white">
                   {currentDictationLine.englishText}
                 </p>
-                <p className="text-xs text-red-600 italic font-serif">
+                <p className="text-xs text-rose-600 dark:text-rose-400 font-vietsub font-medium">
                   ({currentDictationLine.vietnameseText})
                 </p>
               </div>
