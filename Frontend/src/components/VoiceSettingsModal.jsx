@@ -54,6 +54,7 @@ export default function VoiceSettingsModal({ isOpen, onClose }) {
       text: "Hey mate! I'm Bino. Welcome to natural English conversation!",
       characterName: 'BINO',
       speed: rate,
+      forceCancel: true,
       onEnd: () => setPreviewing(null),
       onError: () => setPreviewing(null)
     });
@@ -65,6 +66,7 @@ export default function VoiceSettingsModal({ isOpen, onClose }) {
       text: "Hi there! Nice to meet you. How is your English learning journey going so far?",
       characterName: 'AMY',
       speed: rate,
+      forceCancel: true,
       onEnd: () => setPreviewing(null),
       onError: () => setPreviewing(null)
     });

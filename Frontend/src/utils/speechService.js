@@ -21,6 +21,7 @@ class SpeechService {
     this.voices = [];
     this.isLoaded = false;
     this.preferences = this.loadPreferences();
+    this.activeUtterances = [];
     this.initVoices();
   }
 
@@ -256,13 +257,22 @@ class SpeechService {
   /**
    * Phát một câu thoại với giọng nhân vật tương ứng
    */
-  async speakLine({ text, characterName = 'BINO', speed = null, onStart, onEnd, onError }) {
+  async speakLine({ text, characterName = 'BINO', speed = null, onStart, onEnd, onError, forceCancel = false }) {
     if (typeof window === 'undefined' || !window.speechSynthesis) {
       onError?.(new Error('Trình duyệt không hỗ trợ Web Speech API'));
       return;
     }
 
-    this.stop();
+    // Chỉ cancel khi có yêu cầu dừng cưỡng bức (vd: chuyển bài thủ công, bấm từng câu)
+    // KHÔNG tự ý cancel giữa các câu thoại khi đang phát chuỗi liên tục
+    if (forceCancel && (window.speechSynthesis.speaking || window.speechSynthesis.pending)) {
+      window.speechSynthesis.cancel();
+    }
+
+    // Khắc phục lỗi paused ngầm của Chromium
+    if (window.speechSynthesis.paused) {
+      window.speechSynthesis.resume();
+    }
 
     const profile = this.detectRoleProfile(characterName);
     let selectedVoice = null;
@@ -289,11 +299,64 @@ class SpeechService {
     utterance.rate = speed || this.preferences.rate || 0.95;
     utterance.pitch = pitch;
 
+    // Chống Chromium Garbage Collection: lưu tham chiếu global & instance
+    this.activeUtterances.push(utterance);
+    this.currentUtterance = utterance;
+    this.isStopped = false;
+    if (typeof window !== 'undefined') {
+      window.__vbaceUtterance = utterance;
+    }
+
+    let hasEnded = false;
+    let fallbackTimer = null;
+
+    const cleanUp = () => {
+      if (fallbackTimer) clearTimeout(fallbackTimer);
+      this.activeUtterances = this.activeUtterances.filter(u => u !== utterance);
+      if (this.currentUtterance === utterance) {
+        this.currentUtterance = null;
+      }
+    };
+
+    const handleEnd = (e) => {
+      if (hasEnded) return;
+      hasEnded = true;
+      cleanUp();
+      onEnd?.(e);
+    };
+
+    const handleError = (e) => {
+      if (hasEnded) return;
+      hasEnded = true;
+      cleanUp();
+      // Nếu người dùng chủ động bấm Dừng (isStopped = true) thì dừng hoàn toàn, không gọi onError
+      if (this.isStopped) {
+        return;
+      }
+      // Nếu là sự cố ngẫu nhiên của Chrome, vẫn gọi onError để hệ thống tự phục hồi câu tiếp theo
+      onError?.(e);
+    };
+
+    // Fallback timer an toàn: đảm bảo không bao giờ bị kẹt nếu Chromium nuốt mất sự kiện onend
+    const wordCount = (text || '').trim().split(/\s+/).length;
+    const estimatedDurationMs = Math.max(2500, ((wordCount * 650) / (speed || 0.95)) + 2500);
+    fallbackTimer = setTimeout(() => {
+      if (!hasEnded) {
+        console.warn('[speechService] fallback onend triggered for line:', text);
+        handleEnd();
+      }
+    }, estimatedDurationMs);
+
     if (onStart) utterance.onstart = onStart;
-    if (onEnd) utterance.onend = onEnd;
-    if (onError) utterance.onerror = onError;
+    utterance.onend = handleEnd;
+    utterance.onerror = handleError;
 
     window.speechSynthesis.speak(utterance);
+
+    // Đảm bảo Chromium không bị kẹt ở trạng thái pause
+    if (window.speechSynthesis.paused) {
+      window.speechSynthesis.resume();
+    }
   }
 
   /**
@@ -302,22 +365,53 @@ class SpeechService {
   async speakWord(word, speed = null, onEnd) {
     if (typeof window === 'undefined' || !window.speechSynthesis) return;
 
-    this.stop();
+    if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
+      window.speechSynthesis.cancel();
+    }
+    if (window.speechSynthesis.paused) {
+      window.speechSynthesis.resume();
+    }
+
     const voice = await this.getBestBinoVoice();
 
     const utterance = new SpeechSynthesisUtterance(word);
     utterance.lang = voice ? voice.lang : 'en-US';
     if (voice) utterance.voice = voice;
-    utterance.rate = speed || this.preferences.rate || 0.9; // Slightly slower for clear vocabulary phonetics
+    utterance.rate = speed || this.preferences.rate || 0.9;
     utterance.pitch = 1.0;
 
-    if (onEnd) utterance.onend = onEnd;
+    this.activeUtterances.push(utterance);
+    this.currentUtterance = utterance;
+
+    const cleanUp = () => {
+      this.activeUtterances = this.activeUtterances.filter(u => u !== utterance);
+      if (this.currentUtterance === utterance) {
+        this.currentUtterance = null;
+      }
+    };
+
+    utterance.onend = (e) => {
+      cleanUp();
+      onEnd?.(e);
+    };
+    utterance.onerror = () => {
+      cleanUp();
+    };
+
     window.speechSynthesis.speak(utterance);
+
+    if (window.speechSynthesis.paused) {
+      window.speechSynthesis.resume();
+    }
   }
 
   stop() {
+    this.isStopped = true;
     if (typeof window !== 'undefined' && window.speechSynthesis) {
+      this.currentUtterance = null;
+      if (window.__vbaceUtterance) window.__vbaceUtterance = null;
       window.speechSynthesis.cancel();
+      this.activeUtterances = [];
     }
   }
 }
