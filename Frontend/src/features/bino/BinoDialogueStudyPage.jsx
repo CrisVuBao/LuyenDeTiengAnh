@@ -4,11 +4,12 @@ import {
   ArrowLeft, Play, Pause, Volume2, Bookmark, CheckCircle2, 
   RotateCcw, Sparkles, Mic, Eye, EyeOff, BookOpen, MessageSquare, 
   HelpCircle, ChevronRight, Layers, Award, FileText, Check, Copy, Settings,
-  Repeat, Repeat1, Infinity, ChevronDown, X
+  Repeat, Repeat1, Infinity, ChevronDown, X, ListMusic
 } from 'lucide-react';
 import binoApi from '../../api/binoApi';
 import PageLoader from '../../components/PageLoader';
 import VoiceSettingsModal from '../../components/VoiceSettingsModal';
+import BinoPlaylistModal from './components/BinoPlaylistModal';
 import speechService from '../../utils/speechService';
 import toast from 'react-hot-toast';
 
@@ -27,12 +28,20 @@ export default function BinoDialogueStudyPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [lesson, setLesson] = useState(null);
+  const [book, setBook] = useState(null);
+  const [isPlaylistOpen, setIsPlaylistOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('lesson'); // 'lesson', 'roleplay', 'dictation', 'scan'
   const [showVietsub, setShowVietsub] = useState(true);
   const [addedVocabs, setAddedVocabs] = useState({});
   const [isCompleted, setIsCompleted] = useState(false);
   const [isVoiceSettingsOpen, setIsVoiceSettingsOpen] = useState(false);
+
+  useEffect(() => {
+    binoApi.getBookOverview().then(res => {
+      if (res?.data) setBook(res.data);
+    }).catch(() => {});
+  }, []);
 
   // Audio state
   const [isPlayingAll, setIsPlayingAll] = useState(false);
@@ -734,6 +743,21 @@ export default function BinoDialogueStudyPage() {
             <Sparkles size={14} className="text-amber-500" />
             <span>Giọng Đọc Studio AI 🎙️</span>
           </button>
+
+          {/* Playlist Continuous Player Button */}
+          <button
+            onClick={() => {
+              if (isPlayingAll) {
+                stopPlayback();
+              }
+              setIsPlaylistOpen(true);
+            }}
+            className="px-3 py-2 rounded-xl border border-blue-300 dark:border-blue-800 bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/50 dark:hover:bg-blue-900/60 text-blue-900 dark:text-blue-200 text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm active:scale-95"
+            title="Mở trình nghe liên tục toàn bộ / nhiều bài hội thoại"
+          >
+            <ListMusic size={14} className="text-blue-600 dark:text-blue-400" />
+            <span>Nghe Nhiều Bài 🎧</span>
+          </button>
         </div>
 
         {/* Toggle vietsub */}
@@ -1219,6 +1243,15 @@ export default function BinoDialogueStudyPage() {
       <VoiceSettingsModal
         isOpen={isVoiceSettingsOpen}
         onClose={() => setIsVoiceSettingsOpen(false)}
+      />
+
+      {/* Continuous Playlist Player Modal */}
+      <BinoPlaylistModal
+        isOpen={isPlaylistOpen}
+        onClose={() => setIsPlaylistOpen(false)}
+        book={book}
+        initialSelectedIds={lesson ? [lesson.id] : null}
+        autoStart={false}
       />
 
     </div>

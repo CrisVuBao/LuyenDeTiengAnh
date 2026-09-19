@@ -50,6 +50,16 @@ public class BinoBookController : ControllerBase
         return Ok(result);
     }
 
+    [HttpGet("playlist")]
+    [AllowAnonymous]
+    public async Task<ActionResult<Response<List<PlaylistDialogueDto>>>> GetPlaylistDialogues([FromQuery] string? ids = null)
+    {
+        var userId = _currentUser.UserId ?? 0;
+        var result = await _binoService.GetPlaylistDialoguesAsync(userId, ids);
+        if (!result.Success) return BadRequest(result);
+        return Ok(result);
+    }
+
     [HttpGet("dialogue/{id}")]
     [AllowAnonymous]
     public async Task<ActionResult<Response<DialogueLessonDetailDto>>> GetDialogueLessonDetail(int id)

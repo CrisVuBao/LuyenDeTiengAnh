@@ -17,6 +17,7 @@ public interface IBinoBookService
     Task<Response<bool>> AddWordToSRSAsync(int userId, int vocabularyId);
     Task<Response<IEnumerable<SrsCardDto>>> GetDueSRSCardsAsync(int userId);
     Task<Response<bool>> SubmitSRSReviewAsync(int userId, SubmitSrsReviewDto dto);
+    Task<Response<List<PlaylistDialogueDto>>> GetPlaylistDialoguesAsync(int userId, string? ids = null);
 
     // Admin CMS Methods
     Task<Response<List<AdminChapterDto>>> AdminGetChaptersAsync();
@@ -281,6 +282,96 @@ public class BinoBookService : IBinoBookService
         };
 
         return Response<DialogueLessonDetailDto>.SuccessResult("Lấy bài học thành công", dto);
+    }
+
+    public async Task<Response<List<PlaylistDialogueDto>>> GetPlaylistDialoguesAsync(int userId, string? ids = null)
+    {
+        var book = await _unitOfWork.BinoBooks.GetBookWithChaptersAsync();
+        if (book == null)
+            return Response<List<PlaylistDialogueDto>>.Failure("Không tìm thấy sách Bino.");
+
+        var userProgresses = (await _unitOfWork.BinoLearning.GetProgressByUserAsync(userId)).ToList();
+        var completedMap = userProgresses
+            .Where(p => p.IsCompleted)
+            .ToDictionary(p => p.DialogueLessonId, p => true);
+
+        HashSet<int>? targetIdSet = null;
+        if (!string.IsNullOrWhiteSpace(ids))
+        {
+            var parsedIds = ids.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                               .Select(s => int.TryParse(s, out var v) ? v : (int?)null)
+                               .Where(v => v.HasValue)
+                               .Select(v => v!.Value)
+                               .ToHashSet();
+            if (parsedIds.Any())
+            {
+                targetIdSet = parsedIds;
+            }
+        }
+
+        var playlist = new List<PlaylistDialogueDto>();
+
+        foreach (var chapter in book.Chapters.OrderBy(c => c.ChapterNumber))
+        {
+            foreach (var dialogue in chapter.DialogueLessons.OrderBy(d => d.DialogueNumber))
+            {
+                if (targetIdSet != null && !targetIdSet.Contains(dialogue.Id))
+                    continue;
+
+                playlist.Add(new PlaylistDialogueDto
+                {
+                    Id = dialogue.Id,
+                    ChapterId = chapter.Id,
+                    ChapterNumber = chapter.ChapterNumber,
+                    ChapterTitle = chapter.Title,
+                    ChapterTitleVi = chapter.TitleVi,
+                    DialogueNumber = dialogue.DialogueNumber,
+                    Title = dialogue.Title,
+                    TitleVi = dialogue.TitleVi,
+                    SituationDescription = dialogue.SituationDescription,
+                    AudioUrl = dialogue.AudioUrl,
+                    IsCompleted = completedMap.ContainsKey(dialogue.Id),
+                    DialogueLines = dialogue.DialogueLines
+                        .OrderBy(l => l.OrderIndex)
+                        .Select(l => new DialogueLineDto
+                        {
+                            Id = l.Id,
+                            CharacterName = l.CharacterName,
+                            EnglishText = l.EnglishText,
+                            VietnameseText = l.VietnameseText,
+                            OrderIndex = l.OrderIndex,
+                            AudioStartTimeMs = l.AudioStartTimeMs,
+                            AudioEndTimeMs = l.AudioEndTimeMs,
+                            IsUserRole = l.IsUserRole
+                        }).ToList()
+                });
+            }
+        }
+
+        if (targetIdSet != null)
+        {
+            var idList = ids!.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                             .Select(s => int.TryParse(s, out var v) ? v : (int?)null)
+                             .Where(v => v.HasValue)
+                             .Select(v => v!.Value)
+                             .ToList();
+
+            var playlistMap = playlist.ToDictionary(p => p.Id);
+            var sortedPlaylist = new List<PlaylistDialogueDto>();
+            foreach (var id in idList)
+            {
+                if (playlistMap.TryGetValue(id, out var item))
+                {
+                    sortedPlaylist.Add(item);
+                }
+            }
+            if (sortedPlaylist.Any())
+            {
+                playlist = sortedPlaylist;
+            }
+        }
+
+        return Response<List<PlaylistDialogueDto>>.SuccessResult($"Lấy danh sách phát thành công ({playlist.Count} bài)", playlist);
     }
 
     public async Task<Response<bool>> MarkProgressAsync(int userId, MarkDialogueProgressDto dto)

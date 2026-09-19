@@ -3,17 +3,27 @@ import { useNavigate } from 'react-router-dom';
 import { 
   BookOpen, Sparkles, Flame, CheckCircle2, Play, 
   ChevronRight, Volume2, Video, ArrowRight, BookMarked,
-  Award, Clock, Layers, Star, Compass
+  Award, Clock, Layers, Star, Compass, ListMusic
 } from 'lucide-react';
 import binoApi from '../../api/binoApi';
 import PageLoader from '../../components/PageLoader';
+import BinoPlaylistModal from './components/BinoPlaylistModal';
 import toast from 'react-hot-toast';
 
 export default function BinoBookOverviewPage() {
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedChapter, setSelectedChapter] = useState(1);
+  const [isPlaylistOpen, setIsPlaylistOpen] = useState(false);
+  const [playlistInitialIds, setPlaylistInitialIds] = useState(null);
+  const [playlistAutoStart, setPlaylistAutoStart] = useState(false);
   const navigate = useNavigate();
+
+  const openPlaylistWith = (ids = null, autoStart = false) => {
+    setPlaylistInitialIds(ids);
+    setPlaylistAutoStart(autoStart);
+    setIsPlaylistOpen(true);
+  };
 
   useEffect(() => {
     binoApi.getBookOverview()
@@ -60,19 +70,35 @@ export default function BinoBookOverviewPage() {
             </p>
 
             {/* Quick Action Buttons */}
-            <div className="flex flex-wrap items-center gap-3 pt-2">
+            <div className="flex flex-wrap items-center gap-2.5 pt-2">
+              <button
+                onClick={() => openPlaylistWith(null, true)}
+                className="px-5 py-3 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold rounded-2xl shadow-lg shadow-indigo-500/25 flex items-center gap-2 text-xs sm:text-sm transition-all active:scale-95"
+              >
+                <ListMusic size={17} />
+                <span>Nghe Toàn Bộ ({book?.totalLessonsCount || 34} Bài)</span>
+              </button>
+
+              <button
+                onClick={() => openPlaylistWith(null, false)}
+                className="px-4 py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-2xl shadow-md shadow-amber-500/25 flex items-center gap-2 text-xs sm:text-sm transition-all active:scale-95"
+              >
+                <ListMusic size={16} />
+                <span>Chọn Bài Nghe Cùng Lúc</span>
+              </button>
+
               <button
                 onClick={() => navigate('/bino/dialogue/3')}
-                className="px-5 py-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold rounded-2xl shadow-lg shadow-orange-500/25 flex items-center gap-2 text-xs sm:text-sm transition-all active:scale-95"
+                className="px-4 py-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-2xl border border-slate-200 dark:border-slate-700 flex items-center gap-2 text-xs sm:text-sm shadow-sm transition-all active:scale-95"
               >
-                <Play size={16} fill="currentColor" /> Vào Bài Học Mẫu (Hội thoại 3)
+                <Play size={15} fill="currentColor" className="text-amber-500" /> Bài Mẫu (Hội thoại 3)
               </button>
 
               <button
                 onClick={() => navigate('/bino/reader')}
                 className="px-4 py-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-2xl border border-slate-200 dark:border-slate-700 flex items-center gap-2 text-xs sm:text-sm shadow-sm transition-all active:scale-95"
               >
-                <BookMarked size={16} className="text-blue-500" /> Mở Ebook (EPUB / PDF)
+                <BookMarked size={16} className="text-blue-500" /> Mở Ebook
               </button>
 
               <button
@@ -192,15 +218,29 @@ export default function BinoBookOverviewPage() {
                   </p>
                 </div>
 
-                {activeChapter.hasBonus && (
+                <div className="flex items-center gap-2 shrink-0">
                   <button
-                    onClick={() => navigate(`/bino/chapter/${activeChapter.chapterNumber}/bonus`)}
-                    className="px-4 py-2 bg-amber-50 dark:bg-amber-950/60 hover:bg-amber-100 dark:hover:bg-amber-900/60 text-amber-700 dark:text-amber-300 rounded-xl font-bold text-xs border border-amber-200 dark:border-amber-800 flex items-center gap-1.5 transition-all active:scale-95 shrink-0"
+                    onClick={() => {
+                      const chapterDialogueIds = activeChapter.dialogues?.map(d => d.id) || [];
+                      openPlaylistWith(chapterDialogueIds, true);
+                    }}
+                    className="px-3.5 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl font-bold text-xs shadow-md shadow-blue-500/20 flex items-center gap-1.5 transition-all active:scale-95"
+                    title={`Phát liên tục tất cả các bài hội thoại của Chương ${activeChapter.chapterNumber}`}
                   >
-                    <Star size={14} className="text-amber-500 fill-amber-500" />
-                    <span>Góc Tiếng Lóng Cuối Chương</span>
+                    <Play size={13} fill="currentColor" />
+                    <span>Nghe Cả Chương {activeChapter.chapterNumber}</span>
                   </button>
-                )}
+
+                  {activeChapter.hasBonus && (
+                    <button
+                      onClick={() => navigate(`/bino/chapter/${activeChapter.chapterNumber}/bonus`)}
+                      className="px-3.5 py-2 bg-amber-50 dark:bg-amber-950/60 hover:bg-amber-100 dark:hover:bg-amber-900/60 text-amber-700 dark:text-amber-300 rounded-xl font-bold text-xs border border-amber-200 dark:border-amber-800 flex items-center gap-1.5 transition-all active:scale-95"
+                    >
+                      <Star size={14} className="text-amber-500 fill-amber-500" />
+                      <span>Góc Tiếng Lóng</span>
+                    </button>
+                  )}
+                </div>
               </div>
 
               {/* Dialogues Grid (6 lessons) */}
@@ -258,6 +298,15 @@ export default function BinoBookOverviewPage() {
           )}
         </div>
       </div>
+
+      {/* Trình phát Playlist liên tục & Chọn bài nghe */}
+      <BinoPlaylistModal
+        isOpen={isPlaylistOpen}
+        onClose={() => setIsPlaylistOpen(false)}
+        book={book}
+        initialSelectedIds={playlistInitialIds}
+        autoStart={playlistAutoStart}
+      />
     </div>
   );
 }

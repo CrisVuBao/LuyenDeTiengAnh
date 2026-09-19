@@ -141,3 +141,20 @@ public class SrsCardDto
     public int ConsecutiveCorrect { get; set; }
     public DateTime NextReviewDate { get; set; }
 }
+
+public class PlaylistDialogueDto
+{
+    public int Id { get; set; }
+    public int ChapterId { get; set; }
+    public int ChapterNumber { get; set; }
+    public string ChapterTitle { get; set; } = string.Empty;
+    public string? ChapterTitleVi { get; set; }
+    public int DialogueNumber { get; set; }
+    public string Title { get; set; } = string.Empty;
+    public string? TitleVi { get; set; }
+    public string? SituationDescription { get; set; }
+    public string? AudioUrl { get; set; }
+    public bool IsCompleted { get; set; }
+    public List<DialogueLineDto> DialogueLines { get; set; } = new();
+}
+

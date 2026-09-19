@@ -17,6 +17,9 @@ export const binoApi = {
   getDialogueByNumber: (chapterNumber, dialogueNumber) =>
     axiosClient.get(`/bino/chapter/${chapterNumber}/dialogue/${dialogueNumber}`),
 
+  getPlaylistDialogues: (ids = null) =>
+    axiosClient.get('/bino/playlist', { params: ids ? { ids } : {} }),
+
   // Tiến độ học tập
   markProgress: (data) =>
     axiosClient.post('/bino/progress/mark', data),
