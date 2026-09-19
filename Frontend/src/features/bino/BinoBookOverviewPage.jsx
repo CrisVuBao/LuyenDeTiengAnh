@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   BookOpen, Sparkles, Flame, CheckCircle2, Play, 
   ChevronRight, Volume2, Video, ArrowRight, BookMarked,
-  Award, Clock, Layers, Star, Compass, ListMusic
+  Award, Clock, Layers, Star, Compass, ListMusic,
+  Search, Filter, Check
 } from 'lucide-react';
 import binoApi from '../../api/binoApi';
 import PageLoader from '../../components/PageLoader';
@@ -17,6 +19,7 @@ export default function BinoBookOverviewPage() {
   const [isPlaylistOpen, setIsPlaylistOpen] = useState(false);
   const [playlistInitialIds, setPlaylistInitialIds] = useState(null);
   const [playlistAutoStart, setPlaylistAutoStart] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
 
   const openPlaylistWith = (ids = null, autoStart = false) => {
@@ -43,129 +46,229 @@ export default function BinoBookOverviewPage() {
 
   const activeChapter = book?.chapters?.find(c => c.chapterNumber === selectedChapter) || book?.chapters?.[0];
 
+  // Lọc bài học theo tìm kiếm (nếu có nhập)
+  const filteredDialogues = activeChapter?.dialogues?.filter(d => {
+    if (!searchQuery.trim()) return true;
+    const q = searchQuery.toLowerCase();
+    return (
+      d.title?.toLowerCase().includes(q) ||
+      d.titleVi?.toLowerCase().includes(q) ||
+      d.situationDescription?.toLowerCase().includes(q) ||
+      d.dialogueNumber?.toString() === q
+    );
+  }) || [];
+
   return (
-    <div className="space-y-8 animate-fade-in max-w-6xl mx-auto pb-12">
-      {/* Hero Banner Sách Bino */}
-      <div className="glass-card p-6 md:p-10 rounded-3xl relative overflow-hidden bg-gradient-to-br from-amber-500/10 via-orange-500/10 to-blue-600/10 border border-amber-200/70 dark:border-amber-900/40">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative z-10">
-          <div className="space-y-3 max-w-2xl">
+    <div className="space-y-6 sm:space-y-8 max-w-6xl mx-auto pb-16 px-1 sm:px-0">
+      
+      {/* ========================================================================= */}
+      {/* 1. HERO BANNER SÁCH BINO - ULTRA SHARP & FULL RESPONSIVE */}
+      {/* ========================================================================= */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: 'easeOut' }}
+        className="glass-card p-5 sm:p-8 md:p-10 rounded-3xl relative overflow-hidden bg-gradient-to-br from-amber-500/15 via-orange-500/10 to-blue-600/10 border border-amber-200/80 dark:border-amber-900/40 shadow-xl"
+      >
+        {/* Glow ambient background circles */}
+        <div className="absolute -top-20 -right-20 w-64 h-64 bg-amber-400/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-blue-500/15 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 relative z-10">
+          <div className="space-y-3.5 max-w-2xl">
+            {/* Tag Badges */}
             <div className="flex flex-wrap items-center gap-2">
-              <span className="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 flex items-center gap-1.5 shadow-sm">
-                <Sparkles size={14} className="text-amber-600" /> Tác giả Bino
+              <span className="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-300 flex items-center gap-1.5 shadow-sm border border-amber-300/60 dark:border-amber-800">
+                <Sparkles size={13} className="text-amber-600 dark:text-amber-400 animate-pulse" /> Tác giả Bino
               </span>
-              <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300">
+              <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-blue-100 text-blue-900 dark:bg-blue-950 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
                 12 Chương • 72 Bài Hội Thoại
               </span>
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
+              <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 hidden sm:inline-flex">
                 Video 1:1 & Audio Riêng
               </span>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
-              Chém Tiếng Anh <span className="text-gradient from-amber-500 to-orange-600">Không Cần Động Não</span>
+            {/* Title */}
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
+              Chém Tiếng Anh <span className="bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 bg-clip-text text-transparent">Không Cần Động Não</span>
             </h1>
 
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
               Phương pháp phản xạ ngôn ngữ tự nhiên: Học từ vựng theo giấy note ghim, luyện nói 1:1 nhập vai với Bino, nghe ngấm Shadowing và tích hợp bộ thẻ nhớ thông minh Spaced Repetition (SRS).
             </p>
 
-            {/* Quick Action Buttons */}
-            <div className="flex flex-wrap items-center gap-2.5 pt-2">
-              <button
+            {/* Quick Action Buttons - Grid 2 cols on mobile, flex on desktop */}
+            <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2.5 pt-2">
+              {/* Nút Nghe Toàn Bộ - Tràn rộng nổi bật */}
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.96 }}
                 onClick={() => openPlaylistWith(null, true)}
-                className="px-5 py-3 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold rounded-2xl shadow-lg shadow-indigo-500/25 flex items-center gap-2 text-xs sm:text-sm transition-all active:scale-95"
+                className="col-span-2 sm:col-span-1 px-5 py-3 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-extrabold rounded-2xl shadow-lg shadow-indigo-500/25 flex items-center justify-center gap-2 text-xs sm:text-sm transition-all"
               >
-                <ListMusic size={17} />
+                <ListMusic size={17} className="animate-pulse" />
                 <span>Nghe Toàn Bộ ({book?.totalLessonsCount || 34} Bài)</span>
-              </button>
+              </motion.button>
 
-              <button
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.96 }}
                 onClick={() => openPlaylistWith(null, false)}
-                className="px-4 py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-2xl shadow-md shadow-amber-500/25 flex items-center gap-2 text-xs sm:text-sm transition-all active:scale-95"
+                className="px-3.5 py-2.5 sm:px-4 sm:py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-2xl shadow-md shadow-amber-500/25 flex items-center justify-center gap-1.5 text-xs sm:text-sm transition-all"
               >
-                <ListMusic size={16} />
-                <span>Chọn Bài Nghe Cùng Lúc</span>
-              </button>
+                <ListMusic size={15} />
+                <span>Chọn Bài Nghe</span>
+              </motion.button>
 
-              <button
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.96 }}
                 onClick={() => navigate('/bino/dialogue/3')}
-                className="px-4 py-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-2xl border border-slate-200 dark:border-slate-700 flex items-center gap-2 text-xs sm:text-sm shadow-sm transition-all active:scale-95"
+                className="px-3.5 py-2.5 sm:px-4 sm:py-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-2xl border border-slate-200 dark:border-slate-700 flex items-center justify-center gap-1.5 text-xs sm:text-sm shadow-sm transition-all"
               >
-                <Play size={15} fill="currentColor" className="text-amber-500" /> Bài Mẫu (Hội thoại 3)
-              </button>
+                <Play size={14} fill="currentColor" className="text-amber-500" />
+                <span>Bài Mẫu (Hội thoại 3)</span>
+              </motion.button>
 
-              <button
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.96 }}
                 onClick={() => navigate('/bino/reader')}
-                className="px-4 py-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-2xl border border-slate-200 dark:border-slate-700 flex items-center gap-2 text-xs sm:text-sm shadow-sm transition-all active:scale-95"
+                className="px-3.5 py-2.5 sm:px-4 sm:py-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-2xl border border-slate-200 dark:border-slate-700 flex items-center justify-center gap-1.5 text-xs sm:text-sm shadow-sm transition-all"
               >
-                <BookMarked size={16} className="text-blue-500" /> Mở Ebook
-              </button>
+                <BookMarked size={15} className="text-blue-500" />
+                <span>Mở Ebook</span>
+              </motion.button>
 
-              <button
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.96 }}
                 onClick={() => navigate('/bino/flashcards')}
-                className="px-4 py-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-2xl border border-slate-200 dark:border-slate-700 flex items-center gap-2 text-xs sm:text-sm shadow-sm transition-all active:scale-95"
+                className="px-3.5 py-2.5 sm:px-4 sm:py-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-2xl border border-slate-200 dark:border-slate-700 flex items-center justify-center gap-1.5 text-xs sm:text-sm shadow-sm transition-all"
               >
-                <Layers size={16} className="text-emerald-500" /> Ôn Từ Vựng (SRS)
-              </button>
+                <Layers size={15} className="text-emerald-500" />
+                <span>Ôn Từ Vựng (SRS)</span>
+              </motion.button>
             </div>
           </div>
 
-          {/* Progress Card */}
-          <div className="w-full md:w-64 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md rounded-2xl p-5 border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col justify-between space-y-4">
+          {/* Progress Mini Card */}
+          <div className="w-full lg:w-72 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md rounded-3xl p-5 border border-slate-200/80 dark:border-slate-700/80 shadow-md flex flex-col justify-between space-y-4 shrink-0">
             <div>
-              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Tiến độ của bạn</span>
-              <div className="flex items-baseline gap-2 mt-1">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Tiến độ bài học</span>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300">
+                  {book?.progressPercentage || 0}%
+                </span>
+              </div>
+              <div className="flex items-baseline gap-2 mt-1.5">
                 <span className="text-3xl font-black text-slate-900 dark:text-white">
                   {book?.completedLessonsCount || 0}
                 </span>
-                <span className="text-xs text-slate-400 font-semibold">/ {book?.totalLessonsCount || 72} bài</span>
+                <span className="text-xs text-slate-400 font-bold">/ {book?.totalLessonsCount || 72} bài hoàn thành</span>
               </div>
             </div>
 
             {/* Progress Bar */}
             <div className="space-y-1.5">
-              <div className="w-full bg-slate-100 dark:bg-slate-700 h-2.5 rounded-full overflow-hidden">
-                <div
-                  className="bg-gradient-to-r from-amber-500 to-orange-500 h-full rounded-full transition-all duration-500"
-                  style={{ width: `${book?.progressPercentage || 0}%` }}
+              <div className="w-full bg-slate-100 dark:bg-slate-700 h-2.5 rounded-full overflow-hidden p-0.5">
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${book?.progressPercentage || 0}%` }}
+                  transition={{ duration: 1, ease: 'easeOut' }}
+                  className="bg-gradient-to-r from-amber-500 to-orange-500 h-full rounded-full"
                 />
-              </div>
-              <div className="flex justify-between text-[11px] font-bold text-slate-500">
-                <span>Hoàn thành</span>
-                <span className="text-orange-600 dark:text-orange-400">{book?.progressPercentage || 0}%</span>
               </div>
             </div>
 
-            <div className="text-[11px] text-slate-400 flex items-center gap-1.5 pt-1 border-t border-slate-100 dark:border-slate-700/60">
-              <CheckCircle2 size={13} className="text-emerald-500" />
+            <div className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1.5 pt-2 border-t border-slate-100 dark:border-slate-700/60 font-medium">
+              <CheckCircle2 size={14} className="text-emerald-500 shrink-0" />
               <span>Chương 1 có đủ Video + Audio + Key words</span>
             </div>
           </div>
         </div>
+      </motion.div>
+
+      {/* ========================================================================= */}
+      {/* 2. MOBILE HORIZONTAL CHAPTERS SWIPE CAROUSEL (< lg) */}
+      {/* ========================================================================= */}
+      <div className="block lg:hidden space-y-2">
+        <div className="flex items-center justify-between px-1">
+          <span className="text-xs font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+            <Compass size={14} className="text-blue-500" /> Chọn Chương ({book?.chapters?.length || 12})
+          </span>
+          <span className="text-[11px] text-amber-600 dark:text-amber-400 font-bold">
+            Vuốt ngang để chọn ➔
+          </span>
+        </div>
+
+        <div className="flex gap-2 overflow-x-auto pb-2 pt-1 px-1 custom-scrollbar scroll-smooth snap-x">
+          {book?.chapters?.map((chap) => {
+            const isSelected = chap.chapterNumber === selectedChapter;
+            return (
+              <button
+                key={chap.id}
+                onClick={() => setSelectedChapter(chap.chapterNumber)}
+                className={`relative px-4 py-2.5 rounded-2xl text-xs font-bold transition-all shrink-0 snap-start flex items-center gap-2 border ${
+                  isSelected
+                    ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-500/30'
+                    : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-slate-300'
+                }`}
+              >
+                <span className={`w-6 h-6 rounded-lg flex items-center justify-center text-[11px] font-black ${
+                  isSelected ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
+                }`}>
+                  {chap.chapterNumber < 10 ? `0${chap.chapterNumber}` : chap.chapterNumber}
+                </span>
+
+                <div className="text-left">
+                  <div className="truncate max-w-[120px]">{chap.title}</div>
+                  <div className={`text-[10px] ${isSelected ? 'text-blue-100' : 'text-slate-400'}`}>
+                    {chap.completedLessons}/{chap.totalLessons} bài
+                  </div>
+                </div>
+
+                {isSelected && (
+                  <motion.div 
+                    layoutId="activeMobilePill"
+                    className="absolute inset-0 rounded-2xl border-2 border-blue-400 pointer-events-none"
+                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                  />
+                )}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
-      {/* Curriculum Layout: Sidebar chapters list + Active chapter dialogues */}
+      {/* ========================================================================= */}
+      {/* 3. MAIN CURRICULUM LAYOUT (Desktop 2 cols, Mobile 1 col) */}
+      {/* ========================================================================= */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Column: 12 Chapters Tab List (4 cols) */}
-        <div className="lg:col-span-4 space-y-3">
+        
+        {/* Left Column: 12 Chapters Vertical List (Visible on lg: screens) */}
+        <div className="hidden lg:block lg:col-span-4 space-y-3">
           <div className="flex items-center justify-between px-1">
-            <h2 className="text-sm font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-              <Compass size={16} className="text-blue-500" /> 12 Chương Học Tập
+            <h2 className="text-xs font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+              <Compass size={15} className="text-blue-500" /> 12 Chương Học Tập
             </h2>
             <span className="text-xs text-slate-400 font-bold">{book?.chapters?.length || 12} chương</span>
           </div>
 
-          <div className="space-y-2 max-h-[600px] overflow-y-auto pr-1">
+          <div className="space-y-2 max-h-[640px] overflow-y-auto pr-1.5 custom-scrollbar">
             {book?.chapters?.map((chap) => {
               const isSelected = chap.chapterNumber === selectedChapter;
               return (
-                <div
+                <motion.div
                   key={chap.id}
+                  whileHover={{ scale: 1.01 }}
+                  whileTap={{ scale: 0.99 }}
                   onClick={() => setSelectedChapter(chap.chapterNumber)}
                   className={`p-3.5 rounded-2xl cursor-pointer transition-all border flex items-center justify-between ${
                     isSelected
-                      ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-500/20'
-                      : 'bg-white dark:bg-slate-800/80 hover:bg-slate-50 dark:hover:bg-slate-700/60 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200'
+                      ? 'bg-blue-600 text-white border-blue-600 shadow-lg shadow-blue-500/25 ring-2 ring-blue-400/30'
+                      : 'bg-white dark:bg-slate-800/80 hover:bg-slate-50 dark:hover:bg-slate-700/60 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 shadow-sm'
                   }`}
                 >
                   <div className="min-w-0 flex items-center gap-3">
@@ -178,21 +281,21 @@ export default function BinoBookOverviewPage() {
                     </span>
                     <div className="truncate">
                       <h4 className="font-bold text-xs sm:text-sm truncate">{chap.title}</h4>
-                      <p className={`text-[11px] truncate ${isSelected ? 'text-blue-100' : 'text-slate-400'}`}>
+                      <p className={`text-[11px] truncate font-vietsub ${isSelected ? 'text-blue-100' : 'text-slate-400'}`}>
                         {chap.titleVi || 'Chào hỏi & Làm quen'}
                       </p>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-2 shrink-0">
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${
-                      isSelected ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-400'
+                    <span className={`text-[10px] font-black px-2 py-0.5 rounded-lg ${
+                      isSelected ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-500'
                     }`}>
                       {chap.completedLessons}/{chap.totalLessons}
                     </span>
                     <ChevronRight size={15} className={isSelected ? 'text-white' : 'text-slate-400'} />
                   </div>
-                </div>
+                </motion.div>
               );
             })}
           </div>
@@ -202,98 +305,145 @@ export default function BinoBookOverviewPage() {
         <div className="lg:col-span-8 space-y-4">
           {activeChapter && (
             <div className="space-y-4">
-              {/* Chapter Header Card */}
-              <div className="glass-card p-5 rounded-3xl border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <div>
-                  <div className="flex items-center gap-2 text-xs font-bold text-blue-600 dark:text-blue-400">
-                    <span>CHƯƠNG {activeChapter.chapterNumber < 10 ? `0${activeChapter.chapterNumber}` : activeChapter.chapterNumber}</span>
-                    <span>•</span>
-                    <span>6 BÀI HỘI THOẠI</span>
+              
+              {/* Chapter Header Card with Search & Actions */}
+              <div className="glass-card p-4 sm:p-5 rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-sm flex flex-col gap-3.5">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                  <div>
+                    <div className="flex items-center gap-2 text-xs font-bold text-blue-600 dark:text-blue-400">
+                      <span>CHƯƠNG {activeChapter.chapterNumber < 10 ? `0${activeChapter.chapterNumber}` : activeChapter.chapterNumber}</span>
+                      <span>•</span>
+                      <span>{activeChapter.dialogues?.length || 6} BÀI HỘI THOẠI</span>
+                    </div>
+                    <h3 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white mt-0.5">
+                      {activeChapter.title}
+                    </h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 font-vietsub mt-0.5">
+                      {activeChapter.titleVi || activeChapter.description}
+                    </p>
                   </div>
-                  <h3 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white mt-1">
-                    {activeChapter.title}
-                  </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                    {activeChapter.titleVi || activeChapter.description}
-                  </p>
+
+                  <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto justify-end">
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.97 }}
+                      onClick={() => {
+                        const chapterDialogueIds = activeChapter.dialogues?.map(d => d.id) || [];
+                        openPlaylistWith(chapterDialogueIds, true);
+                      }}
+                      className="px-3.5 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl font-bold text-xs shadow-md shadow-blue-500/20 flex items-center gap-1.5 transition-all"
+                      title={`Phát liên tục tất cả bài hội thoại Chương ${activeChapter.chapterNumber}`}
+                    >
+                      <Play size={13} fill="currentColor" />
+                      <span>Nghe Cả Chương {activeChapter.chapterNumber}</span>
+                    </motion.button>
+
+                    {activeChapter.hasBonus && (
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.97 }}
+                        onClick={() => navigate(`/bino/chapter/${activeChapter.chapterNumber}/bonus`)}
+                        className="px-3 py-2 bg-amber-50 dark:bg-amber-950/60 hover:bg-amber-100 dark:hover:bg-amber-900/60 text-amber-800 dark:text-amber-300 rounded-xl font-bold text-xs border border-amber-300 dark:border-amber-800 flex items-center gap-1.5 transition-all"
+                      >
+                        <Star size={13} className="text-amber-500 fill-amber-500" />
+                        <span>Tiếng Lóng</span>
+                      </motion.button>
+                    )}
+                  </div>
                 </div>
 
-                <div className="flex items-center gap-2 shrink-0">
-                  <button
-                    onClick={() => {
-                      const chapterDialogueIds = activeChapter.dialogues?.map(d => d.id) || [];
-                      openPlaylistWith(chapterDialogueIds, true);
-                    }}
-                    className="px-3.5 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl font-bold text-xs shadow-md shadow-blue-500/20 flex items-center gap-1.5 transition-all active:scale-95"
-                    title={`Phát liên tục tất cả các bài hội thoại của Chương ${activeChapter.chapterNumber}`}
-                  >
-                    <Play size={13} fill="currentColor" />
-                    <span>Nghe Cả Chương {activeChapter.chapterNumber}</span>
-                  </button>
-
-                  {activeChapter.hasBonus && (
+                {/* Quick Search filter bar */}
+                <div className="relative">
+                  <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Tìm nhanh bài học theo tên, số bài hoặc tình huống..."
+                    className="w-full pl-9 pr-4 py-2 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-semibold text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  />
+                  {searchQuery && (
                     <button
-                      onClick={() => navigate(`/bino/chapter/${activeChapter.chapterNumber}/bonus`)}
-                      className="px-3.5 py-2 bg-amber-50 dark:bg-amber-950/60 hover:bg-amber-100 dark:hover:bg-amber-900/60 text-amber-700 dark:text-amber-300 rounded-xl font-bold text-xs border border-amber-200 dark:border-amber-800 flex items-center gap-1.5 transition-all active:scale-95"
+                      onClick={() => setSearchQuery('')}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400 hover:text-slate-600"
                     >
-                      <Star size={14} className="text-amber-500 fill-amber-500" />
-                      <span>Góc Tiếng Lóng</span>
+                      ✕
                     </button>
                   )}
                 </div>
               </div>
 
-              {/* Dialogues Grid (6 lessons) */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                {activeChapter.dialogues?.map((d) => (
-                  <div
-                    key={d.id}
-                    onClick={() => navigate(`/bino/dialogue/${d.id}`)}
-                    className="glass-card p-4 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-amber-500 dark:hover:border-amber-500 cursor-pointer group transition-all shadow-sm hover:shadow-md relative overflow-hidden flex flex-col justify-between space-y-3"
-                  >
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="px-2.5 py-0.5 rounded-md text-[10px] font-extrabold bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400">
-                          HỘI THOẠI {d.dialogueNumber}
-                        </span>
-                        {d.isCompleted ? (
-                          <span className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
-                            <CheckCircle2 size={13} /> Đã xong
-                          </span>
-                        ) : (
-                          <span className="text-[11px] text-slate-400 font-semibold flex items-center gap-1">
-                            <Clock size={12} /> ~3 phút
-                          </span>
-                        )}
-                      </div>
-
-                      <h4 className="font-bold text-sm text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors line-clamp-1">
-                        {d.title}
-                      </h4>
-
-                      <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">
-                        {d.situationDescription || d.titleVi || 'Tình huống giao tiếp thực tế'}
-                      </p>
+              {/* Dialogues Grid with Framer Motion Staggered Entrance */}
+              <AnimatePresence mode="wait">
+                <motion.div 
+                  key={`${activeChapter.chapterNumber}-${searchQuery}`}
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.35, staggerChildren: 0.05 }}
+                  className="grid grid-cols-1 sm:grid-cols-2 gap-3.5"
+                >
+                  {filteredDialogues.length === 0 ? (
+                    <div className="col-span-full p-8 text-center glass-card rounded-3xl border border-slate-200 dark:border-slate-800">
+                      <p className="text-xs text-slate-500 font-bold">Không tìm thấy bài học phù hợp với từ khóa "{searchQuery}"</p>
                     </div>
+                  ) : (
+                    filteredDialogues.map((d, index) => (
+                      <motion.div
+                        key={d.id}
+                        initial={{ opacity: 0, y: 15 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.04, duration: 0.3 }}
+                        whileHover={{ y: -3, scale: 1.01 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => navigate(`/bino/dialogue/${d.id}`)}
+                        className="glass-card p-4 sm:p-4.5 rounded-2xl border border-slate-200/90 dark:border-slate-800 hover:border-amber-400 dark:hover:border-amber-500 cursor-pointer group transition-all shadow-sm hover:shadow-lg relative overflow-hidden flex flex-col justify-between space-y-3"
+                      >
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="px-2.5 py-0.5 rounded-md text-[10px] font-black bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400 border border-blue-200/60 dark:border-blue-800/60">
+                              HỘI THOẠI {d.dialogueNumber}
+                            </span>
+                            {d.isCompleted ? (
+                              <span className="flex items-center gap-1 text-[11px] font-extrabold text-emerald-600 dark:text-emerald-400">
+                                <CheckCircle2 size={13} /> Đã xong
+                              </span>
+                            ) : (
+                              <span className="text-[11px] text-slate-400 font-semibold flex items-center gap-1">
+                                <Clock size={12} /> ~3 phút
+                              </span>
+                            )}
+                          </div>
 
-                    <div className="pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs">
-                      <div className="flex items-center gap-3 text-slate-400 text-[11px]">
-                        <span className="flex items-center gap-1">
-                          <Video size={12} className="text-blue-500" /> Video 1:1
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Volume2 size={12} className="text-emerald-500" /> Audio
-                        </span>
-                      </div>
+                          <h4 className="font-bold text-sm text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors line-clamp-1">
+                            {d.title}
+                          </h4>
 
-                      <button className="px-3 py-1 bg-slate-100 dark:bg-slate-800 group-hover:bg-amber-500 group-hover:text-white text-slate-700 dark:text-slate-200 rounded-lg text-xs font-bold transition-all flex items-center gap-1">
-                        <span>Học ngay</span>
-                        <ArrowRight size={12} />
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                          <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed font-vietsub">
+                            {d.situationDescription || d.titleVi || 'Tình huống giao tiếp thực tế'}
+                          </p>
+                        </div>
+
+                        <div className="pt-2.5 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs">
+                          <div className="flex items-center gap-2.5 text-slate-400 text-[11px]">
+                            <span className="flex items-center gap-1">
+                              <Video size={12} className="text-blue-500" /> Video 1:1
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <Volume2 size={12} className="text-emerald-500" /> Audio
+                            </span>
+                          </div>
+
+                          <button className="px-3 py-1 bg-slate-100 dark:bg-slate-800 group-hover:bg-gradient-to-r group-hover:from-amber-500 group-hover:to-orange-500 group-hover:text-white text-slate-700 dark:text-slate-200 rounded-xl text-xs font-bold transition-all flex items-center gap-1 shadow-sm">
+                            <span>Học ngay</span>
+                            <ArrowRight size={12} />
+                          </button>
+                        </div>
+                      </motion.div>
+                    ))
+                  )}
+                </motion.div>
+              </AnimatePresence>
             </div>
           )}
         </div>
