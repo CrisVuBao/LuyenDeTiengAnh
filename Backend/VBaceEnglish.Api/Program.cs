@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.IdentityModel.Tokens;
 using VBaceEnglish.Api.Hubs;
 using VBaceEnglish.Api.Services;
@@ -67,11 +68,32 @@ builder.Services.AddAuthentication(options => {
         ValidateLifetime = true, 
         ValidateIssuerSigningKey = true
     };
-    // ĐỌC TOKEN TỪ HTTPONLY COOKIE (bảo mật XSS) (A.4)
+    // ĐỌC TOKEN TỪ HEADER (Mobile/Native) HOẶC HTTPONLY COOKIE (Web)
     opt.Events = new JwtBearerEvents {
         OnMessageReceived = context => {
-            var token = context.Request.Cookies["Authorization"]?.Replace("Bearer ", "");
-            if (!string.IsNullOrEmpty(token)) context.Token = token;
+            // 1. Ưu tiên đọc từ Header Authorization
+            string? authHeader = context.Request.Headers["Authorization"];
+            if (!string.IsNullOrEmpty(authHeader) && authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+            {
+                context.Token = authHeader.Substring("Bearer ".Length).Trim();
+                return Task.CompletedTask;
+            }
+
+            // 2. Hỗ trợ SignalR qua query param "access_token"
+            var accessToken = context.Request.Query["access_token"];
+            var path = context.HttpContext.Request.Path;
+            if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/notificationHub"))
+            {
+                context.Token = accessToken;
+                return Task.CompletedTask;
+            }
+
+            // 3. Fallback đọc từ HttpOnly Cookie (Web Browser)
+            var cookieToken = context.Request.Cookies["Authorization"]?.Replace("Bearer ", "");
+            if (!string.IsNullOrEmpty(cookieToken))
+            {
+                context.Token = cookieToken;
+            }
             return Task.CompletedTask;
         }
     };
@@ -80,7 +102,7 @@ builder.Services.AddAuthentication(options => {
 // 7. CORS
 builder.Services.AddCors(options => {
     options.AddPolicy("AllowFrontend", corsBuilder => {
-        corsBuilder.WithOrigins("http://localhost:4100", "http://localhost:5173", "https://localhost:4100")
+        corsBuilder.SetIsOriginAllowed(_ => true)
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
@@ -96,19 +118,33 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Pipeline Order (THỨ TỰ QUAN TRỌNG theo A.4)
+// Pipeline Order
 app.UseExceptionHandler();
 app.UseCors("AllowFrontend");
 app.UseResponseCompression();
 app.UseOutputCache();
-app.UseDefaultFiles();
-app.UseStaticFiles();
 
-if (app.Environment.IsDevelopment()) 
-{ 
-    app.UseSwagger(); 
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TOEIC API v1")); 
-}
+// Static Files & SPA Setup (Hỗ trợ MIME types cho Somee/Azure)
+var contentTypeProvider = new FileExtensionContentTypeProvider();
+contentTypeProvider.Mappings[".epub"] = "application/epub+zip";
+contentTypeProvider.Mappings[".webp"] = "image/webp";
+contentTypeProvider.Mappings[".webm"] = "video/webm";
+contentTypeProvider.Mappings[".json"] = "application/json";
+contentTypeProvider.Mappings[".woff"] = "font/woff";
+contentTypeProvider.Mappings[".woff2"] = "font/woff2";
+
+app.UseDefaultFiles();
+app.UseStaticFiles(new StaticFileOptions
+{
+    ContentTypeProvider = contentTypeProvider
+});
+
+// Swagger hỗ trợ cả Development lẫn Production trên Somee / Azure
+app.UseSwagger(); 
+app.UseSwaggerUI(c => {
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "VBace English API v1");
+    c.RoutePrefix = "swagger";
+});
 
 app.UseAuthentication();
 app.UseAuthorization();

@@ -71,3 +71,11 @@ ehthumbs.db
 *.swp
 *.swo
 *~
+
+# ------------------------------------------
+# Deploy & Package Artifacts
+# ------------------------------------------
+publish_output/
+*.zip
+Backend/VBaceEnglish.Api/wwwroot/
+

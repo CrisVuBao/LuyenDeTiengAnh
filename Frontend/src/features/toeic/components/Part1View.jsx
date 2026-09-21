@@ -1,6 +1,7 @@
 import React from 'react';
 import { RotateCcw, Sparkles } from 'lucide-react';
 import AudioPlayer from '../../../components/AudioPlayer';
+import { resolveMediaUrl } from '../../../api/axiosClient';
 
 export default function Part1View({ questions = [], testId, studyProgress }) {
   const { isConfident, markConfident, isRevealed, markRevealed, resetPart } = studyProgress;
@@ -29,7 +30,7 @@ export default function Part1View({ questions = [], testId, studyProgress }) {
                   Câu {q.id}
                 </span>
                 {q.imageUrl && (
-                  <img src={q.imageUrl} alt={`Part 1 - ${q.id}`} className="w-full aspect-video object-cover rounded-xl shadow-md border border-slate-200 dark:border-slate-800" />
+                  <img src={resolveMediaUrl(q.imageUrl)} alt={`Part 1 - ${q.id}`} className="w-full aspect-video object-cover rounded-xl shadow-md border border-slate-200 dark:border-slate-800" />
                 )}
                 {q.audioUrl && <AudioPlayer audioUrl={q.audioUrl} />}
               </div>

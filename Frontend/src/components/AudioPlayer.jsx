@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Play, Pause, RotateCcw, RotateCw } from 'lucide-react';
+import { resolveMediaUrl } from '../api/axiosClient';
 
 export default function AudioPlayer({ audioUrl }) {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -39,7 +40,7 @@ export default function AudioPlayer({ audioUrl }) {
     <div className="bg-gray-800 text-white p-4 rounded-xl shadow-md flex flex-col gap-3 w-full max-w-md">
       <audio 
         ref={audioRef} 
-        src={audioUrl} 
+        src={resolveMediaUrl(audioUrl)} 
         onTimeUpdate={handleTimeUpdate}
         onLoadedMetadata={handleLoadedMetadata}
         onEnded={() => setIsPlaying(false)}

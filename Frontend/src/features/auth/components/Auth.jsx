@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, Mail, Lock, User, Phone, ArrowRight } from 'lucide-react';
+import { Sparkles, Mail, Lock, User, Phone, ArrowRight, Server } from 'lucide-react';
 import authApi from '../../../api/authApi';
 import useAuthStore from '../../../store/authStore';
 import toast from 'react-hot-toast';
+import ServerConfigModal from '../../../components/ServerConfigModal';
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [isServerModalOpen, setIsServerModalOpen] = useState(false);
   const setAuth = useAuthStore((state) => state.setAuth);
   const navigate = useNavigate();
 
@@ -94,6 +96,16 @@ export default function Auth() {
 
       <div className="glass-card max-w-md w-full p-8 rounded-3xl shadow-2xl relative z-10 border border-white/60 dark:border-white/10">
         
+        {/* Server Config Button */}
+        <button
+          type="button"
+          onClick={() => setIsServerModalOpen(true)}
+          className="absolute top-6 right-6 p-2 rounded-2xl bg-white/70 dark:bg-slate-800/80 text-slate-500 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400 hover:bg-white dark:hover:bg-slate-700 transition shadow-sm border border-slate-200/60 dark:border-slate-700/60"
+          title="Cài đặt kết nối máy chủ (IP/Domain)"
+        >
+          <Server size={18} />
+        </button>
+
         {/* Header */}
         <div className="text-center mb-8">
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-500/30">
@@ -280,6 +292,12 @@ export default function Auth() {
         )}
 
       </div>
+
+      {/* Server Connection Modal */}
+      <ServerConfigModal 
+        isOpen={isServerModalOpen} 
+        onClose={() => setIsServerModalOpen(false)} 
+      />
     </div>
   );
 }

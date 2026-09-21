@@ -2,15 +2,17 @@ import React, { useState, useRef, useEffect } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { 
   Sparkles, BookOpen, Home, BarChart3, TrendingUp, 
-  User, LogOut, Sun, Moon, ShieldCheck, ChevronDown, Layers 
+  User, LogOut, Sun, Moon, ShieldCheck, ChevronDown, Layers, Server 
 } from 'lucide-react';
 import useAuthStore from '../store/authStore';
 import useThemeStore from '../store/themeStore';
 import authApi from '../api/authApi';
 import toast from 'react-hot-toast';
+import ServerConfigModal from './ServerConfigModal';
 
 export default function StudentNavbar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [isServerModalOpen, setIsServerModalOpen] = useState(false);
   const dropdownRef = useRef(null);
   const { user, logout } = useAuthStore();
   const { mode, toggleTheme } = useThemeStore();
@@ -209,6 +211,17 @@ export default function StudentNavbar() {
                     <span>Hồ sơ cá nhân</span>
                   </button>
 
+                  <button
+                    onClick={() => {
+                      setDropdownOpen(false);
+                      setIsServerModalOpen(true);
+                    }}
+                    className="w-full flex items-center gap-3 px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 rounded-xl transition-colors text-left"
+                  >
+                    <Server size={16} className="text-indigo-500" />
+                    <span>Cài đặt máy chủ (API)</span>
+                  </button>
+
                   {isAdmin && (
                     <button
                       onClick={() => navigate('/admin/dashboard')}
@@ -277,6 +290,12 @@ export default function StudentNavbar() {
           <span>Sách Bino</span>
         </NavLink>
       </div>
+
+      {/* Server Config Modal */}
+      <ServerConfigModal 
+        isOpen={isServerModalOpen} 
+        onClose={() => setIsServerModalOpen(false)} 
+      />
     </header>
   );
 }
