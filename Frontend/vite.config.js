@@ -9,7 +9,9 @@ export default defineConfig({
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) }
   },
   build: {
-    sourcemap: true,
+    outDir: process.env.VITE_OUT_DIR || '../Backend/VBaceEnglish.Api/wwwroot',
+    emptyOutDir: false,
+    sourcemap: false,
     rollupOptions: {
       output: {
         manualChunks(id) {

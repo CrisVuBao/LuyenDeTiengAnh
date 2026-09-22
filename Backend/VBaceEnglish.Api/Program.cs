@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.IdentityModel.Tokens;
 using VBaceEnglish.Api.Hubs;
 using VBaceEnglish.Api.Services;
@@ -101,14 +102,27 @@ app.UseExceptionHandler();
 app.UseCors("AllowFrontend");
 app.UseResponseCompression();
 app.UseOutputCache();
-app.UseDefaultFiles();
-app.UseStaticFiles();
+// Static Files & SPA Setup (Hỗ trợ MIME types cho Somee/MonsterASP/Azure)
+var contentTypeProvider = new FileExtensionContentTypeProvider();
+contentTypeProvider.Mappings[".epub"] = "application/epub+zip";
+contentTypeProvider.Mappings[".webp"] = "image/webp";
+contentTypeProvider.Mappings[".webm"] = "video/webm";
+contentTypeProvider.Mappings[".json"] = "application/json";
+contentTypeProvider.Mappings[".woff"] = "font/woff";
+contentTypeProvider.Mappings[".woff2"] = "font/woff2";
 
-if (app.Environment.IsDevelopment()) 
-{ 
-    app.UseSwagger(); 
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TOEIC API v1")); 
-}
+app.UseDefaultFiles();
+app.UseStaticFiles(new StaticFileOptions
+{
+    ContentTypeProvider = contentTypeProvider
+});
+
+// Swagger hỗ trợ cả Development lẫn Production trên MonsterASP / Somee / Azure
+app.UseSwagger(); 
+app.UseSwaggerUI(c => {
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "VBace English API v1");
+    c.RoutePrefix = "swagger";
+});
 
 app.UseAuthentication();
 app.UseAuthorization();
