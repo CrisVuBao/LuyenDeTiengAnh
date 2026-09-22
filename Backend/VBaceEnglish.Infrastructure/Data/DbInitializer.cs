@@ -100,9 +100,13 @@ public static class DbInitializer
             .FirstOrDefaultAsync(b => b.Slug == "chem-tieng-anh-khong-can-dong-nao");
 
         int existingDialogueCount = book?.Chapters.SelectMany(c => c.DialogueLessons).Count() ?? 0;
-        if (existingDialogueCount >= 34)
+        int totalLinesCount = book?.Chapters.SelectMany(c => c.DialogueLessons).SelectMany(d => d.DialogueLines).Count() ?? 0;
+        var ch2d6 = book?.Chapters.FirstOrDefault(c => c.ChapterNumber == 2)?.DialogueLessons.FirstOrDefault(d => d.DialogueNumber == 6);
+        bool hasCorruptedLines = ch2d6 != null && ch2d6.DialogueLines.Count > 8;
+
+        if (existingDialogueCount == 34 && totalLinesCount == 298 && !hasCorruptedLines && book?.Chapters.Count == 6)
         {
-            logger.LogInformation("Dữ liệu sách Bino đã có đầy đủ ({count} bài hội thoại). Bỏ qua seed.", existingDialogueCount);
+            logger.LogInformation("Dữ liệu sách Bino đã có đầy đủ và chuẩn xác 100% ({count} bài hội thoại, {lines} câu thoại, 6 chương). Bỏ qua seed.", existingDialogueCount, totalLinesCount);
             return;
         }
 
@@ -115,11 +119,11 @@ public static class DbInitializer
                 Title = "Chém Tiếng Anh không cần động não",
                 Author = "Bino",
                 Slug = "chem-tieng-anh-khong-can-dong-nao",
-                Description = "Bộ sách học tiếng Anh giao tiếp đời thực đỉnh cao của Bino. Gồm 12 chương, 72 bài hội thoại thực chiến kèm video luyện nói 1:1, audio độc quyền, các từ lóng slang và mẹo văn hóa thú vị.",
+                Description = "Bộ sách học tiếng Anh giao tiếp đời thực đỉnh cao của Bino. Gồm 6 chương, 34 bài hội thoại thực chiến kèm video luyện nói 1:1, audio độc quyền, các từ lóng slang và mẹo văn hóa thú vị.",
                 CoverImageUrl = "/images/bino/page15.jpg",
                 PdfFileUrl = "/ebooks/chem_tieng_anh_bino.pdf",
                 EpubFileUrl = "/ebooks/chem_tieng_anh_bino.epub",
-                TotalChapters = 12,
+                TotalChapters = 6,
                 IsPublished = true,
                 CreatedAt = DateTime.UtcNow
             };
@@ -129,24 +133,28 @@ public static class DbInitializer
         book.CoverImageUrl = "/images/bino/page15.jpg";
         book.PdfFileUrl = "/ebooks/chem_tieng_anh_bino.pdf";
         book.EpubFileUrl = "/ebooks/chem_tieng_anh_bino.epub";
+        book.TotalChapters = 6;
+        book.Description = "Bộ sách học tiếng Anh giao tiếp đời thực đỉnh cao của Bino. Gồm 6 chương, 34 bài hội thoại thực chiến kèm video luyện nói 1:1, audio độc quyền, các từ lóng slang và mẹo văn hóa thú vị.";
 
         var chapterTitles = new[]
         {
             ("Greetings and Introductions", "Chào hỏi và giới thiệu bản thân"),
             ("FAMILY", "Gia đình"),
             ("Days of the Week and Months", "Ngày trong tuần và Các tháng"),
-            ("WEATHER", "Thời tiết"),
-            ("RESTAURANT, FOOD AND DRINKS", "Nhà hàng, Món ăn và Đồ uống"),
-            ("EMOTIONS, FEELINGS, AND CHARACTERISTICS", "Cảm xúc, cảm giác và tính cách"),
-            ("Travel & Asking for Directions", "Du lịch & Hỏi đường"),
-            ("Shopping & Bargaining", "Mua sắm & Trả giá"),
-            ("Work & Office Life", "Công việc & Đời sống công sở"),
-            ("Making Friends & Hangouts", "Kết bạn & Tụ tập đi chơi"),
-            ("Entertainment & Slang", "Giải trí & Tiếng lóng giới trẻ"),
-            ("Mastering Natural English", "Làm chủ tiếng Anh tự nhiên không cần động não")
+            ("WEATHER", "Các cuộc hội thoại liên quan đến thời tiết"),
+            ("RESTAURANT, FOOD AND DRINKS", "Hội thoại và từ vựng cơ bản về nhà hàng, món ăn và đồ uống"),
+            ("EMOTIONS, FEELINGS, AND CHARACTERISTICS", "Cảm xúc, cảm giác và tính cách")
         };
 
-        // Ensure all 12 chapters exist
+        // Remove any excess chapters > 6
+        var excessChapters = book.Chapters.Where(c => c.ChapterNumber > 6).ToList();
+        foreach (var exCh in excessChapters)
+        {
+            context.Chapters.Remove(exCh);
+            book.Chapters.Remove(exCh);
+        }
+
+        // Ensure all 6 chapters exist
         for (int i = 0; i < chapterTitles.Length; i++)
         {
             var (titleEn, titleVi) = chapterTitles[i];

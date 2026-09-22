@@ -872,11 +872,11 @@ public class BinoBookService : IBinoBookService
                 Title = "Chém Tiếng Anh không cần động não",
                 Author = "Bino",
                 Slug = "chem-tieng-anh-khong-can-dong-nao",
-                Description = "Bộ sách học tiếng Anh giao tiếp đời thực đỉnh cao của Bino. Gồm 12 chương, 72 bài hội thoại thực chiến kèm video luyện nói 1:1, audio độc quyền, các từ lóng slang và mẹo văn hóa thú vị.",
+                Description = $"Bộ sách học tiếng Anh giao tiếp đời thực đỉnh cao của Bino. Gồm {extractedChapters.Count} chương, {extractedChapters.Sum(c => c.dialogues.Count)} bài hội thoại thực chiến kèm video luyện nói 1:1, audio độc quyền, các từ lóng slang và mẹo văn hóa thú vị.",
                 CoverImageUrl = "/images/bino/page15.jpg",
                 PdfFileUrl = "/ebooks/chem_tieng_anh_bino.pdf",
                 EpubFileUrl = "/ebooks/chem_tieng_anh_bino.epub",
-                TotalChapters = 12,
+                TotalChapters = extractedChapters.Count,
                 IsPublished = true,
                 CreatedAt = DateTime.UtcNow
             };
@@ -885,6 +885,16 @@ public class BinoBookService : IBinoBookService
         book.CoverImageUrl = "/images/bino/page15.jpg";
         book.PdfFileUrl = "/ebooks/chem_tieng_anh_bino.pdf";
         book.EpubFileUrl = "/ebooks/chem_tieng_anh_bino.epub";
+        book.TotalChapters = extractedChapters.Count;
+        book.Description = $"Bộ sách học tiếng Anh giao tiếp đời thực đỉnh cao của Bino. Gồm {extractedChapters.Count} chương, {extractedChapters.Sum(c => c.dialogues.Count)} bài hội thoại thực chiến kèm video luyện nói 1:1, audio độc quyền, các từ lóng slang và mẹo văn hóa thú vị.";
+
+        // Remove any excess chapters > extractedChapters.Count
+        var excessChapters = book.Chapters.Where(c => c.ChapterNumber > extractedChapters.Count).ToList();
+        foreach (var exCh in excessChapters)
+        {
+            _unitOfWork.BinoBooks.RemoveChapter(exCh);
+            book.Chapters.Remove(exCh);
+        }
 
         int chCount = 0;
         int dCount = 0;

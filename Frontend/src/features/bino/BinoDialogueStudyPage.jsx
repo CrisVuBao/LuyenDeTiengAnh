@@ -6,12 +6,15 @@ import {
   RotateCcw, Sparkles, Mic, Eye, EyeOff, BookOpen, MessageSquare, 
   HelpCircle, ChevronRight, Layers, Award, FileText, Check, Copy, Settings,
   Repeat, Repeat1, Infinity as InfinityIcon, ChevronDown, X, ListMusic,
-  Share2, ZoomIn
+  Share2, ZoomIn, Lightbulb
 } from 'lucide-react';
 import binoApi from '../../api/binoApi';
 import PageLoader from '../../components/PageLoader';
 import VoiceSettingsModal from '../../components/VoiceSettingsModal';
 import BinoPlaylistModal from './components/BinoPlaylistModal';
+import BinoSentenceExpansionCard from './components/BinoSentenceExpansionCard';
+import BinoLearningGuideModal from './components/BinoLearningGuideModal';
+import { getExpansionsForLine } from './data/binoSentenceExpansions';
 import speechService from '../../utils/speechService';
 import toast from 'react-hot-toast';
 
@@ -38,6 +41,7 @@ export default function BinoDialogueStudyPage() {
   const [addedVocabs, setAddedVocabs] = useState({});
   const [isCompleted, setIsCompleted] = useState(false);
   const [isVoiceSettingsOpen, setIsVoiceSettingsOpen] = useState(false);
+  const [isGuideModalOpen, setIsGuideModalOpen] = useState(false);
 
   useEffect(() => {
     binoApi.getBookOverview().then(res => {
@@ -782,6 +786,17 @@ export default function BinoDialogueStudyPage() {
               <Sparkles size={13} className="text-amber-500" />
               <span>Giọng Đọc Studio AI 🎙️</span>
             </motion.button>
+
+            {/* 4-Step Learning Guide Modal Button */}
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setIsGuideModalOpen(true)}
+              className="px-3 py-1.5 rounded-xl border border-amber-400/80 dark:border-amber-700 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-xs font-black flex items-center gap-1.5 transition-all shadow-md shadow-amber-500/25 active:scale-95"
+              title="Xem cẩm nang hướng dẫn phương pháp học 4 bước Bino"
+            >
+              <Lightbulb size={13} className="text-white animate-pulse" />
+              <span>Cách Học 4 Bước 💡</span>
+            </motion.button>
           </div>
 
           <div className="text-[11px] text-slate-400 font-bold hidden md:block">
@@ -1025,6 +1040,12 @@ export default function BinoDialogueStudyPage() {
                         <Volume2 size={17} />
                       </button>
                     </div>
+
+                    {/* BINO SENTENCE PATTERN SUBSTITUTION (VẬN DỤNG THỰC TẾ) */}
+                    <BinoSentenceExpansionCard
+                      expansionData={getExpansionsForLine(line.englishText, idx)}
+                      lineIndex={idx}
+                    />
                   </motion.div>
                 );
               })}
@@ -1327,6 +1348,12 @@ export default function BinoDialogueStudyPage() {
         book={book}
         initialSelectedIds={lesson ? [lesson.id] : null}
         autoStart={false}
+      />
+
+      {/* 4-Step Learning Guide Modal */}
+      <BinoLearningGuideModal
+        isOpen={isGuideModalOpen}
+        onClose={() => setIsGuideModalOpen(false)}
       />
 
     </div>

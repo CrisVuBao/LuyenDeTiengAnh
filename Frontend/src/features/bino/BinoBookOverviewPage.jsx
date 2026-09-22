@@ -5,11 +5,12 @@ import {
   BookOpen, Sparkles, Flame, CheckCircle2, Play, 
   ChevronRight, Volume2, Video, ArrowRight, BookMarked,
   Award, Clock, Layers, Star, Compass, ListMusic,
-  Search, Filter, Check
+  Search, Filter, Check, Lightbulb
 } from 'lucide-react';
 import binoApi from '../../api/binoApi';
 import PageLoader from '../../components/PageLoader';
 import BinoPlaylistModal from './components/BinoPlaylistModal';
+import BinoLearningGuideModal from './components/BinoLearningGuideModal';
 import toast from 'react-hot-toast';
 
 export default function BinoBookOverviewPage() {
@@ -20,6 +21,7 @@ export default function BinoBookOverviewPage() {
   const [playlistInitialIds, setPlaylistInitialIds] = useState(null);
   const [playlistAutoStart, setPlaylistAutoStart] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isGuideModalOpen, setIsGuideModalOpen] = useState(false);
   const navigate = useNavigate();
 
   const openPlaylistWith = (ids = null, autoStart = false) => {
@@ -82,7 +84,7 @@ export default function BinoBookOverviewPage() {
                 <Sparkles size={13} className="text-amber-600 dark:text-amber-400 animate-pulse" /> Tác giả Bino
               </span>
               <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-blue-100 text-blue-900 dark:bg-blue-950 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
-                12 Chương • 72 Bài Hội Thoại
+                {book?.totalChapters || 6} Chương • {book?.totalLessonsCount || 34} Bài Hội Thoại
               </span>
               <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 hidden sm:inline-flex">
                 Video 1:1 & Audio Riêng
@@ -150,6 +152,16 @@ export default function BinoBookOverviewPage() {
                 <Layers size={15} className="text-emerald-500" />
                 <span>Ôn Từ Vựng (SRS)</span>
               </motion.button>
+
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.96 }}
+                onClick={() => setIsGuideModalOpen(true)}
+                className="px-3.5 py-2.5 sm:px-4 sm:py-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-black rounded-2xl shadow-md shadow-amber-500/25 flex items-center justify-center gap-1.5 text-xs sm:text-sm transition-all"
+              >
+                <Lightbulb size={16} className="text-white animate-pulse" />
+                <span>Cách Học 4 Bước 💡</span>
+              </motion.button>
             </div>
           </div>
 
@@ -166,7 +178,7 @@ export default function BinoBookOverviewPage() {
                 <span className="text-3xl font-black text-slate-900 dark:text-white">
                   {book?.completedLessonsCount || 0}
                 </span>
-                <span className="text-xs text-slate-400 font-bold">/ {book?.totalLessonsCount || 72} bài hoàn thành</span>
+                <span className="text-xs text-slate-400 font-bold">/ {book?.totalLessonsCount || 34} bài hoàn thành</span>
               </div>
             </div>
 
@@ -196,7 +208,7 @@ export default function BinoBookOverviewPage() {
       <div className="block lg:hidden space-y-2">
         <div className="flex items-center justify-between px-1">
           <span className="text-xs font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-            <Compass size={14} className="text-blue-500" /> Chọn Chương ({book?.chapters?.length || 12})
+            <Compass size={14} className="text-blue-500" /> Chọn Chương ({book?.chapters?.length || 6})
           </span>
           <span className="text-[11px] text-amber-600 dark:text-amber-400 font-bold">
             Vuốt ngang để chọn ➔
@@ -456,6 +468,12 @@ export default function BinoBookOverviewPage() {
         book={book}
         initialSelectedIds={playlistInitialIds}
         autoStart={playlistAutoStart}
+      />
+
+      {/* Cẩm Nang Hướng Dẫn Cách Học 4 Bước Bino */}
+      <BinoLearningGuideModal
+        isOpen={isGuideModalOpen}
+        onClose={() => setIsGuideModalOpen(false)}
       />
     </div>
   );

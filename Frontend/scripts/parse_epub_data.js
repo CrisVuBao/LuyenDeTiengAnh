@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-async function parseEpubSequential() {
+async function reextractPureBino() {
   const epubPath = path.resolve(__dirname, '../../TiengAnhBi.epub');
   const buf = fs.readFileSync(epubPath);
   const zip = await JSZip.loadAsync(buf);
@@ -22,17 +22,12 @@ async function parseEpubSequential() {
   const chapters = [];
   let currentChapter = null;
   let currentDialogue = null;
+  let currentSection = null;
 
   for (const pageFile of pageFiles) {
     const html = await zip.file(pageFile).async('text');
     const pageNum = parseInt(pageFile.match(/\d+/)[0]);
 
-    // Gather all events on this page with their index in html:
-    // 1. Chapter headers
-    // 2. Dialogue headers
-    // 3. Vocab lists
-    // 4. Speeches
-    // 5. Bonuses (Philosophy, More expressions)
     const events = [];
 
     // 1. Chapter header
@@ -49,7 +44,20 @@ async function parseEpubSequential() {
       });
     }
 
-    // 2. Dialogue header
+    // 2. Section header (A, B, C...)
+    const secRegex = /<div class="section-header">[\s\S]*?<span class="section-letter">([^<]+)<\/span>[\s\S]*?<h2 class="section-text">([^<]+)<\/h2>/gi;
+    let secM;
+    while ((secM = secRegex.exec(html)) !== null) {
+      events.push({
+        type: 'section',
+        index: secM.index,
+        letter: secM[1].trim(),
+        title: secM[2].trim(),
+        pageNum
+      });
+    }
+
+    // 3. Dialogue header
     const dRegex = /class="dialogue-title"[^>]*>\s*Hội thoại\s*(\d+):\s*([^<]+)<\/div>/gi;
     let dM;
     while ((dM = dRegex.exec(html)) !== null) {
@@ -62,7 +70,7 @@ async function parseEpubSequential() {
       });
     }
 
-    // 3. Vocab list
+    // 4. Vocab list
     const vRegex = /class="vocab-list"[^>]*>([\s\S]*?)<\/ul>/gi;
     let vM;
     while ((vM = vRegex.exec(html)) !== null) {
@@ -74,7 +82,7 @@ async function parseEpubSequential() {
       });
     }
 
-    // 4. Speeches
+    // 5. Speeches
     const sRegex = /<div class="speech">([\s\S]*?)<\/div>\s*<\/div>/gi;
     let sM;
     while ((sM = sRegex.exec(html)) !== null) {
@@ -86,38 +94,20 @@ async function parseEpubSequential() {
       });
     }
 
-    // 5. Philosophy Bonus
-    const pRegex = /BINO'S PHILOSOPHY (\d+)[\s\S]*?(?:<\/div>|<p)/i;
-    const pM = html.match(pRegex);
-    if (pM) {
-      const pIdx = html.indexOf(pM[0]);
+    // 6. Philosophy Bonus
+    const pRegex = /BINO'S PHILOSOPHY\s*(\d+)[\s\S]*?(?:<\/div>|<p)/gi;
+    let pM;
+    while ((pM = pRegex.exec(html)) !== null) {
       events.push({
         type: 'philosophy',
-        index: pIdx,
+        index: pM.index,
         number: parseInt(pM[1]),
-        rawHtml: html,
         pageNum
       });
     }
 
-    // 6. More expressions Bonus
-    const mRegex = /More expressions \(([^)]+)\)/i;
-    const mM = html.match(mRegex);
-    if (mM) {
-      const mIdx = html.indexOf(mM[0]);
-      events.push({
-        type: 'more_expressions',
-        index: mIdx,
-        title: mM[1].trim(),
-        rawHtml: html,
-        pageNum
-      });
-    }
-
-    // Sort events strictly by position in HTML
     events.sort((a, b) => a.index - b.index);
 
-    // Process events in order
     for (const ev of events) {
       if (ev.type === 'chapter') {
         currentChapter = {
@@ -130,6 +120,20 @@ async function parseEpubSequential() {
         };
         chapters.push(currentChapter);
         currentDialogue = null;
+        currentSection = null;
+      } else if (ev.type === 'section') {
+        currentSection = ev.letter;
+        if (ev.letter !== 'A') {
+          // IMPORTANT: Leaving Section A means we are NO LONGER in dialogue conversations!
+          currentDialogue = null;
+          if (currentChapter) {
+            currentChapter.bonuses.push({
+              type: ev.letter === 'B' ? 'more_expressions' : 'practise_speaking',
+              title: ev.title,
+              page: ev.pageNum
+            });
+          }
+        }
       } else if (ev.type === 'dialogue') {
         currentDialogue = {
           number: ev.number,
@@ -184,7 +188,7 @@ async function parseEpubSequential() {
           }
         }
       } else if (ev.type === 'speech') {
-        if (!currentDialogue) continue;
+        if (!currentDialogue) continue; // Skip speeches outside Section A dialogues!
         const spHtml = ev.content;
         const speakerMatch = spHtml.match(/class="speaker[^"]*"[^>]*>([\s\S]*?)<\/div>/i);
         let speaker = speakerMatch ? speakerMatch[1].replace(/<br\s*\/?>/gi, ' ').replace(/<[^>]+>/g, '').trim() : '';
@@ -195,7 +199,6 @@ async function parseEpubSequential() {
         const vieMatch = spHtml.match(/class="vie"[^>]*>([\s\S]*?)<\/p>/i);
         let vie = vieMatch ? vieMatch[1].replace(/<[^>]+>/g, '').replace(/^\(|\)$/g, '').trim() : '';
 
-        // If speaker is empty, could be continuation from previous line
         if (!speaker && vie && currentDialogue.lines.length > 0) {
           const lastLine = currentDialogue.lines[currentDialogue.lines.length - 1];
           if (!lastLine.vietnameseText) {
@@ -218,14 +221,6 @@ async function parseEpubSequential() {
             page: ev.pageNum
           });
         }
-      } else if (ev.type === 'more_expressions') {
-        if (currentChapter) {
-          currentChapter.bonuses.push({
-            type: 'more_expressions',
-            title: ev.title,
-            page: ev.pageNum
-          });
-        }
       }
     }
   }
@@ -236,7 +231,7 @@ async function parseEpubSequential() {
     chapters[2].titleVi = "Ngày trong tuần và Các tháng";
   }
 
-  // Special check: Chapter 3 Dialogue 5 (A Day at School) - add helpful vocabularies for Jasmine conversation
+  // Ensure Chapter 3 Dialogue 5 (A Day at School) has proper key words
   const ch3 = chapters.find(c => c.number === 3);
   if (ch3) {
     const d5 = ch3.dialogues.find(d => d.number === 5);
@@ -250,29 +245,40 @@ async function parseEpubSequential() {
     }
   }
 
-  // Save to JSON
-  fs.writeFileSync(path.resolve(__dirname, 'extracted_bino_data.json'), JSON.stringify(chapters, null, 2));
-
   console.log('========================================================================');
-  console.log('               KẾT QUẢ TRÍCH XUẤT TUẦN TỰ CHUẨN XÁC 100%               ');
+  console.log('         KẾT QUẢ TRÍCH XUẤT CHUẨN XÁC 100% TỪ TIENGANHBI.EPUB          ');
   console.log('========================================================================');
-  let grandTotalWords = 0;
-  let grandTotalLines = 0;
-  let grandTotalDialogues = 0;
+  let totalDialogues = 0;
+  let totalLines = 0;
+  let totalVocabs = 0;
 
   chapters.forEach(ch => {
     console.log(`\n📚 [CHƯƠNG ${ch.number}] ${ch.title} - ${ch.titleVi} (${ch.dialogues.length} bài)`);
     ch.dialogues.forEach(d => {
-      grandTotalDialogues++;
-      grandTotalWords += d.vocabularies.length;
-      grandTotalLines += d.lines.length;
+      totalDialogues++;
+      totalVocabs += d.vocabularies.length;
+      totalLines += d.lines.length;
       console.log(`   Bài ${d.number}: ${d.title} (Trang ${d.startPage}) | ${d.vocabularies.length} từ | ${d.lines.length} câu`);
     });
   });
 
   console.log('\n========================================================================');
-  console.log(`TỔNG CỘNG: ${chapters.length} Chương, ${grandTotalDialogues} Bài hội thoại, ${grandTotalWords} Từ vựng, ${grandTotalLines} Câu thoại.`);
+  console.log(`TỔNG CỘNG: ${chapters.length} Chương, ${totalDialogues} Bài hội thoại, ${totalVocabs} Từ vựng, ${totalLines} Câu thoại.`);
   console.log('========================================================================');
+
+  // Save to frontend scripts
+  fs.writeFileSync(path.resolve(__dirname, 'extracted_bino_data.json'), JSON.stringify(chapters, null, 2));
+
+  // Save to backend Api and Infrastructure
+  const backendApiPath = path.resolve(__dirname, '../../Backend/VBaceEnglish.Api/bino_real_data.json');
+  fs.writeFileSync(backendApiPath, JSON.stringify(chapters, null, 2));
+
+  const backendInfraPath = path.resolve(__dirname, '../../Backend/VBaceEnglish.Infrastructure/Data/bino_real_data.json');
+  if (fs.existsSync(path.dirname(backendInfraPath))) {
+    fs.writeFileSync(backendInfraPath, JSON.stringify(chapters, null, 2));
+  }
+
+  console.log('Đã cập nhật đồng bộ vào extracted_bino_data.json và Backend bino_real_data.json thành công!');
 }
 
-parseEpubSequential().catch(console.error);
+reextractPureBino().catch(console.error);

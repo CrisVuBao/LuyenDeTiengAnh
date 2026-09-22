@@ -645,7 +645,7 @@
     "bonuses": [
       {
         "type": "more_expressions",
-        "title": "Mẫu câu thông dụng khác",
+        "title": "More expressions (Mẫu câu thông dụng khác)",
         "page": 22
       },
       {
@@ -1258,192 +1258,6 @@
             "englishText": "Nah mate, they're just chilling now. They've made enough to spend for three other generations.",
             "vietnameseText": "Không bác ạ, giờ các cụ cứ vui sống thôi. Đã lo kinh tế đủ cho ba đời nhà tôi rồi còn gì.",
             "isUserRole": true
-          },
-          {
-            "speaker": "MOTHER",
-            "englishText": "Good morning, Bino! It's time for school. Did you sleep well?",
-            "vietnameseText": "Sáng rồi, Bino! Dậy đi học nào. Tối qua con ngủ ngon không?",
-            "isUserRole": true
-          },
-          {
-            "speaker": "CHILD",
-            "englishText": "Morning! Yeah, I had a great sleep last night. What's for breakfast?",
-            "vietnameseText": "Chào mẹ buổi sáng! Tối qua con ngủ ngon lắm. Sáng nay mình ăn gì ạ?",
-            "isUserRole": true
-          },
-          {
-            "speaker": "MOTHER",
-            "englishText": "Pancakes or cereal? What's your pick?",
-            "vietnameseText": "Bánh kếp hoặc ngũ cốc? Con chọn món nào?",
-            "isUserRole": true
-          },
-          {
-            "speaker": "CHILD",
-            "englishText": "Pancakes, please!",
-            "vietnameseText": "Bánh kếp nha mẹ!",
-            "isUserRole": true
-          },
-          {
-            "speaker": "FATHER",
-            "englishText": "Time to get ready for school, sweetie.",
-            "vietnameseText": "Tới giờ đến trường rồi, con yêu.",
-            "isUserRole": true
-          },
-          {
-            "speaker": "CHILD",
-            "englishText": "Do I have to? I don't want to go today.",
-            "vietnameseText": "Con phải đi ư? Hôm nay con không muốn đi học đâu.",
-            "isUserRole": true
-          },
-          {
-            "speaker": "FATHER",
-            "englishText": "I know it can be tough, but learning is important. You'll have fun once you get there.",
-            "vietnameseText": "Bố biết học hành rất khó, nhưng việc học rất quan trọng. Tới lớp rồi con sẽ thấy vui thôi.",
-            "isUserRole": true
-          },
-          {
-            "speaker": "CHILD",
-            "englishText": "Mom, I'm home!",
-            "vietnameseText": "Mẹ ơi, con về rồi!",
-            "isUserRole": true
-          },
-          {
-            "speaker": "MOTHER",
-            "englishText": "How was your day, honey?",
-            "vietnameseText": "Ngày hôm nay của con thế nào?",
-            "isUserRole": true
-          },
-          {
-            "speaker": "CHILD",
-            "englishText": "It was good! We played soccer at recess.",
-            "vietnameseText": "Dạ, vui lắm! Con đã chơi bóng đá vào giờ giải lao.",
-            "isUserRole": true
-          },
-          {
-            "speaker": "MOTHER",
-            "englishText": "Everyone, dinner's ready!",
-            "vietnameseText": "Bữa tối sẵn sàng rồi cả nhà ơi!",
-            "isUserRole": true
-          },
-          {
-            "speaker": "CHILD",
-            "englishText": "I'm starving. What did you cook?",
-            "vietnameseText": "Con đói rã ruột rồi đây. Hôm nay mẹ nấu món gì thế?",
-            "isUserRole": true
-          },
-          {
-            "speaker": "MOTHER",
-            "englishText": "Special beef noodles and pork chop with rice. Dig in, guys!",
-            "vietnameseText": "Phở bò và cơm thịt heo. Ăn đi nào mọi người!",
-            "isUserRole": true
-          },
-          {
-            "speaker": "SIBLING 1",
-            "englishText": "Can we watch my favorite show tonight?",
-            "vietnameseText": "Con xem chương trình yêu thích tối nay được không ạ?",
-            "isUserRole": true
-          },
-          {
-            "speaker": "SIBLING 2",
-            "englishText": "But I want to watch the game.",
-            "vietnameseText": "Nhưng em cũng muốn xem trận đấu nữa.",
-            "isUserRole": true
-          },
-          {
-            "speaker": "FATHER",
-            "englishText": "How about we take turns? Sibling 1's show tonight, and tomorrow we'll watch the game?",
-            "vietnameseText": "Hay mình xem theo lượt đi các con? Hôm nay xem chương trình, còn ngày mai mình sẽ xem trận đấu nhé?",
-            "isUserRole": true
-          },
-          {
-            "speaker": "CHILD",
-            "englishText": "Mom, can you read me a bedtime story?",
-            "vietnameseText": "Mẹ ơi, mẹ đọc truyện cho con nghe trước khi ngủ được không?",
-            "isUserRole": true
-          },
-          {
-            "speaker": "MOTHER",
-            "englishText": "Of course! Which one would you like?",
-            "vietnameseText": "Đương nhiên rồi, con thích nghe truyện gì?",
-            "isUserRole": true
-          },
-          {
-            "speaker": "CHILD",
-            "englishText": "The one about the dragon and the brave knight!",
-            "vietnameseText": "Câu chuyện về con rồng và chàng hiệp sĩ dũng cảm ạ!",
-            "isUserRole": true
-          },
-          {
-            "speaker": "FATHER",
-            "englishText": "Any plans for the weekend, kids?",
-            "vietnameseText": "Các con có kế hoạch gì cho cuối tuần không?",
-            "isUserRole": true
-          },
-          {
-            "speaker": "SIBLING 1",
-            "englishText": "I have a soccer game on Saturday.",
-            "vietnameseText": "Thứ Bảy con sẽ chơi bóng đá ạ.",
-            "isUserRole": true
-          },
-          {
-            "speaker": "SIBLING 2",
-            "englishText": "And I'm going to the movies with friends on Sunday.",
-            "vietnameseText": "Còn con sẽ đi xem phim với bạn vào Chủ nhật.",
-            "isUserRole": true
-          },
-          {
-            "speaker": "FATHER",
-            "englishText": "Tomorrow we're going to the park. Pack your things!",
-            "vietnameseText": "Chuẩn bị đồ đi các con! Mai chúng ta sẽ đi công viên chơi.",
-            "isUserRole": true
-          },
-          {
-            "speaker": "CHILD",
-            "englishText": "Can I bring my kite?",
-            "vietnameseText": "Con đem theo diều để thả được không?",
-            "isUserRole": true
-          },
-          {
-            "speaker": "FATHER",
-            "englishText": "Absolutely, and we'll bring snacks too.",
-            "vietnameseText": "Được chứ, mình sẽ mang theo cả đồ ăn vặt nữa.",
-            "isUserRole": true
-          },
-          {
-            "speaker": "MOTHER",
-            "englishText": "It's time to clean up your room.",
-            "vietnameseText": "Đến lúc con phải dọn phòng rồi đấy.",
-            "isUserRole": true
-          },
-          {
-            "speaker": "CHILD",
-            "englishText": "Do I have to? It's not that messy.",
-            "vietnameseText": "Con có cần dọn phòng không mẹ? Phòng con đâu có bừa bộn lắm đâu.",
-            "isUserRole": true
-          },
-          {
-            "speaker": "MOTHER",
-            "englishText": "It is. Let's make it neat and tidy together.",
-            "vietnameseText": "Có đấy. Mẹ con mình cùng dọn cho ngăn nắp và sạch sẽ hơn nhé.",
-            "isUserRole": true
-          },
-          {
-            "speaker": "FATHER",
-            "englishText": "Your cousin's birthday party is this weekend.",
-            "vietnameseText": "Cuối tuần này là tiệc sinh nhật anh họ con đó.",
-            "isUserRole": true
-          },
-          {
-            "speaker": "CHILD",
-            "englishText": "Yay! Cake and presents!",
-            "vietnameseText": "Hoan hô! Được ăn bánh và xem mở quà rồi!",
-            "isUserRole": true
-          },
-          {
-            "speaker": "FATHER",
-            "englishText": "It's going to be a lot of fun.",
-            "vietnameseText": "Chắc chắn là sẽ vui lắm đấy.",
-            "isUserRole": true
           }
         ]
       }
@@ -1451,8 +1265,13 @@
     "bonuses": [
       {
         "type": "more_expressions",
-        "title": "Mẫu câu thông dụng khác",
+        "title": "More expressions (Mẫu câu thông dụng khác)",
         "page": 39
+      },
+      {
+        "type": "practise_speaking",
+        "title": "Practise speaking with Bino (Thực hành nói cùng Bino)",
+        "page": 43
       },
       {
         "type": "philosophy",
@@ -2017,8 +1836,13 @@
     "bonuses": [
       {
         "type": "more_expressions",
-        "title": "Mẫu câu thông dụng khác",
+        "title": "More expressions (Mẫu câu thông dụng khác)",
         "page": 55
+      },
+      {
+        "type": "practise_speaking",
+        "title": "Practise speaking with Bino (Thực hành nói cùng Bino)",
+        "page": 57
       },
       {
         "type": "philosophy",
@@ -2595,8 +2419,13 @@
     "bonuses": [
       {
         "type": "more_expressions",
-        "title": "Mẫu câu thông dụng khác",
+        "title": "More expressions (Mẫu câu thông dụng khác)",
         "page": 69
+      },
+      {
+        "type": "practise_speaking",
+        "title": "Practise speaking with Bino (Thực hành nói cùng Bino)",
+        "page": 72
       },
       {
         "type": "philosophy",
@@ -3233,8 +3062,13 @@
     "bonuses": [
       {
         "type": "more_expressions",
-        "title": "Mẫu câu thông dụng khác",
+        "title": "More expressions (Mẫu câu thông dụng khác)",
         "page": 84
+      },
+      {
+        "type": "practise_speaking",
+        "title": "Practise speaking with Bino (Thực hành nói cùng Bino)",
+        "page": 88
       },
       {
         "type": "philosophy",
