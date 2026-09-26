@@ -14,11 +14,18 @@ export default function BinoChapterBonusPage() {
   const { chapterNumber } = useParams();
   const currentChapNum = parseInt(chapterNumber, 10) || 1;
   const navigate = useNavigate();
-  const [bonus, setBonus] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [bonus, setBonus] = useState(() => binoApi.peekChapterBonus(currentChapNum));
+  const [loading, setLoading] = useState(() => !binoApi.peekChapterBonus(currentChapNum));
 
   useEffect(() => {
-    setLoading(true);
+    const cached = binoApi.peekChapterBonus(currentChapNum);
+    if (cached) {
+      setBonus(cached);
+      setLoading(false);
+    } else {
+      setLoading(true);
+    }
+
     binoApi.getChapterBonus(currentChapNum)
       .then((res) => {
         if (res?.data) {
@@ -30,6 +37,10 @@ export default function BinoChapterBonusPage() {
         toast.error('Không tìm thấy nội dung bổ sung');
       })
       .finally(() => setLoading(false));
+
+    // Prefetch chương kế tiếp và chương trước để bấm qua lại mượt 0ms
+    if (currentChapNum < 12) binoApi.prefetchBonus(currentChapNum + 1);
+    if (currentChapNum > 1) binoApi.prefetchBonus(currentChapNum - 1);
   }, [currentChapNum]);
 
   const speakSlang = (slang) => {

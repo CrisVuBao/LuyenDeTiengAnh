@@ -32,10 +32,10 @@ const checkIsInfinite = (val) => {
 export default function BinoDialogueStudyPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [lesson, setLesson] = useState(null);
-  const [book, setBook] = useState(null);
+  const [lesson, setLesson] = useState(() => binoApi.peekDialogueDetail(id));
+  const [book, setBook] = useState(() => binoApi.peekBookOverview());
   const [isPlaylistOpen, setIsPlaylistOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(() => !binoApi.peekDialogueDetail(id));
   const [activeTab, setActiveTab] = useState('lesson'); // 'lesson', 'roleplay', 'dictation', 'scan'
   const [showVietsub, setShowVietsub] = useState(true);
   const [addedVocabs, setAddedVocabs] = useState({});
@@ -221,6 +221,20 @@ export default function BinoDialogueStudyPage() {
   const [dictationChecked, setDictationChecked] = useState(false);
 
   useEffect(() => {
+    const cached = binoApi.peekDialogueDetail(id);
+    if (cached) {
+      setLesson(cached);
+      setIsCompleted(!!cached.isCompleted);
+      const vocabMap = {};
+      cached.vocabularies?.forEach(v => {
+        if (v.isInFlashcards) vocabMap[v.id] = true;
+      });
+      setAddedVocabs(vocabMap);
+      setLoading(false);
+    } else {
+      setLoading(true);
+    }
+
     binoApi.getDialogueDetail(id)
       .then((res) => {
         if (res?.data) {
@@ -231,11 +245,16 @@ export default function BinoDialogueStudyPage() {
             if (v.isInFlashcards) vocabMap[v.id] = true;
           });
           setAddedVocabs(vocabMap);
+          // Tự động tải trước bài học kế tiếp vào RAM để bấm "Bài tiếp" trong 0ms
+          const nextId = Number(id) + 1;
+          if (nextId <= 72) {
+            binoApi.prefetchDialogue(nextId);
+          }
         }
       })
       .catch((err) => {
         console.error('Lỗi lấy bài học:', err);
-        toast.error('Không thể tải bài học');
+        if (!cached) toast.error('Không thể tải bài học');
       })
       .finally(() => setLoading(false));
   }, [id]);

@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using VBaceEnglish.Application.Contracts.Persistence;
 using VBaceEnglish.Domain.Models;
 using VBaceEnglish.Infrastructure.Data;
@@ -38,6 +38,7 @@ public class ToeicTestRepository : IToeicTestRepository
     {
         return await _context.ToeicTests
             .AsNoTracking()
+            .AsSplitQuery()
             .Include(t => t.Part1Questions.OrderBy(q => q.QuestionNumber))
             .Include(t => t.Part2Questions.OrderBy(q => q.QuestionNumber))
             .Include(t => t.Part34Passages)
@@ -55,6 +56,7 @@ public class ToeicTestRepository : IToeicTestRepository
     public async Task<ToeicTest?> GetWithDetailsByTestIdAsync(string testId)
     {
         return await _context.ToeicTests
+            .AsSplitQuery()
             .Include(t => t.Part1Questions)
             .Include(t => t.Part2Questions)
             .Include(t => t.Part34Passages)

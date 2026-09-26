@@ -16,11 +16,15 @@ import Part7View from './components/Part7View';
 
 export default function ToeicStudyPage() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [tests, setTests] = useState([]);
-  const [activeTestCode, setActiveTestCode] = useState(searchParams.get('test') || 'READING_TEST_1');
-  const [activeTestDetail, setActiveTestDetail] = useState(null);
+  const cachedAllTests = toeicApi.peekAllTests() || [];
+  const initialCode = searchParams.get('test') || cachedAllTests[0]?.testId || 'READING_TEST_1';
+  const cachedDetail = toeicApi.peekTestByCode(initialCode) || null;
+
+  const [tests, setTests] = useState(cachedAllTests);
+  const [activeTestCode, setActiveTestCode] = useState(initialCode);
+  const [activeTestDetail, setActiveTestDetail] = useState(cachedDetail);
   const [activePartTab, setActivePartTab] = useState('p5');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!cachedDetail);
   const [showTestDropdown, setShowTestDropdown] = useState(false);
 
   // Hook for user study progress on the active test
@@ -42,7 +46,13 @@ export default function ToeicStudyPage() {
   // 2. Fetch active test details by code
   useEffect(() => {
     if (!activeTestCode) return;
-    setLoading(true);
+    const cached = toeicApi.peekTestByCode(activeTestCode);
+    if (cached) {
+      setActiveTestDetail(cached);
+      setLoading(false);
+    } else {
+      setLoading(true);
+    }
     toeicApi.getTestByCode(activeTestCode)
       .then((res) => {
         if (res?.data) {

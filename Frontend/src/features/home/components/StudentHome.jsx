@@ -9,8 +9,9 @@ import useAuthStore from '../../../store/authStore';
 import PageLoader from '../../../components/PageLoader';
 
 export default function StudentHome() {
-  const [stats, setStats] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const cachedStats = dashboardApi.peekStats()?.data || null;
+  const [stats, setStats] = useState(cachedStats);
+  const [loading, setLoading] = useState(!cachedStats);
   const user = useAuthStore((state) => state.user);
   const navigate = useNavigate();
 

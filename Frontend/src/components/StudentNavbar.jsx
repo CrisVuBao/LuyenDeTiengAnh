@@ -7,7 +7,27 @@ import {
 import useAuthStore from '../store/authStore';
 import useThemeStore from '../store/themeStore';
 import authApi from '../api/authApi';
+import binoApi from '../api/binoApi';
+import toeicApi from '../api/toeicApi';
 import toast from 'react-hot-toast';
+
+// Prefetch cả JS chunk lẫn dữ liệu API ngay khi người dùng di chuột vào thanh menu
+const prefetchRoute = (route) => {
+  if (route === 'home') {
+    import('../features/home/components/StudentHome');
+  } else if (route === 'toeic') {
+    import('../features/toeic/ToeicStudyPage');
+    toeicApi.prefetchAllTests();
+  } else if (route === 'bino') {
+    import('../features/bino/BinoBookOverviewPage');
+    import('../features/bino/BinoDialogueStudyPage');
+    binoApi.prefetchBookOverview();
+  } else if (route === 'progress') {
+    import('../features/progress/components/StudyProgressPage');
+  } else if (route === 'dashboard') {
+    import('../features/dashboard/components/Home');
+  }
+};
 
 export default function StudentNavbar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -53,7 +73,7 @@ export default function StudentNavbar() {
         
         {/* Brand Logo & Main Nav */}
         <div className="flex items-center gap-8">
-          <NavLink to="/home" className="flex items-center gap-2.5 group">
+          <NavLink to="/home" onMouseEnter={() => prefetchRoute('home')} className="flex items-center gap-2.5 group">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform">
               <Sparkles size={22} />
             </div>
@@ -69,10 +89,11 @@ export default function StudentNavbar() {
           <nav className="hidden md:flex items-center gap-2">
             <NavLink
               to="/home"
+              onMouseEnter={() => prefetchRoute('home')}
               className={({ isActive }) =>
                 `flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all ${
                   isActive
-                    ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400'
+                    ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 shadow-xs'
                     : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
                 }`
               }
@@ -83,10 +104,11 @@ export default function StudentNavbar() {
 
             <NavLink
               to="/toeic"
+              onMouseEnter={() => prefetchRoute('toeic')}
               className={({ isActive }) =>
                 `flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all ${
                   isActive
-                    ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25'
+                    ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-500/25'
                     : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
                 }`
               }
@@ -97,10 +119,11 @@ export default function StudentNavbar() {
 
             <NavLink
               to="/bino"
+              onMouseEnter={() => prefetchRoute('bino')}
               className={({ isActive }) =>
                 `flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all ${
                   isActive
-                    ? 'bg-amber-500 text-white shadow-md shadow-amber-500/25'
+                    ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md shadow-amber-500/25'
                     : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
                 }`
               }

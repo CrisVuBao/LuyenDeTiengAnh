@@ -17,6 +17,7 @@ public class BinoBookRepository : IBinoBookRepository
     public async Task<BinoBook?> GetBookWithChaptersAsync(string slug = "chem-tieng-anh-khong-can-dong-nao")
     {
         return await _context.BinoBooks
+            .AsSplitQuery()
             .Include(b => b.Chapters.OrderBy(c => c.ChapterNumber))
                 .ThenInclude(c => c.DialogueLessons.OrderBy(d => d.DialogueNumber))
                     .ThenInclude(d => d.Vocabularies)
@@ -31,6 +32,7 @@ public class BinoBookRepository : IBinoBookRepository
     public async Task<Chapter?> GetChapterWithLessonsAsync(int chapterNumber)
     {
         return await _context.Chapters
+            .AsSplitQuery()
             .Include(c => c.DialogueLessons.OrderBy(d => d.DialogueNumber))
                 .ThenInclude(d => d.Vocabularies)
             .Include(c => c.Bonus)
@@ -40,6 +42,7 @@ public class BinoBookRepository : IBinoBookRepository
     public async Task<ChapterBonus?> GetChapterBonusAsync(int chapterNumber)
     {
         return await _context.ChapterBonuses
+            .AsNoTracking()
             .Include(b => b.Chapter)
             .FirstOrDefaultAsync(b => b.Chapter.ChapterNumber == chapterNumber);
     }
@@ -47,6 +50,7 @@ public class BinoBookRepository : IBinoBookRepository
     public async Task<DialogueLesson?> GetDialogueLessonAsync(int id)
     {
         return await _context.DialogueLessons
+            .AsSplitQuery()
             .Include(d => d.Chapter)
             .Include(d => d.Vocabularies.OrderBy(v => v.OrderIndex))
             .Include(d => d.DialogueLines.OrderBy(l => l.OrderIndex))
@@ -56,6 +60,7 @@ public class BinoBookRepository : IBinoBookRepository
     public async Task<DialogueLesson?> GetDialogueLessonByNumberAsync(int chapterNumber, int dialogueNumber)
     {
         return await _context.DialogueLessons
+            .AsSplitQuery()
             .Include(d => d.Chapter)
             .Include(d => d.Vocabularies.OrderBy(v => v.OrderIndex))
             .Include(d => d.DialogueLines.OrderBy(l => l.OrderIndex))
@@ -65,6 +70,7 @@ public class BinoBookRepository : IBinoBookRepository
     public async Task<Chapter?> GetChapterByIdAsync(int id)
     {
         return await _context.Chapters
+            .AsSplitQuery()
             .Include(c => c.DialogueLessons.OrderBy(d => d.DialogueNumber))
                 .ThenInclude(d => d.Vocabularies)
             .Include(c => c.Bonus)
@@ -74,6 +80,7 @@ public class BinoBookRepository : IBinoBookRepository
     public async Task<IEnumerable<Chapter>> GetAllChaptersAsync(string slug = "chem-tieng-anh-khong-can-dong-nao")
     {
         return await _context.Chapters
+            .AsSplitQuery()
             .Include(c => c.Book)
             .Include(c => c.DialogueLessons)
                 .ThenInclude(d => d.Vocabularies)

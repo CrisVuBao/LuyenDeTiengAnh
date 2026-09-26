@@ -23,6 +23,7 @@ public class BinoLearningRepository : IBinoLearningRepository
     public async Task<IEnumerable<UserDialogueProgress>> GetProgressByUserAsync(int userId)
     {
         return await _context.UserDialogueProgresses
+            .AsNoTracking()
             .Where(p => p.UserId == userId)
             .ToListAsync();
     }
@@ -48,6 +49,7 @@ public class BinoLearningRepository : IBinoLearningRepository
     {
         var now = DateTime.UtcNow;
         return await _context.UserSRSReviews
+            .AsNoTracking()
             .Include(r => r.Vocabulary)
                 .ThenInclude(v => v.DialogueLesson)
                     .ThenInclude(d => d.Chapter)
@@ -59,6 +61,7 @@ public class BinoLearningRepository : IBinoLearningRepository
     public async Task<IEnumerable<UserSRSReview>> GetAllSRSReviewsByUserAsync(int userId)
     {
         return await _context.UserSRSReviews
+            .AsNoTracking()
             .Include(r => r.Vocabulary)
                 .ThenInclude(v => v.DialogueLesson)
                     .ThenInclude(d => d.Chapter)

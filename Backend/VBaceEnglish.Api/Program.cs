@@ -21,8 +21,18 @@ builder.Services.AddResponseCompression(options => {
     options.EnableForHttps = true;
     options.Providers.Add<BrotliCompressionProvider>();
     options.Providers.Add<GzipCompressionProvider>();
+    options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[]
+    {
+        "application/json",
+        "application/javascript",
+        "text/css",
+        "image/svg+xml",
+        "application/epub+zip",
+        "font/woff2"
+    });
 });
 builder.Services.Configure<BrotliCompressionProviderOptions>(o => o.Level = CompressionLevel.Fastest);
+builder.Services.Configure<GzipCompressionProviderOptions>(o => o.Level = CompressionLevel.Fastest);
 
 // 2. Caching (A.4)
 builder.Services.AddMemoryCache();
@@ -102,7 +112,7 @@ app.UseExceptionHandler();
 app.UseCors("AllowFrontend");
 app.UseResponseCompression();
 app.UseOutputCache();
-// Static Files & SPA Setup (Hỗ trợ MIME types cho Somee/MonsterASP/Azure)
+// Static Files & SPA Setup (Hỗ trợ MIME types & Cache-Control siêu tốc cho Somee/MonsterASP/Azure)
 var contentTypeProvider = new FileExtensionContentTypeProvider();
 contentTypeProvider.Mappings[".epub"] = "application/epub+zip";
 contentTypeProvider.Mappings[".webp"] = "image/webp";
@@ -114,7 +124,26 @@ contentTypeProvider.Mappings[".woff2"] = "font/woff2";
 app.UseDefaultFiles();
 app.UseStaticFiles(new StaticFileOptions
 {
-    ContentTypeProvider = contentTypeProvider
+    ContentTypeProvider = contentTypeProvider,
+    OnPrepareResponse = ctx =>
+    {
+        var path = ctx.Context.Request.Path.Value ?? string.Empty;
+        if (path.StartsWith("/assets/", StringComparison.OrdinalIgnoreCase))
+        {
+            // Hashed Vite assets: cache 1 năm immutable (0ms tải lại)
+            ctx.Context.Response.Headers["Cache-Control"] = "public, max-age=31536000, immutable";
+        }
+        else if (path.EndsWith(".html", StringComparison.OrdinalIgnoreCase))
+        {
+            ctx.Context.Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
+        }
+        else if (path.StartsWith("/images/", StringComparison.OrdinalIgnoreCase) ||
+                 path.StartsWith("/audios/", StringComparison.OrdinalIgnoreCase) ||
+                 path.StartsWith("/ebooks/", StringComparison.OrdinalIgnoreCase))
+        {
+            ctx.Context.Response.Headers["Cache-Control"] = "public, max-age=604800";
+        }
+    }
 });
 
 // Swagger hỗ trợ cả Development lẫn Production trên MonsterASP / Somee / Azure

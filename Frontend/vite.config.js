@@ -12,17 +12,24 @@ export default defineConfig({
     outDir: process.env.VITE_OUT_DIR || '../Backend/VBaceEnglish.Api/wwwroot',
     emptyOutDir: false,
     sourcemap: false,
+    target: 'es2020',
+    cssCodeSplit: true,
+    chunkSizeWarningLimit: 600,
     rollupOptions: {
       output: {
         manualChunks(id) {
           if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router-dom'))
-              return 'vendor-react';
-            if (id.includes('recharts') || id.includes('d3-'))
+            if (id.includes('epubjs') || id.includes('jszip') || id.includes('@xmldom'))
+              return 'vendor-epub';
+            if (id.includes('recharts') || id.includes('d3-') || id.includes('victory-vendor'))
               return 'vendor-charts';
-            if (id.includes('framer-motion') || id.includes('lucide-react'))
-              return 'vendor-ui';
-            return 'vendor';
+            if (id.includes('framer-motion') || id.includes('motion-dom') || id.includes('motion-utils'))
+              return 'vendor-motion';
+            if (id.includes('lucide-react'))
+              return 'vendor-icons';
+            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router') || id.includes('scheduler'))
+              return 'vendor-react';
+            return 'vendor-core';
           }
         }
       }

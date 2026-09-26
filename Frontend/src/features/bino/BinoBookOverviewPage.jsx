@@ -14,8 +14,8 @@ import BinoLearningGuideModal from './components/BinoLearningGuideModal';
 import toast from 'react-hot-toast';
 
 export default function BinoBookOverviewPage() {
-  const [book, setBook] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [book, setBook] = useState(() => binoApi.peekBookOverview());
+  const [loading, setLoading] = useState(() => !binoApi.peekBookOverview());
   const [selectedChapter, setSelectedChapter] = useState(1);
   const [isPlaylistOpen, setIsPlaylistOpen] = useState(false);
   const [playlistInitialIds, setPlaylistInitialIds] = useState(null);
@@ -356,6 +356,7 @@ export default function BinoBookOverviewPage() {
                       <motion.button
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.97 }}
+                        onMouseEnter={() => binoApi.prefetchBonus(activeChapter.chapterNumber)}
                         onClick={() => navigate(`/bino/chapter/${activeChapter.chapterNumber}/bonus`)}
                         className="px-3.5 py-2 bg-gradient-to-r from-amber-500/15 to-orange-500/15 dark:from-amber-950/80 dark:to-orange-950/80 hover:from-amber-500/25 hover:to-orange-500/25 text-amber-800 dark:text-amber-300 rounded-xl font-black text-xs border border-amber-300 dark:border-amber-700 flex items-center gap-1.5 transition-all shadow-sm"
                       >
@@ -391,10 +392,10 @@ export default function BinoBookOverviewPage() {
               <AnimatePresence mode="wait">
                 <motion.div 
                   key={`${activeChapter.chapterNumber}-${searchQuery}`}
-                  initial={{ opacity: 0, y: 15 }}
+                  initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.35, staggerChildren: 0.05 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.22 }}
                   className="grid grid-cols-1 sm:grid-cols-2 gap-3.5"
                 >
                   {filteredDialogues.length === 0 ? (
@@ -405,11 +406,12 @@ export default function BinoBookOverviewPage() {
                     filteredDialogues.map((d, index) => (
                       <motion.div
                         key={d.id}
-                        initial={{ opacity: 0, y: 15 }}
+                        initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.04, duration: 0.3 }}
+                        transition={{ delay: Math.min(index * 0.025, 0.15), duration: 0.22 }}
                         whileHover={{ y: -3, scale: 1.01 }}
                         whileTap={{ scale: 0.98 }}
+                        onMouseEnter={() => binoApi.prefetchDialogue(d.id)}
                         onClick={() => navigate(`/bino/dialogue/${d.id}`)}
                         className="glass-card p-4 sm:p-4.5 rounded-2xl border border-slate-200/90 dark:border-slate-800 hover:border-amber-400 dark:hover:border-amber-500 cursor-pointer group transition-all shadow-sm hover:shadow-lg relative overflow-hidden flex flex-col justify-between space-y-3"
                       >
@@ -465,6 +467,7 @@ export default function BinoBookOverviewPage() {
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   whileHover={{ y: -2 }}
+                  onMouseEnter={() => binoApi.prefetchBonus(activeChapter.chapterNumber)}
                   onClick={() => navigate(`/bino/chapter/${activeChapter.chapterNumber}/bonus`)}
                   className="glass-card p-5 sm:p-6 rounded-3xl bg-gradient-to-r from-amber-500/15 via-orange-500/10 to-indigo-500/10 border-2 border-amber-300/80 dark:border-amber-700/60 cursor-pointer shadow-md hover:shadow-xl transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
                 >
