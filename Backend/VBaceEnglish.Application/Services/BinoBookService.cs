@@ -15,6 +15,7 @@ public interface IBinoBookService
     Task<Response<DialogueLessonDetailDto>> GetDialogueLessonByNumberAsync(int userId, int chapterNumber, int dialogueNumber);
     Task<Response<bool>> MarkProgressAsync(int userId, MarkDialogueProgressDto dto);
     Task<Response<bool>> AddWordToSRSAsync(int userId, int vocabularyId);
+    Task<Response<bool>> RemoveWordFromSRSAsync(int userId, int vocabularyId);
     Task<Response<IEnumerable<SrsCardDto>>> GetDueSRSCardsAsync(int userId);
     Task<Response<bool>> SubmitSRSReviewAsync(int userId, SubmitSrsReviewDto dto);
     Task<Response<List<PlaylistDialogueDto>>> GetPlaylistDialoguesAsync(int userId, string? ids = null);
@@ -427,6 +428,17 @@ public class BinoBookService : IBinoBookService
         await _unitOfWork.BinoLearning.AddSRSReviewAsync(review);
         await _unitOfWork.CompleteAsync();
         return Response<bool>.SuccessResult("Đã thêm vào Flashcard thành công", true);
+    }
+
+    public async Task<Response<bool>> RemoveWordFromSRSAsync(int userId, int vocabularyId)
+    {
+        var existing = await _unitOfWork.BinoLearning.GetSRSReviewAsync(userId, vocabularyId);
+        if (existing == null)
+            return Response<bool>.SuccessResult("Từ này đã được gỡ khỏi bộ Flashcard", true);
+
+        _unitOfWork.BinoLearning.RemoveSRSReview(existing);
+        await _unitOfWork.CompleteAsync();
+        return Response<bool>.SuccessResult("Đã gỡ khỏi Flashcard thành công", true);
     }
 
     public async Task<Response<IEnumerable<SrsCardDto>>> GetDueSRSCardsAsync(int userId)

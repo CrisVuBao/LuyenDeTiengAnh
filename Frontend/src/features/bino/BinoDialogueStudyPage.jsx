@@ -11,12 +11,37 @@ import {
 import binoApi from '../../api/binoApi';
 import PageLoader from '../../components/PageLoader';
 import VoiceSettingsModal from '../../components/VoiceSettingsModal';
-import BinoPlaylistModal from './components/BinoPlaylistModal';
+import { useBinoPlayerStore } from './components/BinoPlaylistModal';
 import BinoSentenceExpansionCard from './components/BinoSentenceExpansionCard';
 import BinoLearningGuideModal from './components/BinoLearningGuideModal';
 import { getExpansionsForLine } from './data/binoSentenceExpansions';
 import speechService from '../../utils/speechService';
 import toast from 'react-hot-toast';
+
+const LOCAL_FLASHCARD_KEY = 'vbace_local_flashcard_ids_v1';
+
+const getLocalFlashcardMap = () => {
+  try {
+    const raw = localStorage.getItem(LOCAL_FLASHCARD_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    return {};
+  }
+};
+
+const setLocalFlashcardState = (vocabId, isAdded) => {
+  try {
+    const current = getLocalFlashcardMap();
+    if (isAdded) {
+      current[vocabId] = true;
+    } else {
+      delete current[vocabId];
+    }
+    localStorage.setItem(LOCAL_FLASHCARD_KEY, JSON.stringify(current));
+  } catch {
+    // ignore
+  }
+};
 
 // Chuẩn hóa và kiểm tra chính xác chế độ Lặp Vô Hạn (∞)
 const checkIsInfinite = (val) => {
@@ -34,14 +59,17 @@ export default function BinoDialogueStudyPage() {
   const navigate = useNavigate();
   const [lesson, setLesson] = useState(() => binoApi.peekDialogueDetail(id));
   const [book, setBook] = useState(() => binoApi.peekBookOverview());
-  const [isPlaylistOpen, setIsPlaylistOpen] = useState(false);
   const [loading, setLoading] = useState(() => !binoApi.peekDialogueDetail(id));
   const [activeTab, setActiveTab] = useState('lesson'); // 'lesson', 'roleplay', 'dictation', 'scan'
   const [showVietsub, setShowVietsub] = useState(true);
-  const [addedVocabs, setAddedVocabs] = useState({});
+  const [addedVocabs, setAddedVocabs] = useState(() => getLocalFlashcardMap());
+  const [togglingVocabId, setTogglingVocabId] = useState(null);
   const [isCompleted, setIsCompleted] = useState(false);
   const [isVoiceSettingsOpen, setIsVoiceSettingsOpen] = useState(false);
   const [isGuideModalOpen, setIsGuideModalOpen] = useState(false);
+  const openPlaylist = useBinoPlayerStore((state) => state.openPlaylist);
+  const handOffSingleLesson = useBinoPlayerStore((state) => state.handOffSingleLesson);
+  const closeGlobalPlayer = useBinoPlayerStore((state) => state.closePlayer);
 
   useEffect(() => {
     binoApi.getBookOverview().then(res => {
@@ -54,6 +82,16 @@ export default function BinoDialogueStudyPage() {
   const [activeLineIndex, setActiveLineIndex] = useState(null);
   const [audioSpeed, setAudioSpeed] = useState(0.95);
   const lineRefs = useRef({});
+  const lessonRef = useRef(lesson);
+  const audioSpeedRef = useRef(audioSpeed);
+
+  useEffect(() => {
+    lessonRef.current = lesson;
+  }, [lesson]);
+
+  useEffect(() => {
+    audioSpeedRef.current = audioSpeed;
+  }, [audioSpeed]);
 
   // Repeat state & settings
   const [repeatCount, setRepeatCount] = useState(() => {
@@ -170,7 +208,7 @@ export default function BinoDialogueStudyPage() {
   }, [activeLineIndex]);
 
   // Dừng phát âm thanh hoàn toàn và reset an toàn
-  const stopPlayback = () => {
+  const stopPlayback = (stopKeepAlive = false) => {
     playSessionTokenRef.current += 1;
     stepTokenRef.current += 1;
     isPlayingRef.current = false;
@@ -178,7 +216,7 @@ export default function BinoDialogueStudyPage() {
       clearTimeout(timeoutTimerRef.current);
       timeoutTimerRef.current = null;
     }
-    speechService.stop();
+    speechService.stop(stopKeepAlive);
     setIsPlayingAll(false);
     setActiveLineIndex(null);
     currentLoopCycleRef.current = 1;
@@ -187,12 +225,27 @@ export default function BinoDialogueStudyPage() {
     setCurrentLineRepeat(1);
   };
 
-  // Stop speech when unmounting
+  // Khi chuyển sang trang khác lúc đang phát bài hội thoại -> Tự động chuyển sang Mini Floating Player toàn cục, KHÔNG tắt nhạc!
   useEffect(() => {
     return () => {
-      stopPlayback();
+      if (isPlayingRef.current && lessonRef.current) {
+        const activeLesson = lessonRef.current;
+        const activeIdx = currentLineIndexRef.current || 0;
+        const speed = audioSpeedRef.current || 0.95;
+        if (timeoutTimerRef.current) {
+          clearTimeout(timeoutTimerRef.current);
+          timeoutTimerRef.current = null;
+        }
+        isPlayingRef.current = false;
+        handOffSingleLesson({
+          lesson: activeLesson,
+          lineIdx: activeIdx,
+          speed,
+          repeatMode: 'one',
+        });
+      }
     };
-  }, []);
+  }, [handOffSingleLesson]);
 
   // Roleplay state
   const [selectedRole, setSelectedRole] = useState('');
@@ -221,11 +274,12 @@ export default function BinoDialogueStudyPage() {
   const [dictationChecked, setDictationChecked] = useState(false);
 
   useEffect(() => {
+    const localMap = getLocalFlashcardMap();
     const cached = binoApi.peekDialogueDetail(id);
     if (cached) {
       setLesson(cached);
       setIsCompleted(!!cached.isCompleted);
-      const vocabMap = {};
+      const vocabMap = { ...localMap };
       cached.vocabularies?.forEach(v => {
         if (v.isInFlashcards) vocabMap[v.id] = true;
       });
@@ -240,9 +294,13 @@ export default function BinoDialogueStudyPage() {
         if (res?.data) {
           setLesson(res.data);
           setIsCompleted(res.data.isCompleted);
-          const vocabMap = {};
+          const freshLocalMap = getLocalFlashcardMap();
+          const vocabMap = { ...freshLocalMap };
           res.data.vocabularies?.forEach(v => {
-            if (v.isInFlashcards) vocabMap[v.id] = true;
+            if (v.isInFlashcards) {
+              vocabMap[v.id] = true;
+              setLocalFlashcardState(v.id, true);
+            }
           });
           setAddedVocabs(vocabMap);
           // Tự động tải trước bài học kế tiếp vào RAM để bấm "Bài tiếp" trong 0ms
@@ -273,14 +331,50 @@ export default function BinoDialogueStudyPage() {
     speechService.speakWord(word, audioSpeed);
   };
 
-  // Add word to SRS
+  // Toggle từ vựng trong bộ Flashcard SRS (Bấm lần 1: Thêm vào Flashcard • Bấm lần 2: Thoát/Gỡ khỏi Flashcard — Phản hồi 0ms)
   const handleAddToSRS = async (vocab) => {
-    try {
-      await binoApi.addWordToSRS(vocab.id);
-      setAddedVocabs(prev => ({ ...prev, [vocab.id]: true }));
-      toast.success(`Đã thêm "${vocab.word}" vào Flashcard ôn tập!`);
-    } catch {
-      toast.error('Lỗi khi thêm từ vào Flashcard');
+    if (!vocab?.id) return;
+    const currentlyAdded = !!addedVocabs[vocab.id];
+    const nextState = !currentlyAdded;
+
+    // Optimistic UI update ngay lập tức (0ms, cực kỳ mượt mà)
+    setTogglingVocabId(vocab.id);
+    setAddedVocabs(prev => {
+      const next = { ...prev };
+      if (nextState) {
+        next[vocab.id] = true;
+      } else {
+        delete next[vocab.id];
+      }
+      return next;
+    });
+    setLocalFlashcardState(vocab.id, nextState);
+
+    if (nextState) {
+      toast.success(`Đã lưu "${vocab.word}" vào Flashcard! (Bấm lần nữa để bỏ)`, {
+        id: `srs-${vocab.id}`,
+        duration: 2000,
+      });
+      try {
+        await binoApi.addWordToSRS(vocab.id);
+      } catch {
+        // Giữ nguyên trong localStorage để người dùng vẫn trải nghiệm trơn tru
+      } finally {
+        setTogglingVocabId(null);
+      }
+    } else {
+      toast(`Đã thoát "${vocab.word}" khỏi + Flashcard`, {
+        id: `srs-${vocab.id}`,
+        icon: '↩️',
+        duration: 1800,
+      });
+      try {
+        await binoApi.removeWordFromSRS(vocab.id);
+      } catch {
+        // ignore
+      } finally {
+        setTogglingVocabId(null);
+      }
     }
   };
 
@@ -371,6 +465,11 @@ export default function BinoDialogueStudyPage() {
       text: line.englishText,
       characterName: line.characterName,
       speed: audioSpeed,
+      metadata: {
+        title: `${line.characterName}: "${line.englishText}"`,
+        artist: `Chương ${lesson.chapterNumber} • Bài ${lesson.dialogueNumber}: ${lesson.title}`,
+        album: 'Chém Tiếng Anh Không Cần Động Não'
+      },
       onEnd: () => {
         if (!isPlayingRef.current) return;
         if (sessionToken !== playSessionTokenRef.current) return;
@@ -421,13 +520,41 @@ export default function BinoDialogueStudyPage() {
   const playAllLines = () => {
     if (!lesson?.dialogueLines?.length) return;
     if (isPlayingAll) {
-      stopPlayback();
+      stopPlayback(true);
       return;
     }
 
-    stopPlayback();
+    closeGlobalPlayer();
+    stopPlayback(false);
     isPlayingRef.current = true;
     setIsPlayingAll(true);
+
+    speechService.startBackgroundSession(
+      {
+        title: lesson.title,
+        artist: `Chương ${lesson.chapterNumber} • Bài ${lesson.dialogueNumber} (Bino)`,
+        album: 'Chém Tiếng Anh Không Cần Động Não'
+      },
+      {
+        onPlay: () => {
+          if (!isPlayingRef.current) {
+            isPlayingRef.current = true;
+            setIsPlayingAll(true);
+            playLineAtIndex(currentLineIndexRef.current || 0, currentLoopCycleRef.current || 1, playSessionTokenRef.current);
+          }
+        },
+        onPause: () => stopPlayback(false),
+        onPrev: () => {
+          const prevIdx = Math.max(0, (currentLineIndexRef.current || 0) - 1);
+          playLineAtIndex(prevIdx, currentLoopCycleRef.current || 1, playSessionTokenRef.current);
+        },
+        onNext: () => {
+          const nextIdx = (currentLineIndexRef.current || 0) + 1;
+          playLineAtIndex(nextIdx, currentLoopCycleRef.current || 1, playSessionTokenRef.current);
+        },
+        onStop: () => stopPlayback(true)
+      }
+    );
 
     const savedRepeatCount = localStorage.getItem('bino_repeat_count');
     if (checkIsInfinite(savedRepeatCount) || checkIsInfinite(repeatCount) || checkIsInfinite(repeatCountRef.current)) {
@@ -601,8 +728,13 @@ export default function BinoDialogueStudyPage() {
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={() => {
-                if (isPlayingAll) stopPlayback();
-                setIsPlaylistOpen(true);
+                if (isPlayingAll) stopPlayback(false);
+                openPlaylist({
+                  ids: lesson ? [lesson.id] : null,
+                  autoStart: false,
+                  minimized: false,
+                  book
+                });
               }}
               className="px-3 py-2 rounded-2xl border border-blue-200 dark:border-blue-800 bg-blue-50/80 hover:bg-blue-100 dark:bg-blue-950/50 text-blue-800 dark:text-blue-300 text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm"
               title="Mở trình phát liên tục tất cả các bài"
@@ -935,17 +1067,32 @@ export default function BinoDialogueStudyPage() {
                           <Volume2 size={16} />
                         </button>
 
-                        <button
+                        <motion.button
+                          type="button"
+                          whileHover={{ scale: 1.04 }}
+                          whileTap={{ scale: 0.91 }}
                           onClick={() => handleAddToSRS(v)}
-                          className={`px-2.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 transition-all ${
+                          title={isAdded ? 'Bấm lần nữa để thoát / bỏ khỏi Flashcard' : 'Bấm để thêm vào bộ Flashcard ôn tập'}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-extrabold flex items-center gap-1.5 transition-all select-none shadow-sm border ${
                             isAdded
-                              ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300'
-                              : 'bg-amber-100 hover:bg-amber-200 dark:bg-amber-900/60 text-amber-800 dark:text-amber-300'
-                          }`}
+                              ? 'bg-emerald-500 hover:bg-rose-500 text-white border-emerald-500 hover:border-rose-500 group/btn shadow-emerald-500/20'
+                              : 'bg-amber-100 hover:bg-amber-500 hover:text-white dark:bg-amber-900/60 dark:hover:bg-amber-600 text-amber-900 dark:text-amber-200 border-amber-300/70 dark:border-amber-700/70'
+                          } ${togglingVocabId === v.id ? 'opacity-90' : ''}`}
                         >
-                          {isAdded ? <Check size={13} /> : <span>+</span>}
-                          <span className="text-[11px]">{isAdded ? 'Đã nhớ' : 'Flashcard'}</span>
-                        </button>
+                          {isAdded ? (
+                            <>
+                              <Check size={13} strokeWidth={3} className="group-hover/btn:hidden" />
+                              <X size={13} strokeWidth={3} className="hidden group-hover/btn:inline" />
+                              <span className="text-[11px] group-hover/btn:hidden">Đã lưu</span>
+                              <span className="text-[11px] hidden group-hover/btn:inline">Thoát thẻ</span>
+                            </>
+                          ) : (
+                            <>
+                              <span className="text-sm leading-none font-black">+</span>
+                              <span className="text-[11px]">Flashcard</span>
+                            </>
+                          )}
+                        </motion.button>
                       </div>
                     </motion.div>
                   );
@@ -1358,15 +1505,6 @@ export default function BinoDialogueStudyPage() {
       <VoiceSettingsModal
         isOpen={isVoiceSettingsOpen}
         onClose={() => setIsVoiceSettingsOpen(false)}
-      />
-
-      {/* Continuous Playlist Player Modal */}
-      <BinoPlaylistModal
-        isOpen={isPlaylistOpen}
-        onClose={() => setIsPlaylistOpen(false)}
-        book={book}
-        initialSelectedIds={lesson ? [lesson.id] : null}
-        autoStart={false}
       />
 
       {/* 4-Step Learning Guide Modal */}

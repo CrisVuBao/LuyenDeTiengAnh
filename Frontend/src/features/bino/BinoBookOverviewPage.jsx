@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import binoApi from '../../api/binoApi';
 import PageLoader from '../../components/PageLoader';
-import BinoPlaylistModal from './components/BinoPlaylistModal';
+import { useBinoPlayerStore } from './components/BinoPlaylistModal';
 import BinoLearningGuideModal from './components/BinoLearningGuideModal';
 import toast from 'react-hot-toast';
 
@@ -17,17 +17,13 @@ export default function BinoBookOverviewPage() {
   const [book, setBook] = useState(() => binoApi.peekBookOverview());
   const [loading, setLoading] = useState(() => !binoApi.peekBookOverview());
   const [selectedChapter, setSelectedChapter] = useState(1);
-  const [isPlaylistOpen, setIsPlaylistOpen] = useState(false);
-  const [playlistInitialIds, setPlaylistInitialIds] = useState(null);
-  const [playlistAutoStart, setPlaylistAutoStart] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isGuideModalOpen, setIsGuideModalOpen] = useState(false);
   const navigate = useNavigate();
+  const openPlaylist = useBinoPlayerStore((state) => state.openPlaylist);
 
   const openPlaylistWith = (ids = null, autoStart = false) => {
-    setPlaylistInitialIds(ids);
-    setPlaylistAutoStart(autoStart);
-    setIsPlaylistOpen(true);
+    openPlaylist({ ids, autoStart, minimized: false, book });
   };
 
   useEffect(() => {
@@ -498,15 +494,6 @@ export default function BinoBookOverviewPage() {
           )}
         </div>
       </div>
-
-      {/* Trình phát Playlist liên tục & Chọn bài nghe */}
-      <BinoPlaylistModal
-        isOpen={isPlaylistOpen}
-        onClose={() => setIsPlaylistOpen(false)}
-        book={book}
-        initialSelectedIds={playlistInitialIds}
-        autoStart={playlistAutoStart}
-      />
 
       {/* Cẩm Nang Hướng Dẫn Cách Học 4 Bước Bino */}
       <BinoLearningGuideModal

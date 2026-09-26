@@ -135,12 +135,29 @@ export const binoApi = {
       return res;
     }),
 
-  // Flashcards SRS (Spaced Repetition System SM-2)
-  addWordToSRS: (vocabularyId) =>
-    axiosClient.post('/bino/srs/add-word', { vocabularyId }).then((res) => {
-      invalidateBinoCache('dialogue:');
-      return res;
-    }),
+  // Flashcards SRS (Spaced Repetition System SM-2) + Instant Optimistic Cache Sync
+  addWordToSRS: (vocabularyId) => {
+    // Cập nhật ngay trong RAM cache để chuyển trang quay lại vẫn giữ trạng thái tức thì
+    for (const [key, entry] of memoryCache.entries()) {
+      if (key.startsWith('dialogue:') && entry?.data?.data?.vocabularies) {
+        entry.data.data.vocabularies = entry.data.data.vocabularies.map(v =>
+          v.id === vocabularyId ? { ...v, isInFlashcards: true } : v
+        );
+      }
+    }
+    return axiosClient.post('/bino/srs/add-word', { vocabularyId });
+  },
+
+  removeWordFromSRS: (vocabularyId) => {
+    for (const [key, entry] of memoryCache.entries()) {
+      if (key.startsWith('dialogue:') && entry?.data?.data?.vocabularies) {
+        entry.data.data.vocabularies = entry.data.data.vocabularies.map(v =>
+          v.id === vocabularyId ? { ...v, isInFlashcards: false } : v
+        );
+      }
+    }
+    return axiosClient.post('/bino/srs/remove-word', { vocabularyId });
+  },
 
   getDueSRSCards: () =>
     axiosClient.get('/bino/srs/due-words'),

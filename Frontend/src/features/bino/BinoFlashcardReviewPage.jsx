@@ -3,13 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ArrowLeft, Volume2, RotateCcw, CheckCircle2, Sparkles, 
-  Flame, Award, Layers, ChevronRight, HelpCircle, BookOpen
+  Flame, Award, Layers, ChevronRight, HelpCircle, BookOpen, Trash2
 } from 'lucide-react';
 import binoApi from '../../api/binoApi';
 import PageLoader from '../../components/PageLoader';
 import VoiceSettingsModal from '../../components/VoiceSettingsModal';
 import speechService from '../../utils/speechService';
 import toast from 'react-hot-toast';
+
+const LOCAL_FLASHCARD_KEY = 'vbace_local_flashcard_ids_v1';
 
 export default function BinoFlashcardReviewPage() {
   const navigate = useNavigate();
@@ -20,12 +22,6 @@ export default function BinoFlashcardReviewPage() {
   const [reviewedCount, setReviewedCount] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
   const [isVoiceSettingsOpen, setIsVoiceSettingsOpen] = useState(false);
-
-  useEffect(() => {
-    return () => {
-      speechService.stop();
-    };
-  }, []);
 
   useEffect(() => {
     binoApi.getDueSRSCards()
@@ -45,25 +41,56 @@ export default function BinoFlashcardReviewPage() {
     speechService.speakWord(text);
   };
 
-  const handleGrade = async (grade) => {
+  const handleRemoveCard = async (e) => {
+    e?.stopPropagation?.();
     const currentCard = cards[currentIndex];
     if (!currentCard) return;
 
     try {
-      await binoApi.submitSRSReview(currentCard.vocabularyId, grade);
-      setReviewedCount(prev => prev + 1);
-
-      if (currentIndex < cards.length - 1) {
-        setIsFlipped(false);
-        setTimeout(() => {
-          setCurrentIndex(prev => prev + 1);
-        }, 150);
-      } else {
-        setIsFinished(true);
-        toast.success('Chúc mừng! Bác đã hoàn thành buổi ôn tập hôm nay! 🎉');
+      const raw = localStorage.getItem(LOCAL_FLASHCARD_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        delete parsed[currentCard.vocabularyId];
+        localStorage.setItem(LOCAL_FLASHCARD_KEY, JSON.stringify(parsed));
       }
     } catch {
-      toast.error('Lỗi khi ghi nhận đánh giá');
+      // ignore
+    }
+
+    const nextCards = cards.filter((_, idx) => idx !== currentIndex);
+    setCards(nextCards);
+    setIsFlipped(false);
+    if (currentIndex >= nextCards.length && nextCards.length > 0) {
+      setCurrentIndex(nextCards.length - 1);
+    }
+
+    toast(`Đã gỡ "${currentCard.word}" khỏi bộ Flashcard`, { icon: '↩️' });
+    try {
+      await binoApi.removeWordFromSRS(currentCard.vocabularyId);
+    } catch {
+      // ignore
+    }
+  };
+
+  const handleGrade = async (grade) => {
+    const currentCard = cards[currentIndex];
+    if (!currentCard) return;
+
+    setReviewedCount(prev => prev + 1);
+    if (currentIndex < cards.length - 1) {
+      setIsFlipped(false);
+      setTimeout(() => {
+        setCurrentIndex(prev => prev + 1);
+      }, 120);
+    } else {
+      setIsFinished(true);
+      toast.success('Chúc mừng! Bác đã hoàn thành buổi ôn tập hôm nay! 🎉');
+    }
+
+    try {
+      await binoApi.submitSRSReview(currentCard.vocabularyId, grade);
+    } catch {
+      // ignore
     }
   };
 
@@ -115,11 +142,11 @@ export default function BinoFlashcardReviewPage() {
 
           <div className="space-y-2">
             <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
-              {cards.length === 0 ? 'Hiện Tại Không Có Thẻ Đến Hạn!' : 'Đã Hoàn Thành Buổi Ôn Tập! 🎉'}
+              {cards.length === 0 ? 'Hiện Tại Không Có Thẻ Nào Trong Bộ Flashcard!' : 'Đã Hoàn Thành Buổi Ôn Tập! 🎉'}
             </h2>
             <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto leading-relaxed">
               {cards.length === 0
-                ? 'Bác chưa thêm từ nào vào bộ Flashcard hoặc các từ chưa đến lịch ôn. Hãy vào các bài hội thoại của sách Bino và bấm "+ Flashcard" nhé!'
+                ? 'Bác chưa thêm từ nào vào bộ Flashcard. Hãy vào các bài hội thoại của sách Bino và bấm "+ Flashcard" nhé!'
                 : `Bác đã ôn tập xong ${reviewedCount} từ vựng theo thuật toán lặp lại ngắt quãng SM-2. Não bộ của bác đã ghi nhớ sâu hơn rồi đấy!`}
             </p>
           </div>
@@ -163,7 +190,7 @@ export default function BinoFlashcardReviewPage() {
             <motion.div
               onClick={() => setIsFlipped(prev => !prev)}
               animate={{ rotateY: isFlipped ? 180 : 0 }}
-              transition={{ duration: 0.6, type: 'spring', stiffness: 220, damping: 20 }}
+              transition={{ duration: 0.5, type: 'spring', stiffness: 240, damping: 22 }}
               className="w-full h-full relative transform-style-3d cursor-pointer select-none rounded-3xl"
               style={{ minHeight: '340px' }}
             >
@@ -177,16 +204,26 @@ export default function BinoFlashcardReviewPage() {
                   <span className="uppercase tracking-wider font-extrabold flex items-center gap-1 text-amber-600 dark:text-amber-400">
                     <Sparkles size={14} /> Mặt Trước (Tiếng Anh)
                   </span>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      speakText(currentCard.word);
-                    }}
-                    className="p-2.5 rounded-2xl hover:bg-amber-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-amber-600 transition-colors"
-                    title="Nghe phát âm"
-                  >
-                    <Volume2 size={20} />
-                  </button>
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      onClick={handleRemoveCard}
+                      className="px-2.5 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 text-[11px] font-bold flex items-center gap-1 transition-colors"
+                      title="Thoát / Bỏ từ này khỏi bộ Flashcard"
+                    >
+                      <Trash2 size={13} />
+                      <span>Bỏ thẻ</span>
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        speakText(currentCard.word);
+                      }}
+                      className="p-2.5 rounded-2xl hover:bg-amber-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-amber-600 transition-colors"
+                      title="Nghe phát âm"
+                    >
+                      <Volume2 size={20} />
+                    </button>
+                  </div>
                 </div>
 
                 <div className="text-center py-6 space-y-3">
@@ -221,15 +258,25 @@ export default function BinoFlashcardReviewPage() {
                   <span className="uppercase tracking-wider font-extrabold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
                     <CheckCircle2 size={14} /> Mặt Sau (Nghĩa & Ngữ Cảnh)
                   </span>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      speakText(currentCard.word);
-                    }}
-                    className="p-2.5 rounded-2xl hover:bg-amber-100/60 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300"
-                  >
-                    <Volume2 size={20} />
-                  </button>
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      onClick={handleRemoveCard}
+                      className="px-2.5 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 text-[11px] font-bold flex items-center gap-1 transition-colors"
+                      title="Thoát / Bỏ từ này khỏi bộ Flashcard"
+                    >
+                      <Trash2 size={13} />
+                      <span>Bỏ thẻ</span>
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        speakText(currentCard.word);
+                      }}
+                      className="p-2.5 rounded-2xl hover:bg-amber-100/60 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300"
+                    >
+                      <Volume2 size={20} />
+                    </button>
+                  </div>
                 </div>
 
                 <div className="text-center py-4 space-y-3">

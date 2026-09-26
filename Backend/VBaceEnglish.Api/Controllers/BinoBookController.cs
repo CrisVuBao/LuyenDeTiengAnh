@@ -98,6 +98,15 @@ public class BinoBookController : ControllerBase
         return Ok(result);
     }
 
+    [HttpPost("srs/remove-word")]
+    public async Task<ActionResult<Response<bool>>> RemoveWordFromSRS([FromBody] AddSrsWordRequestDto dto)
+    {
+        var userId = _currentUser.UserId ?? 0;
+        var result = await _binoService.RemoveWordFromSRSAsync(userId, dto.VocabularyId);
+        if (!result.Success) return BadRequest(result);
+        return Ok(result);
+    }
+
     [HttpGet("srs/due-words")]
     public async Task<ActionResult<Response<IEnumerable<SrsCardDto>>>> GetDueSRSCards()
     {
@@ -113,5 +122,37 @@ public class BinoBookController : ControllerBase
         var result = await _binoService.SubmitSRSReviewAsync(userId, dto);
         if (!result.Success) return BadRequest(result);
         return Ok(result);
+    }
+
+    private static readonly HttpClient _ttsHttpClient = new()
+    {
+        Timeout = TimeSpan.FromSeconds(10)
+    };
+
+    [HttpGet("tts")]
+    [AllowAnonymous]
+    public async Task<IActionResult> StreamTtsAudio([FromQuery] string text, [FromQuery] string tl = "en")
+    {
+        if (string.IsNullOrWhiteSpace(text))
+            return BadRequest();
+
+        try
+        {
+            var trimmed = text.Length > 200 ? text[..200] : text;
+            var url = $"https://translate.googleapis.com/translate_tts?ie=UTF-8&q={Uri.EscapeDataString(trimmed)}&tl={Uri.EscapeDataString(tl)}&client=tw-ob";
+            using var req = new HttpRequestMessage(HttpMethod.Get, url);
+            req.Headers.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36");
+            using var res = await _ttsHttpClient.SendAsync(req, HttpCompletionOption.ResponseHeadersRead);
+            if (!res.IsSuccessStatusCode)
+                return StatusCode((int)res.StatusCode);
+
+            var bytes = await res.Content.ReadAsByteArrayAsync();
+            Response.Headers.CacheControl = "public, max-age=604800, immutable";
+            return File(bytes, "audio/mpeg");
+        }
+        catch
+        {
+            return StatusCode(503);
+        }
     }
 }

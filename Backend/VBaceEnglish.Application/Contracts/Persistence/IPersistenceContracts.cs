@@ -77,6 +77,7 @@ public interface IBinoLearningRepository
     Task<IEnumerable<UserSRSReview>> GetAllSRSReviewsByUserAsync(int userId);
     Task AddSRSReviewAsync(UserSRSReview review);
     void UpdateSRSReview(UserSRSReview review);
+    void RemoveSRSReview(UserSRSReview review);
 }
 
 public interface IUnitOfWork : IDisposable

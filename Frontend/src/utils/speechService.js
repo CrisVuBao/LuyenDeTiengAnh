@@ -255,16 +255,226 @@ class SpeechService {
   }
 
   /**
-   * Phát một câu thoại với giọng nhân vật tương ứng
+   * Tạo luồng âm thanh nền siêu nhẹ (Keep-Alive WAV) và trình phát HTML5 <audio>
+   * Giúp iOS Safari & Android Chrome KHÔNG ngắt âm thanh khi người dùng tắt màn hình điện thoại
    */
-  async speakLine({ text, characterName = 'BINO', speed = null, onStart, onEnd, onError, forceCancel = false }) {
-    if (typeof window === 'undefined' || !window.speechSynthesis) {
-      onError?.(new Error('Trình duyệt không hỗ trợ Web Speech API'));
+  ensureBackgroundAudioEngine() {
+    if (typeof window === 'undefined') return;
+
+    if (!this.ttsAudio) {
+      const audio = new Audio();
+      audio.preload = 'auto';
+      audio.playsInline = true;
+      audio.setAttribute('playsinline', 'true');
+      audio.setAttribute('webkit-playsinline', 'true');
+      this.ttsAudio = audio;
+    }
+
+    if (!this.keepAliveAudio) {
+      // Tạo 1 giây WAV PCM tần số siêu trầm (gần như im lặng tuyệt đối) để giữ AudioSession trên di động khi khóa màn hình
+      const sampleRate = 8000;
+      const numSamples = sampleRate;
+      const buffer = new ArrayBuffer(44 + numSamples * 2);
+      const view = new DataView(buffer);
+      const writeStr = (offset, str) => {
+        for (let i = 0; i < str.length; i++) view.setUint8(offset + i, str.charCodeAt(i));
+      };
+      writeStr(0, 'RIFF');
+      view.setUint32(4, 36 + numSamples * 2, true);
+      writeStr(8, 'WAVE');
+      writeStr(12, 'fmt ');
+      view.setUint32(16, 16, true);
+      view.setUint16(20, 1, true);
+      view.setUint16(22, 1, true);
+      view.setUint32(24, sampleRate, true);
+      view.setUint32(28, sampleRate * 2, true);
+      view.setUint16(32, 2, true);
+      view.setUint16(34, 16, true);
+      writeStr(36, 'data');
+      view.setUint32(40, numSamples * 2, true);
+      for (let i = 0; i < numSamples; i++) {
+        view.setInt16(44 + i * 2, i % 2 === 0 ? 1 : -1, true);
+      }
+      const blob = new Blob([buffer], { type: 'audio/wav' });
+      const keepAlive = new Audio(URL.createObjectURL(blob));
+      keepAlive.loop = true;
+      keepAlive.volume = 0.01;
+      keepAlive.playsInline = true;
+      keepAlive.setAttribute('playsinline', 'true');
+      this.keepAliveAudio = keepAlive;
+    }
+
+    if (!this._visibilityListenerBound && typeof document !== 'undefined') {
+      this._visibilityListenerBound = true;
+      document.addEventListener('visibilitychange', () => {
+        // Nếu người dùng vừa bấm nút nguồn tắt màn hình điện thoại khi đang đọc bằng speechSynthesis
+        if (document.hidden && this.activeLineParams && !this.isStopped && !this.isUsingHtmlAudio) {
+          const params = this.activeLineParams;
+          if (window.speechSynthesis && (window.speechSynthesis.speaking || window.speechSynthesis.pending)) {
+            window.speechSynthesis.cancel();
+          }
+          this.speakViaHtmlAudio(params);
+        }
+      });
+    }
+  }
+
+  /**
+   * Bật chế độ giữ phiên âm thanh liên tục trên điện thoại & cập nhật màn hình khóa (MediaSession)
+   */
+  startBackgroundSession(metadata = {}, handlers = {}) {
+    this.ensureBackgroundAudioEngine();
+    this.mediaHandlers = { ...this.mediaHandlers, ...handlers };
+
+    if (this.keepAliveAudio && this.keepAliveAudio.paused) {
+      this.keepAliveAudio.play().catch(() => {});
+    }
+
+    this.updateMediaSession(metadata);
+    this.requestWakeLock();
+  }
+
+  updateMediaSession(metadata = {}) {
+    if (typeof navigator === 'undefined' || !('mediaSession' in navigator)) return;
+
+    try {
+      navigator.mediaSession.metadata = new window.MediaMetadata({
+        title: metadata.title || 'Chém Tiếng Anh Không Cần Động Não',
+        artist: metadata.artist || 'Bino Studio AI 🎙️',
+        album: metadata.album || 'VBaceEnglish Reflex Audio',
+        artwork: [
+          { src: '/vite.svg', sizes: '192x192', type: 'image/svg+xml' }
+        ]
+      });
+
+      navigator.mediaSession.playbackState = 'playing';
+
+      const h = this.mediaHandlers || {};
+      navigator.mediaSession.setActionHandler('play', () => h.onPlay?.());
+      navigator.mediaSession.setActionHandler('pause', () => h.onPause?.());
+      navigator.mediaSession.setActionHandler('previoustrack', () => h.onPrev?.());
+      navigator.mediaSession.setActionHandler('nexttrack', () => h.onNext?.());
+      navigator.mediaSession.setActionHandler('stop', () => h.onStop?.());
+    } catch {
+      // ignore on unsupported browsers
+    }
+  }
+
+  async requestWakeLock() {
+    if (typeof navigator !== 'undefined' && 'wakeLock' in navigator && !this.wakeLockSentinel) {
+      try {
+        this.wakeLockSentinel = await navigator.wakeLock.request('screen');
+        this.wakeLockSentinel.addEventListener('release', () => {
+          this.wakeLockSentinel = null;
+        });
+      } catch {
+        // ignore
+      }
+    }
+  }
+
+  releaseWakeLock() {
+    if (this.wakeLockSentinel) {
+      this.wakeLockSentinel.release().catch(() => {});
+      this.wakeLockSentinel = null;
+    }
+  }
+
+  isMobileDevice() {
+    if (typeof navigator === 'undefined') return false;
+    return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent || '');
+  }
+
+  /**
+   * Phát câu thoại qua luồng HTML5 <audio> (/api/bino/tts)
+   * Đảm bảo 100% vẫn phát liên tục khi tắt màn hình điện thoại hoặc ẩn trình duyệt
+   */
+  speakViaHtmlAudio({ text, speed = 0.95, onStart, onEnd, onError }) {
+    this.ensureBackgroundAudioEngine();
+    const audio = this.ttsAudio;
+    if (!audio) {
+      onError?.(new Error('Không thể khởi tạo HTML5 Audio'));
       return;
     }
 
+    this.isUsingHtmlAudio = true;
+    this.isStopped = false;
+
+    const cleanText = (text || '').trim();
+    const baseUrl = import.meta.env.VITE_API_URL || '/api';
+    const ttsUrl = `${baseUrl}/bino/tts?text=${encodeURIComponent(cleanText)}&tl=en`;
+
+    let finished = false;
+    let fallbackTimer = null;
+
+    const finishUp = (cb, arg) => {
+      if (finished) return;
+      finished = true;
+      if (fallbackTimer) clearTimeout(fallbackTimer);
+      this.isUsingHtmlAudio = false;
+      this.activeLineParams = null;
+      audio.onended = null;
+      audio.onerror = null;
+      audio.onplay = null;
+      cb?.(arg);
+    };
+
+    const wordCount = cleanText.split(/\s+/).length;
+    const maxWaitMs = Math.max(4000, ((wordCount * 750) / (speed || 0.95)) + 3500);
+    fallbackTimer = setTimeout(() => {
+      finishUp(onEnd);
+    }, maxWaitMs);
+
+    audio.pause();
+    audio.src = ttsUrl;
+    audio.playbackRate = Math.max(0.7, Math.min(1.35, speed || this.preferences.rate || 0.95));
+
+    audio.onplay = () => onStart?.();
+    audio.onended = (e) => finishUp(onEnd, e);
+    audio.onerror = (err) => {
+      if (this.isStopped) return;
+      finishUp(onError, err);
+    };
+
+    audio.play().catch((err) => {
+      if (this.isStopped) return;
+      finishUp(onError, err);
+    });
+  }
+
+  /**
+   * Phát một câu thoại với giọng nhân vật tương ứng
+   */
+  async speakLine({ text, characterName = 'BINO', speed = null, onStart, onEnd, onError, forceCancel = false, metadata = null }) {
+    if (typeof window === 'undefined') return;
+
+    this.ensureBackgroundAudioEngine();
+    const effectiveSpeed = speed || this.preferences.rate || 0.95;
+
+    if (metadata) {
+      this.updateMediaSession(metadata);
+    }
+
+    if (this.keepAliveAudio && this.keepAliveAudio.paused) {
+      this.keepAliveAudio.play().catch(() => {});
+    }
+
+    // Lưu thông tin câu hiện tại để nếu người dùng tắt màn hình giữa chừng thì chuyển ngay sang HTML5 Audio
+    this.activeLineParams = { text, characterName, speed: effectiveSpeed, onStart, onEnd, onError };
+
+    // Nếu màn hình đang tắt (document.hidden) hoặc trình duyệt không hỗ trợ Web Speech API -> Dùng HTML5 Audio TTS
+    const isScreenOff = typeof document !== 'undefined' && document.hidden;
+    if (isScreenOff || !window.speechSynthesis) {
+      this.speakViaHtmlAudio({ text, speed: effectiveSpeed, onStart, onEnd, onError });
+      return;
+    }
+
+    if (this.ttsAudio && !this.ttsAudio.paused) {
+      this.ttsAudio.pause();
+    }
+    this.isUsingHtmlAudio = false;
+
     // Chỉ cancel khi có yêu cầu dừng cưỡng bức (vd: chuyển bài thủ công, bấm từng câu)
-    // KHÔNG tự ý cancel giữa các câu thoại khi đang phát chuỗi liên tục
     if (forceCancel && (window.speechSynthesis.speaking || window.speechSynthesis.pending)) {
       window.speechSynthesis.cancel();
     }
@@ -296,7 +506,7 @@ class SpeechService {
     utterance.lang = selectedVoice ? selectedVoice.lang : 'en-US';
     if (selectedVoice) utterance.voice = selectedVoice;
     
-    utterance.rate = speed || this.preferences.rate || 0.95;
+    utterance.rate = effectiveSpeed;
     utterance.pitch = pitch;
 
     // Chống Chromium Garbage Collection: lưu tham chiếu global & instance
@@ -316,33 +526,38 @@ class SpeechService {
       if (this.currentUtterance === utterance) {
         this.currentUtterance = null;
       }
+      if (!this.isUsingHtmlAudio) {
+        this.activeLineParams = null;
+      }
     };
 
     const handleEnd = (e) => {
-      if (hasEnded) return;
+      if (hasEnded || this.isUsingHtmlAudio) return;
       hasEnded = true;
       cleanUp();
       onEnd?.(e);
     };
 
     const handleError = (e) => {
-      if (hasEnded) return;
+      if (hasEnded || this.isUsingHtmlAudio) return;
       hasEnded = true;
       cleanUp();
-      // Nếu người dùng chủ động bấm Dừng (isStopped = true) thì dừng hoàn toàn, không gọi onError
       if (this.isStopped) {
         return;
       }
-      // Nếu là sự cố ngẫu nhiên của Chrome, vẫn gọi onError để hệ thống tự phục hồi câu tiếp theo
+      // Nếu Web Speech bị gián đoạn khi khóa màn hình điện thoại -> chuyển mượt sang HTML5 Audio TTS
+      if (typeof document !== 'undefined' && document.hidden) {
+        this.speakViaHtmlAudio({ text, speed: effectiveSpeed, onStart, onEnd, onError });
+        return;
+      }
       onError?.(e);
     };
 
     // Fallback timer an toàn: đảm bảo không bao giờ bị kẹt nếu Chromium nuốt mất sự kiện onend
     const wordCount = (text || '').trim().split(/\s+/).length;
-    const estimatedDurationMs = Math.max(2500, ((wordCount * 650) / (speed || 0.95)) + 2500);
+    const estimatedDurationMs = Math.max(2500, ((wordCount * 650) / effectiveSpeed) + 2500);
     fallbackTimer = setTimeout(() => {
-      if (!hasEnded) {
-        console.warn('[speechService] fallback onend triggered for line:', text);
+      if (!hasEnded && !this.isUsingHtmlAudio) {
         handleEnd();
       }
     }, estimatedDurationMs);
@@ -353,7 +568,6 @@ class SpeechService {
 
     window.speechSynthesis.speak(utterance);
 
-    // Đảm bảo Chromium không bị kẹt ở trạng thái pause
     if (window.speechSynthesis.paused) {
       window.speechSynthesis.resume();
     }
@@ -363,7 +577,13 @@ class SpeechService {
    * Phát từ vựng đơn lẻ (Flashcards / Key words) với giọng chuẩn rõ nét nhất
    */
   async speakWord(word, speed = null, onEnd) {
-    if (typeof window === 'undefined' || !window.speechSynthesis) return;
+    if (typeof window === 'undefined') return;
+    const effectiveSpeed = speed || this.preferences.rate || 0.9;
+
+    if ((typeof document !== 'undefined' && document.hidden) || !window.speechSynthesis) {
+      this.speakViaHtmlAudio({ text: word, speed: effectiveSpeed, onEnd });
+      return;
+    }
 
     if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
       window.speechSynthesis.cancel();
@@ -377,7 +597,7 @@ class SpeechService {
     const utterance = new SpeechSynthesisUtterance(word);
     utterance.lang = voice ? voice.lang : 'en-US';
     if (voice) utterance.voice = voice;
-    utterance.rate = speed || this.preferences.rate || 0.9;
+    utterance.rate = effectiveSpeed;
     utterance.pitch = 1.0;
 
     this.activeUtterances.push(utterance);
@@ -405,8 +625,26 @@ class SpeechService {
     }
   }
 
-  stop() {
+  stop(stopKeepAlive = false) {
     this.isStopped = true;
+    this.activeLineParams = null;
+    this.isUsingHtmlAudio = false;
+    if (this.ttsAudio) {
+      this.ttsAudio.onended = null;
+      this.ttsAudio.onerror = null;
+      this.ttsAudio.pause();
+    }
+    if (stopKeepAlive && this.keepAliveAudio) {
+      this.keepAliveAudio.pause();
+      this.releaseWakeLock();
+      if (typeof navigator !== 'undefined' && 'mediaSession' in navigator) {
+        try {
+          navigator.mediaSession.playbackState = 'none';
+        } catch {
+          // ignore
+        }
+      }
+    }
     if (typeof window !== 'undefined' && window.speechSynthesis) {
       this.currentUtterance = null;
       if (window.__vbaceUtterance) window.__vbaceUtterance = null;
@@ -418,3 +656,4 @@ class SpeechService {
 
 const speechService = new SpeechService();
 export default speechService;
+

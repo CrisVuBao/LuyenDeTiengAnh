@@ -68,188 +68,170 @@ export default function StudentNavbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800/80 transition-colors">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    <header className="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/70 dark:border-slate-800/80 transition-colors">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
         
         {/* Brand Logo & Main Nav */}
         <div className="flex items-center gap-8">
           <NavLink to="/home" onMouseEnter={() => prefetchRoute('home')} className="flex items-center gap-2.5 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform">
-              <Sparkles size={22} />
+            <div className="w-8 h-8 rounded-xl bg-[#0071e3] text-white flex items-center justify-center transition-transform group-hover:scale-105">
+              <Sparkles size={17} />
             </div>
-            <div>
-              <span className="font-black text-xl tracking-tight text-gradient">VBaceEnglish</span>
-              <span className="hidden sm:inline-block text-[10px] font-bold text-slate-400 block -mt-1 uppercase tracking-wider">
-                Smart English Platform
-              </span>
-            </div>
+            <span className="font-semibold text-base tracking-tight text-slate-900 dark:text-white">
+              VBaceEnglish
+            </span>
           </NavLink>
 
-          {/* Top Menu Links */}
-          <nav className="hidden md:flex items-center gap-2">
+          {/* Top Menu Links (Clean Apple Pill Tabs) */}
+          <nav className="hidden md:flex items-center gap-1">
             <NavLink
               to="/home"
               onMouseEnter={() => prefetchRoute('home')}
               className={({ isActive }) =>
-                `flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all ${
+                `flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium transition-colors ${
                   isActive
-                    ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 shadow-xs'
-                    : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
+                    ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900'
+                    : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800/60'
                 }`
               }
             >
-              <Home size={17} />
-              <span>Trang Chủ</span>
-            </NavLink>
-
-            <NavLink
-              to="/toeic"
-              onMouseEnter={() => prefetchRoute('toeic')}
-              className={({ isActive }) =>
-                `flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all ${
-                  isActive
-                    ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-500/25'
-                    : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
-                }`
-              }
-            >
-              <BookOpen size={17} />
-              <span>Luyện Đề TOEIC</span>
+              <Home size={14} />
+              <span>Trang chủ</span>
             </NavLink>
 
             <NavLink
               to="/bino"
               onMouseEnter={() => prefetchRoute('bino')}
               className={({ isActive }) =>
-                `flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all ${
+                `flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium transition-colors ${
                   isActive
-                    ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md shadow-amber-500/25'
-                    : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
+                    ? 'bg-[#0071e3] text-white'
+                    : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800/60'
                 }`
               }
             >
-              <Sparkles size={16} className="text-amber-500 group-hover:rotate-12 transition-transform" />
-              <span>Chém Tiếng Anh</span>
-              <span className="hidden xl:inline-block px-1.5 py-0.2 rounded text-[10px] bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 font-extrabold">Bino</span>
+              <Sparkles size={14} />
+              <span>Chém Tiếng Anh Bino</span>
+            </NavLink>
+
+            <NavLink
+              to="/toeic"
+              onMouseEnter={() => prefetchRoute('toeic')}
+              className={({ isActive }) =>
+                `flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                  isActive
+                    ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900'
+                    : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800/60'
+                }`
+              }
+            >
+              <BookOpen size={14} />
+              <span>Luyện đề TOEIC</span>
             </NavLink>
           </nav>
         </div>
 
         {/* Right Controls: Theme toggle & Avatar dropdown */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
           
           {/* Theme Toggle */}
           <button
             onClick={toggleTheme}
-            className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all shadow-sm active:scale-95"
+            className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200/70 dark:hover:bg-slate-700 flex items-center justify-center transition-colors cursor-pointer"
             title={mode === 'light' ? 'Chế độ tối' : 'Chế độ sáng'}
           >
-            {mode === 'light' ? <Moon size={18} /> : <Sun size={18} className="text-amber-400" />}
+            {mode === 'light' ? <Moon size={15} /> : <Sun size={15} className="text-amber-400" />}
           </button>
 
           {/* User Avatar & Dropdown Menu */}
           <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setDropdownOpen((prev) => !prev)}
-              className="flex items-center gap-2.5 p-1.5 pl-2 pr-3 rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-800/80 border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition-all active:scale-98"
+              className="flex items-center gap-2 py-1 pl-1.5 pr-2.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors cursor-pointer"
             >
-              <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-bold flex items-center justify-center text-sm shadow-sm">
+              <div className="w-7 h-7 rounded-full bg-[#0071e3] text-white font-semibold flex items-center justify-center text-xs">
                 {user?.fullName?.charAt(0) || 'U'}
               </div>
-              <div className="hidden sm:block text-left">
-                <p className="font-bold text-xs text-slate-800 dark:text-slate-200 truncate max-w-[120px]">
-                  {user?.fullName || 'Học viên'}
-                </p>
-                <span className="text-[10px] text-slate-400 font-semibold block">
-                  {isAdmin ? 'Admin' : 'Học viên'}
-                </span>
-              </div>
-              <ChevronDown size={14} className={`text-slate-400 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
+              <span className="hidden sm:block font-medium text-xs text-slate-800 dark:text-slate-200 truncate max-w-[120px]">
+                {user?.fullName || 'Học viên'}
+              </span>
+              <ChevronDown size={13} className={`text-slate-400 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
             </button>
 
             {/* Dropdown Card */}
             {dropdownOpen && (
-              <div className="absolute right-0 mt-2 w-64 glass-card rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 py-2 animate-fade-in z-50">
+              <div className="absolute right-0 mt-2 w-60 rounded-2xl bg-white dark:bg-slate-900 shadow-xl border border-slate-200/80 dark:border-slate-800 py-1.5 animate-fade-in z-50">
                 
                 {/* User Info Header */}
-                <div className="px-4 py-3 border-b border-slate-100 dark:border-slate-800/80">
-                  <p className="font-bold text-sm text-slate-900 dark:text-white truncate">
+                <div className="px-4 py-2.5 border-b border-slate-100 dark:border-slate-800/80">
+                  <p className="font-semibold text-xs text-slate-900 dark:text-white truncate">
                     {user?.fullName || 'Học viên'}
                   </p>
-                  <p className="text-xs text-slate-400 truncate mt-0.5">
+                  <p className="text-[11px] text-slate-400 truncate mt-0.5">
                     {user?.email || ''}
                   </p>
-                  <div className="mt-2">
-                    <span className={`inline-block px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase ${
-                      isAdmin 
-                        ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/60 dark:text-blue-300' 
-                        : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/60 dark:text-emerald-300'
-                    }`}>
-                      {isAdmin ? 'Quản Trị Viên' : 'Học Viên Chuẩn'}
-                    </span>
-                  </div>
                 </div>
 
                 {/* Navigation Options */}
-                <div className="py-1.5 px-1 space-y-0.5">
-                  <button
-                    onClick={() => navigate('/dashboard')}
-                    className="w-full flex items-center gap-3 px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 rounded-xl transition-colors text-left"
-                  >
-                    <BarChart3 size={16} className="text-blue-500" />
-                    <span>Tổng quan học tập</span>
-                  </button>
-
-                  <button
-                    onClick={() => navigate('/progress')}
-                    className="w-full flex items-center gap-3 px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 rounded-xl transition-colors text-left"
-                  >
-                    <TrendingUp size={16} className="text-emerald-500" />
-                    <span>Quá trình học tập</span>
-                  </button>
-
+                <div className="py-1 px-1.5 space-y-0.5">
                   <button
                     onClick={() => navigate('/bino')}
-                    className="w-full flex items-center gap-3 px-3 py-2 text-xs font-bold text-amber-700 dark:text-amber-300 hover:bg-amber-50 dark:hover:bg-amber-950/40 rounded-xl transition-colors text-left"
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 rounded-xl transition-colors text-left"
                   >
-                    <Sparkles size={16} className="text-amber-500" />
-                    <span>Sách Bino (12 Chương)</span>
+                    <Sparkles size={15} className="text-[#0071e3]" />
+                    <span>Khóa học Bino (12 chương)</span>
                   </button>
 
                   <button
                     onClick={() => navigate('/bino/flashcards')}
-                    className="w-full flex items-center gap-3 px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 rounded-xl transition-colors text-left"
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 rounded-xl transition-colors text-left"
                   >
-                    <Layers size={16} className="text-emerald-500" />
-                    <span>Bộ Thẻ Flashcards (SRS)</span>
+                    <Layers size={15} className="text-slate-500" />
+                    <span>Bộ thẻ Flashcard (SRS)</span>
+                  </button>
+
+                  <button
+                    onClick={() => navigate('/progress')}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 rounded-xl transition-colors text-left"
+                  >
+                    <TrendingUp size={15} className="text-slate-500" />
+                    <span>Quá trình học tập</span>
+                  </button>
+
+                  <button
+                    onClick={() => navigate('/dashboard')}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 rounded-xl transition-colors text-left"
+                  >
+                    <BarChart3 size={15} className="text-slate-500" />
+                    <span>Tổng quan TOEIC</span>
                   </button>
 
                   <button
                     onClick={() => navigate('/profile')}
-                    className="w-full flex items-center gap-3 px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 rounded-xl transition-colors text-left"
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 rounded-xl transition-colors text-left"
                   >
-                    <User size={16} className="text-purple-500" />
+                    <User size={15} className="text-slate-500" />
                     <span>Hồ sơ cá nhân</span>
                   </button>
 
                   {isAdmin && (
                     <button
                       onClick={() => navigate('/admin/dashboard')}
-                      className="w-full flex items-center gap-3 px-3 py-2 text-xs font-bold text-blue-600 dark:text-blue-400 bg-blue-50/70 dark:bg-blue-950/40 hover:bg-blue-100 dark:hover:bg-blue-900/60 rounded-xl transition-colors text-left"
+                      className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-[#0071e3] dark:text-sky-400 hover:bg-slate-100 dark:hover:bg-slate-800/70 rounded-xl transition-colors text-left"
                     >
-                      <ShieldCheck size={16} />
-                      <span>Bảng điều khiển Quản trị</span>
+                      <ShieldCheck size={15} />
+                      <span>Quản trị hệ thống</span>
                     </button>
                   )}
                 </div>
 
                 {/* Logout Button */}
-                <div className="pt-1.5 px-1 border-t border-slate-100 dark:border-slate-800/80">
+                <div className="pt-1 px-1.5 border-t border-slate-100 dark:border-slate-800/80">
                   <button
                     onClick={handleLogout}
-                    className="w-full flex items-center gap-3 px-3 py-2 text-xs font-bold text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-xl transition-colors text-left"
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-xl transition-colors text-left"
                   >
-                    <LogOut size={16} />
+                    <LogOut size={15} />
                     <span>Đăng xuất</span>
                   </button>
                 </div>
@@ -262,42 +244,42 @@ export default function StudentNavbar() {
 
       </div>
 
-      {/* Mobile Bottom Bar */}
-      <div className="md:hidden flex items-center justify-around border-t border-slate-200 dark:border-slate-800/80 py-2 bg-white/95 dark:bg-slate-900/95">
+      {/* Mobile Sub-Navigation Bar */}
+      <div className="md:hidden flex items-center justify-around border-t border-slate-200/70 dark:border-slate-800/80 py-2 bg-white/95 dark:bg-slate-900/95">
         <NavLink
           to="/home"
           className={({ isActive }) =>
-            `flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold ${
-              isActive ? 'text-blue-600' : 'text-slate-500'
+            `flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium ${
+              isActive ? 'text-[#0071e3] font-semibold' : 'text-slate-500'
             }`
           }
         >
-          <Home size={16} />
-          <span>Trang Chủ</span>
-        </NavLink>
-
-        <NavLink
-          to="/toeic"
-          className={({ isActive }) =>
-            `flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold ${
-              isActive ? 'text-blue-600' : 'text-slate-500'
-            }`
-          }
-        >
-          <BookOpen size={16} />
-          <span>TOEIC</span>
+          <Home size={15} />
+          <span>Trang chủ</span>
         </NavLink>
 
         <NavLink
           to="/bino"
           className={({ isActive }) =>
-            `flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold ${
-              isActive ? 'text-amber-600 font-black' : 'text-slate-500'
+            `flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium ${
+              isActive ? 'text-[#0071e3] font-semibold' : 'text-slate-500'
             }`
           }
         >
-          <Sparkles size={16} className="text-amber-500" />
-          <span>Sách Bino</span>
+          <Sparkles size={15} />
+          <span>Chém Tiếng Anh</span>
+        </NavLink>
+
+        <NavLink
+          to="/toeic"
+          className={({ isActive }) =>
+            `flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium ${
+              isActive ? 'text-[#0071e3] font-semibold' : 'text-slate-500'
+            }`
+          }
+        >
+          <BookOpen size={15} />
+          <span>TOEIC</span>
         </NavLink>
       </div>
     </header>

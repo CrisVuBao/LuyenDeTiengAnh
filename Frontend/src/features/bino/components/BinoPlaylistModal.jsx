@@ -1,24 +1,92 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { create } from 'zustand';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Play, Pause, SkipForward, SkipBack, RotateCcw, Volume2, 
   Sparkles, X, Minimize2, Maximize2, Check, CheckSquare, Square, 
   ListMusic, BookOpen, Layers, Clock, ArrowRight, ChevronDown, 
   ChevronRight, Repeat, Repeat1, Eye, EyeOff, Settings,
-  Music, Sliders
+  Music, Sliders, ExternalLink
 } from 'lucide-react';
 import binoApi from '../../../api/binoApi';
 import speechService from '../../../utils/speechService';
 import VoiceSettingsModal from '../../../components/VoiceSettingsModal';
 import toast from 'react-hot-toast';
 
-export default function BinoPlaylistModal({
-  isOpen,
-  onClose,
-  book,
-  initialSelectedIds = null,
-  autoStart = false
-}) {
+// Global Persistent Store giúp trình phát giữ nguyên xuyên suốt khi chuyển qua mọi trang
+export const useBinoPlayerStore = create((set) => ({
+  isOpen: false,
+  isMinimized: false,
+  book: null,
+  initialSelectedIds: null,
+  autoStart: false,
+  handOffPayload: null,
+  requestToken: 0,
+
+  openPlaylist: ({ ids = null, autoStart = false, minimized = false, book = null } = {}) =>
+    set((state) => ({
+      isOpen: true,
+      isMinimized: minimized,
+      initialSelectedIds: ids,
+      autoStart,
+      book: book || state.book || binoApi.peekBookOverview(),
+      handOffPayload: null,
+      requestToken: state.requestToken + 1,
+    })),
+
+  handOffSingleLesson: ({ lesson, lineIdx = 0, speed = 0.95, repeatMode = 'one' }) =>
+    set((state) => ({
+      isOpen: true,
+      isMinimized: true,
+      initialSelectedIds: lesson ? [lesson.id] : null,
+      autoStart: true,
+      handOffPayload: { lesson, lineIdx, speed, repeatMode },
+      requestToken: state.requestToken + 1,
+    })),
+
+  closePlayer: () =>
+    set({
+      isOpen: false,
+      isMinimized: false,
+      autoStart: false,
+      handOffPayload: null,
+    }),
+
+  setMinimized: (isMinimized) => set({ isMinimized }),
+  setBook: (book) => set({ book }),
+}));
+
+export default function BinoPlaylistModal() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const {
+    isOpen,
+    isMinimized,
+    book: storeBook,
+    initialSelectedIds,
+    autoStart,
+    handOffPayload,
+    requestToken,
+    closePlayer,
+    setMinimized,
+    setBook,
+  } = useBinoPlayerStore();
+
+  const book = storeBook || binoApi.peekBookOverview();
+
+  // Tự động tải thông tin sách nếu mở trình phát từ trang khác (vd: Trang chủ)
+  useEffect(() => {
+    if (isOpen && !book) {
+      binoApi.getBookOverview()
+        .then((res) => {
+          if (res?.data) setBook(res.data);
+        })
+        .catch(() => {});
+    }
+  }, [isOpen, book, setBook]);
+
   // Lấy toàn bộ danh sách ID của các bài hội thoại có trong sách
   const allDialogueIds = useMemo(() => {
     if (!book?.chapters?.length) return [];
@@ -46,7 +114,6 @@ export default function BinoPlaylistModal({
   const [audioSpeed, setAudioSpeed] = useState(0.95);
   const [repeatMode, setRepeatMode] = useState('all'); // 'all' (lặp toàn playlist), 'one' (lặp 1 bài), 'none' (phát xong dừng)
   const [showVietsub, setShowVietsub] = useState(true);
-  const [isMinimized, setIsMinimized] = useState(false);
   const [activeView, setActiveView] = useState('player'); // 'player' hoặc 'selector'
   const [expandedChapters, setExpandedChapters] = useState({});
   const [isVoiceSettingsOpen, setIsVoiceSettingsOpen] = useState(false);
@@ -60,6 +127,17 @@ export default function BinoPlaylistModal({
   const playlistRef = useRef([]);
   const timeoutTimerRef = useRef(null);
   const lineRefs = useRef({});
+  const prevPathnameRef = useRef(location.pathname);
+
+  // Khi người dùng chuyển sang trang khác trong lúc Modal đang mở full -> Tự động thu nhỏ xuống góc màn hình và GIỮ NGUYÊN phát nhạc!
+  useEffect(() => {
+    if (prevPathnameRef.current !== location.pathname) {
+      prevPathnameRef.current = location.pathname;
+      if (isOpen && !isMinimized) {
+        setMinimized(true);
+      }
+    }
+  }, [location.pathname, isOpen, isMinimized, setMinimized]);
 
   // Cập nhật selectedIds khi initialSelectedIds thay đổi từ bên ngoài
   useEffect(() => {
@@ -68,15 +146,41 @@ export default function BinoPlaylistModal({
     } else if (allDialogueIds.length && selectedIds.length === 0) {
       setSelectedIds(allDialogueIds);
     }
-  }, [initialSelectedIds, allDialogueIds]);
+  }, [initialSelectedIds, allDialogueIds, requestToken]);
 
-  // Tải dữ liệu kịch bản các bài thoại khi modal mở
+  // Nếu nhận handOffSingleLesson từ BinoDialogueStudyPage khi người dùng chuyển trang lúc đang nghe
   useEffect(() => {
-    if (!isOpen) return;
-    if (selectedIds.length === 0) return;
+    if (!isOpen || !handOffPayload?.lesson) return;
+    const { lesson, lineIdx = 0, speed = 0.95, repeatMode: mode = 'one' } = handOffPayload;
+    const singleList = [lesson];
+    setAudioSpeed(speed);
+    setRepeatMode(mode);
+    setPlaylist(singleList);
+    playlistRef.current = singleList;
+    setCurrentLessonIdx(0);
+    currentLessonIdxRef.current = 0;
+    setCurrentLineIdx(lineIdx);
+    currentLineIdxRef.current = lineIdx;
+    setLoading(false);
+
+    const timer = setTimeout(() => {
+      startPlayback(0, lineIdx, singleList, speed);
+    }, 80);
+
+    return () => clearTimeout(timer);
+  }, [isOpen, requestToken, handOffPayload]);
+
+  // Tải dữ liệu kịch bản các bài thoại khi modal mở (nếu không phải handOff trực tiếp)
+  useEffect(() => {
+    if (!isOpen || handOffPayload?.lesson) return;
+    const targetIds = initialSelectedIds?.length ? initialSelectedIds : selectedIds;
+    if (targetIds.length === 0 && allDialogueIds.length === 0) return;
 
     setLoading(true);
-    const idsParam = selectedIds.length === allDialogueIds.length ? null : selectedIds.join(',');
+    const idsParam =
+      targetIds.length > 0 && targetIds.length !== allDialogueIds.length
+        ? targetIds.join(',')
+        : null;
 
     binoApi.getPlaylistDialogues(idsParam)
       .then(res => {
@@ -91,7 +195,7 @@ export default function BinoPlaylistModal({
           if (autoStart) {
             setTimeout(() => {
               startPlayback(0, 0, res.data);
-            }, 300);
+            }, 200);
           }
         }
       })
@@ -100,20 +204,20 @@ export default function BinoPlaylistModal({
         toast.error('Không thể tải danh sách bài học');
       })
       .finally(() => setLoading(false));
-  }, [isOpen, selectedIds.join(',')]);
+  }, [isOpen, requestToken, selectedIds.join(',')]);
 
   // Cuộn mượt đến câu thoại đang phát
   useEffect(() => {
-    if (currentLineIdx !== null && lineRefs.current[currentLineIdx]) {
+    if (!isMinimized && currentLineIdx !== null && lineRefs.current[currentLineIdx]) {
       lineRefs.current[currentLineIdx].scrollIntoView({
         behavior: 'smooth',
         block: 'center'
       });
     }
-  }, [currentLineIdx]);
+  }, [currentLineIdx, isMinimized]);
 
   // Dừng phát âm thanh an toàn
-  const stopPlayback = () => {
+  const stopPlayback = (stopKeepAlive = false) => {
     playSessionTokenRef.current += 1;
     stepTokenRef.current += 1;
     isPlayingRef.current = false;
@@ -122,26 +226,24 @@ export default function BinoPlaylistModal({
       clearTimeout(timeoutTimerRef.current);
       timeoutTimerRef.current = null;
     }
-    speechService.stop();
+    speechService.stop(stopKeepAlive);
   };
 
-  // Khi đóng Modal hoàn toàn
+  // Khi người dùng chủ động bấm nút X đóng trình phát hoàn toàn
   const handleClose = () => {
-    stopPlayback();
-    onClose();
+    stopPlayback(true);
+    closePlayer();
   };
-
-  // Dọn dẹp khi unmount
-  useEffect(() => {
-    return () => {
-      stopPlayback();
-    };
-  }, []);
 
   // Bắt đầu phát bài học tại vị trí lessonIdx, câu lineIdx
-  const startPlayback = (lessonIdx = currentLessonIdxRef.current, lineIdx = 0, currentList = playlistRef.current) => {
+  const startPlayback = (
+    lessonIdx = currentLessonIdxRef.current,
+    lineIdx = 0,
+    currentList = playlistRef.current,
+    overrideSpeed = null
+  ) => {
     if (!currentList?.length) return;
-    stopPlayback();
+    stopPlayback(false);
 
     const boundedLessonIdx = Math.max(0, Math.min(lessonIdx, currentList.length - 1));
     currentLessonIdxRef.current = boundedLessonIdx;
@@ -158,11 +260,27 @@ export default function BinoPlaylistModal({
     setIsPlaying(true);
     const sessionToken = playSessionTokenRef.current;
 
-    playLineAt(boundedLessonIdx, lineIdx, sessionToken, currentList);
+    // Kích hoạt phiên phát nền & điều khiển trên màn hình khóa điện thoại (MediaSession)
+    speechService.startBackgroundSession(
+      {
+        title: `${lesson.title}`,
+        artist: `Chương ${lesson.chapterNumber} • Bài ${lesson.dialogueNumber} (Bino)`,
+        album: 'Chém Tiếng Anh Không Cần Động Não'
+      },
+      {
+        onPlay: () => startPlayback(currentLessonIdxRef.current, currentLineIdxRef.current, playlistRef.current),
+        onPause: () => stopPlayback(false),
+        onPrev: () => playPrevLesson(currentLessonIdxRef.current, playlistRef.current),
+        onNext: () => playNextLesson(currentLessonIdxRef.current, playlistRef.current),
+        onStop: () => handleClose()
+      }
+    );
+
+    playLineAt(boundedLessonIdx, lineIdx, sessionToken, currentList, overrideSpeed);
   };
 
   // Phát một câu thoại cụ thể
-  const playLineAt = (lessonIdx, lineIdx, sessionToken, currentList = playlistRef.current) => {
+  const playLineAt = (lessonIdx, lineIdx, sessionToken, currentList = playlistRef.current, overrideSpeed = null) => {
     if (!isPlayingRef.current || sessionToken !== playSessionTokenRef.current) return;
 
     const lesson = currentList[lessonIdx];
@@ -183,7 +301,12 @@ export default function BinoPlaylistModal({
     speechService.speakLine({
       text: line.englishText,
       characterName: line.characterName,
-      speed: audioSpeed,
+      speed: overrideSpeed || audioSpeed,
+      metadata: {
+        title: `${line.characterName}: "${line.englishText}"`,
+        artist: `Chương ${lesson.chapterNumber} • Bài ${lesson.dialogueNumber}: ${lesson.title}`,
+        album: 'Chém Tiếng Anh Không Cần Động Não'
+      },
       onEnd: () => {
         if (!isPlayingRef.current || sessionToken !== playSessionTokenRef.current) return;
         if (stepTokenRef.current !== currentStep) return;
@@ -191,7 +314,7 @@ export default function BinoPlaylistModal({
         // Nghỉ 450ms rồi chuyển câu tiếp theo trong bài
         timeoutTimerRef.current = setTimeout(() => {
           if (!isPlayingRef.current || sessionToken !== playSessionTokenRef.current) return;
-          playLineAt(lessonIdx, lineIdx + 1, sessionToken, currentList);
+          playLineAt(lessonIdx, lineIdx + 1, sessionToken, currentList, overrideSpeed);
         }, 450);
       },
       onError: (err) => {
@@ -201,7 +324,7 @@ export default function BinoPlaylistModal({
 
         timeoutTimerRef.current = setTimeout(() => {
           if (!isPlayingRef.current || sessionToken !== playSessionTokenRef.current) return;
-          playLineAt(lessonIdx, lineIdx + 1, sessionToken, currentList);
+          playLineAt(lessonIdx, lineIdx + 1, sessionToken, currentList, overrideSpeed);
         }, 600);
       }
     });
@@ -215,11 +338,10 @@ export default function BinoPlaylistModal({
     toast.success(`Xong: ${currentLesson.title} ✨`, { duration: 2000 });
 
     if (repeatMode === 'one') {
-      toast('Đang lặp lại bài hiện tại... 🔁', { icon: '🔂' });
       timeoutTimerRef.current = setTimeout(() => {
         if (!isPlayingRef.current || sessionToken !== playSessionTokenRef.current) return;
         playLineAt(lessonIdx, 0, sessionToken, currentList);
-      }, 1000);
+      }, 900);
       return;
     }
 
@@ -235,7 +357,7 @@ export default function BinoPlaylistModal({
         currentLineIdxRef.current = 0;
         setCurrentLineIdx(0);
         playLineAt(nextIdx, 0, sessionToken, currentList);
-      }, 1200);
+      }, 1000);
       return;
     }
 
@@ -248,16 +370,16 @@ export default function BinoPlaylistModal({
         currentLineIdxRef.current = 0;
         setCurrentLineIdx(0);
         playLineAt(0, 0, sessionToken, currentList);
-      }, 1500);
+      }, 1200);
     } else {
-      stopPlayback();
+      stopPlayback(true);
       toast.success(`Đã hoàn thành toàn bộ ${currentList.length} bài hội thoại trong danh sách! 🎉`, { duration: 4000 });
     }
   };
 
   const togglePlayPause = () => {
     if (isPlaying) {
-      stopPlayback();
+      stopPlayback(false);
     } else {
       startPlayback(currentLessonIdxRef.current, currentLineIdxRef.current);
     }
@@ -324,7 +446,15 @@ export default function BinoPlaylistModal({
       >
         <div className="glass-card p-4 rounded-3xl border border-amber-300 dark:border-amber-800 shadow-2xl bg-gradient-to-r from-amber-500/10 via-white to-blue-500/10 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900 space-y-2.5 animate-pulse-glow">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 truncate">
+            <div 
+              onClick={() => {
+                if (currentLesson?.id) {
+                  navigate(`/bino/dialogue/${currentLesson.id}`);
+                }
+              }}
+              className="flex items-center gap-2 truncate cursor-pointer group"
+              title="Bấm để mở trang bài hội thoại đang phát"
+            >
               {isPlaying ? (
                 <div className="flex items-end gap-0.5 h-3.5 text-amber-500 shrink-0">
                   <span className="equalizer-bar" />
@@ -335,10 +465,11 @@ export default function BinoPlaylistModal({
                 <span className="w-2.5 h-2.5 rounded-full bg-slate-400 shrink-0" />
               )}
               <div className="truncate">
-                <p className="text-[10px] font-black uppercase text-amber-600 dark:text-amber-400 truncate">
-                  {currentLesson ? `Chương ${currentLesson.chapterNumber} • Bài ${currentLesson.dialogueNumber}` : 'Đang tải...'}
+                <p className="text-[10px] font-black uppercase text-amber-600 dark:text-amber-400 truncate flex items-center gap-1">
+                  <span>{currentLesson ? `Chương ${currentLesson.chapterNumber} • Bài ${currentLesson.dialogueNumber}` : 'Đang tải...'}</span>
+                  <ExternalLink size={10} className="opacity-70 group-hover:opacity-100" />
                 </p>
-                <h4 className="text-xs font-black text-slate-900 dark:text-white truncate">
+                <h4 className="text-xs font-black text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors truncate">
                   {currentLesson?.title || 'Trình phát hội thoại'}
                 </h4>
               </div>
@@ -346,7 +477,7 @@ export default function BinoPlaylistModal({
 
             <div className="flex items-center gap-1 shrink-0">
               <button
-                onClick={() => setIsMinimized(false)}
+                onClick={() => setMinimized(false)}
                 className="p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-900 transition-all"
                 title="Mở rộng trình phát"
               >
@@ -375,7 +506,7 @@ export default function BinoPlaylistModal({
 
           <div className="flex items-center justify-between pt-1">
             <span className="text-[11px] font-black text-slate-400">
-              Bài {currentLessonIdx + 1}/{playlist.length}
+              Bài {currentLessonIdx + 1}/{playlist.length} • Phát nền 🎧
             </span>
 
             <div className="flex items-center gap-1.5">
@@ -433,7 +564,7 @@ export default function BinoPlaylistModal({
                 </span>
               </div>
               <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
-                Phát liên tục các bài hội thoại đã chọn • Tự động chuyển bài mượt mà
+                Phát liên tục kể cả khi chuyển trang hoặc tắt màn hình điện thoại
               </p>
             </div>
           </div>
@@ -469,7 +600,7 @@ export default function BinoPlaylistModal({
             </button>
 
             <button
-              onClick={() => setIsMinimized(true)}
+              onClick={() => setMinimized(true)}
               className="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all active:scale-95"
               title="Thu nhỏ xuống góc màn hình"
             >
