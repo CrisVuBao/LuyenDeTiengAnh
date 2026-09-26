@@ -926,10 +926,25 @@ public class BinoBookService : IBinoBookService
                 chapter.Bonus = new ChapterBonus
                 {
                     Chapter = chapter,
-                    Title = $"Góc Tiếng Lóng & Mẹo Văn Hóa - Chương {chModel.number:D2}",
-                    ContentHtml = $"<p>Chào mấy bác! Khi giao tiếp chủ đề <strong>{chModel.titleVi}</strong>, hãy bỏ túi ngay các từ khóa và mẫu câu tự nhiên dưới đây!</p>",
-                    SlangListJson = JsonSerializer.Serialize(chModel.dialogues.SelectMany(d => d.vocabularies.Take(2)).Select(v => v.word).Distinct().ToList())
+                    Title = !string.IsNullOrWhiteSpace(chModel.bonusTitle)
+                        ? chModel.bonusTitle
+                        : $"Mẫu Câu Mở Rộng & Bino's Philosophy - Chương {chModel.number:D2}",
+                    ContentHtml = !string.IsNullOrWhiteSpace(chModel.bonusContentHtml)
+                        ? chModel.bonusContentHtml
+                        : $"<p>Chào mấy bác! Khi giao tiếp chủ đề <strong>{chModel.titleVi}</strong>, hãy bỏ túi ngay các từ khóa và mẫu câu tự nhiên dưới đây!</p>",
+                    SlangListJson = chModel.bonusSlangs != null && chModel.bonusSlangs.Any()
+                        ? JsonSerializer.Serialize(chModel.bonusSlangs)
+                        : JsonSerializer.Serialize(chModel.dialogues.SelectMany(d => d.vocabularies.Take(2)).Select(v => v.word).Distinct().ToList())
                 };
+            }
+            else
+            {
+                if (!string.IsNullOrWhiteSpace(chModel.bonusTitle))
+                    chapter.Bonus.Title = chModel.bonusTitle;
+                if (!string.IsNullOrWhiteSpace(chModel.bonusContentHtml))
+                    chapter.Bonus.ContentHtml = chModel.bonusContentHtml;
+                if (chModel.bonusSlangs != null && chModel.bonusSlangs.Any())
+                    chapter.Bonus.SlangListJson = JsonSerializer.Serialize(chModel.bonusSlangs);
             }
 
             // Sync Dialogues
@@ -949,7 +964,9 @@ public class BinoBookService : IBinoBookService
 
                 dialogue.Title = dModel.title;
                 dialogue.TitleVi = dModel.title;
-                dialogue.SituationDescription = $"Hội thoại {dModel.number}: {dModel.title} (Trang {dModel.startPage} trong sách TiengAnhBi).";
+                dialogue.SituationDescription = chModel.number == 12
+                    ? $"Bài {dModel.number}: {dModel.title} (Trang {dModel.startPage} trong sách TiengAnhBi - Luyện giải nghĩa đồ vật bằng tiếng Anh & đặt câu)."
+                    : $"Hội thoại {dModel.number}: {dModel.title} (Trang {dModel.startPage} trong sách TiengAnhBi).";
                 dialogue.DurationSeconds = 180;
                 dialogue.AudioUrl = $"/audios/bino/ch{chModel.number:D2}_d{dModel.number:D2}.mp3";
                 dialogue.VideoUrl = $"/videos/bino/ch{chModel.number:D2}_d{dModel.number:D2}.mp4";
@@ -1007,7 +1024,7 @@ public class BinoBookService : IBinoBookService
             DialoguesUpdated = dCount,
             VocabulariesUpdated = vCount,
             LinesUpdated = lCount,
-            Message = $"Đồng bộ thành công {chCount} chương, {dCount} bài hội thoại, {vCount} từ vựng và {lCount} câu thoại thật từ TiengAnhBi.epub!"
+            Message = $"Đồng bộ thành công {chCount} chương, {dCount} bài học, {vCount} từ vựng và {lCount} câu thoại thật từ TiengAnhBi.epub!"
         };
 
         return Response<SyncEpubResultDto>.SuccessResult(resultDto.Message, resultDto);
@@ -1022,6 +1039,9 @@ public class BinoBookService : IBinoBookService
         public string title { get; set; } = string.Empty;
         public string titleVi { get; set; } = string.Empty;
         public int startPage { get; set; }
+        public string? bonusTitle { get; set; }
+        public string? bonusContentHtml { get; set; }
+        public List<string>? bonusSlangs { get; set; }
         public List<ExtractedDialogueModel> dialogues { get; set; } = new();
     }
 

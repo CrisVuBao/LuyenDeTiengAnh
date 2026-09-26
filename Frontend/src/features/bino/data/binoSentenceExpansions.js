@@ -939,6 +939,364 @@ export const SENTENCE_EXPANSIONS_DATABASE = [
         slotOriginal: "some financial assistance or loans to help with the purchase"
       }
     ]
+  },
+  {
+    originalKey: "Take a deep breath and focus on one thing at a time.",
+    patternKeywords: ["take a deep breath", "one thing at a time", "stay calm"],
+    corePattern: "Take a deep breath and [calming action].",
+    patternMeaningVi: "Hãy hít một hơi thật sâu và [hành động giữ bình tĩnh].",
+    grammarTip: "Mẫu câu Chương 6 Bài 5 (Dealing with Stressful Situation): Dùng để trấn an bản thân hoặc đồng nghiệp khi đối mặt với khủng hoảng.",
+    fixedPrefix: "Take a deep breath and ",
+    fixedSuffix: ".",
+    defaultSlot: "focus on one thing at a time",
+    quickSuggestions: [
+      "try to stay calm",
+      "tackle the most urgent task first",
+      "step outside for some fresh air",
+      "don't panic"
+    ],
+    variations: [
+      {
+        context: "🧘 Trấn an đồng nghiệp trước buổi thuyết trình",
+        contextTag: "Công sở",
+        icon: "Heart",
+        englishText: "Take a deep breath and try to stay calm.",
+        vietnameseText: "Hãy hít một hơi thật sâu và cố gắng giữ bình tĩnh nhé.",
+        slotReplaced: "try to stay calm",
+        slotOriginal: "focus on one thing at a time"
+      },
+      {
+        context: "📋 Xử lý công việc bị quá tải",
+        contextTag: "Công việc",
+        icon: "Briefcase",
+        englishText: "Take a deep breath and tackle the most urgent task first.",
+        vietnameseText: "Hít sâu một hơi rồi giải quyết đầu việc khẩn cấp nhất trước đã.",
+        slotReplaced: "tackle the most urgent task first",
+        slotOriginal: "focus on one thing at a time"
+      }
+    ]
+  },
+  {
+    originalKey: "Practice makes perfect! The more you speak, the more confident you'll become.",
+    patternKeywords: ["practice makes perfect", "the more you", "confident"],
+    corePattern: "Practice makes perfect! The more you [action], the more [result].",
+    patternMeaningVi: "Có công mài sắt có ngày nên kim! Bạn càng [làm gì], bạn sẽ càng [kết quả].",
+    grammarTip: "Mẫu câu Chương 6 Bài 6 (Practice Makes Perfect): Cấu trúc so sánh kép 'The more..., the more...' cực kỳ tự nhiên khi khích lệ tinh thần.",
+    fixedPrefix: "Practice makes perfect! The more you ",
+    fixedSuffix: ", the more confident you'll become.",
+    defaultSlot: "practise speaking English",
+    quickSuggestions: [
+      "step out of your comfort zone",
+      "talk with native speakers",
+      "apply these phrases in real life",
+      "shadow Bino's dialogues"
+    ],
+    variations: [
+      {
+        context: "🗣️ Khích lệ luyện nói với người bản xứ",
+        contextTag: "Học tiếng Anh",
+        icon: "Sparkles",
+        englishText: "Practice makes perfect! The more you talk with native speakers, the more confident you'll become.",
+        vietnameseText: "Trăm hay không bằng tay quen! Bạn càng nói chuyện nhiều với người bản xứ thì sẽ càng tự tin hơn.",
+        slotReplaced: "talk with native speakers",
+        slotOriginal: "practise speaking English"
+      },
+      {
+        context: "🚀 Khích lệ bước ra khỏi vùng an toàn",
+        contextTag: "Phát triển",
+        icon: "Award",
+        englishText: "Practice makes perfect! The more you step out of your comfort zone, the more confident you'll become.",
+        vietnameseText: "Cứ luyện tập là sẽ giỏi! Bạn càng dám bước ra khỏi vùng an toàn thì càng bản lĩnh hơn.",
+        slotReplaced: "step out of your comfort zone",
+        slotOriginal: "practise speaking English"
+      }
+    ]
+  },
+
+  // =========================================================================
+  // CHƯƠNG 7: DAILY ROUTINE (HOẠT ĐỘNG THƯỜNG NGÀY)
+  // =========================================================================
+  {
+    originalKey: "On the weekends, I like to take it easy and sleep in a bit longer than usual.",
+    patternKeywords: ["take it easy", "sleep in", "bedtime routine", "on the weekends, i like to"],
+    corePattern: "On the weekends, I like to [relaxing activity].",
+    patternMeaningVi: "Vào dịp cuối tuần, tôi thích [hoạt động thư giãn].",
+    grammarTip: "Mẫu câu vàng Chương 7 (Trang 120): 'Take it easy' (thư giãn, xả hơi) và 'sleep in' (ngủ nướng) là hai cụm từ cực kỳ đắt giá khi kể về thói quen cuối tuần.",
+    fixedPrefix: "On the weekends, I like to ",
+    fixedSuffix: ".",
+    defaultSlot: "take it easy and sleep in a bit longer",
+    quickSuggestions: [
+      "catch up on my favorite books",
+      "spend quality time with my family",
+      "unplug from work and go hiking",
+      "prepare homemade meals"
+    ],
+    variations: [
+      {
+        context: "📖 Đọc sách thư giãn cuối tuần",
+        contextTag: "Thư giãn",
+        icon: "BookOpen",
+        englishText: "On the weekends, I like to catch up on my favorite books.",
+        vietnameseText: "Vào dịp cuối tuần, mình thích dành thời gian đọc những cuốn sách yêu thích.",
+        slotReplaced: "catch up on my favorite books",
+        slotOriginal: "take it easy and sleep in a bit longer"
+      },
+      {
+        context: "👨‍👩‍👧 Dành thời gian bên gia đình",
+        contextTag: "Gia đình",
+        icon: "Home",
+        englishText: "On the weekends, I like to spend quality time with my family.",
+        vietnameseText: "Vào cuối tuần, mình thích dành trọn thời gian chất lượng bên gia đình.",
+        slotReplaced: "spend quality time with my family",
+        slotOriginal: "take it easy and sleep in a bit longer"
+      }
+    ]
+  },
+  {
+    originalKey: "I can't help staying up late watching movies.",
+    patternKeywords: ["stay up late", "sleepless", "toss and turn", "busy day", "will, there's a way"],
+    corePattern: "Lately, I've been [daily habit / challenge]...",
+    patternMeaningVi: "Dạo gần đây, tôi hay bị / thường xuyên [thói quen sinh hoạt]...",
+    grammarTip: "Mẫu câu Chương 7 (Bài 2–6): Dùng thì hiện tại hoàn thành tiếp diễn 'I've been + V-ing' để miêu tả một thói quen hoặc tình trạng sinh hoạt đang diễn ra gần đây.",
+    fixedPrefix: "Lately, I've been ",
+    fixedSuffix: ".",
+    defaultSlot: "staying up too late because of work",
+    quickSuggestions: [
+      "waking up at 6 AM to hit the gym",
+      "trying to cut down on late-night snacks",
+      "following a healthier morning routine",
+      "getting used to my new work schedule"
+    ],
+    variations: [
+      {
+        context: "🏋️ Tập thói quen dậy sớm tập gym",
+        contextTag: "Sức khỏe",
+        icon: "Activity",
+        englishText: "Lately, I've been waking up at 6 AM to hit the gym.",
+        vietnameseText: "Dạo gần đây mình duy trì thói quen dậy lúc 6 giờ sáng để đi tập gym.",
+        slotReplaced: "waking up at 6 AM to hit the gym",
+        slotOriginal: "staying up too late because of work"
+      },
+      {
+        context: "⏰ Làm quen với lịch trình mới",
+        contextTag: "Đời sống",
+        icon: "Clock",
+        englishText: "Lately, I've been getting used to my new work schedule.",
+        vietnameseText: "Dạo này mình đang dần quen với lịch làm việc mới rồi.",
+        slotReplaced: "getting used to my new work schedule",
+        slotOriginal: "staying up too late because of work"
+      }
+    ]
+  },
+
+  // =========================================================================
+  // CHƯƠNG 8: SOCIAL MEDIA, FAVORITE APPS (MẠNG XÃ HỘI & ỨNG DỤNG)
+  // =========================================================================
+  {
+    originalKey: "I use this app every day to stay connected with my friends and family.",
+    patternKeywords: ["social media", "app", "scroll", "tiktok", "instagram", "facebook", "productivity"],
+    corePattern: "I use this app every day to [purpose / benefit].",
+    patternMeaningVi: "Tôi dùng ứng dụng này mỗi ngày để [mục đích / lợi ích].",
+    grammarTip: "Mẫu câu Chương 8 (Social Media & Favorite Apps): Khi nói về công nghệ hoặc ứng dụng yêu thích, hãy dùng cấu trúc 'I use [App] to + V' để nêu bật giá trị thực tế.",
+    fixedPrefix: "I use this app every day to ",
+    fixedSuffix: ".",
+    defaultSlot: "keep track of my daily tasks and deadlines",
+    quickSuggestions: [
+      "stay connected with my friends overseas",
+      "practise English speaking for 15 minutes",
+      "track my workouts and calorie intake",
+      "unwind and watch funny short videos"
+    ],
+    variations: [
+      {
+        context: "🇬🇧 Dùng app học tiếng Anh mỗi ngày",
+        contextTag: "Học tập",
+        icon: "BookOpen",
+        englishText: "I use this app every day to practise English speaking for 15 minutes.",
+        vietnameseText: "Mình dùng ứng dụng này mỗi ngày để luyện nói tiếng Anh 15 phút.",
+        slotReplaced: "practise English speaking for 15 minutes",
+        slotOriginal: "keep track of my daily tasks and deadlines"
+      },
+      {
+        context: "💪 Dùng app theo dõi tập luyện (Gym Rat)",
+        contextTag: "Thể hình",
+        icon: "Activity",
+        englishText: "I use this app every day to track my workouts and calorie intake.",
+        vietnameseText: "Mình dùng ứng dụng này hàng ngày để theo dõi lịch tập và lượng calo nạp vào.",
+        slotReplaced: "track my workouts and calorie intake",
+        slotOriginal: "keep track of my daily tasks and deadlines"
+      }
+    ]
+  },
+
+  // =========================================================================
+  // CHƯƠNG 9: HOBBIES (SỞ THÍCH CÁ NHÂN)
+  // =========================================================================
+  {
+    originalKey: "Hey Jazzy, can you tell daddy what you like to do for fun?",
+    patternKeywords: ["for fun", "free time", "hobby", "hobbies", "gardening", "paper airplanes", "games"],
+    corePattern: "In my free time, I really enjoy [hobby / V-ing].",
+    patternMeaningVi: "Vào thời gian rảnh, tôi thực sự rất thích [sở thích].",
+    grammarTip: "Mẫu câu Chương 9 (Hobbies - Trang 138–151): Thay vì chỉ nói 'My hobby is...', người bản xứ thường hỏi 'What do you like to do for fun?' và trả lời 'In my free time, I really enjoy + V-ing'.",
+    fixedPrefix: "In my free time, I really enjoy ",
+    fixedSuffix: ".",
+    defaultSlot: "gardening and growing my own vegetables",
+    quickSuggestions: [
+      "playing acoustic guitar and listening to indie music",
+      "going on weekend road trips with my friends",
+      "reading mystery novels in a quiet café",
+      "playing co-op video games online"
+    ],
+    variations: [
+      {
+        context: "🎸 Sở thích âm nhạc (Bài 4: The Love of Music)",
+        contextTag: "Âm nhạc",
+        icon: "Sparkles",
+        englishText: "In my free time, I really enjoy playing acoustic guitar and listening to indie music.",
+        vietnameseText: "Lúc rảnh rỗi, mình cực kỳ thích đàn guitar mộc và nghe nhạc indie.",
+        slotReplaced: "playing acoustic guitar and listening to indie music",
+        slotOriginal: "gardening and growing my own vegetables"
+      },
+      {
+        context: "☕ Sở thích yên tĩnh (Bài 5: A Quiet Hobby)",
+        contextTag: "Đọc sách",
+        icon: "Coffee",
+        englishText: "In my free time, I really enjoy reading mystery novels in a quiet café.",
+        vietnameseText: "Khi rảnh, mình rất thích ngồi đọc tiểu thuyết trinh thám ở một quán cà phê yên tĩnh.",
+        slotReplaced: "reading mystery novels in a quiet café",
+        slotOriginal: "gardening and growing my own vegetables"
+      }
+    ]
+  },
+
+  // =========================================================================
+  // CHƯƠNG 10: AT THE STORE (MUA SẮM TẠI CỬA HÀNG)
+  // =========================================================================
+  {
+    originalKey: "I'd like a Happy Meal with nuggets and chips, please.",
+    patternKeywords: ["happy meal", "nuggets", "sold out", "aisle", "fragrance", "sim card", "bank account", "buy one, get one"],
+    corePattern: "Excuse me, I'm looking for [item / service]. Could you help me out?",
+    patternMeaningVi: "Xin lỗi cho tôi hỏi, tôi đang tìm mua / làm [món đồ / dịch vụ]. Bạn hỗ trợ tôi nhé?",
+    grammarTip: "Mẫu câu Chương 10 (At the Store - Trang 154–168): Cực kỳ hữu dụng khi đi siêu thị, mua nước hoa, mua SIM du lịch hoặc mở tài khoản ngân hàng ở nước ngoài.",
+    fixedPrefix: "Excuse me, I'm looking for ",
+    fixedSuffix: ". Could you help me out?",
+    defaultSlot: "a prepaid SIM card with plenty of data",
+    quickSuggestions: [
+      "the pasta sauce aisle",
+      "a light floral fragrance for a gift",
+      "items on a buy-one-get-one-free deal",
+      "information on opening a student bank account"
+    ],
+    variations: [
+      {
+        context: "🛒 Hỏi tìm quầy hàng trong siêu thị (Bài 1)",
+        contextTag: "Siêu thị",
+        icon: "Compass",
+        englishText: "Excuse me, I'm looking for the pasta sauce aisle. Could you help me out?",
+        vietnameseText: "Xin lỗi cho mình hỏi, mình đang tìm dãy kệ bán sốt mì Ý. Bạn chỉ giúp mình nhé?",
+        slotReplaced: "the pasta sauce aisle",
+        slotOriginal: "a prepaid SIM card with plenty of data"
+      },
+      {
+        context: "🎁 Mua nước hoa làm quà tặng (Bài 4)",
+        contextTag: "Mua sắm",
+        icon: "Sparkles",
+        englishText: "Excuse me, I'm looking for a light floral fragrance for a gift. Could you help me out?",
+        vietnameseText: "Chào bạn, mình đang tìm một chai nước hoa hương hoa dịu nhẹ để làm quà tặng. Bạn tư vấn giúp mình nhé?",
+        slotReplaced: "a light floral fragrance for a gift",
+        slotOriginal: "a prepaid SIM card with plenty of data"
+      }
+    ]
+  },
+
+  // =========================================================================
+  // CHƯƠNG 11: TRANSPORTATION (PHƯƠNG TIỆN GIAO THÔNG & DI CHUYỂN)
+  // =========================================================================
+  {
+    originalKey: "What's the best way to get to the city center from here?",
+    patternKeywords: ["airport", "transportation", "carpark", "parking", "rent a car", "train", "bus", "boarding"],
+    corePattern: "What's the best way to get to [destination] from here?",
+    patternMeaningVi: "Cách tốt nhất / tiện nhất để đi từ đây tới [địa điểm] là gì vậy?",
+    grammarTip: "Mẫu câu Chương 11 (Transportation - Trang 172–189): Câu hỏi cứu cánh số 1 khi đi du lịch, hỏi đường người bản xứ tại sân bay, nhà ga hoặc trung tâm thành phố.",
+    fixedPrefix: "Excuse me, what's the best way to get to ",
+    fixedSuffix: " from here?",
+    defaultSlot: "the international airport terminal",
+    quickSuggestions: [
+      "the central train station",
+      "the nearest underground carpark",
+      "downtown during rush hour",
+      "the car rental counter"
+    ],
+    variations: [
+      {
+        context: "🚆 Hỏi đường ra ga tàu trung tâm",
+        contextTag: "Tàu điện",
+        icon: "Compass",
+        englishText: "Excuse me, what's the best way to get to the central train station from here?",
+        vietnameseText: "Xin lỗi cho mình hỏi, từ đây ra nhà ga trung tâm đi bằng cách nào tiện nhất ạ?",
+        slotReplaced: "the central train station",
+        slotOriginal: "the international airport terminal"
+      },
+      {
+        context: "🅿️ Tìm bãi đỗ xe ngầm gần nhất (Bài 3)",
+        contextTag: "Đỗ xe",
+        icon: "Car",
+        englishText: "Excuse me, what's the best way to get to the nearest underground carpark from here?",
+        vietnameseText: "Cho mình hỏi đường đi tới hầm đỗ xe gần nhất từ đây đi lối nào vậy?",
+        slotReplaced: "the nearest underground carpark",
+        slotOriginal: "the international airport terminal"
+      }
+    ]
+  },
+
+  // =========================================================================
+  // CHƯƠNG 12: AROUND THE HOUSE (TỪ VỰNG & GIẢI NGHĨA ĐỒ VẬT QUANH NHÀ)
+  // =========================================================================
+  {
+    originalKey: "This chair is made of wood.",
+    patternKeywords: [
+      "piece of furniture",
+      "device that",
+      "device for",
+      "device used",
+      "machine for",
+      "appliance",
+      "container for",
+      "made of wood",
+      "around the house"
+    ],
+    corePattern: "It's a household item used for [function / purpose in English].",
+    patternMeaningVi: "Đó là một vật dụng trong nhà được dùng để [công dụng giải nghĩa bằng tiếng Anh].",
+    grammarTip: "Bí quyết Chương 12 (Trang 192): Khi quên một từ vựng trong tiếng Anh, đừng đứng hình! Hãy dùng cấu trúc 'It's a device / machine / piece of furniture used for + V-ing' để giải thích đồ vật đó.",
+    fixedPrefix: "It's a household device used for ",
+    fixedSuffix: ".",
+    defaultSlot: "heating or cooking food quickly (Microwave)",
+    quickSuggestions: [
+      "washing dishes automatically (Dishwasher)",
+      "removing dust from floors and carpets (Vacuum cleaner)",
+      "removing contaminants from the air (Air purifier)",
+      "boiling water quickly for tea or coffee (Kettle)"
+    ],
+    variations: [
+      {
+        context: "🧹 Giải nghĩa Máy hút bụi bằng tiếng Anh",
+        contextTag: "Phòng khách",
+        icon: "Home",
+        englishText: "It's a household device used for removing dust from floors and carpets.",
+        vietnameseText: "Đó là thiết bị gia dụng dùng để hút sạch bụi bẩn trên sàn nhà và thảm (Máy hút bụi).",
+        slotReplaced: "removing dust from floors and carpets",
+        slotOriginal: "heating or cooking food quickly (Microwave)"
+      },
+      {
+        context: "🌬️ Giải nghĩa Máy lọc không khí bằng tiếng Anh",
+        contextTag: "Phòng ngủ",
+        icon: "Sparkles",
+        englishText: "It's a household device used for removing contaminants from the air.",
+        vietnameseText: "Đó là thiết bị trong nhà dùng để lọc sạch bụi mịn và tạp chất trong không khí (Máy lọc không khí).",
+        slotReplaced: "removing contaminants from the air",
+        slotOriginal: "heating or cooking food quickly (Microwave)"
+      }
+    ]
   }
 ];
 

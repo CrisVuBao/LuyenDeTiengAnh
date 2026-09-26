@@ -101,16 +101,15 @@ public static class DbInitializer
 
         int existingDialogueCount = book?.Chapters.SelectMany(c => c.DialogueLessons).Count() ?? 0;
         int totalLinesCount = book?.Chapters.SelectMany(c => c.DialogueLessons).SelectMany(d => d.DialogueLines).Count() ?? 0;
-        var ch2d6 = book?.Chapters.FirstOrDefault(c => c.ChapterNumber == 2)?.DialogueLessons.FirstOrDefault(d => d.DialogueNumber == 6);
-        bool hasCorruptedLines = ch2d6 != null && ch2d6.DialogueLines.Count > 8;
+        bool hasFullBonuses = book?.Chapters.Count == 12 && book.Chapters.All(c => c.Bonus != null && !string.IsNullOrEmpty(c.Bonus.ContentHtml) && c.Bonus.ContentHtml.Length > 1000);
 
-        if (existingDialogueCount == 34 && totalLinesCount == 298 && !hasCorruptedLines && book?.Chapters.Count == 6)
+        if (existingDialogueCount == 72 && totalLinesCount == 688 && book?.Chapters.Count == 12 && hasFullBonuses)
         {
-            logger.LogInformation("Dữ liệu sách Bino đã có đầy đủ và chuẩn xác 100% ({count} bài hội thoại, {lines} câu thoại, 6 chương). Bỏ qua seed.", existingDialogueCount, totalLinesCount);
+            logger.LogInformation("Dữ liệu sách Bino đã có đầy đủ và chuẩn xác 100% ({count} bài học, {lines} câu thoại, 12 chương). Bỏ qua seed.", existingDialogueCount, totalLinesCount);
             return;
         }
 
-        logger.LogInformation("Khởi tạo và đồng bộ 100% dữ liệu thật từ sách 'Chém Tiếng Anh không cần động não' (TiengAnhBi.epub)...");
+        logger.LogInformation("Khởi tạo và đồng bộ 100% dữ liệu thật 12 chương từ sách 'Chém Tiếng Anh không cần động não' (TiengAnhBi.epub)...");
 
         if (book == null)
         {
@@ -119,11 +118,11 @@ public static class DbInitializer
                 Title = "Chém Tiếng Anh không cần động não",
                 Author = "Bino",
                 Slug = "chem-tieng-anh-khong-can-dong-nao",
-                Description = "Bộ sách học tiếng Anh giao tiếp đời thực đỉnh cao của Bino. Gồm 6 chương, 34 bài hội thoại thực chiến kèm video luyện nói 1:1, audio độc quyền, các từ lóng slang và mẹo văn hóa thú vị.",
+                Description = "Bộ sách học tiếng Anh giao tiếp đời thực đỉnh cao của Bino. Gồm 12 chương, 72 bài học thực chiến kèm video luyện nói 1:1, audio độc quyền, mẫu câu mở rộng và triết lý học tiếng Anh của Bino.",
                 CoverImageUrl = "/images/bino/page15.jpg",
                 PdfFileUrl = "/ebooks/chem_tieng_anh_bino.pdf",
                 EpubFileUrl = "/ebooks/chem_tieng_anh_bino.epub",
-                TotalChapters = 6,
+                TotalChapters = 12,
                 IsPublished = true,
                 CreatedAt = DateTime.UtcNow
             };
@@ -133,8 +132,8 @@ public static class DbInitializer
         book.CoverImageUrl = "/images/bino/page15.jpg";
         book.PdfFileUrl = "/ebooks/chem_tieng_anh_bino.pdf";
         book.EpubFileUrl = "/ebooks/chem_tieng_anh_bino.epub";
-        book.TotalChapters = 6;
-        book.Description = "Bộ sách học tiếng Anh giao tiếp đời thực đỉnh cao của Bino. Gồm 6 chương, 34 bài hội thoại thực chiến kèm video luyện nói 1:1, audio độc quyền, các từ lóng slang và mẹo văn hóa thú vị.";
+        book.TotalChapters = 12;
+        book.Description = "Bộ sách học tiếng Anh giao tiếp đời thực đỉnh cao của Bino. Gồm 12 chương, 72 bài học thực chiến kèm video luyện nói 1:1, audio độc quyền, mẫu câu mở rộng và triết lý học tiếng Anh của Bino.";
 
         var chapterTitles = new[]
         {
@@ -143,18 +142,24 @@ public static class DbInitializer
             ("Days of the Week and Months", "Ngày trong tuần và Các tháng"),
             ("WEATHER", "Các cuộc hội thoại liên quan đến thời tiết"),
             ("RESTAURANT, FOOD AND DRINKS", "Hội thoại và từ vựng cơ bản về nhà hàng, món ăn và đồ uống"),
-            ("EMOTIONS, FEELINGS, AND CHARACTERISTICS", "Cảm xúc, cảm giác và tính cách")
+            ("EMOTIONS, FEELINGS, AND CHARACTERISTICS", "Cảm xúc, cảm giác và tính cách"),
+            ("DAILY ROUTINE", "Miêu tả các hoạt động thường ngày"),
+            ("SOCIAL MEDIA, FAVORITE APPS", "Từ vựng và hội thoại cơ bản về mạng xã hội và các ứng dụng yêu thích"),
+            ("HOBBIES", "Làm quen với từ vựng và hội thoại diễn tả sở thích"),
+            ("AT THE STORE", "Làm quen với từ vựng và hội thoại khi đi mua sắm tại cửa hàng"),
+            ("TRANSPORTATION", "Từ vựng và hội thoại cơ bản khi di chuyển bằng phương tiện công cộng, cá nhân"),
+            ("AROUND THE HOUSE", "Làm quen với từ vựng trong phòng và quanh nhà")
         };
 
-        // Remove any excess chapters > 6
-        var excessChapters = book.Chapters.Where(c => c.ChapterNumber > 6).ToList();
+        // Remove any excess chapters > 12
+        var excessChapters = book.Chapters.Where(c => c.ChapterNumber > 12).ToList();
         foreach (var exCh in excessChapters)
         {
             context.Chapters.Remove(exCh);
             book.Chapters.Remove(exCh);
         }
 
-        // Ensure all 6 chapters exist
+        // Ensure all 12 chapters exist
         for (int i = 0; i < chapterTitles.Length; i++)
         {
             var (titleEn, titleVi) = chapterTitles[i];
@@ -173,13 +178,20 @@ public static class DbInitializer
                 };
                 book.Chapters.Add(chapter);
             }
+            else
+            {
+                chapter.Title = titleEn;
+                chapter.TitleVi = titleVi;
+                chapter.Description = $"Chương {chapterNum:D2}: Luyện phản xạ tự nhiên chủ đề {titleVi.ToLower()}.";
+                chapter.OrderIndex = chapterNum;
+            }
 
             if (chapter.Bonus == null)
             {
                 chapter.Bonus = new ChapterBonus
                 {
                     Chapter = chapter,
-                    Title = $"Góc Tiếng Lóng & Mẹo Văn Hóa Tây - Chương {chapterNum:D2}",
+                    Title = $"Mẫu Câu Mở Rộng & Bino's Philosophy - Chương {chapterNum:D2}",
                     ContentHtml = $"<p>Chào mấy bác! Khi giao tiếp chủ đề <strong>{titleVi}</strong>, người bản xứ rất ít khi dùng các cấu trúc sách vở cứng nhắc. Hãy bỏ túi ngay các cụm từ 'chém gió' đỉnh cao này nhé!</p>",
                     SlangListJson = "[\"No worries\",\"Make it\",\"Vibe\",\"Grab a bite\",\"Hang out\",\"Catch you later\"]"
                 };
@@ -217,6 +229,16 @@ public static class DbInitializer
                         chapter.Title = chModel.title;
                         chapter.TitleVi = chModel.titleVi;
 
+                        if (chapter.Bonus != null)
+                        {
+                            if (!string.IsNullOrWhiteSpace(chModel.bonusTitle))
+                                chapter.Bonus.Title = chModel.bonusTitle;
+                            if (!string.IsNullOrWhiteSpace(chModel.bonusContentHtml))
+                                chapter.Bonus.ContentHtml = chModel.bonusContentHtml;
+                            if (chModel.bonusSlangs != null && chModel.bonusSlangs.Any())
+                                chapter.Bonus.SlangListJson = JsonSerializer.Serialize(chModel.bonusSlangs);
+                        }
+
                         foreach (var dModel in chModel.dialogues)
                         {
                             var dialogue = chapter.DialogueLessons.FirstOrDefault(d => d.DialogueNumber == dModel.number);
@@ -233,7 +255,9 @@ public static class DbInitializer
 
                             dialogue.Title = dModel.title;
                             dialogue.TitleVi = dModel.title;
-                            dialogue.SituationDescription = $"Hội thoại {dModel.number}: {dModel.title} (Trang {dModel.startPage} trong sách TiengAnhBi).";
+                            dialogue.SituationDescription = chModel.number == 12
+                                ? $"Bài {dModel.number}: {dModel.title} (Trang {dModel.startPage} trong sách TiengAnhBi - Luyện giải nghĩa đồ vật bằng tiếng Anh & đặt câu)."
+                                : $"Hội thoại {dModel.number}: {dModel.title} (Trang {dModel.startPage} trong sách TiengAnhBi).";
                             dialogue.DurationSeconds = 180;
                             dialogue.AudioUrl = $"/audios/bino/ch{chModel.number:D2}_d{dModel.number:D2}.mp3";
                             dialogue.VideoUrl = $"/videos/bino/ch{chModel.number:D2}_d{dModel.number:D2}.mp4";
@@ -286,7 +310,7 @@ public static class DbInitializer
         }
 
         await context.SaveChangesAsync();
-        logger.LogInformation("Đã khởi tạo và đồng bộ thành công dữ liệu thật từ TiengAnhBi.epub vào cơ sở dữ liệu!");
+        logger.LogInformation("Đã khởi tạo và đồng bộ thành công 12 chương dữ liệu thật từ TiengAnhBi.epub vào cơ sở dữ liệu!");
     }
 
     private class ExtractedChapterSeedDto
@@ -295,6 +319,9 @@ public static class DbInitializer
         public string title { get; set; } = string.Empty;
         public string titleVi { get; set; } = string.Empty;
         public int startPage { get; set; }
+        public string? bonusTitle { get; set; }
+        public string? bonusContentHtml { get; set; }
+        public List<string>? bonusSlangs { get; set; }
         public List<ExtractedDialogueSeedDto> dialogues { get; set; } = new();
     }
 
