@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -35,9 +35,8 @@ public class AccountController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginDto model)
     {
-        var user = await _userManager.FindByEmailAsync(model.EmailOrPhone);
-        if (user == null)
-            user = _userManager.Users.FirstOrDefault(u => u.PhoneNumber == model.EmailOrPhone);
+        var user = await _userManager.FindByEmailAsync(model.EmailOrPhone)
+                   ?? _userManager.Users.FirstOrDefault(u => u.PhoneNumber == model.EmailOrPhone);
 
         if (user == null) 
             return Unauthorized(Response<string>.Failure("Tài khoản không tồn tại"));
@@ -46,10 +45,23 @@ public class AccountController : ControllerBase
         if (!isValid) 
             return Unauthorized(Response<string>.Failure("Sai mật khẩu"));
 
+        var roles = await _userManager.GetRolesAsync(user);
+        var isAdmin = roles.Contains(UserRole.Admin.ToString());
+
+        if (!isAdmin && !user.IsApproved)
+        {
+            return BadRequest(Response<string>.Failure(
+                "Tài khoản của bạn đang chờ Quản trị viên (Admin) phê duyệt. Vui lòng chờ Admin kích hoạt tài khoản để đăng nhập nhé!"));
+        }
+
         user.LastLoginAt = DateTime.UtcNow;
+        if (isAdmin && !user.IsApproved)
+        {
+            user.IsApproved = true;
+            user.ApprovedAt = DateTime.UtcNow;
+        }
         await _userManager.UpdateAsync(user);
 
-        var roles = await _userManager.GetRolesAsync(user);
         var token = _jwtTokenService.GenerateToken(user, roles);
 
         // SET HTTPONLY COOKIE — Frontend KHÔNG THẤY token, tự gửi qua cookie (A.5)
@@ -70,6 +82,8 @@ public class AccountController : ControllerBase
             PhoneNumber = user.PhoneNumber,
             Role = roles.FirstOrDefault() ?? UserRole.Student.ToString(),
             AvatarUrl = user.AvatarUrl,
+            IsApproved = user.IsApproved,
+            ApprovedAt = user.ApprovedAt,
             CreatedAt = user.CreatedAt
         };
 
@@ -107,7 +121,7 @@ public class AccountController : ControllerBase
             return Unauthorized(Response<string>.Failure("Chưa đăng nhập"));
 
         var result = await _authService.GetProfileAsync(userId);
-        if (!result.Success) return NotFound(result);
+        if (!result.Success) return Unauthorized(result);
 
         return Ok(result);
     }

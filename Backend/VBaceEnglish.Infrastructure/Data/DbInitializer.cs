@@ -21,8 +21,33 @@ public static class DbInitializer
         var toeicService = scope.ServiceProvider.GetRequiredService<IToeicTestService>();
         var logger = scope.ServiceProvider.GetRequiredService<ILogger<AppDBContext>>();
 
-        // 1. Auto Migrate database
-        await context.Database.MigrateAsync();
+        // 1. Ensure Approval columns exist on AspNetUsers first (before Migrate or queries)
+        try
+        {
+            await context.Database.ExecuteSqlRawAsync(@"
+                IF COL_LENGTH('AspNetUsers', 'IsApproved') IS NULL
+                BEGIN
+                    ALTER TABLE [AspNetUsers] ADD [IsApproved] bit NOT NULL CONSTRAINT [DF_AspNetUsers_IsApproved] DEFAULT 0;
+                END
+                IF COL_LENGTH('AspNetUsers', 'ApprovedAt') IS NULL
+                BEGIN
+                    ALTER TABLE [AspNetUsers] ADD [ApprovedAt] datetime2 NULL;
+                END
+            ");
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning("Không thể tự động thêm cột IsApproved/ApprovedAt: {msg}", ex.Message);
+        }
+
+        try
+        {
+            await context.Database.MigrateAsync();
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning("MigrateAsync warning: {msg}", ex.Message);
+        }
 
         // 2. Seed Roles
         string[] roles = [UserRole.Admin.ToString(), UserRole.Teacher.ToString(), UserRole.Student.ToString()];
@@ -45,6 +70,8 @@ public static class DbInitializer
                 Email = adminEmail,
                 FullName = "Admin Quản Trị",
                 EmailConfirmed = true,
+                IsApproved = true,
+                ApprovedAt = DateTime.UtcNow,
                 CreatedAt = DateTime.UtcNow
             };
             var result = await userManager.CreateAsync(adminUser, "Admin@123456");
@@ -52,6 +79,23 @@ public static class DbInitializer
             {
                 await userManager.AddToRoleAsync(adminUser, UserRole.Admin.ToString());
                 logger.LogInformation("Tạo tài khoản Admin thành công: admin@toeichack.com / Admin@123456");
+            }
+        }
+        else if (!adminUser.IsApproved)
+        {
+            adminUser.IsApproved = true;
+            adminUser.ApprovedAt = DateTime.UtcNow;
+            await userManager.UpdateAsync(adminUser);
+        }
+
+        var allAdmins = await userManager.GetUsersInRoleAsync(UserRole.Admin.ToString());
+        foreach (var adm in allAdmins)
+        {
+            if (!adm.IsApproved)
+            {
+                adm.IsApproved = true;
+                adm.ApprovedAt = DateTime.UtcNow;
+                await userManager.UpdateAsync(adm);
             }
         }
 

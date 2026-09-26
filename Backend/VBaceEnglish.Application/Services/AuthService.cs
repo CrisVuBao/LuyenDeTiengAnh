@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using VBaceEnglish.Application.Contracts.Services;
 using VBaceEnglish.Application.DTOs.Auth;
 using VBaceEnglish.Application.Helpers;
@@ -40,10 +40,24 @@ public class AuthService : IAuthService
         if (!isValid)
             return Response<object>.Failure("Mật khẩu không chính xác");
 
+        var roles = await _userManager.GetRolesAsync(user);
+        var isAdmin = roles.Contains(UserRole.Admin.ToString());
+
+        // Tài khoản học viên bắt buộc phải được Admin phê duyệt mới được đăng nhập
+        if (!isAdmin && !user.IsApproved)
+        {
+            return Response<object>.Failure(
+                "Tài khoản của bạn đang chờ Quản trị viên (Admin) phê duyệt. Vui lòng chờ Admin kích hoạt tài khoản để đăng nhập nhé!");
+        }
+
         user.LastLoginAt = DateTime.UtcNow;
+        if (isAdmin && !user.IsApproved)
+        {
+            user.IsApproved = true;
+            user.ApprovedAt = DateTime.UtcNow;
+        }
         await _userManager.UpdateAsync(user);
 
-        var roles = await _userManager.GetRolesAsync(user);
         var token = _jwtTokenService.GenerateToken(user, roles);
 
         var userDto = new UserDto
@@ -54,6 +68,8 @@ public class AuthService : IAuthService
             PhoneNumber = user.PhoneNumber,
             Role = roles.FirstOrDefault() ?? UserRole.Student.ToString(),
             AvatarUrl = user.AvatarUrl,
+            IsApproved = user.IsApproved,
+            ApprovedAt = user.ApprovedAt,
             CreatedAt = user.CreatedAt
         };
 
@@ -72,6 +88,9 @@ public class AuthService : IAuthService
             Email = model.Email,
             FullName = model.FullName,
             PhoneNumber = model.PhoneNumber,
+            IsApproved = false,
+            ApprovedAt = null,
+            EmailConfirmed = false,
             CreatedAt = DateTime.UtcNow
         };
 
@@ -91,10 +110,14 @@ public class AuthService : IAuthService
             Email = user.Email,
             PhoneNumber = user.PhoneNumber,
             Role = UserRole.Student.ToString(),
+            IsApproved = false,
+            ApprovedAt = null,
             CreatedAt = user.CreatedAt
         };
 
-        return Response<UserDto>.SuccessResult("Đăng ký tài khoản thành công", userDto);
+        return Response<UserDto>.SuccessResult(
+            "Đăng ký tài khoản thành công! Tài khoản của bạn đang chờ Admin phê duyệt trước khi có thể đăng nhập.",
+            userDto);
     }
 
     public async Task<Response<UserDto>> GetProfileAsync(int userId)
@@ -104,6 +127,10 @@ public class AuthService : IAuthService
             return Response<UserDto>.Failure("Không tìm thấy người dùng");
 
         var roles = await _userManager.GetRolesAsync(user);
+        var isAdmin = roles.Contains(UserRole.Admin.ToString());
+        if (!isAdmin && !user.IsApproved)
+            return Response<UserDto>.Failure("Tài khoản chưa được phê duyệt hoặc đã bị tạm khóa");
+
         var userDto = new UserDto
         {
             Id = user.Id,
@@ -112,10 +139,11 @@ public class AuthService : IAuthService
             PhoneNumber = user.PhoneNumber,
             Role = roles.FirstOrDefault() ?? UserRole.Student.ToString(),
             AvatarUrl = user.AvatarUrl,
+            IsApproved = user.IsApproved,
+            ApprovedAt = user.ApprovedAt,
             CreatedAt = user.CreatedAt
         };
 
         return Response<UserDto>.SuccessResult("Lấy thông tin thành công", userDto);
     }
 }
-

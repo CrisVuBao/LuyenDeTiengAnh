@@ -15,11 +15,14 @@ public static class DependencyInjection
     {
         // SQL Server DbContext with Connection Pooling
         services.AddDbContext<AppDBContext>(options =>
+        {
             options.UseSqlServer(config.GetConnectionString("DefaultConnection"), sqlOptions =>
             {
                 sqlOptions.MigrationsAssembly(typeof(AppDBContext).Assembly.FullName);
                 sqlOptions.EnableRetryOnFailure(maxRetryCount: 3, maxRetryDelay: TimeSpan.FromSeconds(5), errorNumbersToAdd: null);
-            }));
+            });
+            options.ConfigureWarnings(w => w.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning));
+        });
 
         // Repositories & Unit of Work
         services.AddScoped<IToeicTestRepository, ToeicTestRepository>();

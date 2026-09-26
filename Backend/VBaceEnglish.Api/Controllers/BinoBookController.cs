@@ -89,6 +89,24 @@ public class BinoBookController : ControllerBase
         return Ok(result);
     }
 
+    [HttpGet("progress/summary")]
+    public async Task<ActionResult<Response<BinoStudyProgressSummaryDto>>> GetProgressSummary()
+    {
+        var userId = _currentUser.UserId ?? 0;
+        var result = await _binoService.GetUserStudyProgressSummaryAsync(userId);
+        if (!result.Success) return BadRequest(result);
+        return Ok(result);
+    }
+
+    [HttpPost("progress/reset")]
+    public async Task<ActionResult<Response<bool>>> ResetProgress([FromBody] ResetBinoProgressDto dto)
+    {
+        var userId = _currentUser.UserId ?? 0;
+        var result = await _binoService.ResetUserBinoProgressAsync(userId, dto?.ChapterNumber);
+        if (!result.Success) return BadRequest(result);
+        return Ok(result);
+    }
+
     [HttpPost("srs/add-word")]
     public async Task<ActionResult<Response<bool>>> AddWordToSRS([FromBody] AddSrsWordRequestDto dto)
     {

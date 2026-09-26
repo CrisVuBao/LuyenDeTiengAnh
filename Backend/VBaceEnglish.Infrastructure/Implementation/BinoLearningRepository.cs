@@ -28,6 +28,13 @@ public class BinoLearningRepository : IBinoLearningRepository
             .ToListAsync();
     }
 
+    public async Task<IEnumerable<UserDialogueProgress>> GetAllProgressesAsync()
+    {
+        return await _context.UserDialogueProgresses
+            .AsNoTracking()
+            .ToListAsync();
+    }
+
     public async Task AddProgressAsync(UserDialogueProgress progress)
     {
         await _context.UserDialogueProgresses.AddAsync(progress);
@@ -36,6 +43,11 @@ public class BinoLearningRepository : IBinoLearningRepository
     public void UpdateProgress(UserDialogueProgress progress)
     {
         _context.UserDialogueProgresses.Update(progress);
+    }
+
+    public void RemoveProgressRange(IEnumerable<UserDialogueProgress> progresses)
+    {
+        _context.UserDialogueProgresses.RemoveRange(progresses);
     }
 
     public async Task<UserSRSReview?> GetSRSReviewAsync(int userId, int vocabularyId)
@@ -80,6 +92,13 @@ public class BinoLearningRepository : IBinoLearningRepository
                     .ThenInclude(d => d.Chapter)
             .Where(r => r.UserId == userId)
             .OrderBy(r => r.NextReviewDate)
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<UserSRSReview>> GetAllSRSReviewsAsync()
+    {
+        return await _context.UserSRSReviews
+            .AsNoTracking()
             .ToListAsync();
     }
 

@@ -222,7 +222,7 @@ export default function StudentHome() {
                 >
                   <Flame size={13} className="fill-current" />
                 </motion.span>
-                {stats?.currentStreakDays || 3} ngày liên tiếp
+                {stats?.currentStreakDays ?? 0} ngày liên tiếp
               </span>
               <span className="text-slate-300 dark:text-slate-600">•</span>
               <span>Khóa học phản xạ giao tiếp Bino</span>

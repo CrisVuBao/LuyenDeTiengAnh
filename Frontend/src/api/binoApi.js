@@ -129,9 +129,23 @@ export const binoApi = {
   markProgress: (data) =>
     axiosClient.post('/bino/progress/mark', data).then((res) => {
       invalidateBinoCache('book:');
+      invalidateBinoCache('progress:');
       if (data?.dialogueLessonId) {
         invalidateBinoCache(`dialogue:${data.dialogueLessonId}`);
       }
+      return res;
+    }),
+
+  getProgressSummary: (forceRefresh = false) =>
+    fetchWithCache(
+      'progress:summary',
+      () => axiosClient.get('/bino/progress/summary'),
+      forceRefresh
+    ),
+
+  resetProgress: (chapterNumber = null) =>
+    axiosClient.post('/bino/progress/reset', { chapterNumber }).then((res) => {
+      invalidateBinoCache();
       return res;
     }),
 
@@ -145,6 +159,7 @@ export const binoApi = {
         );
       }
     }
+    invalidateBinoCache('progress:');
     return axiosClient.post('/bino/srs/add-word', { vocabularyId });
   },
 
@@ -156,6 +171,7 @@ export const binoApi = {
         );
       }
     }
+    invalidateBinoCache('progress:');
     return axiosClient.post('/bino/srs/remove-word', { vocabularyId });
   },
 
@@ -163,7 +179,10 @@ export const binoApi = {
     axiosClient.get('/bino/srs/due-words'),
 
   submitSRSReview: (vocabularyId, grade) =>
-    axiosClient.post('/bino/srs/review', { vocabularyId, grade }),
+    axiosClient.post('/bino/srs/review', { vocabularyId, grade }).then((res) => {
+      invalidateBinoCache('progress:');
+      return res;
+    }),
 
   // ================= ADMIN CMS API =================
   adminGetChapters: () =>

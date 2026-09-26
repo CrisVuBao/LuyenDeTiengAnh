@@ -69,12 +69,15 @@ public interface IBinoLearningRepository
 {
     Task<UserDialogueProgress?> GetProgressAsync(int userId, int dialogueLessonId);
     Task<IEnumerable<UserDialogueProgress>> GetProgressByUserAsync(int userId);
+    Task<IEnumerable<UserDialogueProgress>> GetAllProgressesAsync();
     Task AddProgressAsync(UserDialogueProgress progress);
     void UpdateProgress(UserDialogueProgress progress);
+    void RemoveProgressRange(IEnumerable<UserDialogueProgress> progresses);
 
     Task<UserSRSReview?> GetSRSReviewAsync(int userId, int vocabularyId);
     Task<IEnumerable<UserSRSReview>> GetDueSRSReviewsAsync(int userId);
     Task<IEnumerable<UserSRSReview>> GetAllSRSReviewsByUserAsync(int userId);
+    Task<IEnumerable<UserSRSReview>> GetAllSRSReviewsAsync();
     Task AddSRSReviewAsync(UserSRSReview review);
     void UpdateSRSReview(UserSRSReview review);
     void RemoveSRSReview(UserSRSReview review);

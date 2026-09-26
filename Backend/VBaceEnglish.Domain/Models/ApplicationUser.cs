@@ -8,6 +8,8 @@ public class ApplicationUser : IdentityUser<int>
     public string? AvatarUrl { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? LastLoginAt { get; set; }
+    public bool IsApproved { get; set; } = false;
+    public DateTime? ApprovedAt { get; set; }
 
     public ICollection<UserStudyProgress> StudyProgresses { get; set; } = new List<UserStudyProgress>();
     public ICollection<UserTestSummary> TestSummaries { get; set; } = new List<UserTestSummary>();
@@ -21,4 +23,3 @@ public class Role : IdentityRole<int>
     public Role() : base() { }
     public Role(string roleName) : base(roleName) { }
 }
-

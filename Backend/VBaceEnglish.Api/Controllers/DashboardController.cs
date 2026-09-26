@@ -1,7 +1,7 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OutputCaching;
+using VBaceEnglish.Application.DTOs.Dashboard;
 using VBaceEnglish.Application.Helpers;
 using VBaceEnglish.Application.Services;
 
@@ -43,6 +43,33 @@ public class DashboardController : ControllerBase
     public async Task<IActionResult> GetAdminStudents()
     {
         var result = await _dashboardService.GetAdminStudentsAsync();
+        return Ok(result);
+    }
+
+    [HttpPost("admin-students/approve")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> ApproveStudent([FromBody] ApproveStudentRequestDto dto)
+    {
+        var result = await _dashboardService.ApproveStudentAsync(dto.UserId, dto.IsApproved);
+        if (!result.Success) return BadRequest(result);
+        return Ok(result);
+    }
+
+    [HttpPost("admin-students/approve-all")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> ApproveAllPendingStudents()
+    {
+        var result = await _dashboardService.ApproveAllPendingStudentsAsync();
+        if (!result.Success) return BadRequest(result);
+        return Ok(result);
+    }
+
+    [HttpDelete("admin-students/{userId}")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> DeleteStudent(int userId)
+    {
+        var result = await _dashboardService.DeleteStudentAsync(userId);
+        if (!result.Success) return BadRequest(result);
         return Ok(result);
     }
 }

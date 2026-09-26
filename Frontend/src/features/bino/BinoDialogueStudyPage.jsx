@@ -9,6 +9,7 @@ import {
   Share2, ZoomIn, Lightbulb
 } from 'lucide-react';
 import binoApi from '../../api/binoApi';
+import { invalidateStatsCache } from '../../api/dashboardAndAiApi';
 import PageLoader from '../../components/PageLoader';
 import VoiceSettingsModal from '../../components/VoiceSettingsModal';
 import { useBinoPlayerStore } from './components/BinoPlaylistModal';
@@ -378,6 +379,18 @@ export default function BinoDialogueStudyPage() {
     }
   };
 
+  const sessionStartRef = useRef(Date.now());
+  useEffect(() => {
+    sessionStartRef.current = Date.now();
+  }, [id]);
+
+  const consumeElapsedSeconds = () => {
+    const now = Date.now();
+    const elapsed = Math.max(5, Math.min(1800, Math.round((now - sessionStartRef.current) / 1000)));
+    sessionStartRef.current = now;
+    return elapsed;
+  };
+
   // Mark completion
   const handleToggleComplete = async () => {
     const newState = !isCompleted;
@@ -386,8 +399,9 @@ export default function BinoDialogueStudyPage() {
       await binoApi.markProgress({
         dialogueLessonId: parseInt(id),
         isCompleted: newState,
-        timeSpentSeconds: 60
+        timeSpentSeconds: consumeElapsedSeconds()
       });
+      invalidateStatsCache();
       if (newState) toast.success('Đã hoàn thành bài hội thoại này! 🎉');
     } catch {
       toast.error('Lỗi lưu tiến độ');
@@ -438,6 +452,13 @@ export default function BinoDialogueStudyPage() {
     if (index >= lines.length) {
       const isInfinite = checkIsInfinite(repeatCountRef.current) || checkIsInfinite(repeatCount);
       const maxCycles = isInfinite ? Infinity : (parseInt(repeatCountRef.current) || 1);
+
+      // Tự động ghi nhận đã nghe hết bài hội thoại vào tiến độ học tập
+      binoApi.markProgress({
+        dialogueLessonId: parseInt(id),
+        hasWatchedVideo: true,
+        timeSpentSeconds: consumeElapsedSeconds()
+      }).then(() => invalidateStatsCache()).catch(() => {});
 
       if (isInfinite || cycleNumber < maxCycles) {
         const nextCycle = cycleNumber + 1;
@@ -1355,7 +1376,12 @@ export default function BinoDialogueStudyPage() {
                         setRoleplayStep(prev => prev + 1);
                         setUserTranscript('');
                       } else {
-                        toast.success('Xuất sắc! Bác đã hoàn thành cuộc hội thoại!');
+                        binoApi.markProgress({
+                          dialogueLessonId: parseInt(id),
+                          roleplayCompleted: true,
+                          timeSpentSeconds: consumeElapsedSeconds()
+                        }).then(() => invalidateStatsCache()).catch(() => {});
+                        toast.success('Xuất sắc! Đã ghi nhận hoàn thành luyện đóng vai 1:1 cho bài này! 🎉');
                       }
                     }}
                     className="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl text-xs font-bold shadow-md shadow-orange-500/20 flex items-center gap-1.5 active:scale-95"
@@ -1415,7 +1441,27 @@ export default function BinoDialogueStudyPage() {
             {/* Check button */}
             <div className="flex items-center justify-between">
               <button
-                onClick={() => setDictationChecked(true)}
+                onClick={() => {
+                  setDictationChecked(true);
+                  const normalizeWords = (str) =>
+                    (str || '')
+                      .toLowerCase()
+                      .replace(/[^a-z0-9'\s]/g, ' ')
+                      .split(/\s+/)
+                      .filter(Boolean);
+                  const targetWords = normalizeWords(currentDictationLine.englishText);
+                  const typedWords = normalizeWords(dictationInput);
+                  const typedSet = new Set(typedWords);
+                  const matched = targetWords.filter(w => typedSet.has(w)).length;
+                  const score = targetWords.length > 0
+                    ? Math.min(100, Math.round((matched / targetWords.length) * 100))
+                    : 0;
+                  binoApi.markProgress({
+                    dialogueLessonId: parseInt(id),
+                    dictationScore: score,
+                    timeSpentSeconds: consumeElapsedSeconds()
+                  }).then(() => invalidateStatsCache()).catch(() => {});
+                }}
                 className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-md shadow-emerald-500/20 active:scale-95"
               >
                 Kiểm Tra Đáp Án

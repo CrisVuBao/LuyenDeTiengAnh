@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace VBaceEnglish.Application.DTOs.Auth;
 
@@ -37,6 +37,8 @@ public class UserDto
     public string? PhoneNumber { get; set; }
     public string? Role { get; set; }
     public string? AvatarUrl { get; set; }
+    public bool IsApproved { get; set; }
+    public DateTime? ApprovedAt { get; set; }
     public DateTime CreatedAt { get; set; }
 }
 
@@ -49,4 +51,3 @@ public class ChangePasswordDto
     [MinLength(6)]
     public string NewPassword { get; set; } = string.Empty;
 }
-
