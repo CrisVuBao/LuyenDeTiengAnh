@@ -1,0 +1,2 @@
+import{i as e}from"./index-iFVOyhJZ.js";var t={getStats:()=>e.get(`/dashboard/stats`),getAdminStats:()=>e.get(`/dashboard/admin-stats`),getAdminStudents:()=>e.get(`/dashboard/admin-students`)},n={explainQuestion:t=>e.post(`/aichat/explain`,t),chat:t=>e.post(`/aichat/chat`,t)};export{t as n,n as t};
+//# sourceMappingURL=dashboardAndAiApi-W3hPcKfy.js.map

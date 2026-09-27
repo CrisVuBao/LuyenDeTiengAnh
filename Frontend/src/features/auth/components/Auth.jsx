@@ -236,20 +236,16 @@ export default function Auth() {
             >
               {loading ? 'Đang xác thực...' : 'Vào Học Ngay'} <ArrowRight size={18} />
             </button>
-
-            <div className="text-center text-xs text-slate-500 dark:text-slate-400 pt-2">
-              Tài khoản Admin: <span className="font-bold text-[#0071e3] dark:text-blue-400">admin@toeichack.com</span> / <span className="font-bold">Admin@123456</span>
-            </div>
           </form>
         ) : (
           /* Register Form */
           <form onSubmit={handleRegister} className="space-y-3.5">
-            <div className="p-3 rounded-xl bg-blue-50/80 dark:bg-blue-950/40 border border-blue-200/70 dark:border-blue-900/50 text-xs text-slate-600 dark:text-slate-300 flex items-center gap-2.5">
+            {/* <div className="p-3 rounded-xl bg-blue-50/80 dark:bg-blue-950/40 border border-blue-200/70 dark:border-blue-900/50 text-xs text-slate-600 dark:text-slate-300 flex items-center gap-2.5">
               <Clock size={16} className="text-[#0071e3] shrink-0" />
               <span>
                 Tài khoản đăng ký mới sẽ được <strong>Admin phê duyệt</strong> trước khi kích hoạt đăng nhập.
               </span>
-            </div>
+            </div> */}
 
             <div>
               <label className="block text-xs font-bold text-slate-600 dark:text-slate-300 uppercase mb-1">

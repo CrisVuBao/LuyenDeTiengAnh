@@ -1,0 +1,2 @@
+import{i as e}from"./index-iFVOyhJZ.js";var t={getProgress:t=>e.get(`/userprogress/by-test/${t}`),getAllSummaries:()=>e.get(`/userprogress/all-summaries`),getUnsureQuestions:t=>e.get(`/userprogress/unsure-questions`,{params:t?{testId:t}:{}}),markProgress:t=>e.post(`/userprogress/mark`,t),resetProgress:t=>e.post(`/userprogress/reset`,t)};export{t};
+//# sourceMappingURL=progressApi-B15GYUma.js.map
