@@ -37,7 +37,8 @@ builder.Services.Configure<GzipCompressionProviderOptions>(o => o.Level = Compre
 // 2. Caching (A.4)
 builder.Services.AddMemoryCache();
 builder.Services.AddOutputCache(options => {
-    options.AddBasePolicy(b => b.Expire(TimeSpan.FromSeconds(30)));
+    // Tuyệt đối KHÔNG áp dụng BasePolicy cho toàn bộ API để tránh việc tài khoản này nhận dữ liệu tiến độ của tài khoản khác
+    // Chỉ cache những endpoint công khai tĩnh hoặc được gắn policy cụ thể
     options.AddPolicy("Dashboard", b => b.Expire(TimeSpan.FromSeconds(60)).SetVaryByQuery("period").Tag("dashboard"));
 });
 

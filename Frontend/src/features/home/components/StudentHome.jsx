@@ -249,8 +249,6 @@ export default function StudentHome() {
     ]).finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <PageLoader />;
-
   const recentTests = stats?.recentTests || [];
   const totalBinoLessons = binoBook?.totalLessons || 72;
   const completedBinoLessons = binoBook?.completedLessons || 0;
@@ -283,6 +281,7 @@ export default function StudentHome() {
       animate="visible"
       className="space-y-12 max-w-6xl mx-auto pb-10"
     >
+      {loading && <PageLoader />}
       
       {/* ===================================================================== */}
       {/* 1. APPLE-STYLE HERO SECTION — SỐNG ĐỘNG, MƯỢT MÀ, NÚT PHẲNG TINH TẾ  */}

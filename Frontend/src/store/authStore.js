@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { clearAllBinoCaches } from '../api/binoApi';
 
 const useAuthStore = create(
   persist(
@@ -7,9 +8,15 @@ const useAuthStore = create(
       user: null,
       token: null,          // Token chỉ lưu trong RAM (chống XSS)
       isAuthenticated: false,
-      setAuth: (user, token) => set({ user, token, isAuthenticated: true }),
+      setAuth: (user, token) => {
+        clearAllBinoCaches();
+        set({ user, token, isAuthenticated: true });
+      },
       updateUser: (data) => set((state) => ({ user: { ...state.user, ...data } })),
-      logout: () => set({ user: null, token: null, isAuthenticated: false })
+      logout: () => {
+        clearAllBinoCaches();
+        set({ user: null, token: null, isAuthenticated: false });
+      }
     }),
     {
       name: 'auth-storage',

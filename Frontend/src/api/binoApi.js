@@ -1,73 +1,92 @@
 import axiosClient from './axiosClient';
+import useAuthStore from '../store/authStore';
 
-// Bộ nhớ đệm In-Memory SWR siêu tốc giúp chuyển trang 0ms (Zero-Latency Navigation)
+// Bộ nhớ đệm In-Memory SWR siêu tốc, tự động phân lập theo từng tài khoản học viên (Zero-Latency Navigation & Multi-User Isolation)
 const memoryCache = new Map();
 const inflightRequests = new Map();
 const CACHE_TTL_MS = 3 * 60 * 1000; // 3 phút
 
+function getScopedCacheKey(rawKey) {
+  const currentUserId = useAuthStore.getState().user?.id ?? 'guest';
+  return `u${currentUserId}:${rawKey}`;
+}
+
 function fetchWithCache(cacheKey, fetcher, forceRefresh = false) {
+  const scopedKey = getScopedCacheKey(cacheKey);
   const now = Date.now();
-  const cached = memoryCache.get(cacheKey);
+  const cached = memoryCache.get(scopedKey);
 
   if (!forceRefresh && cached) {
     // Nếu dữ liệu còn mới hoặc đã có trong cache: trả về ngay lập tức (0ms)
     // Nếu đã quá TTL thì âm thầm làm mới ở hậu cảnh (Stale-While-Revalidate)
-    if (now - cached.timestamp > CACHE_TTL_MS && !inflightRequests.has(cacheKey)) {
+    if (now - cached.timestamp > CACHE_TTL_MS && !inflightRequests.has(scopedKey)) {
       const bgPromise = fetcher()
         .then((res) => {
           if (res?.data) {
-            memoryCache.set(cacheKey, { data: res, timestamp: Date.now() });
+            memoryCache.set(scopedKey, { data: res, timestamp: Date.now() });
           }
           return res;
         })
         .catch(() => {})
-        .finally(() => inflightRequests.delete(cacheKey));
-      inflightRequests.set(cacheKey, bgPromise);
+        .finally(() => inflightRequests.delete(scopedKey));
+      inflightRequests.set(scopedKey, bgPromise);
     }
     return Promise.resolve(cached.data);
   }
 
-  if (inflightRequests.has(cacheKey)) {
-    return inflightRequests.get(cacheKey);
+  if (inflightRequests.has(scopedKey)) {
+    return inflightRequests.get(scopedKey);
   }
 
   const reqPromise = fetcher()
     .then((res) => {
       if (res?.data) {
-        memoryCache.set(cacheKey, { data: res, timestamp: Date.now() });
+        memoryCache.set(scopedKey, { data: res, timestamp: Date.now() });
       }
       return res;
     })
     .finally(() => {
-      inflightRequests.delete(cacheKey);
+      inflightRequests.delete(scopedKey);
     });
 
-  inflightRequests.set(cacheKey, reqPromise);
+  inflightRequests.set(scopedKey, reqPromise);
   return reqPromise;
 }
 
 export function invalidateBinoCache(prefix = '') {
+  const currentUserId = useAuthStore.getState().user?.id ?? 'guest';
+  const userPrefix = `u${currentUserId}:`;
   if (!prefix) {
-    memoryCache.clear();
+    for (const key of memoryCache.keys()) {
+      if (key.startsWith(userPrefix)) {
+        memoryCache.delete(key);
+      }
+    }
     return;
   }
+  const fullPrefix = `${userPrefix}${prefix}`;
   for (const key of memoryCache.keys()) {
-    if (key.startsWith(prefix)) {
+    if (key.startsWith(fullPrefix) || key.includes(prefix)) {
       memoryCache.delete(key);
     }
   }
 }
 
+export function clearAllBinoCaches() {
+  memoryCache.clear();
+  inflightRequests.clear();
+}
+
 export const binoApi = {
-  // Đọc đồng bộ từ RAM (0ms) để khởi tạo state React không cần hiện PageLoader
+  // Đọc đồng bộ từ RAM (0ms) theo đúng tài khoản đang đăng nhập
   peekBookOverview: (slug = 'chem-tieng-anh-khong-can-dong-nao') =>
-    memoryCache.get(`book:${slug}`)?.data?.data || null,
+    memoryCache.get(getScopedCacheKey(`book:${slug}`))?.data?.data || null,
 
   peekDialogueDetail: (id) =>
-    memoryCache.get(`dialogue:${id}`)?.data?.data || null,
+    memoryCache.get(getScopedCacheKey(`dialogue:${id}`))?.data?.data || null,
 
   peekChapterBonus: (chapterNumber) =>
-    memoryCache.get(`bonus:${chapterNumber}`)?.data?.data || null,
+    memoryCache.get(getScopedCacheKey(`bonus:${chapterNumber}`))?.data?.data || null,
 
   // Prefetch khi di chuột (Hover Prefetching)
   prefetchBookOverview: (slug = 'chem-tieng-anh-khong-can-dong-nao') => {

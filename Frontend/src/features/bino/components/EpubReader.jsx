@@ -6,6 +6,10 @@ import {
   Sliders, Sparkles, BookOpen, Layers, List, Check, ArrowRight, FileText
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import useAuthStore from '../../../store/authStore';
+
+const getEpubBookmarksKey = () => `vbace_epub_bookmarks_u_${useAuthStore.getState().user?.id || 'guest'}`;
+const getEpubCfiKey = (bookTitle) => `vbace_epub_last_cfi_u_${useAuthStore.getState().user?.id || 'guest'}_${bookTitle}`;
 
 const THEMES = {
   light: {
@@ -162,7 +166,7 @@ export default function EpubReader({
   // Bookmarks
   const [bookmarks, setBookmarks] = useState(() => {
     try {
-      return JSON.parse(localStorage.getItem('vbace_epub_bookmarks') || '[]');
+      return JSON.parse(localStorage.getItem(getEpubBookmarksKey()) || '[]');
     } catch {
       return [];
     }
@@ -246,7 +250,7 @@ export default function EpubReader({
       }).catch(err => console.warn('Meta load err:', err));
 
       // Display initial page (or saved CFI)
-      const savedCfi = localStorage.getItem(`vbace_epub_last_cfi_${bookTitle}`);
+      const savedCfi = localStorage.getItem(getEpubCfiKey(bookTitle));
       rendition.display(savedCfi || undefined).then(() => {
         setLoading(false);
         setLoadingProgress(100);
@@ -270,7 +274,7 @@ export default function EpubReader({
       rendition.on('relocated', (location) => {
         updateLocationInfo(location);
         if (location && location.start && location.start.cfi) {
-          localStorage.setItem(`vbace_epub_last_cfi_${bookTitle}`, location.start.cfi);
+          localStorage.setItem(getEpubCfiKey(bookTitle), location.start.cfi);
         }
       });
 
@@ -466,7 +470,7 @@ export default function EpubReader({
     if (isCurrentBookmarked) {
       const updated = bookmarks.filter(b => b.cfi !== locationInfo.cfi);
       setBookmarks(updated);
-      localStorage.setItem('vbace_epub_bookmarks', JSON.stringify(updated));
+      localStorage.setItem(getEpubBookmarksKey(), JSON.stringify(updated));
       toast.success('Đã xóa đánh dấu trang');
     } else {
       const newBm = {
@@ -478,7 +482,7 @@ export default function EpubReader({
       };
       const updated = [newBm, ...bookmarks];
       setBookmarks(updated);
-      localStorage.setItem('vbace_epub_bookmarks', JSON.stringify(updated));
+      localStorage.setItem(getEpubBookmarksKey(), JSON.stringify(updated));
       toast.success('Đã đánh dấu trang thành công');
     }
   };
@@ -645,9 +649,8 @@ export default function EpubReader({
             className="absolute inset-0 z-30 flex flex-col items-center justify-center space-y-4 transition-opacity"
             style={{ backgroundColor: activeTheme.bg }}
           >
-            <div className="relative">
-              <div className="w-16 h-16 border-4 border-amber-500/20 border-t-amber-500 rounded-full animate-spin"></div>
-              <BookOpen className="absolute inset-0 m-auto text-amber-500" size={24} />
+            <div className="w-12 h-12 rounded-2xl bg-amber-500/15 flex items-center justify-center animate-pulse shadow-sm">
+              <BookOpen className="text-amber-500" size={24} />
             </div>
             <div className="text-center space-y-1">
               <p className="text-sm font-bold">Đang nạp dữ liệu EPUB...</p>

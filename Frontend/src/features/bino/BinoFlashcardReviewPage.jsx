@@ -9,9 +9,13 @@ import binoApi from '../../api/binoApi';
 import PageLoader from '../../components/PageLoader';
 import VoiceSettingsModal from '../../components/VoiceSettingsModal';
 import speechService from '../../utils/speechService';
+import useAuthStore from '../../store/authStore';
 import toast from 'react-hot-toast';
 
-const LOCAL_FLASHCARD_KEY = 'vbace_local_flashcard_ids_v1';
+const getLocalFlashcardKey = () => {
+  const uid = useAuthStore.getState().user?.id || 'guest';
+  return `vbace_local_flashcard_ids_v1_u_${uid}`;
+};
 
 export default function BinoFlashcardReviewPage() {
   const navigate = useNavigate();
@@ -47,11 +51,11 @@ export default function BinoFlashcardReviewPage() {
     if (!currentCard) return;
 
     try {
-      const raw = localStorage.getItem(LOCAL_FLASHCARD_KEY);
+      const raw = localStorage.getItem(getLocalFlashcardKey());
       if (raw) {
         const parsed = JSON.parse(raw);
         delete parsed[currentCard.vocabularyId];
-        localStorage.setItem(LOCAL_FLASHCARD_KEY, JSON.stringify(parsed));
+        localStorage.setItem(getLocalFlashcardKey(), JSON.stringify(parsed));
       }
     } catch {
       // ignore

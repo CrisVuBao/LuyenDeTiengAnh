@@ -77,12 +77,17 @@ export default function StudentNavbar() {
         {/* Brand Logo & Main Nav */}
         <div className="flex items-center gap-8">
           <NavLink to="/home" onMouseEnter={() => prefetchRoute('home')} className="flex items-center gap-2.5 group">
-            <div className="w-8 h-8 rounded-xl bg-[#0071e3] text-white flex items-center justify-center transition-transform group-hover:scale-105">
+            <div className="w-8 h-8 rounded-xl bg-[#0071e3] text-white flex items-center justify-center transition-transform group-hover:scale-105 shadow-sm">
               <Sparkles size={17} />
             </div>
-            <span className="font-semibold text-base tracking-tight text-slate-900 dark:text-white">
-              VBaceEnglish
-            </span>
+            <div className="flex flex-col leading-none">
+              <span className="font-bold text-base tracking-tight text-slate-900 dark:text-white">
+                VBaceEnglish
+              </span>
+              <span className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 tracking-tight mt-0.5">
+                By Vũ Bảo Software
+              </span>
+            </div>
           </NavLink>
 
           {/* Top Menu Links (Clean Apple Pill Tabs) */}

@@ -44,12 +44,17 @@ export default function LandingPage() {
       <header className="sticky top-0 z-30 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/70 dark:border-slate-800/80">
         <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-[#0071e3] text-white flex items-center justify-center">
+            <div className="w-8 h-8 rounded-xl bg-[#0071e3] text-white flex items-center justify-center shadow-sm">
               <Sparkles size={17} />
             </div>
-            <span className="font-semibold text-base tracking-tight text-slate-900 dark:text-white">
-              VBaceEnglish
-            </span>
+            <div className="flex flex-col leading-none">
+              <span className="font-bold text-base tracking-tight text-slate-900 dark:text-white">
+                VBaceEnglish
+              </span>
+              <span className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 tracking-tight mt-0.5">
+                By Vũ Bảo Software
+              </span>
+            </div>
           </div>
 
           <motion.button
@@ -159,7 +164,7 @@ export default function LandingPage() {
 
       {/* Footer */}
       <footer className="border-t border-slate-200/70 dark:border-slate-800/80 py-6 text-center text-xs text-slate-400 relative z-10">
-        © 2026 VBaceEnglish. Thiết kế tối giản, hiện đại.
+        © 2026 VBaceEnglish — By Vũ Bảo Software. Thiết kế tối giản, hiện đại.
       </footer>
     </div>
   );

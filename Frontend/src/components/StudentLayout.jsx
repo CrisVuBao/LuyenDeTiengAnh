@@ -20,7 +20,7 @@ export default function StudentLayout() {
 
       {/* Simple Clean Footer */}
       <footer className="border-t border-slate-200 dark:border-slate-800/80 py-6 text-center text-xs text-slate-400 dark:text-slate-500 bg-white/50 dark:bg-slate-900/50">
-        <p>© 2026 VBaceEnglish. Nền tảng học và luyện thi tiếng Anh chuẩn quốc tế.</p>
+        <p>© 2026 VBaceEnglish — By Vũ Bảo Software. Nền tảng học và luyện thi tiếng Anh chuẩn quốc tế.</p>
       </footer>
 
     </div>

@@ -1,8 +1,13 @@
 import { create } from 'zustand';
+import useAuthStore from '../../../store/authStore';
 
-const STORAGE_KEY = 'vbace_reflex50_progress_v1';
 const TOTAL_UNITS = 50;
 const SENTENCES_PER_UNIT = 30;
+
+function getUserStorageKey(customUserId) {
+  const uid = customUserId ?? useAuthStore.getState().user?.id ?? 'guest';
+  return `vbace_reflex50_progress_v1_u_${uid}`;
+}
 
 // Lazy-loaded cache cho toàn bộ 1.500 câu (chỉ tải khi vào trang học chi tiết hoặc tìm kiếm sâu)
 let fullDataCache = null;
@@ -36,9 +41,9 @@ function getUnitSentenceIds(unitNumber) {
 
 const getTodayKey = () => new Date().toISOString().slice(0, 10);
 
-const loadInitialState = () => {
+const loadInitialState = (customUserId) => {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(getUserStorageKey(customUserId));
     if (!raw) return null;
     return JSON.parse(raw);
   } catch {
@@ -48,8 +53,9 @@ const loadInitialState = () => {
 
 let pendingSaveTimer = null;
 let latestPendingState = null;
+let latestPendingUserId = null;
 
-const flushStateToStorage = (state) => {
+const flushStateToStorage = (state, customUserId) => {
   if (!state) return;
   try {
     const payload = {
@@ -62,19 +68,20 @@ const flushStateToStorage = (state) => {
       dailyGoal: state.dailyGoal,
       dailyLog: state.dailyLog
     };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+    localStorage.setItem(getUserStorageKey(customUserId), JSON.stringify(payload));
   } catch {
     // ignore storage quota errors
   }
 };
 
-// Ghi xuống localStorage bất đồng bộ (Non-blocking UI Thread)
+// Ghi xuống localStorage bất đồng bộ theo từng tài khoản học viên (Non-blocking UI Thread)
 const saveStateToStorage = (state) => {
   latestPendingState = state;
+  latestPendingUserId = useAuthStore.getState().user?.id;
   if (pendingSaveTimer) clearTimeout(pendingSaveTimer);
   pendingSaveTimer = setTimeout(() => {
     pendingSaveTimer = null;
-    flushStateToStorage(latestPendingState);
+    flushStateToStorage(latestPendingState, latestPendingUserId);
   }, 120);
 };
 
@@ -82,7 +89,7 @@ if (typeof window !== 'undefined') {
   window.addEventListener('beforeunload', () => {
     if (pendingSaveTimer && latestPendingState) {
       clearTimeout(pendingSaveTimer);
-      flushStateToStorage(latestPendingState);
+      flushStateToStorage(latestPendingState, latestPendingUserId);
     }
   });
 }
@@ -540,7 +547,38 @@ export const useReflex50Store = create((set, get) => ({
       todayCount,
       dailyGoal: state.dailyGoal
     };
+  },
+
+  // Tải lại toàn bộ tiến độ Reflex 50 khi đăng nhập hoặc đổi tài khoản
+  loadForUser: (userId) => {
+    const userSaved = loadInitialState(userId);
+    set({
+      masteredIds: userSaved?.masteredIds || {},
+      starredIds: userSaved?.starredIds || {},
+      weakIds: userSaved?.weakIds || {},
+      writingHistory: userSaved?.writingHistory || {},
+      speakingHistory: userSaved?.speakingHistory || {},
+      lastStudiedUnit: userSaved?.lastStudiedUnit || 1,
+      dailyGoal: userSaved?.dailyGoal || 30,
+      dailyLog: userSaved?.dailyLog || {}
+    });
   }
 }));
+
+// Tự động đồng bộ và tải dữ liệu riêng biệt mỗi khi học viên đăng nhập/đăng xuất
+if (typeof window !== 'undefined') {
+  useAuthStore.subscribe((state, prevState) => {
+    const newUid = state.user?.id;
+    const oldUid = prevState?.user?.id;
+    if (newUid !== oldUid) {
+      if (pendingSaveTimer && latestPendingState) {
+        clearTimeout(pendingSaveTimer);
+        flushStateToStorage(latestPendingState, oldUid);
+        pendingSaveTimer = null;
+      }
+      useReflex50Store.getState().loadForUser(newUid);
+    }
+  });
+}
 
 export default useReflex50Store;

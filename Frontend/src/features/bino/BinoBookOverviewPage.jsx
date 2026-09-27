@@ -40,7 +40,7 @@ export default function BinoBookOverviewPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <PageLoader />;
+  if (loading && !book) return <PageLoader />;
 
   const activeChapter = book?.chapters?.find(c => c.chapterNumber === selectedChapter) || book?.chapters?.[0];
 
@@ -58,6 +58,7 @@ export default function BinoBookOverviewPage() {
 
   return (
     <div className="space-y-6 sm:space-y-8 max-w-6xl mx-auto pb-16 px-1 sm:px-0">
+      {loading && <PageLoader />}
       
       {/* ========================================================================= */}
       {/* 1. HERO BANNER SÁCH BINO - ULTRA SHARP & FULL RESPONSIVE */}

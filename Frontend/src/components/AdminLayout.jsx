@@ -54,10 +54,15 @@ export default function AdminLayout() {
             <Sparkles size={22} />
           </div>
           <div>
-            <h1 className="font-black text-xl tracking-tight text-gradient">VBaceEnglish</h1>
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-blue-100 text-blue-700 dark:bg-blue-900/60 dark:text-blue-300 tracking-wider">
-              Admin Portal
-            </span>
+            <h1 className="font-black text-xl tracking-tight text-gradient leading-tight">VBaceEnglish</h1>
+            <div className="flex items-center gap-1.5 mt-0.5">
+              <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400">
+                By Vũ Bảo Software
+              </span>
+              <span className="px-1.5 py-0.2 rounded text-[9px] font-extrabold uppercase bg-blue-100 text-blue-700 dark:bg-blue-900/60 dark:text-blue-300 tracking-wider">
+                Admin
+              </span>
+            </div>
           </div>
         </div>
 

@@ -17,13 +17,17 @@ import BinoSentenceExpansionCard from './components/BinoSentenceExpansionCard';
 import BinoLearningGuideModal from './components/BinoLearningGuideModal';
 import { getExpansionsForLine } from './data/binoSentenceExpansions';
 import speechService, { SPEECH_SPEED_PRESETS } from '../../utils/speechService';
+import useAuthStore from '../../store/authStore';
 import toast from 'react-hot-toast';
 
-const LOCAL_FLASHCARD_KEY = 'vbace_local_flashcard_ids_v1';
+const getLocalFlashcardKey = () => {
+  const uid = useAuthStore.getState().user?.id || 'guest';
+  return `vbace_local_flashcard_ids_v1_u_${uid}`;
+};
 
 const getLocalFlashcardMap = () => {
   try {
-    const raw = localStorage.getItem(LOCAL_FLASHCARD_KEY);
+    const raw = localStorage.getItem(getLocalFlashcardKey());
     return raw ? JSON.parse(raw) : {};
   } catch {
     return {};
@@ -38,7 +42,7 @@ const setLocalFlashcardState = (vocabId, isAdded) => {
     } else {
       delete current[vocabId];
     }
-    localStorage.setItem(LOCAL_FLASHCARD_KEY, JSON.stringify(current));
+    localStorage.setItem(getLocalFlashcardKey(), JSON.stringify(current));
   } catch {
     // ignore
   }

@@ -124,10 +124,13 @@ export default function Auth() {
           <div className="w-12 h-12 rounded-2xl bg-[#0071e3] text-white flex items-center justify-center mx-auto mb-4 shadow-sm">
             <Sparkles size={24} />
           </div>
-          <h2 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white">
+          <h2 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white leading-none">
             VBaceEnglish
           </h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 mt-1 tracking-wide">
+            By Vũ Bảo Software
+          </p>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1.5">
             Chém Tiếng Anh Bino & Luyện Đề TOEIC Thực Chiến
           </p>
         </div>

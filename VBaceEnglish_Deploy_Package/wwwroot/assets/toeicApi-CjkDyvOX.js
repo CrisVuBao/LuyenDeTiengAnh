@@ -1,2 +1,0 @@
-import{i as e}from"./index-iFVOyhJZ.js";var t={getAllTests:()=>e.get(`/toeictest`),getTestById:t=>e.get(`/toeictest/${t}`),getTestByCode:t=>e.get(`/toeictest/by-code/${t}`),deleteTest:t=>e.delete(`/toeictest/${t}`),bulkImport:t=>e.post(`/toeictest/bulk-import`,t)};export{t};
-//# sourceMappingURL=toeicApi-CjkDyvOX.js.map
