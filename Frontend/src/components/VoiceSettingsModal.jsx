@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Volume2, Play, Check, Sparkles, X, User, Users, Sliders } from 'lucide-react';
-import speechService from '../utils/speechService';
+import speechService, { SPEECH_SPEED_PRESETS } from '../utils/speechService';
 import toast from 'react-hot-toast';
 
 export default function VoiceSettingsModal({ isOpen, onClose }) {
@@ -236,33 +236,85 @@ export default function VoiceSettingsModal({ isOpen, onClose }) {
             </select>
           </div>
 
-          {/* 4. Tốc độ đọc */}
-          <div className="space-y-2">
+          {/* 4. Tốc độ đọc (Có chế độ Chậm rãi nghe kỹ cho người mới) */}
+          <div className="space-y-2.5">
             <div className="flex items-center justify-between text-xs font-bold text-slate-700 dark:text-slate-300">
               <span className="flex items-center gap-1.5">
                 <Sliders size={14} className="text-[#0071e3]" />
                 <span>Tốc độ đọc mặc định:</span>
               </span>
-              <span className="text-[#0071e3] dark:text-blue-400 font-extrabold">{rate}x</span>
+              <span className="px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950 text-[#0071e3] dark:text-blue-400 font-extrabold">
+                {rate}x{' '}
+                {rate <= 0.68
+                  ? '(🐢 Rất chậm • Nghe kỹ từng âm)'
+                  : rate <= 0.78
+                  ? '(🐢 Chậm rãi • Nghe kỹ từng từ)'
+                  : rate <= 0.88
+                  ? '(Hơi chậm • Dễ bắt nhịp)'
+                  : rate <= 0.98
+                  ? '(Tự nhiên • Khuyên dùng)'
+                  : rate <= 1.05
+                  ? '(Tốc độ bản xứ)'
+                  : '(Nhanh phản xạ)'}
+              </span>
             </div>
-            <div className="flex items-center gap-2.5">
-              {[0.8, 0.9, 0.95, 1.0, 1.1].map((r) => (
-                <button
-                  key={r}
-                  type="button"
-                  onClick={() => setRate(r)}
-                  className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all ${
-                    Math.abs(rate - r) < 0.01
-                      ? 'bg-[#0071e3] text-white shadow-sm'
-                      : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
-                  }`}
-                >
-                  {r}x
-                </button>
-              ))}
+
+            <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+              {SPEECH_SPEED_PRESETS.map((preset) => {
+                const isSelected = Math.abs(rate - preset.value) < 0.02;
+                return (
+                  <button
+                    key={preset.value}
+                    type="button"
+                    onClick={() => {
+                      setRate(preset.value);
+                      speechService.applyLivePlaybackRate(preset.value);
+                    }}
+                    className={`py-2 px-1.5 rounded-xl text-center transition-all border flex flex-col items-center justify-center gap-0.5 ${
+                      isSelected
+                        ? preset.isSlow
+                          ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm'
+                          : 'bg-[#0071e3] text-white border-[#0071e3] shadow-sm'
+                        : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-blue-400'
+                    }`}
+                  >
+                    <span className="text-xs font-black">
+                      {preset.isSlow ? `🐢 ${preset.label}` : preset.label}
+                    </span>
+                    <span className={`text-[10px] font-semibold ${isSelected ? 'text-white/90' : 'text-slate-400'}`}>
+                      {preset.shortTag}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
-            <p className="text-[11px] text-slate-400">
-              * Mức 0.95x là tốc độ lý tưởng nhất: vừa giữ nguyên ngữ điệu tự nhiên của người bản xứ, vừa phát âm rõ chữ.
+
+            {/* Thanh trượt tinh chỉnh chi tiết từ 0.55x đến 1.25x */}
+            <div className="pt-1 space-y-1">
+              <div className="flex items-center justify-between text-[10px] font-bold text-slate-400">
+                <span>🐢 0.55x (Chậm nhất)</span>
+                <span>Tùy chỉnh chi tiết</span>
+                <span>1.25x (Nhanh) ⚡</span>
+              </div>
+              <input
+                type="range"
+                min="0.55"
+                max="1.25"
+                step="0.05"
+                value={rate}
+                onChange={(e) => {
+                  const val = parseFloat(e.target.value);
+                  setRate(val);
+                  speechService.applyLivePlaybackRate(val);
+                }}
+                className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-[#0071e3]"
+              />
+            </div>
+
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+              💡 <strong>Mẹo nghe hiệu quả:</strong> Khi mới bắt đầu nghe bài mới, bạn hãy chọn mức{' '}
+              <strong className="text-emerald-600 dark:text-emerald-400">🐢 0.6x (Rất chậm)</strong> hoặc{' '}
+              <strong className="text-emerald-600 dark:text-emerald-400">🐢 0.75x (Chậm rãi)</strong> để nghe rõ từng âm tiết và âm nối; khi đã quen tai hãy tăng lên <strong>0.95x – 1.0x</strong>.
             </p>
           </div>
         </div>

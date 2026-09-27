@@ -27,13 +27,13 @@ export default function BinoSentenceExpansionCard({ expansionData, lineIndex = 0
   } = expansionData;
 
   // Xử lý phát âm audio qua speechService
-  const handlePlayAudio = (text, key) => {
+  const handlePlayAudio = (text, key, customSpeed = null) => {
     setPlayingSentence(key);
     try {
-      speechService.speakWord(text, 0.95);
-      setTimeout(() => {
+      const rate = customSpeed || speechService.preferences?.rate || 0.95;
+      speechService.speakWord(text, rate, () => {
         setPlayingSentence(null);
-      }, 3000);
+      });
     } catch {
       setPlayingSentence(null);
     }
@@ -186,6 +186,19 @@ export default function BinoSentenceExpansionCard({ expansionData, lineIndex = 0
                         <div className="flex items-center gap-1.5 shrink-0 self-end sm:self-center">
                           <button
                             type="button"
+                            onClick={() => handlePlayAudio(item.englishText, `var-slow-${idx}`, 0.7)}
+                            className={`px-2 py-1.5 rounded-xl text-[11px] font-extrabold transition-all ${
+                              playingSentence === `var-slow-${idx}`
+                                ? 'bg-emerald-600 text-white shadow-sm scale-105'
+                                : 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/60 hover:bg-emerald-100'
+                            }`}
+                            title="Nghe chậm rãi câu này (0.7x)"
+                          >
+                            🐢
+                          </button>
+
+                          <button
+                            type="button"
                             onClick={() => handlePlayAudio(item.englishText, `var-${idx}`)}
                             className={`p-2 rounded-xl transition-all ${
                               isItemPlaying
@@ -264,7 +277,7 @@ export default function BinoSentenceExpansionCard({ expansionData, lineIndex = 0
                 )}
 
                 {/* Output & Play button */}
-                <div className="p-2.5 rounded-xl bg-gradient-to-r from-amber-50/80 to-purple-50/80 dark:from-slate-900 dark:to-slate-850 border border-amber-200/60 dark:border-slate-700 flex items-center justify-between gap-3">
+                <div className="p-2.5 rounded-xl bg-gradient-to-r from-amber-50/80 to-purple-50/80 dark:from-slate-900 dark:to-slate-850 border border-amber-200/60 dark:border-slate-700 flex flex-wrap items-center justify-between gap-2.5">
                   <div className="text-xs font-black text-slate-800 dark:text-slate-100 overflow-hidden text-ellipsis">
                     "{fixedPrefix}
                     <span className="text-amber-600 dark:text-amber-400 underline font-black">
@@ -272,14 +285,24 @@ export default function BinoSentenceExpansionCard({ expansionData, lineIndex = 0
                     </span>
                     {fixedSuffix}"
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => handlePlayAudio(customConstructedSentence, 'custom')}
-                    className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-black text-xs shadow-sm flex items-center gap-1.5 shrink-0 active:scale-95 transition"
-                  >
-                    <Volume2 size={14} className={playingSentence === 'custom' ? 'animate-pulse' : ''} />
-                    <span>Nghe câu của bạn</span>
-                  </button>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => handlePlayAudio(customConstructedSentence, 'custom-slow', 0.7)}
+                      className="px-2.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs shadow-sm flex items-center gap-1 shrink-0 active:scale-95 transition"
+                      title="Nghe chậm rãi câu của bạn (0.7x)"
+                    >
+                      <span>🐢 Chậm</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handlePlayAudio(customConstructedSentence, 'custom')}
+                      className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-black text-xs shadow-sm flex items-center gap-1.5 shrink-0 active:scale-95 transition"
+                    >
+                      <Volume2 size={14} className={playingSentence === 'custom' ? 'animate-pulse' : ''} />
+                      <span>Nghe câu của bạn</span>
+                    </button>
+                  </div>
                 </div>
               </div>
 

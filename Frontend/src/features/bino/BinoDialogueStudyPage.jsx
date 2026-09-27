@@ -16,7 +16,7 @@ import { useBinoPlayerStore } from './components/BinoPlaylistModal';
 import BinoSentenceExpansionCard from './components/BinoSentenceExpansionCard';
 import BinoLearningGuideModal from './components/BinoLearningGuideModal';
 import { getExpansionsForLine } from './data/binoSentenceExpansions';
-import speechService from '../../utils/speechService';
+import speechService, { SPEECH_SPEED_PRESETS } from '../../utils/speechService';
 import toast from 'react-hot-toast';
 
 const LOCAL_FLASHCARD_KEY = 'vbace_local_flashcard_ids_v1';
@@ -78,10 +78,10 @@ export default function BinoDialogueStudyPage() {
     }).catch(() => {});
   }, []);
 
-  // Audio state
+  // Audio state (Đồng bộ tốc độ mặc định từ speechService)
   const [isPlayingAll, setIsPlayingAll] = useState(false);
   const [activeLineIndex, setActiveLineIndex] = useState(null);
-  const [audioSpeed, setAudioSpeed] = useState(0.95);
+  const [audioSpeed, setAudioSpeed] = useState(() => speechService.preferences?.rate || 0.95);
   const lineRefs = useRef({});
   const lessonRef = useRef(lesson);
   const audioSpeedRef = useRef(audioSpeed);
@@ -93,6 +93,31 @@ export default function BinoDialogueStudyPage() {
   useEffect(() => {
     audioSpeedRef.current = audioSpeed;
   }, [audioSpeed]);
+
+  useEffect(() => {
+    return speechService.subscribeRateChange((newRate) => {
+      setAudioSpeed(newRate);
+      audioSpeedRef.current = newRate;
+    });
+  }, []);
+
+  const handleChangeSpeed = (speed) => {
+    const updated = speechService.setLiveSpeed(speed);
+    setAudioSpeed(updated);
+    audioSpeedRef.current = updated;
+    const preset = SPEECH_SPEED_PRESETS.find((p) => Math.abs(p.value - updated) < 0.02);
+    if (updated <= 0.85) {
+      toast.success(`🐢 Tốc độ ${updated}x (${preset?.shortTag || 'Chậm rãi'}): Nghe kỹ từng âm`, {
+        id: 'bino-speed-toast',
+        duration: 1800
+      });
+    } else {
+      toast.success(`🎙️ Tốc độ ${updated}x (${preset?.shortTag || 'Tự nhiên'})`, {
+        id: 'bino-speed-toast',
+        duration: 1500
+      });
+    }
+  };
 
   // Repeat state & settings
   const [repeatCount, setRepeatCount] = useState(() => {
@@ -326,13 +351,13 @@ export default function BinoDialogueStudyPage() {
     speechService.speakLine({
       text,
       characterName,
-      speed: speed || audioSpeed,
+      speed: speed || audioSpeedRef.current || audioSpeed,
       forceCancel: true
     });
   };
 
-  const speakVocab = (word) => {
-    speechService.speakWord(word, audioSpeed);
+  const speakVocab = (word, speed = null) => {
+    speechService.speakWord(word, speed || audioSpeedRef.current || audioSpeed);
   };
 
   // Toggle từ vựng trong bộ Flashcard SRS (Bấm lần 1: Thêm vào Flashcard • Bấm lần 2: Thoát/Gỡ khỏi Flashcard — Phản hồi 0ms)
@@ -491,7 +516,7 @@ export default function BinoDialogueStudyPage() {
     speechService.speakLine({
       text: line.englishText,
       characterName: line.characterName,
-      speed: audioSpeed,
+      speed: audioSpeedRef.current || audioSpeed,
       metadata: {
         title: `${line.characterName}: "${line.englishText}"`,
         artist: `Chương ${lesson.chapterNumber} • Bài ${lesson.dialogueNumber}: ${lesson.title}`,
@@ -776,22 +801,34 @@ export default function BinoDialogueStudyPage() {
         <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100 dark:border-slate-800/80">
           
           <div className="flex flex-wrap items-center gap-2">
-            {/* Speed selector */}
-            <div className="flex items-center rounded-xl bg-slate-100 dark:bg-slate-800 p-1 text-[11px] font-bold border border-slate-200/60 dark:border-slate-700">
+            {/* Speed selector (Có chế độ đọc chậm rãi nghe kỹ 0.6x, 0.75x, 0.85x) */}
+            <div className="flex flex-wrap items-center rounded-xl bg-slate-100 dark:bg-slate-800 p-1 text-[11px] font-bold border border-slate-200/60 dark:border-slate-700 gap-0.5">
               <span className="text-[10px] text-slate-400 px-1.5 font-extrabold uppercase hidden sm:inline">Tốc độ:</span>
-              {[0.8, 0.95, 1.1].map(speed => (
-                <button
-                  key={speed}
-                  onClick={() => setAudioSpeed(speed)}
-                  className={`px-2 py-0.5 rounded-lg transition-all ${
-                    Math.abs(audioSpeed - speed) < 0.01
-                      ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm font-black'
-                      : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
-                  }`}
-                >
-                  {speed}x
-                </button>
-              ))}
+              {SPEECH_SPEED_PRESETS.map((preset) => {
+                const isSelected = Math.abs(audioSpeed - preset.value) < 0.02;
+                return (
+                  <button
+                    key={preset.value}
+                    type="button"
+                    onClick={() => handleChangeSpeed(preset.value)}
+                    title={preset.desc}
+                    className={`px-2 py-1 rounded-lg transition-all flex items-center gap-1 ${
+                      isSelected
+                        ? preset.isSlow
+                          ? 'bg-emerald-600 text-white shadow-sm font-black'
+                          : 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm font-black'
+                        : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+                    }`}
+                  >
+                    <span>{preset.isSlow ? `🐢 ${preset.label}` : preset.label}</span>
+                    {isSelected && (
+                      <span className="text-[10px] hidden md:inline opacity-90">
+                        ({preset.shortTag})
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
             </div>
 
             {/* Repeat Selector Popover */}
@@ -1089,9 +1126,17 @@ export default function BinoDialogueStudyPage() {
                         <button
                           onClick={() => speakVocab(v.word)}
                           className="p-2 rounded-xl text-slate-500 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950 transition-colors"
-                          title="Nghe phát âm chuẩn"
+                          title={`Nghe phát âm (${audioSpeed}x)`}
                         >
                           <Volume2 size={16} />
+                        </button>
+
+                        <button
+                          onClick={() => speakVocab(v.word, 0.65)}
+                          className="px-2 py-1.5 rounded-xl text-[11px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/60 border border-emerald-200/70 dark:border-emerald-800/60 transition-all active:scale-90"
+                          title="Nghe phát âm chậm rãi từng âm tiết (0.65x)"
+                        >
+                          🐢
                         </button>
 
                         <motion.button
@@ -1216,22 +1261,37 @@ export default function BinoDialogueStudyPage() {
                         )}
                       </div>
 
-                      {/* Line Audio Play Button */}
-                      <button
-                        onClick={() => {
-                          if (isPlayingAll) stopPlayback();
-                          setActiveLineIndex(idx);
-                          speakText(line.englishText, line.characterName);
-                        }}
-                        className={`p-2.5 rounded-xl transition-all shrink-0 active:scale-90 ${
-                          isActive
-                            ? 'text-white bg-amber-500 shadow-md shadow-amber-500/25'
-                            : 'text-slate-400 hover:text-amber-600 hover:bg-slate-100 dark:hover:bg-slate-700'
-                        }`}
-                        title="Nghe riêng câu này theo giọng nhân vật"
-                      >
-                        <Volume2 size={17} />
-                      </button>
+                      {/* Line Audio Play Buttons (Nghe tốc độ hiện tại + Nghe chậm rãi 0.7x) */}
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        <button
+                          onClick={() => {
+                            if (isPlayingAll) stopPlayback();
+                            setActiveLineIndex(idx);
+                            speakText(line.englishText, line.characterName, 0.7);
+                          }}
+                          className="px-2.5 py-2 rounded-xl text-[11px] font-extrabold text-emerald-700 dark:text-emerald-300 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/60 border border-emerald-200/80 dark:border-emerald-800/70 transition-all active:scale-90 flex items-center gap-1"
+                          title="Nghe chậm rãi câu này (0.7x) để nghe kỹ từng từ"
+                        >
+                          <span>🐢</span>
+                          <span className="hidden sm:inline">Chậm</span>
+                        </button>
+
+                        <button
+                          onClick={() => {
+                            if (isPlayingAll) stopPlayback();
+                            setActiveLineIndex(idx);
+                            speakText(line.englishText, line.characterName);
+                          }}
+                          className={`p-2.5 rounded-xl transition-all shrink-0 active:scale-90 ${
+                            isActive
+                              ? 'text-white bg-amber-500 shadow-md shadow-amber-500/25'
+                              : 'text-slate-400 hover:text-amber-600 hover:bg-slate-100 dark:hover:bg-slate-700'
+                          }`}
+                          title={`Nghe riêng câu này theo giọng nhân vật (${audioSpeed}x)`}
+                        >
+                          <Volume2 size={17} />
+                        </button>
+                      </div>
                     </div>
 
                     {/* BINO SENTENCE PATTERN SUBSTITUTION (VẬN DỤNG THỰC TẾ) */}
@@ -1346,7 +1406,14 @@ export default function BinoDialogueStudyPage() {
                         onClick={() => speakText(lesson.dialogueLines[roleplayStep].englishText, selectedRole)}
                         className="px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-200 flex items-center gap-1.5 shadow-sm active:scale-95"
                       >
-                        <Volume2 size={15} /> Nghe mẫu
+                        <Volume2 size={15} /> Nghe mẫu ({audioSpeed}x)
+                      </button>
+
+                      <button
+                        onClick={() => speakText(lesson.dialogueLines[roleplayStep].englishText, selectedRole, 0.7)}
+                        className="px-4 py-3 rounded-2xl border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/60 text-xs font-bold text-emerald-700 dark:text-emerald-300 flex items-center gap-1.5 shadow-sm active:scale-95"
+                      >
+                        <span>🐢 Nghe chậm rãi (0.7x)</span>
                       </button>
                     </div>
 
@@ -1358,12 +1425,21 @@ export default function BinoDialogueStudyPage() {
                     )}
                   </div>
                 ) : (
-                  <button
-                    onClick={() => speakText(lesson.dialogueLines[roleplayStep].englishText, lesson.dialogueLines[roleplayStep].characterName)}
-                    className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-md shadow-blue-500/20 active:scale-95 transition-all"
-                  >
-                    <Volume2 size={16} /> Phát giọng {lesson.dialogueLines[roleplayStep].characterName}
-                  </button>
+                  <div className="flex flex-wrap items-center gap-2.5">
+                    <button
+                      onClick={() => speakText(lesson.dialogueLines[roleplayStep].englishText, lesson.dialogueLines[roleplayStep].characterName)}
+                      className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-md shadow-blue-500/20 active:scale-95 transition-all"
+                    >
+                      <Volume2 size={16} /> Phát giọng {lesson.dialogueLines[roleplayStep].characterName} ({audioSpeed}x)
+                    </button>
+
+                    <button
+                      onClick={() => speakText(lesson.dialogueLines[roleplayStep].englishText, lesson.dialogueLines[roleplayStep].characterName, 0.7)}
+                      className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-emerald-500/20 active:scale-95 transition-all"
+                    >
+                      <span>🐢 Nghe chậm rãi (0.7x)</span>
+                    </button>
+                  </div>
                 )}
 
                 {/* Navigation in roleplay */}
@@ -1422,17 +1498,33 @@ export default function BinoDialogueStudyPage() {
           </div>
 
           <div className="p-5 sm:p-6 rounded-2xl bg-slate-50 dark:bg-slate-850 border border-slate-200 dark:border-slate-700 space-y-4">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between gap-2.5">
               <span className="text-xs font-bold text-slate-400">
                 Câu {dictationIndex + 1} / {lesson.dialogueLines.length}
               </span>
 
-              <button
-                onClick={() => speakText(currentDictationLine.englishText, currentDictationLine.characterName, 0.85)}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs flex items-center gap-2 shadow-md shadow-blue-500/20 active:scale-95 transition-all"
-              >
-                <Volume2 size={16} /> Nghe Lại (Chậm 0.85x)
-              </button>
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  onClick={() => speakText(currentDictationLine.englishText, currentDictationLine.characterName, 0.95)}
+                  className="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-md shadow-blue-500/20 active:scale-95 transition-all"
+                >
+                  <Volume2 size={15} /> Nghe Tự Nhiên (0.95x)
+                </button>
+
+                <button
+                  onClick={() => speakText(currentDictationLine.englishText, currentDictationLine.characterName, 0.75)}
+                  className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-md shadow-emerald-500/20 active:scale-95 transition-all"
+                >
+                  <span>🐢 Nghe Chậm Rãi (0.75x)</span>
+                </button>
+
+                <button
+                  onClick={() => speakText(currentDictationLine.englishText, currentDictationLine.characterName, 0.6)}
+                  className="px-3 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs flex items-center gap-1 shadow-md shadow-amber-500/20 active:scale-95 transition-all"
+                >
+                  <span>🐌 Rất Chậm (0.6x)</span>
+                </button>
+              </div>
             </div>
 
             {/* Input area */}

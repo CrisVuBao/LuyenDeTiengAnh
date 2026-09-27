@@ -10,7 +10,7 @@ import {
   Music, Sliders, ExternalLink
 } from 'lucide-react';
 import binoApi from '../../../api/binoApi';
-import speechService from '../../../utils/speechService';
+import speechService, { SPEECH_SPEED_PRESETS } from '../../../utils/speechService';
 import VoiceSettingsModal from '../../../components/VoiceSettingsModal';
 import toast from 'react-hot-toast';
 
@@ -111,7 +111,7 @@ export default function BinoPlaylistModal() {
   const [currentLessonIdx, setCurrentLessonIdx] = useState(0);
   const [currentLineIdx, setCurrentLineIdx] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [audioSpeed, setAudioSpeed] = useState(0.95);
+  const [audioSpeed, setAudioSpeed] = useState(() => speechService.preferences?.rate || 0.95);
   const [repeatMode, setRepeatMode] = useState('all'); // 'all' (lặp toàn playlist), 'one' (lặp 1 bài), 'none' (phát xong dừng)
   const [showVietsub, setShowVietsub] = useState(true);
   const [activeView, setActiveView] = useState('player'); // 'player' hoặc 'selector'
@@ -120,6 +120,7 @@ export default function BinoPlaylistModal() {
 
   // Refs chống race-condition và stale closures
   const isPlayingRef = useRef(false);
+  const audioSpeedRef = useRef(audioSpeed);
   const playSessionTokenRef = useRef(0);
   const stepTokenRef = useRef(0);
   const currentLessonIdxRef = useRef(0);
@@ -128,6 +129,35 @@ export default function BinoPlaylistModal() {
   const timeoutTimerRef = useRef(null);
   const lineRefs = useRef({});
   const prevPathnameRef = useRef(location.pathname);
+
+  useEffect(() => {
+    audioSpeedRef.current = audioSpeed;
+  }, [audioSpeed]);
+
+  useEffect(() => {
+    return speechService.subscribeRateChange((newRate) => {
+      setAudioSpeed(newRate);
+      audioSpeedRef.current = newRate;
+    });
+  }, []);
+
+  const handleChangeSpeed = (speed) => {
+    const updated = speechService.setLiveSpeed(speed);
+    setAudioSpeed(updated);
+    audioSpeedRef.current = updated;
+    const preset = SPEECH_SPEED_PRESETS.find((p) => Math.abs(p.value - updated) < 0.02);
+    if (updated <= 0.85) {
+      toast.success(`🐢 Tốc độ ${updated}x (${preset?.shortTag || 'Chậm rãi'}): Nghe kỹ từng âm`, {
+        id: 'bino-speed-toast',
+        duration: 1800
+      });
+    } else {
+      toast.success(`🎙️ Tốc độ ${updated}x (${preset?.shortTag || 'Tự nhiên'})`, {
+        id: 'bino-speed-toast',
+        duration: 1500
+      });
+    }
+  };
 
   // Khi người dùng chuyển sang trang khác trong lúc Modal đang mở full -> Tự động thu nhỏ xuống góc màn hình và GIỮ NGUYÊN phát nhạc!
   useEffect(() => {
@@ -303,7 +333,7 @@ export default function BinoPlaylistModal() {
     speechService.speakLine({
       text: line.englishText,
       characterName: line.characterName,
-      speed: overrideSpeed || audioSpeed,
+      speed: overrideSpeed || audioSpeedRef.current || audioSpeed,
       metadata: {
         title: `${line.characterName}: "${line.englishText}"`,
         artist: `Chương ${lesson.chapterNumber} • Bài ${lesson.dialogueNumber}: ${lesson.title}`,
@@ -928,21 +958,28 @@ export default function BinoPlaylistModal() {
 
                 {/* Bottom Media Controls Bar */}
                 <div className="p-3.5 sm:p-4 border-t border-slate-200/80 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-850 shrink-0 flex flex-wrap items-center justify-between gap-3 shadow-inner">
-                  {/* Speed selector */}
-                  <div className="flex items-center rounded-xl bg-white dark:bg-slate-800 p-1 text-[11px] font-bold border border-slate-200 dark:border-slate-700 shadow-sm">
-                    {[0.8, 0.95, 1.1].map(speed => (
-                      <button
-                        key={speed}
-                        onClick={() => setAudioSpeed(speed)}
-                        className={`px-2 py-0.5 rounded-lg transition-colors ${
-                          Math.abs(audioSpeed - speed) < 0.01
-                            ? 'bg-amber-500 text-white shadow-sm'
-                            : 'text-slate-500 hover:text-slate-800 dark:hover:text-white'
-                        }`}
-                      >
-                        {speed}x
-                      </button>
-                    ))}
+                  {/* Speed selector (Hỗ trợ tốc độ chậm rãi nghe kỹ 0.6x, 0.75x, 0.85x) */}
+                  <div className="flex flex-wrap items-center rounded-xl bg-white dark:bg-slate-800 p-1 text-[11px] font-bold border border-slate-200 dark:border-slate-700 shadow-sm gap-0.5">
+                    {SPEECH_SPEED_PRESETS.map((preset) => {
+                      const isSelected = Math.abs(audioSpeed - preset.value) < 0.02;
+                      return (
+                        <button
+                          key={preset.value}
+                          type="button"
+                          onClick={() => handleChangeSpeed(preset.value)}
+                          title={preset.desc}
+                          className={`px-2 py-0.5 rounded-lg transition-colors flex items-center gap-0.5 ${
+                            isSelected
+                              ? preset.isSlow
+                                ? 'bg-emerald-600 text-white shadow-sm font-black'
+                                : 'bg-amber-500 text-white shadow-sm font-black'
+                              : 'text-slate-500 hover:text-slate-800 dark:hover:text-white'
+                          }`}
+                        >
+                          <span>{preset.isSlow ? `🐢 ${preset.label}` : preset.label}</span>
+                        </button>
+                      );
+                    })}
                   </div>
 
                   {/* Main Playback Buttons */}

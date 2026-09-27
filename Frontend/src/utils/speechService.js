@@ -178,6 +178,54 @@ export const STUDIO_NEURAL_VOICES = [
   }
 ];
 
+/**
+ * Các mức tốc độ đọc từ rất chậm rãi (nghe kỹ từng âm) đến nhanh phản xạ
+ */
+export const SPEECH_SPEED_PRESETS = [
+  {
+    value: 0.6,
+    label: '0.6x',
+    shortTag: 'Rất chậm',
+    desc: 'Rất chậm rãi • Nghe kỹ từng âm tiết & âm nối',
+    isSlow: true
+  },
+  {
+    value: 0.75,
+    label: '0.75x',
+    shortTag: 'Chậm rãi',
+    desc: 'Chậm rãi • Lý tưởng khi mới nghe bài lần đầu',
+    isSlow: true
+  },
+  {
+    value: 0.85,
+    label: '0.85x',
+    shortTag: 'Hơi chậm',
+    desc: 'Hơi chậm • Dễ bắt nhịp & tập nhại theo (Shadowing)',
+    isSlow: true
+  },
+  {
+    value: 0.95,
+    label: '0.95x',
+    shortTag: 'Tự nhiên',
+    desc: 'Tự nhiên • Rõ chữ, chuẩn ngữ điệu khuyên dùng',
+    isSlow: false
+  },
+  {
+    value: 1.0,
+    label: '1.0x',
+    shortTag: 'Bản xứ',
+    desc: 'Bản xứ • Tốc độ giao tiếp đời thực',
+    isSlow: false
+  },
+  {
+    value: 1.15,
+    label: '1.15x',
+    shortTag: 'Nhanh',
+    desc: 'Nhanh • Thử thách phản xạ nghe nâng cao',
+    isSlow: false
+  }
+];
+
 const defaultPreferences = {
   binoVoiceURI: 'en-US-AndrewMultilingualNeural',
   femaleVoiceURI: 'en-US-AvaMultilingualNeural',
@@ -195,6 +243,7 @@ class SpeechService {
     this.inflightFetches = new Map();
     this.activeUtterances = [];
     this.playToken = 0;
+    this.rateListeners = new Set();
   }
 
   loadPreferences() {
@@ -204,9 +253,13 @@ class SpeechService {
         const parsed = JSON.parse(saved);
         // Đảm bảo mã giọng luôn thuộc chuẩn Neural nếu dữ liệu cũ lưu tên giọng local
         const validIds = new Set(STUDIO_NEURAL_VOICES.map((v) => v.id));
+        const parsedRate = parseFloat(parsed.rate);
         return {
           ...defaultPreferences,
           ...parsed,
+          rate: !Number.isNaN(parsedRate) && parsedRate >= 0.5 && parsedRate <= 1.5
+            ? parsedRate
+            : defaultPreferences.rate,
           binoVoiceURI: validIds.has(parsed.binoVoiceURI)
             ? parsed.binoVoiceURI
             : defaultPreferences.binoVoiceURI,
@@ -231,6 +284,49 @@ class SpeechService {
     } catch {
       // ignore
     }
+    if (newPrefs.rate !== undefined) {
+      this.applyLivePlaybackRate(newPrefs.rate);
+      this.notifyRateListeners(newPrefs.rate);
+    }
+  }
+
+  /**
+   * Đổi tốc độ đọc ngay lập tức (kể cả khi đang phát giữa câu) và đồng bộ toàn hệ thống
+   */
+  setLiveSpeed(newRate) {
+    const clamped = Math.max(0.5, Math.min(1.5, parseFloat(newRate) || 0.95));
+    this.savePreferences({ rate: clamped });
+    return clamped;
+  }
+
+  applyLivePlaybackRate(rate) {
+    const clamped = Math.max(0.5, Math.min(1.5, parseFloat(rate) || 0.95));
+    if (this.ttsAudio) {
+      try {
+        this.ttsAudio.preservesPitch = true;
+        this.ttsAudio.mozPreservesPitch = true;
+        this.ttsAudio.webkitPreservesPitch = true;
+        this.ttsAudio.playbackRate = clamped;
+      } catch {
+        // ignore
+      }
+    }
+  }
+
+  subscribeRateChange(listener) {
+    if (typeof listener !== 'function') return () => {};
+    this.rateListeners.add(listener);
+    return () => this.rateListeners.delete(listener);
+  }
+
+  notifyRateListeners(newRate) {
+    this.rateListeners.forEach((fn) => {
+      try {
+        fn(newRate);
+      } catch {
+        // ignore
+      }
+    });
   }
 
   /**
@@ -445,6 +541,9 @@ class SpeechService {
       const audio = new Audio();
       audio.preload = 'auto';
       audio.playsInline = true;
+      audio.preservesPitch = true;
+      audio.mozPreservesPitch = true;
+      audio.webkitPreservesPitch = true;
       audio.setAttribute('playsinline', 'true');
       audio.setAttribute('webkit-playsinline', 'true');
       this.ttsAudio = audio;
@@ -596,15 +695,19 @@ class SpeechService {
 
       if (this.isStopped || this.playToken !== token) return;
 
+      const effectiveRate = Math.max(0.5, Math.min(1.5, speed || this.preferences.rate || 0.95));
       const wordCount = cleanText.split(/\s+/).length;
-      const maxWaitMs = Math.max(5000, (wordCount * 800) / (speed || 0.95) + 4500);
+      const maxWaitMs = Math.max(6000, (wordCount * 900) / effectiveRate + 5000);
       fallbackTimer = setTimeout(() => {
         finishUp(onEnd);
       }, maxWaitMs);
 
       audio.pause();
       audio.src = srcUrl;
-      audio.playbackRate = Math.max(0.65, Math.min(1.5, speed || this.preferences.rate || 0.95));
+      audio.preservesPitch = true;
+      audio.mozPreservesPitch = true;
+      audio.webkitPreservesPitch = true;
+      audio.playbackRate = effectiveRate;
 
       audio.onplay = () => {
         if (this.playToken === token) onStart?.();
