@@ -304,6 +304,9 @@ export default function BinoDialogueStudyPage() {
             }
           });
           setAddedVocabs(vocabMap);
+          if (res.data.dialogueLines?.length) {
+            speechService.preloadDialogueLines(res.data.dialogueLines, 0, 3);
+          }
           // Tự động tải trước bài học kế tiếp vào RAM để bấm "Bài tiếp" trong 0ms
           const nextId = Number(id) + 1;
           if (nextId <= 72) {
@@ -481,6 +484,9 @@ export default function BinoDialogueStudyPage() {
 
     const line = lines[index];
     const currentStep = ++stepTokenRef.current;
+
+    // Tải trước (pre-fetch) 3 câu tiếp theo vào RAM để chuyển câu phát tức thì 0ms
+    speechService.preloadDialogueLines(lines, index + 1, 3);
 
     speechService.speakLine({
       text: line.englishText,

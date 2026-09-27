@@ -298,6 +298,8 @@ export default function BinoPlaylistModal() {
     const line = lesson.dialogueLines[lineIdx];
     const currentStep = ++stepTokenRef.current;
 
+    speechService.preloadDialogueLines(lesson.dialogueLines, lineIdx + 1, 3);
+
     speechService.speakLine({
       text: line.englishText,
       characterName: line.characterName,
