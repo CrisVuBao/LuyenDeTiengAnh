@@ -226,7 +226,7 @@ public static class EdgeNeuralTtsEngine
             $"X-Timestamp:{timestamp}\r\n" +
             "Content-Type:application/json; charset=utf-8\r\n" +
             "Path:speech.config\r\n\r\n" +
-            "{\"context\":{\"synthesis\":{\"audio\":{\"metadataoptions\":{\"sentenceBoundaryEnabled\":\"false\",\"wordBoundaryEnabled\":\"false\"},\"outputFormat\":\"audio-24khz-48kbitrate-mono-mp3\"}}}}\r\n";
+            "{\"context\":{\"synthesis\":{\"audio\":{\"metadataoptions\":{\"sentenceBoundaryEnabled\":\"false\",\"wordBoundaryEnabled\":\"false\"},\"outputFormat\":\"audio-24khz-96kbitrate-mono-mp3\"}}}}\r\n";
 
         await ws.SendAsync(
             Encoding.UTF8.GetBytes(configMsg),
@@ -239,7 +239,7 @@ public static class EdgeNeuralTtsEngine
         var ssml =
             "<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='en-US'>" +
             $"<voice name='{voice}'>" +
-            $"<prosody pitch='{pitch}' rate='{rate}' volume='+0%'>" +
+            $"<prosody pitch='{pitch}' rate='{rate}' volume='+25%'>" +
             escapedText +
             "</prosody></voice></speak>";
 

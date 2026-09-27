@@ -469,25 +469,25 @@ class SpeechService {
   }
 
   /**
-   * Tạo URL API TTS cho câu thoại & giọng đọc cụ thể
+   * Tạo URL API TTS cho câu thoại & giọng đọc cụ thể kèm tốc độ AI chuẩn
    */
-  buildTtsApiUrl(text, voiceId) {
+  buildTtsApiUrl(text, voiceId, rateParam = '+0%') {
     const cleanText = (text || '').trim();
     const safeVoice = voiceId || defaultPreferences.binoVoiceURI;
     const baseUrl = import.meta.env.VITE_API_URL || '/api';
-    return `${baseUrl}/bino/tts?text=${encodeURIComponent(cleanText)}&voice=${encodeURIComponent(safeVoice)}`;
+    return `${baseUrl}/bino/tts?text=${encodeURIComponent(cleanText)}&voice=${encodeURIComponent(safeVoice)}&rate=${encodeURIComponent(rateParam)}`;
   }
 
   /**
    * Tải trước (Pre-fetch) âm thanh Studio Neural vào bộ nhớ đệm Blob URL
-   * Giúp chuyển câu hội thoại phát ngay lập tức (0ms delay)
+   * Giúp chuyển câu hội thoại phát ngay lập tức (0ms delay) với chất lượng Studio 96kbps
    */
-  async prefetchAudioBlobUrl(text, voiceId) {
+  async prefetchAudioBlobUrl(text, voiceId, rateParam = '+0%') {
     const cleanText = (text || '').trim();
     if (!cleanText) return null;
 
     const safeVoice = voiceId || defaultPreferences.binoVoiceURI;
-    const cacheKey = `${safeVoice}|${cleanText}`;
+    const cacheKey = `${safeVoice}|${rateParam}|${cleanText}`;
 
     if (this.audioBlobCache.has(cacheKey)) {
       return this.audioBlobCache.get(cacheKey);
@@ -497,7 +497,7 @@ class SpeechService {
       return this.inflightFetches.get(cacheKey);
     }
 
-    const url = this.buildTtsApiUrl(cleanText, safeVoice);
+    const url = this.buildTtsApiUrl(cleanText, safeVoice, rateParam);
     const promise = fetch(url)
       .then(async (res) => {
         if (!res.ok) throw new Error(`TTS HTTP ${res.status}`);
@@ -529,17 +529,20 @@ class SpeechService {
    */
   preloadDialogueLines(lines = [], startIndex = 0, count = 4) {
     if (!Array.isArray(lines) || lines.length === 0) return;
+    const effectiveRate = this.preferences.rate || 0.95;
+    const percent = Math.round((effectiveRate - 1.0) * 100);
+    const rateParam = percent >= 0 ? `+${percent}%` : `${percent}%`;
     const slice = lines.slice(startIndex, startIndex + count);
     slice.forEach((line) => {
       if (!line?.englishText) return;
       const voiceId = this.resolveNeuralVoiceId(line.characterName);
-      this.prefetchAudioBlobUrl(line.englishText, voiceId).catch(() => {});
+      this.prefetchAudioBlobUrl(line.englishText, voiceId, rateParam).catch(() => {});
     });
   }
 
   /**
-   * Tạo luồng âm thanh nền siêu nhẹ (Keep-Alive WAV) và trình phát HTML5 <audio>
-   * Giúp iOS Safari, Android Chrome & Samsung Browser KHÔNG ngắt âm thanh khi tắt màn hình điện thoại
+   * Khởi tạo trình phát HTML5 <audio> chuẩn âm lượng tối đa và luồng chạy ngầm 44.1kHz thuần im lặng
+   * Loại bỏ hoàn toàn tạp âm 8000Hz gây hạ âm lượng và bẹt tiếng trên loa điện thoại
    */
   ensureBackgroundAudioEngine() {
     if (typeof window === 'undefined') return;
@@ -547,18 +550,18 @@ class SpeechService {
     if (!this.ttsAudio) {
       const audio = new Audio();
       audio.preload = 'auto';
+      audio.volume = 1.0;
       audio.playsInline = true;
-      audio.preservesPitch = true;
-      audio.mozPreservesPitch = true;
-      audio.webkitPreservesPitch = true;
       audio.setAttribute('playsinline', 'true');
       audio.setAttribute('webkit-playsinline', 'true');
       this.ttsAudio = audio;
     }
 
     if (!this.keepAliveAudio) {
-      const sampleRate = 8000;
-      const numSamples = sampleRate;
+      // Dùng chuẩn 44,100 Hz chuẩn đa phương tiện CD và 100% im lặng (all zeroes)
+      // Tuyệt đối không dùng 8000 Hz hay sóng vuông vì sẽ làm điện thoại tưởng đang gọi điện thoại (Voice Call SCO)
+      const sampleRate = 44100;
+      const numSamples = sampleRate; // 1 giây im lặng chuẩn
       const buffer = new ArrayBuffer(44 + numSamples * 2);
       const view = new DataView(buffer);
       const writeStr = (offset, str) => {
@@ -569,21 +572,22 @@ class SpeechService {
       writeStr(8, 'WAVE');
       writeStr(12, 'fmt ');
       view.setUint32(16, 16, true);
-      view.setUint16(20, 1, true);
-      view.setUint16(22, 1, true);
+      view.setUint16(20, 1, true); // PCM
+      view.setUint16(22, 1, true); // Mono
       view.setUint32(24, sampleRate, true);
       view.setUint32(28, sampleRate * 2, true);
       view.setUint16(32, 2, true);
       view.setUint16(34, 16, true);
       writeStr(36, 'data');
       view.setUint32(40, numSamples * 2, true);
+      // Ghi toàn bộ là 0 (Im lặng hoàn toàn 100%, không phát sinh tần số rè hay nhiễu)
       for (let i = 0; i < numSamples; i++) {
-        view.setInt16(44 + i * 2, i % 2 === 0 ? 1 : -1, true);
+        view.setInt16(44 + i * 2, 0, true);
       }
       const blob = new Blob([buffer], { type: 'audio/wav' });
       const keepAlive = new Audio(URL.createObjectURL(blob));
       keepAlive.loop = true;
-      keepAlive.volume = 0.01;
+      keepAlive.volume = 0.0001;
       keepAlive.playsInline = true;
       keepAlive.setAttribute('playsinline', 'true');
       this.keepAliveAudio = keepAlive;
@@ -692,29 +696,35 @@ class SpeechService {
     };
 
     try {
+      // Chuyển đổi tốc độ số sang chuẩn rate của Edge Neural TTS (+0%, -25%, -40%,...)
+      // Giúp âm thanh được AI tính toán tổng hợp tự nhiên ở đúng nhịp độ,
+      // hoàn toàn không cần điện thoại chạy bộ time-stretch (vốn gây tiếng bẹt, nghẹt, biến dạng và sụt âm lượng trên mobile)
+      const effectiveRate = Math.max(0.5, Math.min(1.5, speed || this.preferences.rate || 0.95));
+      const percent = Math.round((effectiveRate - 1.0) * 100);
+      const rateParam = percent >= 0 ? `+${percent}%` : `${percent}%`;
+
       // Ưu tiên lấy từ Blob Cache (0ms) hoặc tải stream từ EdgeNeuralTtsEngine
       let srcUrl = null;
       try {
-        srcUrl = await this.prefetchAudioBlobUrl(cleanText, voiceId);
+        srcUrl = await this.prefetchAudioBlobUrl(cleanText, voiceId, rateParam);
       } catch {
-        srcUrl = this.buildTtsApiUrl(cleanText, voiceId);
+        srcUrl = this.buildTtsApiUrl(cleanText, voiceId, rateParam);
       }
 
       if (this.isStopped || this.playToken !== token) return;
 
-      const effectiveRate = Math.max(0.5, Math.min(1.5, speed || this.preferences.rate || 0.95));
       const wordCount = cleanText.split(/\s+/).length;
-      const maxWaitMs = Math.max(6000, (wordCount * 900) / effectiveRate + 5000);
+      const maxWaitMs = Math.max(6000, (wordCount * 1100) / effectiveRate + 6000);
       fallbackTimer = setTimeout(() => {
         finishUp(onEnd);
       }, maxWaitMs);
 
       audio.pause();
       audio.src = srcUrl;
-      audio.preservesPitch = true;
-      audio.mozPreservesPitch = true;
-      audio.webkitPreservesPitch = true;
-      audio.playbackRate = effectiveRate;
+      audio.volume = 1.0;
+      // Phát trực tiếp 1.0x vì âm thanh đã chuẩn tốc độ AI ngay từ backend!
+      // Loại bỏ hoàn toàn pitch-stretching trên di động
+      audio.playbackRate = 1.0;
 
       audio.onplay = () => {
         if (this.playToken === token) onStart?.();
@@ -858,6 +868,9 @@ class SpeechService {
    */
   preloadReflexSentences(sentences = [], startIndex = 0, count = 5) {
     if (!Array.isArray(sentences) || sentences.length === 0) return;
+    const effectiveRate = this.preferences.rate || 0.95;
+    const percent = Math.round((effectiveRate - 1.0) * 100);
+    const rateParam = percent >= 0 ? `+${percent}%` : `${percent}%`;
     const slice = sentences.slice(startIndex, startIndex + count);
     slice.forEach((item) => {
       const enText = typeof item === 'string' ? item : item?.en;
@@ -865,7 +878,7 @@ class SpeechService {
       const num = typeof item === 'object' && typeof item?.number === 'number' ? item.number : 0;
       const charName = num % 2 === 1 ? 'AMY' : 'BINO';
       const voiceId = this.resolveNeuralVoiceId(charName);
-      this.prefetchAudioBlobUrl(enText, voiceId).catch(() => {});
+      this.prefetchAudioBlobUrl(enText, voiceId, rateParam).catch(() => {});
     });
   }
 
