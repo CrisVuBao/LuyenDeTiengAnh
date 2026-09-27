@@ -1,7 +1,38 @@
 import { create } from 'zustand';
-import reflex50Data from '../data/reflex50Data.json';
 
 const STORAGE_KEY = 'vbace_reflex50_progress_v1';
+const TOTAL_UNITS = 50;
+const SENTENCES_PER_UNIT = 30;
+
+// Lazy-loaded cache cho toàn bộ 1.500 câu (chỉ tải khi vào trang học chi tiết hoặc tìm kiếm sâu)
+let fullDataCache = null;
+let fullDataPromise = null;
+
+export function peekReflex50FullData() {
+  return fullDataCache;
+}
+
+export function loadReflex50FullData() {
+  if (fullDataCache) return Promise.resolve(fullDataCache);
+  if (!fullDataPromise) {
+    fullDataPromise = import('../data/reflex50Data.json').then((mod) => {
+      fullDataCache = mod.default || mod;
+      return fullDataCache;
+    });
+  }
+  return fullDataPromise;
+}
+
+// Tạo danh sách 30 ID câu của 1 Unit (u1-s1 .. u50-s30) trong O(1) mà không cần bundle 1.28MB JSON vào Store
+function getUnitSentenceIds(unitNumber) {
+  const u = Number(unitNumber);
+  if (!u || u < 1 || u > TOTAL_UNITS) return [];
+  const ids = new Array(SENTENCES_PER_UNIT);
+  for (let i = 1; i <= SENTENCES_PER_UNIT; i++) {
+    ids[i - 1] = `u${u}-s${i}`;
+  }
+  return ids;
+}
 
 const getTodayKey = () => new Date().toISOString().slice(0, 10);
 
@@ -15,7 +46,11 @@ const loadInitialState = () => {
   }
 };
 
-const saveStateToStorage = (state) => {
+let pendingSaveTimer = null;
+let latestPendingState = null;
+
+const flushStateToStorage = (state) => {
+  if (!state) return;
   try {
     const payload = {
       masteredIds: state.masteredIds,
@@ -32,6 +67,25 @@ const saveStateToStorage = (state) => {
     // ignore storage quota errors
   }
 };
+
+// Ghi xuống localStorage bất đồng bộ (Non-blocking UI Thread)
+const saveStateToStorage = (state) => {
+  latestPendingState = state;
+  if (pendingSaveTimer) clearTimeout(pendingSaveTimer);
+  pendingSaveTimer = setTimeout(() => {
+    pendingSaveTimer = null;
+    flushStateToStorage(latestPendingState);
+  }, 120);
+};
+
+if (typeof window !== 'undefined') {
+  window.addEventListener('beforeunload', () => {
+    if (pendingSaveTimer && latestPendingState) {
+      clearTimeout(pendingSaveTimer);
+      flushStateToStorage(latestPendingState);
+    }
+  });
+}
 
 // Chuẩn hóa tiếng Anh khi chấm điểm viết & nói (chấp nhận viết tắt phổ biến)
 export function normalizeEnglishForComparison(text = '') {
@@ -235,8 +289,8 @@ export const useReflex50Store = create((set, get) => ({
   },
 
   markUnitMastered: (unitNumber, mastered = true) => {
-    const unit = reflex50Data.units.find((u) => u.unitNumber === Number(unitNumber));
-    if (!unit) return;
+    const ids = getUnitSentenceIds(unitNumber);
+    if (ids.length === 0) return;
     set((state) => {
       const nextMastered = { ...state.masteredIds };
       const nextWeak = { ...state.weakIds };
@@ -244,13 +298,13 @@ export const useReflex50Store = create((set, get) => ({
       const nextDailyLog = { ...state.dailyLog };
       let addedCount = 0;
 
-      for (const s of unit.sentences) {
+      for (const id of ids) {
         if (mastered) {
-          if (!nextMastered[s.id]) addedCount++;
-          nextMastered[s.id] = true;
-          delete nextWeak[s.id];
+          if (!nextMastered[id]) addedCount++;
+          nextMastered[id] = true;
+          delete nextWeak[id];
         } else {
-          delete nextMastered[s.id];
+          delete nextMastered[id];
         }
       }
 
@@ -366,19 +420,19 @@ export const useReflex50Store = create((set, get) => ({
   },
 
   resetUnitProgress: (unitNumber) => {
-    const unit = reflex50Data.units.find((u) => u.unitNumber === Number(unitNumber));
-    if (!unit) return;
+    const ids = getUnitSentenceIds(unitNumber);
+    if (ids.length === 0) return;
     set((state) => {
       const nextMastered = { ...state.masteredIds };
       const nextWeak = { ...state.weakIds };
       const nextWriting = { ...state.writingHistory };
       const nextSpeaking = { ...state.speakingHistory };
 
-      for (const s of unit.sentences) {
-        delete nextMastered[s.id];
-        delete nextWeak[s.id];
-        delete nextWriting[s.id];
-        delete nextSpeaking[s.id];
+      for (const id of ids) {
+        delete nextMastered[id];
+        delete nextWeak[id];
+        delete nextWriting[id];
+        delete nextSpeaking[id];
       }
 
       const next = {
@@ -410,15 +464,15 @@ export const useReflex50Store = create((set, get) => ({
 
   getUnitStats: (unitNumber) => {
     const state = get();
-    const unit = reflex50Data.units.find((u) => u.unitNumber === Number(unitNumber));
-    if (!unit) {
+    const ids = getUnitSentenceIds(unitNumber);
+    if (ids.length === 0) {
       return {
         masteredCount: 0,
         starredCount: 0,
         weakCount: 0,
         writtenCount: 0,
         spokenCount: 0,
-        total: 30,
+        total: SENTENCES_PER_UNIT,
         percent: 0,
         isCompleted: false
       };
@@ -430,15 +484,15 @@ export const useReflex50Store = create((set, get) => ({
     let writtenCount = 0;
     let spokenCount = 0;
 
-    for (const s of unit.sentences) {
-      if (state.masteredIds[s.id]) masteredCount++;
-      if (state.starredIds[s.id]) starredCount++;
-      if (state.weakIds[s.id]) weakCount++;
-      if (state.writingHistory[s.id]?.attempts > 0) writtenCount++;
-      if (state.speakingHistory[s.id]?.attempts > 0) spokenCount++;
+    for (const id of ids) {
+      if (state.masteredIds[id]) masteredCount++;
+      if (state.starredIds[id]) starredCount++;
+      if (state.weakIds[id]) weakCount++;
+      if (state.writingHistory[id]?.attempts > 0) writtenCount++;
+      if (state.speakingHistory[id]?.attempts > 0) spokenCount++;
     }
 
-    const total = unit.sentences.length || 30;
+    const total = ids.length || SENTENCES_PER_UNIT;
     const percent = Math.round((masteredCount / total) * 100);
     return {
       masteredCount,
@@ -463,19 +517,22 @@ export const useReflex50Store = create((set, get) => ({
 
     let completedUnits = 0;
     let activeUnits = 0;
-    for (const u of reflex50Data.units) {
-      const mCount = u.sentences.filter((s) => state.masteredIds[s.id]).length;
-      if (mCount >= u.sentences.length) completedUnits++;
+    for (let u = 1; u <= TOTAL_UNITS; u++) {
+      let mCount = 0;
+      for (let s = 1; s <= SENTENCES_PER_UNIT; s++) {
+        if (state.masteredIds[`u${u}-s${s}`]) mCount++;
+      }
+      if (mCount >= SENTENCES_PER_UNIT) completedUnits++;
       else if (mCount > 0) activeUnits++;
     }
 
     return {
       totalMastered,
-      totalSentences: 1500,
-      overallPercent: Math.round((totalMastered / 1500) * 100),
+      totalSentences: TOTAL_UNITS * SENTENCES_PER_UNIT,
+      overallPercent: Math.round((totalMastered / (TOTAL_UNITS * SENTENCES_PER_UNIT)) * 100),
       completedUnits,
       activeUnits,
-      totalUnits: 50,
+      totalUnits: TOTAL_UNITS,
       totalStarred,
       totalWeak,
       totalWritten,

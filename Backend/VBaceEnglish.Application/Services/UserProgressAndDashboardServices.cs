@@ -342,17 +342,11 @@ public class DashboardService : IDashboardService
 
     private async Task<List<ApplicationUser>> GetNonAdminUsersAsync()
     {
-        var allUsers = _userManager.Users.ToList();
-        var students = new List<ApplicationUser>();
-        foreach (var u in allUsers)
-        {
-            var roles = await _userManager.GetRolesAsync(u);
-            if (!roles.Contains(UserRole.Admin.ToString()))
-            {
-                students.Add(u);
-            }
-        }
-        return students;
+        var admins = await _userManager.GetUsersInRoleAsync(UserRole.Admin.ToString());
+        var adminIds = admins.Select(a => a.Id).ToHashSet();
+        return _userManager.Users
+            .Where(u => !adminIds.Contains(u.Id))
+            .ToList();
     }
 
     public async Task<Response<AdminDashboardStatsDto>> GetAdminStatsAsync()
@@ -362,12 +356,17 @@ public class DashboardService : IDashboardService
         var students = await GetNonAdminUsersAsync();
         int totalStudents = students.Count;
         int approvedCount = students.Count(s => s.IsApproved);
-        int pendingCount = students.Count(s => !s.IsApproved);
+        int pendingCount = totalStudents - approvedCount;
 
         int totalInteractions = await _unitOfWork.UserProgresses.GetTotalInteractionCountAsync();
         var allSummaries = (await _unitOfWork.UserProgresses.GetAllSummariesAsync()).ToList();
         var allBinoProgresses = (await _unitOfWork.BinoLearning.GetAllProgressesAsync()).ToList();
         var allBinoSrs = (await _unitOfWork.BinoLearning.GetAllSRSReviewsAsync()).ToList();
+
+        // O(1) Lookup tables thay vì quét tuyến tính O(N*M)
+        var summariesByUser = allSummaries.ToLookup(x => x.UserId);
+        var binoByUser = allBinoProgresses.ToLookup(x => x.UserId);
+        var srsByUser = allBinoSrs.ToLookup(x => x.UserId);
 
         int totalBinoCompleted = allBinoProgresses.Count(p => p.IsCompleted);
 
@@ -377,9 +376,9 @@ public class DashboardService : IDashboardService
             .Take(8)
             .Select(s =>
             {
-                var userSummaries = allSummaries.Where(x => x.UserId == s.Id).ToList();
-                var userBino = allBinoProgresses.Where(x => x.UserId == s.Id).ToList();
-                var userSrsCount = allBinoSrs.Count(x => x.UserId == s.Id);
+                var userSummaries = summariesByUser[s.Id].ToList();
+                var userBino = binoByUser[s.Id].ToList();
+                var userSrsCount = srsByUser[s.Id].Count();
 
                 int completed = userSummaries.Sum(x => x.CompletedQuestions);
                 int confident = userSummaries.Sum(x => x.ConfidentQuestions);
@@ -430,11 +429,15 @@ public class DashboardService : IDashboardService
         var allBinoProgresses = (await _unitOfWork.BinoLearning.GetAllProgressesAsync()).ToList();
         var allBinoSrs = (await _unitOfWork.BinoLearning.GetAllSRSReviewsAsync()).ToList();
 
+        var summariesByUser = allSummaries.ToLookup(x => x.UserId);
+        var binoByUser = allBinoProgresses.ToLookup(x => x.UserId);
+        var srsByUser = allBinoSrs.ToLookup(x => x.UserId);
+
         var result = students.Select(s =>
         {
-            var userSummaries = allSummaries.Where(x => x.UserId == s.Id).ToList();
-            var userBino = allBinoProgresses.Where(x => x.UserId == s.Id).ToList();
-            var userSrsCount = allBinoSrs.Count(x => x.UserId == s.Id);
+            var userSummaries = summariesByUser[s.Id].ToList();
+            var userBino = binoByUser[s.Id].ToList();
+            var userSrsCount = srsByUser[s.Id].Count();
 
             int completed = userSummaries.Sum(x => x.CompletedQuestions);
             int confident = userSummaries.Sum(x => x.ConfidentQuestions);

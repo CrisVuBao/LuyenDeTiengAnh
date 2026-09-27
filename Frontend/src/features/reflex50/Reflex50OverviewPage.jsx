@@ -1,13 +1,13 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
   Sparkles, Search, BookOpen, Headphones, Mic, PenTool, CheckCircle2,
-  Star, AlertCircle, ArrowRight, Layers, FileText, Volume2, Zap,
+  Star, AlertCircle, ArrowRight, Layers, Volume2, Zap,
   MessageCircle, Users, Briefcase, HeartPulse, HelpCircle, RotateCcw, X
 } from 'lucide-react';
-import reflex50Data from './data/reflex50Data.json';
-import useReflex50Store from './store/useReflex50Store';
+import reflex50Meta from './data/reflex50Meta.json';
+import useReflex50Store, { loadReflex50FullData, peekReflex50FullData } from './store/useReflex50Store';
 import Reflex50MethodGuideModal from './components/Reflex50MethodGuideModal';
 import VoiceSettingsModal from '../../components/VoiceSettingsModal';
 import speechService from '../../utils/speechService';
@@ -28,6 +28,16 @@ export default function Reflex50OverviewPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isMethodModalOpen, setIsMethodModalOpen] = useState(false);
   const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
+  const [fullData, setFullData] = useState(() => peekReflex50FullData());
+
+  // Tải ngầm dữ liệu 1.500 câu ở hậu cảnh sau khi trang đã hiển thị tức thì (0ms)
+  useEffect(() => {
+    if (!fullData) {
+      loadReflex50FullData()
+        .then((d) => setFullData(d))
+        .catch(() => {});
+    }
+  }, [fullData]);
 
   const masteredIds = useReflex50Store((s) => s.masteredIds);
   const starredIds = useReflex50Store((s) => s.starredIds);
@@ -41,26 +51,30 @@ export default function Reflex50OverviewPage() {
 
   const overall = getOverallStats();
   const lastUnitObj =
-    reflex50Data.units.find((u) => u.unitNumber === lastStudiedUnit) || reflex50Data.units[0];
+    reflex50Meta.units.find((u) => u.unitNumber === lastStudiedUnit) || reflex50Meta.units[0];
 
-  // Thống kê cho từng nhóm chủ đề lớn (Category 1..5)
+  // Thống kê cho từng nhóm chủ đề lớn (Category 1..5) — Tính toán O(1) không cần duyệt 1500 object
   const categoryStatsMap = useMemo(() => {
     const map = {};
-    for (const cat of reflex50Data.categories) {
-      const catUnits = reflex50Data.units.filter((u) => u.categoryId === cat.id);
+    for (const cat of reflex50Meta.categories) {
+      const [startU, endU] = cat.unitRange;
+      const totalUnits = endU - startU + 1;
       let masteredSentences = 0;
       let completedUnits = 0;
-      for (const u of catUnits) {
-        const mCount = u.sentences.filter((s) => masteredIds[s.id]).length;
+      for (let u = startU; u <= endU; u++) {
+        let mCount = 0;
+        for (let s = 1; s <= 30; s++) {
+          if (masteredIds[`u${u}-s${s}`]) mCount++;
+        }
         masteredSentences += mCount;
-        if (mCount >= u.sentences.length) completedUnits++;
+        if (mCount >= 30) completedUnits++;
       }
       map[cat.id] = {
         masteredSentences,
-        totalSentences: catUnits.length * 30,
+        totalSentences: totalUnits * 30,
         completedUnits,
-        totalUnits: catUnits.length,
-        percent: Math.round((masteredSentences / (catUnits.length * 30)) * 100)
+        totalUnits,
+        percent: Math.round((masteredSentences / (totalUnits * 30)) * 100)
       };
     }
     return map;
@@ -69,7 +83,11 @@ export default function Reflex50OverviewPage() {
   // Lọc danh sách 50 Units
   const filteredUnits = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
-    return reflex50Data.units.filter((unit) => {
+    const fullUnitsMap = fullData
+      ? new Map(fullData.units.map((u) => [u.unitNumber, u]))
+      : null;
+
+    return reflex50Meta.units.filter((unit) => {
       if (selectedCategory !== 'all' && unit.categoryId !== selectedCategory) {
         return false;
       }
@@ -85,24 +103,28 @@ export default function Reflex50OverviewPage() {
         unit.titleEn.toLowerCase().includes(q) ||
         unit.titleVi.toLowerCase().includes(q) ||
         `unit ${unit.unitNumber}` === q ||
-        String(unit.unitNumber) === q;
+        String(unit.unitNumber) === q ||
+        unit.topVocab.some((v) => v.term.toLowerCase().includes(q) || v.meaning.toLowerCase().includes(q));
       if (matchTitle) return true;
 
-      return unit.sentences.some(
+      const fullUnit = fullUnitsMap?.get(unit.unitNumber);
+      if (!fullUnit) return false;
+
+      return fullUnit.sentences.some(
         (s) =>
           s.vi.toLowerCase().includes(q) ||
           s.en.toLowerCase().includes(q) ||
           s.hints.some((h) => h.term.toLowerCase().includes(q) || h.meaning.toLowerCase().includes(q))
       );
     });
-  }, [selectedCategory, statusFilter, searchQuery, masteredIds, starredIds, weakIds, writingHistory, speakingHistory]);
+  }, [selectedCategory, statusFilter, searchQuery, fullData, masteredIds, starredIds, weakIds, writingHistory, speakingHistory]);
 
   // Nếu người dùng nhập từ khóa tìm kiếm >= 2 ký tự: trả về tối đa 12 câu khớp trực tiếp trong 1500 câu
   const matchingSentences = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
-    if (q.length < 2) return [];
+    if (q.length < 2 || !fullData) return [];
     const results = [];
-    for (const unit of reflex50Data.units) {
+    for (const unit of fullData.units) {
       for (const s of unit.sentences) {
         if (
           s.vi.toLowerCase().includes(q) ||
@@ -120,7 +142,7 @@ export default function Reflex50OverviewPage() {
       }
     }
     return results;
-  }, [searchQuery]);
+  }, [searchQuery, fullData]);
 
   // Thông số vòng tròn tiến độ Apple Activity Ring
   const ringRadius = 30;
@@ -350,7 +372,7 @@ export default function Reflex50OverviewPage() {
             </div>
           </button>
 
-          {reflex50Data.categories.map((cat) => {
+          {reflex50Meta.categories.map((cat) => {
             const Icon = CATEGORY_ICON_MAP[cat.icon] || MessageCircle;
             const st = categoryStatsMap[cat.id];
             const active = selectedCategory === cat.id;
@@ -521,16 +543,14 @@ export default function Reflex50OverviewPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredUnits.map((unit) => {
             const st = getUnitStats(unit.unitNumber);
-            const sample1 = unit.sentences[0];
-            const sample2 = unit.sentences[29];
-            const topVocab = unit.keyVocab.slice(0, 4);
+            const sample1 = unit.sample1;
+            const sample2 = unit.sample2;
+            const topVocab = unit.topVocab || [];
 
             return (
-              <motion.div
+              <div
                 key={unit.id}
-                layout
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
+                style={{ contentVisibility: 'auto', containIntrinsicSize: '280px' }}
                 className="group rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:border-[#0071e3]/60 p-5 flex flex-col justify-between gap-4 shadow-2xs hover:shadow-md transition-all"
               >
                 <div className="space-y-3">
@@ -667,7 +687,7 @@ export default function Reflex50OverviewPage() {
                     </button>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             );
           })}
         </div>

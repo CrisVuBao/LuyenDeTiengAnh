@@ -12,8 +12,8 @@ import toeicApi from '../../../api/toeicApi';
 import speechService from '../../../utils/speechService';
 import { useBinoPlayerStore } from '../../bino/components/BinoPlaylistModal';
 import useAuthStore from '../../../store/authStore';
-import useReflex50Store from '../../reflex50/store/useReflex50Store';
-import reflex50Data from '../../reflex50/data/reflex50Data.json';
+import useReflex50Store, { loadReflex50FullData } from '../../reflex50/store/useReflex50Store';
+import reflex50Meta from '../../reflex50/data/reflex50Meta.json';
 import PageLoader from '../../../components/PageLoader';
 
 // Apple-style Spring Variants (120FPS GPU-accelerated transform & opacity)
@@ -99,14 +99,139 @@ const LIVE_DRILL_SAMPLES = [
   }
 ];
 
+// Tách riêng Widget tự động xoay vòng 3.8s bằng React.memo để không gây re-render toàn bộ trang Home
+const LiveSubstitutionDrillShowcase = React.memo(function LiveSubstitutionDrillShowcase({ onNavigateBino }) {
+  const [activeDrillIdx, setActiveDrillIdx] = useState(0);
+  const [isSpeakingDemo, setIsSpeakingDemo] = useState(false);
+  const activeSample = LIVE_DRILL_SAMPLES[activeDrillIdx];
+
+  useEffect(() => {
+    if (isSpeakingDemo) return undefined;
+    const timer = setInterval(() => {
+      setActiveDrillIdx((prev) => (prev + 1) % LIVE_DRILL_SAMPLES.length);
+    }, 3800);
+    return () => clearInterval(timer);
+  }, [isSpeakingDemo]);
+
+  const handlePlaySampleVoice = (e) => {
+    e.stopPropagation();
+    setIsSpeakingDemo(true);
+    speechService.speak(activeSample.fullEn, {
+      rate: 0.95,
+      speakerIndex: 0,
+      onEnd: () => setIsSpeakingDemo(false),
+      onError: () => setIsSpeakingDemo(false)
+    });
+  };
+
+  return (
+    <motion.div
+      whileHover={{ y: -2 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 26 }}
+      onClick={onNavigateBino}
+      className="p-6 sm:p-7 rounded-[26px] bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/90 shadow-[0_4px_20px_rgb(0,0,0,0.025)] cursor-pointer flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6"
+    >
+      <div className="space-y-2.5 flex-1 min-w-0">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="px-2.5 py-0.5 rounded-full bg-[#0071e3]/10 text-[#0071e3] dark:bg-sky-500/15 dark:text-sky-400 text-[11px] font-semibold">
+            Vận dụng mẫu câu thực tế
+          </span>
+          <AnimatePresence mode="wait">
+            <motion.span
+              key={activeSample.context}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.2 }}
+              className="text-xs text-slate-400 dark:text-slate-500 font-medium"
+            >
+              • {activeSample.context}
+            </motion.span>
+          </AnimatePresence>
+        </div>
+
+        {/* Animated Sentence with Dynamic Slot Replacement (100% GPU Transform + Opacity) */}
+        <div className="text-base sm:text-lg font-semibold text-slate-900 dark:text-white leading-snug flex flex-wrap items-baseline gap-x-1.5 gap-y-1">
+          <span>&ldquo;It&apos;s been pretty good. I&apos;m still getting used to</span>
+          <AnimatePresence mode="wait">
+            <motion.span
+              key={activeSample.slotEn}
+              initial={{ opacity: 0, y: 8, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -8, scale: 0.97 }}
+              transition={{ type: 'spring', stiffness: 320, damping: 24 }}
+              className="inline-block px-2.5 py-0.5 rounded-xl bg-[#0071e3]/10 dark:bg-sky-500/20 text-[#0071e3] dark:text-sky-300 font-bold"
+            >
+              {activeSample.slotEn}
+            </motion.span>
+          </AnimatePresence>
+          <span>though.&rdquo;</span>
+        </div>
+
+        <AnimatePresence mode="wait">
+          <motion.p
+            key={activeSample.fullVi}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18 }}
+            className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-vietsub"
+          >
+            {activeSample.fullVi}
+          </motion.p>
+        </AnimatePresence>
+      </div>
+
+      {/* Interactive Controls on the Right */}
+      <div
+        className="flex flex-wrap items-center gap-2.5 shrink-0 self-stretch lg:self-center justify-between lg:justify-end"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center gap-1.5 mr-1">
+          {LIVE_DRILL_SAMPLES.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => setActiveDrillIdx(idx)}
+              className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                idx === activeDrillIdx
+                  ? 'w-6 bg-[#0071e3] dark:bg-sky-400'
+                  : 'w-2 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300'
+              }`}
+              title={`Tình huống ${idx + 1}`}
+            />
+          ))}
+        </div>
+
+        <motion.button
+          whileHover={{ scale: 1.04 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={handlePlaySampleVoice}
+          className="px-4 py-2.5 rounded-full bg-slate-100 hover:bg-slate-200/80 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
+        >
+          <Volume2 size={15} className={isSpeakingDemo ? 'text-[#0071e3] animate-bounce' : 'text-[#0071e3] dark:text-sky-400'} />
+          <span>Nghe thử câu này</span>
+        </motion.button>
+
+        <motion.button
+          whileHover={{ scale: 1.04 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => setActiveDrillIdx((prev) => (prev + 1) % LIVE_DRILL_SAMPLES.length)}
+          className="p-2.5 rounded-full bg-slate-100 hover:bg-slate-200/80 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors cursor-pointer"
+          title="Đổi tình huống khác"
+        >
+          <RefreshCw size={14} />
+        </motion.button>
+      </div>
+    </motion.div>
+  );
+});
+
 export default function StudentHome() {
   const cachedStats = dashboardApi.peekStats()?.data || null;
   const cachedBook = binoApi.peekBookOverview() || null;
   const [stats, setStats] = useState(cachedStats);
   const [binoBook, setBinoBook] = useState(cachedBook);
   const [loading, setLoading] = useState(!cachedStats && !cachedBook);
-  const [activeDrillIdx, setActiveDrillIdx] = useState(0);
-  const [isSpeakingDemo, setIsSpeakingDemo] = useState(false);
 
   const user = useAuthStore((state) => state.user);
   const openPlaylist = useBinoPlayerStore((state) => state.openPlaylist);
@@ -124,15 +249,6 @@ export default function StudentHome() {
     ]).finally(() => setLoading(false));
   }, []);
 
-  // Tự động xoay vòng câu mẫu Substitution Drilling mỗi 3.8 giây tạo hiệu ứng sống động như Apple Showcase
-  useEffect(() => {
-    if (isSpeakingDemo) return undefined;
-    const timer = setInterval(() => {
-      setActiveDrillIdx((prev) => (prev + 1) % LIVE_DRILL_SAMPLES.length);
-    }, 3800);
-    return () => clearInterval(timer);
-  }, [isSpeakingDemo]);
-
   if (loading) return <PageLoader />;
 
   const recentTests = stats?.recentTests || [];
@@ -140,7 +256,6 @@ export default function StudentHome() {
   const completedBinoLessons = binoBook?.completedLessons || 0;
   const binoProgressPercent = binoBook?.progressPercentage || 0;
   const featuredChapters = binoBook?.chapters?.slice(0, 6) || [];
-  const activeSample = LIVE_DRILL_SAMPLES[activeDrillIdx];
 
   // Tìm bài học tiếp theo chưa hoàn thành để học viên bấm 1 chạm là vào học tiếp
   const nextDialogue = (() => {
@@ -155,16 +270,6 @@ export default function StudentHome() {
       ? { ...firstChap.dialogues[0], chapterNumber: firstChap.chapterNumber }
       : null;
   })();
-
-  const handlePlaySampleVoice = (e) => {
-    e.stopPropagation();
-    setIsSpeakingDemo(true);
-    speechService.speak(activeSample.fullEn, {
-      rate: 0.95,
-      speakerIndex: 0,
-      onEnd: () => setIsSpeakingDemo(false)
-    });
-  };
 
   // Thông số vòng tròn SVG tiến độ phong cách Apple Activity Ring
   const ringRadius = 26;
@@ -419,105 +524,7 @@ export default function StudentHome() {
         </div>
 
         {/* Live Interactive Substitution Drilling Showcase Bar (Auto-animating & Clickable) */}
-        <motion.div
-          whileHover={{ y: -2 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 26 }}
-          onClick={() => navigate('/bino')}
-          className="p-6 sm:p-7 rounded-[26px] bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/90 shadow-[0_4px_20px_rgb(0,0,0,0.025)] cursor-pointer flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6"
-        >
-          <div className="space-y-2.5 flex-1 min-w-0">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="px-2.5 py-0.5 rounded-full bg-[#0071e3]/10 text-[#0071e3] dark:bg-sky-500/15 dark:text-sky-400 text-[11px] font-semibold">
-                Vận dụng mẫu câu thực tế
-              </span>
-              <AnimatePresence mode="wait">
-                <motion.span
-                  key={activeSample.context}
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -6 }}
-                  transition={{ duration: 0.22 }}
-                  className="text-xs text-slate-400 dark:text-slate-500 font-medium"
-                >
-                  • {activeSample.context}
-                </motion.span>
-              </AnimatePresence>
-            </div>
-
-            {/* Animated Sentence with Dynamic Slot Replacement */}
-            <div className="text-base sm:text-lg font-semibold text-slate-900 dark:text-white leading-snug flex flex-wrap items-baseline gap-x-1.5 gap-y-1">
-              <span>&ldquo;It&apos;s been pretty good. I&apos;m still getting used to</span>
-              <AnimatePresence mode="wait">
-                <motion.span
-                  key={activeSample.slotEn}
-                  initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
-                  animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                  exit={{ opacity: 0, y: -10, filter: 'blur(4px)' }}
-                  transition={{ type: 'spring', stiffness: 320, damping: 24 }}
-                  className="inline-block px-2.5 py-0.5 rounded-xl bg-[#0071e3]/10 dark:bg-sky-500/20 text-[#0071e3] dark:text-sky-300 font-bold"
-                >
-                  {activeSample.slotEn}
-                </motion.span>
-              </AnimatePresence>
-              <span>though.&rdquo;</span>
-            </div>
-
-            <AnimatePresence mode="wait">
-              <motion.p
-                key={activeSample.fullVi}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-vietsub"
-              >
-                {activeSample.fullVi}
-              </motion.p>
-            </AnimatePresence>
-          </div>
-
-          {/* Interactive Controls on the Right */}
-          <div
-            className="flex flex-wrap items-center gap-2.5 shrink-0 self-stretch lg:self-center justify-between lg:justify-end"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Dots selector */}
-            <div className="flex items-center gap-1.5 mr-1">
-              {LIVE_DRILL_SAMPLES.map((_, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setActiveDrillIdx(idx)}
-                  className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
-                    idx === activeDrillIdx
-                      ? 'w-6 bg-[#0071e3] dark:bg-sky-400'
-                      : 'w-2 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300'
-                  }`}
-                  title={`Tình huống ${idx + 1}`}
-                />
-              ))}
-            </div>
-
-            <motion.button
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={handlePlaySampleVoice}
-              className="px-4 py-2.5 rounded-full bg-slate-100 hover:bg-slate-200/80 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
-            >
-              <Volume2 size={15} className={isSpeakingDemo ? 'text-[#0071e3] animate-bounce' : 'text-[#0071e3] dark:text-sky-400'} />
-              <span>Nghe thử câu này</span>
-            </motion.button>
-
-            <motion.button
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setActiveDrillIdx((prev) => (prev + 1) % LIVE_DRILL_SAMPLES.length)}
-              className="p-2.5 rounded-full bg-slate-100 hover:bg-slate-200/80 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors cursor-pointer"
-              title="Đổi tình huống khác"
-            >
-              <RefreshCw size={14} />
-            </motion.button>
-          </div>
-        </motion.div>
+        <LiveSubstitutionDrillShowcase onNavigateBino={() => navigate('/bino')} />
 
         {/* 4 Apple Bento Cards with Staggered Spring & Hover Lift */}
         <motion.div
@@ -706,7 +713,7 @@ export default function StudentHome() {
         const lastReflexUnit = useReflex50Store.getState().lastStudiedUnit || 1;
         const reflexStats = getOverallReflex();
         const activeUnitObj =
-          reflex50Data.units.find((u) => u.unitNumber === lastReflexUnit) || reflex50Data.units[0];
+          reflex50Meta.units.find((u) => u.unitNumber === lastReflexUnit) || reflex50Meta.units[0];
 
         return (
           <motion.section
@@ -729,6 +736,7 @@ export default function StudentHome() {
 
               <div className="flex flex-wrap items-center gap-2.5 shrink-0">
                 <button
+                  onMouseEnter={() => loadReflex50FullData()}
                   onClick={() => navigate(`/reflex-50/unit/${activeUnitObj.unitNumber}`)}
                   className="px-5 py-2.5 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white text-xs sm:text-sm font-semibold flex items-center gap-2 transition-all cursor-pointer shadow-xs"
                 >
@@ -736,6 +744,7 @@ export default function StudentHome() {
                   <ArrowRight size={15} />
                 </button>
                 <button
+                  onMouseEnter={() => loadReflex50FullData()}
                   onClick={() => navigate('/reflex-50')}
                   className="px-4 py-2.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200/80 text-slate-800 dark:text-slate-200 text-xs sm:text-sm font-semibold transition-colors cursor-pointer"
                 >
@@ -746,9 +755,10 @@ export default function StudentHome() {
 
             {/* 5 Category Cards Preview */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-              {reflex50Data.categories.map((cat) => (
+              {reflex50Meta.categories.map((cat) => (
                 <div
                   key={cat.id}
+                  onMouseEnter={() => loadReflex50FullData()}
                   onClick={() => navigate(`/reflex-50/unit/${cat.unitRange[0]}`)}
                   className="p-4 rounded-2xl bg-slate-50/90 dark:bg-slate-800/50 border border-slate-200/70 dark:border-slate-800 hover:border-[#0071e3]/50 transition-all cursor-pointer group flex flex-col justify-between gap-2"
                 >

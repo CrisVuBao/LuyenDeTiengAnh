@@ -30,6 +30,21 @@ public static class EdgeNeuralTtsEngine
 
     private static double _clockSkewSeconds = 0.0;
     private static readonly ConcurrentDictionary<string, SemaphoreSlim> _keyLocks = new();
+    private static readonly ConcurrentDictionary<string, byte[]> MemoryAudioCache = new();
+    private static readonly ConcurrentQueue<string> MemoryAudioOrder = new();
+    private const int MaxMemoryAudioItems = 300;
+
+    private static void StoreInMemoryCache(string cacheKey, byte[] audioBytes)
+    {
+        if (MemoryAudioCache.TryAdd(cacheKey, audioBytes))
+        {
+            MemoryAudioOrder.Enqueue(cacheKey);
+            while (MemoryAudioCache.Count > MaxMemoryAudioItems && MemoryAudioOrder.TryDequeue(out var oldestKey))
+            {
+                MemoryAudioCache.TryRemove(oldestKey, out _);
+            }
+        }
+    }
 
     private static readonly SocketsHttpHandler SharedSocketsHandler = new()
     {
@@ -84,13 +99,20 @@ public static class EdgeNeuralTtsEngine
         var safeRate = NormalizeProsodyParam(rate, "+0%");
         var safePitch = NormalizeProsodyParam(pitch, "+0Hz");
 
+        var cacheKey = ComputeCacheHash($"{safeVoice}|{safeRate}|{safePitch}|{cleanText}");
+
+        // L1 RAM Cache (< 0.02ms, 0 Disk I/O)
+        if (MemoryAudioCache.TryGetValue(cacheKey, out var cachedRamBytes))
+        {
+            return cachedRamBytes;
+        }
+
         var cacheDir = Path.Combine(webRootPath, "tts-cache");
         if (!Directory.Exists(cacheDir))
         {
             Directory.CreateDirectory(cacheDir);
         }
 
-        var cacheKey = ComputeCacheHash($"{safeVoice}|{safeRate}|{safePitch}|{cleanText}");
         var cacheFilePath = Path.Combine(cacheDir, $"{cacheKey}.mp3");
 
         if (File.Exists(cacheFilePath))
@@ -98,7 +120,9 @@ public static class EdgeNeuralTtsEngine
             var info = new FileInfo(cacheFilePath);
             if (info.Length > 256)
             {
-                return await File.ReadAllBytesAsync(cacheFilePath, cancellationToken);
+                var diskBytes = await File.ReadAllBytesAsync(cacheFilePath, cancellationToken);
+                StoreInMemoryCache(cacheKey, diskBytes);
+                return diskBytes;
             }
         }
 
@@ -106,12 +130,19 @@ public static class EdgeNeuralTtsEngine
         await sem.WaitAsync(cancellationToken);
         try
         {
+            if (MemoryAudioCache.TryGetValue(cacheKey, out var ramBytesAfterLock))
+            {
+                return ramBytesAfterLock;
+            }
+
             if (File.Exists(cacheFilePath))
             {
                 var info = new FileInfo(cacheFilePath);
                 if (info.Length > 256)
                 {
-                    return await File.ReadAllBytesAsync(cacheFilePath, cancellationToken);
+                    var diskBytes = await File.ReadAllBytesAsync(cacheFilePath, cancellationToken);
+                    StoreInMemoryCache(cacheKey, diskBytes);
+                    return diskBytes;
                 }
             }
 
@@ -136,6 +167,7 @@ public static class EdgeNeuralTtsEngine
 
             if (audioBytes != null && audioBytes.Length > 256)
             {
+                StoreInMemoryCache(cacheKey, audioBytes);
                 try
                 {
                     await File.WriteAllBytesAsync(cacheFilePath, audioBytes, cancellationToken);

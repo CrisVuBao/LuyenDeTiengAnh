@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using VBaceEnglish.Application.Contracts.Persistence;
 using VBaceEnglish.Application.DTOs.Toeic;
 using VBaceEnglish.Application.Helpers;
@@ -102,7 +102,7 @@ public class ToeicTestService : IToeicTestService
     private async Task ProcessSingleTestElement(JsonElement testElem)
     {
         string testCode = testElem.TryGetProperty("testId", out var tId) ? tId.GetString() ?? "TEST" : "TEST";
-        var existing = await _unitOfWork.ToeicTests.GetWithDetailsByTestIdAsync(testCode);
+        var existing = await _unitOfWork.ToeicTests.GetWithDetailsByTestIdAsync(testCode, trackChanges: true);
 
         ToeicTest test = existing ?? new ToeicTest
         {
@@ -114,6 +114,10 @@ public class ToeicTestService : IToeicTestService
         if (existing == null)
         {
             await _unitOfWork.ToeicTests.AddAsync(test);
+        }
+        else
+        {
+            _unitOfWork.ToeicTests.Update(test);
         }
 
         // 1. Part 1

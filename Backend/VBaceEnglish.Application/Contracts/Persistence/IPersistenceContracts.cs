@@ -9,7 +9,7 @@ public interface IToeicTestRepository
     Task<ToeicTest?> GetByIdAsync(int id);
     Task<ToeicTest?> GetByTestIdAsync(string testId);
     Task<ToeicTest?> GetWithDetailsAsync(int id);
-    Task<ToeicTest?> GetWithDetailsByTestIdAsync(string testId);
+    Task<ToeicTest?> GetWithDetailsByTestIdAsync(string testId, bool trackChanges = false);
     Task AddAsync(ToeicTest entity);
     void Update(ToeicTest entity);
     void Remove(ToeicTest entity);
@@ -34,7 +34,7 @@ public interface IUserProgressRepository
 
 public interface IBinoBookRepository
 {
-    Task<BinoBook?> GetBookWithChaptersAsync(string slug = "chem-tieng-anh-khong-can-dong-nao");
+    Task<BinoBook?> GetBookWithChaptersAsync(string slug = "chem-tieng-anh-khong-can-dong-nao", bool trackChanges = false);
     Task<Chapter?> GetChapterWithLessonsAsync(int chapterNumber);
     Task<Chapter?> GetChapterByIdAsync(int id);
     Task<IEnumerable<Chapter>> GetAllChaptersAsync(string slug = "chem-tieng-anh-khong-can-dong-nao");
@@ -47,7 +47,7 @@ public interface IBinoBookRepository
     Task AddChapterBonusAsync(ChapterBonus bonus);
     void UpdateChapterBonus(ChapterBonus bonus);
 
-    Task<DialogueLesson?> GetDialogueLessonAsync(int id);
+    Task<DialogueLesson?> GetDialogueLessonAsync(int id, bool trackChanges = false);
     Task<DialogueLesson?> GetDialogueLessonByNumberAsync(int chapterNumber, int dialogueNumber);
     Task<IEnumerable<DialogueLesson>> GetDialoguesByChapterIdAsync(int chapterId);
     Task AddDialogueLessonAsync(DialogueLesson lesson);

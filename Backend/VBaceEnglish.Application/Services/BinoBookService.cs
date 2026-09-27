@@ -1040,7 +1040,7 @@ public class BinoBookService : IBinoBookService
 
     public async Task<Response<AdminDialogueDetailDto>> AdminUpdateDialogueAsync(int id, UpsertDialogueDto dto)
     {
-        var lesson = await _unitOfWork.BinoBooks.GetDialogueLessonAsync(id);
+        var lesson = await _unitOfWork.BinoBooks.GetDialogueLessonAsync(id, trackChanges: true);
         if (lesson == null)
             return Response<AdminDialogueDetailDto>.Failure("Không tìm thấy bài hội thoại cần cập nhật.");
 
@@ -1101,7 +1101,7 @@ public class BinoBookService : IBinoBookService
 
     public async Task<Response<bool>> AdminDeleteDialogueAsync(int id)
     {
-        var lesson = await _unitOfWork.BinoBooks.GetDialogueLessonAsync(id);
+        var lesson = await _unitOfWork.BinoBooks.GetDialogueLessonAsync(id, trackChanges: true);
         if (lesson == null)
             return Response<bool>.Failure("Không tìm thấy bài hội thoại cần xóa.");
 
@@ -1139,7 +1139,7 @@ public class BinoBookService : IBinoBookService
             return Response<SyncEpubResultDto>.Failure("Dữ liệu trong file json rỗng hoặc không đúng cấu trúc.");
         }
 
-        var book = await _unitOfWork.BinoBooks.GetBookWithChaptersAsync();
+        var book = await _unitOfWork.BinoBooks.GetBookWithChaptersAsync(trackChanges: true);
         if (book == null)
         {
             book = new BinoBook
