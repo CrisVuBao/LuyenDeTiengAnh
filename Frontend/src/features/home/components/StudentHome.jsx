@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Sparkles, BookOpen, ArrowRight, Flame, CheckCircle2, 
   TrendingUp, Play, Headphones, MessageSquare, 
-  Layers, BookMarked, ChevronRight, Volume2, RefreshCw
+  Layers, BookMarked, ChevronRight, Volume2, RefreshCw, Zap, PenTool, Mic
 } from 'lucide-react';
 import { dashboardApi } from '../../../api/dashboardAndAiApi';
 import binoApi from '../../../api/binoApi';
@@ -12,6 +12,8 @@ import toeicApi from '../../../api/toeicApi';
 import speechService from '../../../utils/speechService';
 import { useBinoPlayerStore } from '../../bino/components/BinoPlaylistModal';
 import useAuthStore from '../../../store/authStore';
+import useReflex50Store from '../../reflex50/store/useReflex50Store';
+import reflex50Data from '../../reflex50/data/reflex50Data.json';
 import PageLoader from '../../../components/PageLoader';
 
 // Apple-style Spring Variants (120FPS GPU-accelerated transform & opacity)
@@ -695,6 +697,83 @@ export default function StudentHome() {
           </motion.div>
         </motion.section>
       )}
+
+      {/* ===================================================================== */}
+      {/* 3.5. PHẢN XẠ NÓI - VIẾT 50 CHỦ ĐỀ (1.500 CÂU THÔNG DỤNG THỰC CHIẾN)   */}
+      {/* ===================================================================== */}
+      {(() => {
+        const getOverallReflex = useReflex50Store.getState().getOverallStats;
+        const lastReflexUnit = useReflex50Store.getState().lastStudiedUnit || 1;
+        const reflexStats = getOverallReflex();
+        const activeUnitObj =
+          reflex50Data.units.find((u) => u.unitNumber === lastReflexUnit) || reflex50Data.units[0];
+
+        return (
+          <motion.section
+            variants={sectionRevealVariants}
+            className="p-7 sm:p-8 rounded-[28px] bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/90 shadow-[0_2px_16px_rgb(0,0,0,0.03)] space-y-6"
+          >
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+              <div className="space-y-2 max-w-2xl">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/50 text-[#0071e3] dark:text-sky-400 text-xs font-semibold">
+                  <Zap size={13} />
+                  <span>Tính năng mới • 50 Chủ Đề Giao Tiếp • 1.500 Câu Nói & Viết</span>
+                </div>
+                <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
+                  Phản Xạ Nói – Viết 50 Chủ Đề (1.500 Câu Thông Dụng)
+                </h2>
+                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                  Luyện phản xạ dịch nói trong <strong>3 giây</strong>, làm bài tập viết chấm điểm từng từ và học <strong>3.400+ cụm từ gợi ý & Collocations bản xứ</strong> chia theo 5 nhóm chủ đề từ Cơ bản đến Nâng cao.
+                </p>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+                <button
+                  onClick={() => navigate(`/reflex-50/unit/${activeUnitObj.unitNumber}`)}
+                  className="px-5 py-2.5 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white text-xs sm:text-sm font-semibold flex items-center gap-2 transition-all cursor-pointer shadow-xs"
+                >
+                  <span>Học Unit {activeUnitObj.unitNumber}: {activeUnitObj.titleEn}</span>
+                  <ArrowRight size={15} />
+                </button>
+                <button
+                  onClick={() => navigate('/reflex-50')}
+                  className="px-4 py-2.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200/80 text-slate-800 dark:text-slate-200 text-xs sm:text-sm font-semibold transition-colors cursor-pointer"
+                >
+                  Xem đủ 50 Chủ đề ({reflexStats.totalMastered}/1500 câu)
+                </button>
+              </div>
+            </div>
+
+            {/* 5 Category Cards Preview */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+              {reflex50Data.categories.map((cat) => (
+                <div
+                  key={cat.id}
+                  onClick={() => navigate(`/reflex-50/unit/${cat.unitRange[0]}`)}
+                  className="p-4 rounded-2xl bg-slate-50/90 dark:bg-slate-800/50 border border-slate-200/70 dark:border-slate-800 hover:border-[#0071e3]/50 transition-all cursor-pointer group flex flex-col justify-between gap-2"
+                >
+                  <div>
+                    <div className="flex items-center justify-between text-[11px] font-bold text-[#0071e3] dark:text-sky-400">
+                      <span>UNIT {cat.unitRange[0]} – {cat.unitRange[1]}</span>
+                      <span>300 câu</span>
+                    </div>
+                    <h3 className="text-sm font-bold text-slate-900 dark:text-white mt-1 group-hover:text-[#0071e3] transition-colors">
+                      {cat.titleVi}
+                    </h3>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2 mt-1">
+                      {cat.description}
+                    </p>
+                  </div>
+                  <div className="text-[11px] font-semibold text-slate-700 dark:text-slate-300 group-hover:text-[#0071e3] flex items-center gap-1 pt-1">
+                    <span>Vào luyện phản xạ</span>
+                    <ChevronRight size={13} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.section>
+        );
+      })()}
 
       {/* ===================================================================== */}
       {/* 4. KHU VỰC BỔ TRỢ: LUYỆN ĐỀ TOEIC & TIỆN ÍCH HỌC TẬP                 */}

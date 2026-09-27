@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { 
   Sparkles, BookOpen, Home, BarChart3, TrendingUp, 
-  User, LogOut, Sun, Moon, ShieldCheck, ChevronDown, Layers 
+  User, LogOut, Sun, Moon, ShieldCheck, ChevronDown, Layers, Zap 
 } from 'lucide-react';
 import useAuthStore from '../store/authStore';
 import useThemeStore from '../store/themeStore';
@@ -22,6 +22,9 @@ const prefetchRoute = (route) => {
     import('../features/bino/BinoBookOverviewPage');
     import('../features/bino/BinoDialogueStudyPage');
     binoApi.prefetchBookOverview();
+  } else if (route === 'reflex50') {
+    import('../features/reflex50/Reflex50OverviewPage');
+    import('../features/reflex50/Reflex50UnitStudyPage');
   } else if (route === 'progress') {
     import('../features/progress/components/StudyProgressPage');
   } else if (route === 'dashboard') {
@@ -115,6 +118,21 @@ export default function StudentNavbar() {
             </NavLink>
 
             <NavLink
+              to="/reflex-50"
+              onMouseEnter={() => prefetchRoute('reflex50')}
+              className={({ isActive }) =>
+                `flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                  isActive
+                    ? 'bg-[#0071e3] text-white'
+                    : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800/60'
+                }`
+              }
+            >
+              <Zap size={14} />
+              <span>Phản Xạ 50 Chủ Đề</span>
+            </NavLink>
+
+            <NavLink
               to="/toeic"
               onMouseEnter={() => prefetchRoute('toeic')}
               className={({ isActive }) =>
@@ -180,6 +198,14 @@ export default function StudentNavbar() {
                   >
                     <Sparkles size={15} className="text-[#0071e3]" />
                     <span>Khóa học Bino (12 chương)</span>
+                  </button>
+
+                  <button
+                    onClick={() => navigate('/reflex-50')}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 rounded-xl transition-colors text-left"
+                  >
+                    <Zap size={15} className="text-[#0071e3]" />
+                    <span>Phản Xạ 50 Chủ Đề (1500 câu)</span>
                   </button>
 
                   <button
@@ -267,7 +293,19 @@ export default function StudentNavbar() {
           }
         >
           <Sparkles size={15} />
-          <span>Chém Tiếng Anh</span>
+          <span>Bino</span>
+        </NavLink>
+
+        <NavLink
+          to="/reflex-50"
+          className={({ isActive }) =>
+            `flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium ${
+              isActive ? 'text-[#0071e3] font-semibold' : 'text-slate-500'
+            }`
+          }
+        >
+          <Zap size={15} />
+          <span>50 Chủ Đề</span>
         </NavLink>
 
         <NavLink

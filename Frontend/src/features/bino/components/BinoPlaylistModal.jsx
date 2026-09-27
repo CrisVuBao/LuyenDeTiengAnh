@@ -7,7 +7,7 @@ import {
   Sparkles, X, Minimize2, Maximize2, Check, CheckSquare, Square, 
   ListMusic, BookOpen, Layers, Clock, ArrowRight, ChevronDown, 
   ChevronRight, Repeat, Repeat1, Eye, EyeOff, Settings,
-  Music, Sliders, ExternalLink
+  Music, Sliders, ExternalLink, Headphones
 } from 'lucide-react';
 import binoApi from '../../../api/binoApi';
 import speechService, { SPEECH_SPEED_PRESETS } from '../../../utils/speechService';
@@ -147,7 +147,7 @@ export default function BinoPlaylistModal() {
     audioSpeedRef.current = updated;
     const preset = SPEECH_SPEED_PRESETS.find((p) => Math.abs(p.value - updated) < 0.02);
     if (updated <= 0.85) {
-      toast.success(`🐢 Tốc độ ${updated}x (${preset?.shortTag || 'Chậm rãi'}): Nghe kỹ từng âm`, {
+      toast.success(`🎧 Tốc độ ${updated}x (${preset?.shortTag || 'Chậm rãi'}): Nghe kỹ từng âm`, {
         id: 'bino-speed-toast',
         duration: 1800
       });
@@ -968,7 +968,7 @@ export default function BinoPlaylistModal() {
                           type="button"
                           onClick={() => handleChangeSpeed(preset.value)}
                           title={preset.desc}
-                          className={`px-2 py-0.5 rounded-lg transition-colors flex items-center gap-0.5 ${
+                          className={`px-2 py-0.5 rounded-lg transition-colors flex items-center gap-1 ${
                             isSelected
                               ? preset.isSlow
                                 ? 'bg-emerald-600 text-white shadow-sm font-black'
@@ -976,7 +976,8 @@ export default function BinoPlaylistModal() {
                               : 'text-slate-500 hover:text-slate-800 dark:hover:text-white'
                           }`}
                         >
-                          <span>{preset.isSlow ? `🐢 ${preset.label}` : preset.label}</span>
+                          {preset.isSlow && <Headphones size={10} className={isSelected ? 'text-white' : 'text-emerald-600 dark:text-emerald-400'} />}
+                          <span>{preset.label}</span>
                         </button>
                       );
                     })}

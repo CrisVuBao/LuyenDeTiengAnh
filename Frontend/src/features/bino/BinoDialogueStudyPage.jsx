@@ -6,7 +6,7 @@ import {
   RotateCcw, Sparkles, Mic, Eye, EyeOff, BookOpen, MessageSquare, 
   HelpCircle, ChevronRight, Layers, Award, FileText, Check, Copy, Settings,
   Repeat, Repeat1, Infinity as InfinityIcon, ChevronDown, X, ListMusic,
-  Share2, ZoomIn, Lightbulb
+  Share2, ZoomIn, Lightbulb, Headphones, Gauge
 } from 'lucide-react';
 import binoApi from '../../api/binoApi';
 import { invalidateStatsCache } from '../../api/dashboardAndAiApi';
@@ -107,7 +107,7 @@ export default function BinoDialogueStudyPage() {
     audioSpeedRef.current = updated;
     const preset = SPEECH_SPEED_PRESETS.find((p) => Math.abs(p.value - updated) < 0.02);
     if (updated <= 0.85) {
-      toast.success(`🐢 Tốc độ ${updated}x (${preset?.shortTag || 'Chậm rãi'}): Nghe kỹ từng âm`, {
+      toast.success(`🎧 Tốc độ ${updated}x (${preset?.shortTag || 'Chậm rãi'}): Nghe kỹ từng âm`, {
         id: 'bino-speed-toast',
         duration: 1800
       });
@@ -803,7 +803,9 @@ export default function BinoDialogueStudyPage() {
           <div className="flex flex-wrap items-center gap-2">
             {/* Speed selector (Có chế độ đọc chậm rãi nghe kỹ 0.6x, 0.75x, 0.85x) */}
             <div className="flex flex-wrap items-center rounded-xl bg-slate-100 dark:bg-slate-800 p-1 text-[11px] font-bold border border-slate-200/60 dark:border-slate-700 gap-0.5">
-              <span className="text-[10px] text-slate-400 px-1.5 font-extrabold uppercase hidden sm:inline">Tốc độ:</span>
+              <span className="text-[10px] text-slate-400 px-1.5 font-extrabold uppercase hidden sm:inline items-center gap-1">
+                Tốc độ:
+              </span>
               {SPEECH_SPEED_PRESETS.map((preset) => {
                 const isSelected = Math.abs(audioSpeed - preset.value) < 0.02;
                 return (
@@ -820,7 +822,8 @@ export default function BinoDialogueStudyPage() {
                         : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
                     }`}
                   >
-                    <span>{preset.isSlow ? `🐢 ${preset.label}` : preset.label}</span>
+                    {preset.isSlow && <Headphones size={11} className={isSelected ? 'text-white' : 'text-emerald-600 dark:text-emerald-400'} />}
+                    <span>{preset.label}</span>
                     {isSelected && (
                       <span className="text-[10px] hidden md:inline opacity-90">
                         ({preset.shortTag})
@@ -1133,10 +1136,11 @@ export default function BinoDialogueStudyPage() {
 
                         <button
                           onClick={() => speakVocab(v.word, 0.65)}
-                          className="px-2 py-1.5 rounded-xl text-[11px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/60 border border-emerald-200/70 dark:border-emerald-800/60 transition-all active:scale-90"
+                          className="px-2 py-1.5 rounded-xl text-[11px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/60 border border-emerald-200/70 dark:border-emerald-800/60 transition-all active:scale-90 flex items-center gap-1"
                           title="Nghe phát âm chậm rãi từng âm tiết (0.65x)"
                         >
-                          🐢
+                          <Headphones size={12} />
+                          <span>0.65x</span>
                         </button>
 
                         <motion.button
@@ -1272,8 +1276,8 @@ export default function BinoDialogueStudyPage() {
                           className="px-2.5 py-2 rounded-xl text-[11px] font-extrabold text-emerald-700 dark:text-emerald-300 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/60 border border-emerald-200/80 dark:border-emerald-800/70 transition-all active:scale-90 flex items-center gap-1"
                           title="Nghe chậm rãi câu này (0.7x) để nghe kỹ từng từ"
                         >
-                          <span>🐢</span>
-                          <span className="hidden sm:inline">Chậm</span>
+                          <Headphones size={13} />
+                          <span>Chậm</span>
                         </button>
 
                         <button
@@ -1413,7 +1417,8 @@ export default function BinoDialogueStudyPage() {
                         onClick={() => speakText(lesson.dialogueLines[roleplayStep].englishText, selectedRole, 0.7)}
                         className="px-4 py-3 rounded-2xl border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/60 text-xs font-bold text-emerald-700 dark:text-emerald-300 flex items-center gap-1.5 shadow-sm active:scale-95"
                       >
-                        <span>🐢 Nghe chậm rãi (0.7x)</span>
+                        <Headphones size={15} />
+                        <span>Nghe chậm rãi (0.7x)</span>
                       </button>
                     </div>
 
@@ -1437,7 +1442,8 @@ export default function BinoDialogueStudyPage() {
                       onClick={() => speakText(lesson.dialogueLines[roleplayStep].englishText, lesson.dialogueLines[roleplayStep].characterName, 0.7)}
                       className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-emerald-500/20 active:scale-95 transition-all"
                     >
-                      <span>🐢 Nghe chậm rãi (0.7x)</span>
+                      <Headphones size={15} />
+                      <span>Nghe chậm rãi (0.7x)</span>
                     </button>
                   </div>
                 )}
@@ -1515,14 +1521,16 @@ export default function BinoDialogueStudyPage() {
                   onClick={() => speakText(currentDictationLine.englishText, currentDictationLine.characterName, 0.75)}
                   className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-md shadow-emerald-500/20 active:scale-95 transition-all"
                 >
-                  <span>🐢 Nghe Chậm Rãi (0.75x)</span>
+                  <Headphones size={15} />
+                  <span>Nghe Chậm Rãi (0.75x)</span>
                 </button>
 
                 <button
                   onClick={() => speakText(currentDictationLine.englishText, currentDictationLine.characterName, 0.6)}
-                  className="px-3 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs flex items-center gap-1 shadow-md shadow-amber-500/20 active:scale-95 transition-all"
+                  className="px-3 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-md shadow-amber-500/20 active:scale-95 transition-all"
                 >
-                  <span>🐌 Rất Chậm (0.6x)</span>
+                  <Gauge size={15} />
+                  <span>Rất Chậm (0.6x)</span>
                 </button>
               </div>
             </div>

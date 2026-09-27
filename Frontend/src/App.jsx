@@ -28,6 +28,10 @@ const BinoEbookViewerPage = lazy(() => import("./features/bino/BinoEbookViewerPa
 const BinoFlashcardReviewPage = lazy(() => import("./features/bino/BinoFlashcardReviewPage"));
 const BinoChapterBonusPage = lazy(() => import("./features/bino/BinoChapterBonusPage"));
 
+// Reflex 50 Topics (1500 Sentences Nói - Viết Thực Chiến)
+const Reflex50OverviewPage = lazy(() => import("./features/reflex50/Reflex50OverviewPage"));
+const Reflex50UnitStudyPage = lazy(() => import("./features/reflex50/Reflex50UnitStudyPage"));
+
 const ProtectedRoute = ({ children }) => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   if (!isAuthenticated) return <Navigate to="/auth" replace />;
@@ -87,6 +91,10 @@ function App() {
             <Route path="/bino/reader" element={<BinoEbookViewerPage />} />
             <Route path="/bino/flashcards" element={<BinoFlashcardReviewPage />} />
             <Route path="/bino/chapter/:chapterNumber/bonus" element={<BinoChapterBonusPage />} />
+
+            {/* Reflex 50 Topics (1500 Sentences) Routes */}
+            <Route path="/reflex-50" element={<Reflex50OverviewPage />} />
+            <Route path="/reflex-50/unit/:unitNumber" element={<Reflex50UnitStudyPage />} />
           </Route>
 
           {/* ======================================================== */}

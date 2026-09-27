@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Award, CheckCircle2, HelpCircle, BookOpen, RotateCcw, 
   Search, Filter, Sparkles, Clock, ChevronRight, ChevronDown,
-  Headphones, Mic, FileText, Layers, Flame, Play
+  Headphones, Mic, FileText, Layers, Flame, Play, Zap, PenTool, Star
 } from 'lucide-react';
 import { 
   ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Cell 
@@ -12,6 +12,8 @@ import { useNavigate } from 'react-router-dom';
 import progressApi from '../../../api/progressApi';
 import binoApi from '../../../api/binoApi';
 import { dashboardApi, invalidateStatsCache } from '../../../api/dashboardAndAiApi';
+import useReflex50Store from '../../reflex50/store/useReflex50Store';
+import reflex50Data from '../../reflex50/data/reflex50Data.json';
 import PageLoader from '../../../components/PageLoader';
 import toast from 'react-hot-toast';
 
@@ -220,6 +222,18 @@ export default function StudyProgressPage() {
           >
             <Sparkles size={14} />
             <span>Chém Tiếng Anh Bino</span>
+          </button>
+
+          <button
+            onClick={() => setCourseMode('reflex50')}
+            className={`flex-1 sm:flex-none px-5 py-2 rounded-full text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer ${
+              courseMode === 'reflex50'
+                ? 'bg-white dark:bg-slate-900 text-[#0071e3] dark:text-sky-400 shadow-xs'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+            }`}
+          >
+            <Zap size={14} />
+            <span>Phản Xạ 50 Chủ Đề</span>
           </button>
 
           <button
@@ -989,6 +1003,151 @@ export default function StudyProgressPage() {
           )}
         </motion.div>
       )}
+
+      {/* ===================================================================== */}
+      {/* MODE 3: QUẢN LÝ QUÁ TRÌNH HỌC TẬP "PHẢN XẠ 50 CHỦ ĐỀ (1.500 CÂU)"     */}
+      {/* ===================================================================== */}
+      {courseMode === 'reflex50' && (() => {
+        const reflexOverall = useReflex50Store.getState().getOverallStats();
+        const getUnitStats = useReflex50Store.getState().getUnitStats;
+        const markUnitMastered = useReflex50Store.getState().markUnitMastered;
+        const resetUnitProgress = useReflex50Store.getState().resetUnitProgress;
+
+        return (
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-6"
+          >
+            {/* 4 KPI Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-1">
+                <div className="text-xs font-semibold text-slate-400">Tổng câu đã thuộc</div>
+                <div className="text-2xl font-bold text-slate-900 dark:text-white">
+                  {reflexOverall.totalMastered} <span className="text-xs font-normal text-slate-400">/ 1500 câu</span>
+                </div>
+                <div className="text-xs font-semibold text-[#0071e3]">
+                  Đạt {reflexOverall.overallPercent}% toàn khóa
+                </div>
+              </div>
+
+              <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-1">
+                <div className="text-xs font-semibold text-slate-400">Số Unit hoàn thành</div>
+                <div className="text-2xl font-bold text-emerald-600">
+                  {reflexOverall.completedUnits} <span className="text-xs font-normal text-slate-400">/ 50 Unit</span>
+                </div>
+                <div className="text-xs text-slate-500">
+                  Đang học dở: {reflexOverall.activeUnits} Unit
+                </div>
+              </div>
+
+              <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-1">
+                <div className="text-xs font-semibold text-slate-400">Thực hành Viết & Nói</div>
+                <div className="text-2xl font-bold text-slate-900 dark:text-white">
+                  {reflexOverall.totalWritten} <span className="text-xs font-normal text-slate-400">câu viết</span>
+                </div>
+                <div className="text-xs text-slate-500">
+                  Đã luyện nói AI: {reflexOverall.totalSpoken} câu
+                </div>
+              </div>
+
+              <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-1">
+                <div className="text-xs font-semibold text-slate-400">Sổ tay câu cần ôn kỹ</div>
+                <div className="text-2xl font-bold text-amber-600">
+                  {reflexOverall.totalStarred + reflexOverall.totalWeak} <span className="text-xs font-normal text-slate-400">câu</span>
+                </div>
+                <div className="text-xs text-slate-500">
+                  Lưu sao: {reflexOverall.totalStarred} • Làm sai: {reflexOverall.totalWeak}
+                </div>
+              </div>
+            </div>
+
+            {/* 50 Units Progress List */}
+            <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-4">
+              <div className="flex items-center justify-between">
+                <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+                  Chi Tiết Tiến Độ 50 Chủ Đề (1.500 Câu Phản Xạ)
+                </h2>
+                <button
+                  onClick={() => navigate('/reflex-50')}
+                  className="px-4 py-2 rounded-full bg-[#0071e3] text-white text-xs font-semibold cursor-pointer"
+                >
+                  Mở Trang Học 50 Chủ Đề
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {reflex50Data.units.map((u) => {
+                  const st = getUnitStats(u.unitNumber);
+                  return (
+                    <div
+                      key={u.id}
+                      className="p-4 rounded-2xl bg-slate-50/80 dark:bg-slate-800/50 border border-slate-200/70 dark:border-slate-800 flex items-center justify-between gap-3"
+                    >
+                      <div className="min-w-0 flex-1 space-y-1.5">
+                        <div className="flex items-center gap-2">
+                          <span className="px-2 py-0.5 rounded-md bg-[#0071e3]/10 text-[#0071e3] dark:text-sky-400 text-[11px] font-bold">
+                            Unit {u.unitNumber}
+                          </span>
+                          <h4
+                            onClick={() => navigate(`/reflex-50/unit/${u.unitNumber}`)}
+                            className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white truncate hover:text-[#0071e3] cursor-pointer"
+                          >
+                            {u.titleEn} — {u.titleVi}
+                          </h4>
+                        </div>
+
+                        <div className="w-full h-1.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
+                          <div
+                            className={`h-full rounded-full ${
+                              st.isCompleted ? 'bg-emerald-500' : 'bg-[#0071e3]'
+                            }`}
+                            style={{ width: `${st.percent}%` }}
+                          />
+                        </div>
+
+                        <div className="flex items-center gap-3 text-[11px] text-slate-500">
+                          <span>Thuộc: <strong>{st.masteredCount}/30</strong> ({st.percent}%)</span>
+                          <span>• Viết: {st.writtenCount}/30</span>
+                          <span>• Nói: {st.spokenCount}/30</span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        <button
+                          onClick={() => {
+                            markUnitMastered(u.unitNumber, !st.isCompleted);
+                            setBinoSearch((prev) => prev + ''); // trigger re-render
+                          }}
+                          className={`px-2.5 py-1.5 rounded-xl text-xs font-semibold cursor-pointer ${
+                            st.isCompleted
+                              ? 'bg-emerald-500 text-white'
+                              : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300'
+                          }`}
+                        >
+                          {st.isCompleted ? 'Đã xong' : 'Đánh dấu xong'}
+                        </button>
+                        {st.masteredCount > 0 && (
+                          <button
+                            onClick={() => {
+                              resetUnitProgress(u.unitNumber);
+                              setBinoSearch((prev) => prev + '');
+                            }}
+                            className="p-1.5 rounded-xl text-slate-400 hover:text-rose-500 cursor-pointer"
+                            title="Đặt lại Unit này"
+                          >
+                            <RotateCcw size={13} />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </motion.div>
+        );
+      })()}
 
     </div>
   );

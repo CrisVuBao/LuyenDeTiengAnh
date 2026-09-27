@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Sparkles, Volume2, Copy, Check, ChevronDown, ChevronUp, 
-  Lightbulb, ArrowRight, RefreshCw, Layers, Compass, Play
+  Lightbulb, ArrowRight, RefreshCw, Layers, Compass, Play, Headphones
 } from 'lucide-react';
 import speechService from '../../../utils/speechService';
 import toast from 'react-hot-toast';
@@ -187,14 +187,15 @@ export default function BinoSentenceExpansionCard({ expansionData, lineIndex = 0
                           <button
                             type="button"
                             onClick={() => handlePlayAudio(item.englishText, `var-slow-${idx}`, 0.7)}
-                            className={`px-2 py-1.5 rounded-xl text-[11px] font-extrabold transition-all ${
+                            className={`px-2 py-1.5 rounded-xl text-[11px] font-extrabold transition-all flex items-center gap-1 ${
                               playingSentence === `var-slow-${idx}`
                                 ? 'bg-emerald-600 text-white shadow-sm scale-105'
                                 : 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/60 hover:bg-emerald-100'
                             }`}
                             title="Nghe chậm rãi câu này (0.7x)"
                           >
-                            🐢
+                            <Headphones size={12} />
+                            <span>Chậm</span>
                           </button>
 
                           <button
@@ -292,7 +293,8 @@ export default function BinoSentenceExpansionCard({ expansionData, lineIndex = 0
                       className="px-2.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs shadow-sm flex items-center gap-1 shrink-0 active:scale-95 transition"
                       title="Nghe chậm rãi câu của bạn (0.7x)"
                     >
-                      <span>🐢 Chậm</span>
+                      <Headphones size={13} />
+                      <span>Chậm</span>
                     </button>
                     <button
                       type="button"

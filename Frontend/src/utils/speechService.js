@@ -291,6 +291,13 @@ class SpeechService {
   }
 
   /**
+   * Lấy tốc độ đọc ưu tiên hiện tại của người dùng
+   */
+  getPreferredSpeed() {
+    return this.preferences?.rate || 0.95;
+  }
+
+  /**
    * Đổi tốc độ đọc ngay lập tức (kể cả khi đang phát giữa câu) và đồng bộ toàn hệ thống
    */
   setLiveSpeed(newRate) {
@@ -806,6 +813,59 @@ class SpeechService {
       onStart,
       onEnd,
       onError
+    });
+  }
+
+  /**
+   * Phát bất kỳ câu tiếng Anh hoặc cụm từ nào với giọng Studio Neural AI
+   * Hỗ trợ cả cú pháp speak(text, { rate, speed, speakerIndex, characterName, voiceURI, onStart, onEnd, onError })
+   * lẫn speak(text, speedNumber, onEndCallback)
+   */
+  async speak(text, optionsOrSpeed = {}, maybeOnEnd = null) {
+    if (typeof window === 'undefined' || !text) {
+      if (typeof maybeOnEnd === 'function') maybeOnEnd();
+      return;
+    }
+
+    let opts = {};
+    if (typeof optionsOrSpeed === 'number') {
+      opts = { speed: optionsOrSpeed, onEnd: maybeOnEnd };
+    } else if (optionsOrSpeed && typeof optionsOrSpeed === 'object') {
+      opts = optionsOrSpeed;
+    }
+
+    const effectiveSpeed = opts.speed || opts.rate || this.preferences.rate || 0.95;
+    let characterName = opts.characterName || 'BINO';
+    if (!opts.characterName && typeof opts.speakerIndex === 'number') {
+      characterName = opts.speakerIndex % 2 === 1 ? 'AMY' : 'BINO';
+    }
+
+    await this.speakLine({
+      text,
+      characterName,
+      voiceURI: opts.voiceURI || null,
+      speed: effectiveSpeed,
+      onStart: opts.onStart,
+      onEnd: opts.onEnd || maybeOnEnd,
+      onError: opts.onError,
+      forceCancel: true,
+      metadata: opts.metadata || null
+    });
+  }
+
+  /**
+   * Tải trước (Pre-fetch) các câu phản xạ trong danh sách để khi bấm Nghe hoặc Phát Liên Tục đạt độ trễ 0ms
+   */
+  preloadReflexSentences(sentences = [], startIndex = 0, count = 5) {
+    if (!Array.isArray(sentences) || sentences.length === 0) return;
+    const slice = sentences.slice(startIndex, startIndex + count);
+    slice.forEach((item) => {
+      const enText = typeof item === 'string' ? item : item?.en;
+      if (!enText) return;
+      const num = typeof item === 'object' && typeof item?.number === 'number' ? item.number : 0;
+      const charName = num % 2 === 1 ? 'AMY' : 'BINO';
+      const voiceId = this.resolveNeuralVoiceId(charName);
+      this.prefetchAudioBlobUrl(enText, voiceId).catch(() => {});
     });
   }
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Volume2, Play, Check, Sparkles, X, User, Users, Sliders } from 'lucide-react';
+import { Volume2, Play, Check, Sparkles, X, User, Users, Sliders, Gauge, Headphones } from 'lucide-react';
 import speechService, { SPEECH_SPEED_PRESETS } from '../utils/speechService';
 import toast from 'react-hot-toast';
 
@@ -240,22 +240,25 @@ export default function VoiceSettingsModal({ isOpen, onClose }) {
           <div className="space-y-2.5">
             <div className="flex items-center justify-between text-xs font-bold text-slate-700 dark:text-slate-300">
               <span className="flex items-center gap-1.5">
-                <Sliders size={14} className="text-[#0071e3]" />
+                <Gauge size={14} className="text-[#0071e3]" />
                 <span>Tốc độ đọc mặc định:</span>
               </span>
-              <span className="px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950 text-[#0071e3] dark:text-blue-400 font-extrabold">
-                {rate}x{' '}
-                {rate <= 0.68
-                  ? '(🐢 Rất chậm • Nghe kỹ từng âm)'
-                  : rate <= 0.78
-                  ? '(🐢 Chậm rãi • Nghe kỹ từng từ)'
-                  : rate <= 0.88
-                  ? '(Hơi chậm • Dễ bắt nhịp)'
-                  : rate <= 0.98
-                  ? '(Tự nhiên • Khuyên dùng)'
-                  : rate <= 1.05
-                  ? '(Tốc độ bản xứ)'
-                  : '(Nhanh phản xạ)'}
+              <span className="px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950 text-[#0071e3] dark:text-blue-400 font-extrabold flex items-center gap-1">
+                <Headphones size={12} />
+                <span>
+                  {rate}x{' '}
+                  {rate <= 0.68
+                    ? '(Rất chậm • Nghe kỹ từng âm)'
+                    : rate <= 0.78
+                    ? '(Chậm rãi • Nghe kỹ từng từ)'
+                    : rate <= 0.88
+                    ? '(Hơi chậm • Dễ bắt nhịp)'
+                    : rate <= 0.98
+                    ? '(Tự nhiên • Khuyên dùng)'
+                    : rate <= 1.05
+                    ? '(Tốc độ bản xứ)'
+                    : '(Nhanh phản xạ)'}
+                </span>
               </span>
             </div>
 
@@ -278,8 +281,9 @@ export default function VoiceSettingsModal({ isOpen, onClose }) {
                         : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-blue-400'
                     }`}
                   >
-                    <span className="text-xs font-black">
-                      {preset.isSlow ? `🐢 ${preset.label}` : preset.label}
+                    <span className="text-xs font-black flex items-center justify-center gap-1">
+                      {preset.isSlow && <Headphones size={11} />}
+                      <span>{preset.label}</span>
                     </span>
                     <span className={`text-[10px] font-semibold ${isSelected ? 'text-white/90' : 'text-slate-400'}`}>
                       {preset.shortTag}
@@ -292,9 +296,9 @@ export default function VoiceSettingsModal({ isOpen, onClose }) {
             {/* Thanh trượt tinh chỉnh chi tiết từ 0.55x đến 1.25x */}
             <div className="pt-1 space-y-1">
               <div className="flex items-center justify-between text-[10px] font-bold text-slate-400">
-                <span>🐢 0.55x (Chậm nhất)</span>
+                <span>0.55x (Chậm nhất)</span>
                 <span>Tùy chỉnh chi tiết</span>
-                <span>1.25x (Nhanh) ⚡</span>
+                <span>1.25x (Nhanh)</span>
               </div>
               <input
                 type="range"
@@ -313,8 +317,8 @@ export default function VoiceSettingsModal({ isOpen, onClose }) {
 
             <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
               💡 <strong>Mẹo nghe hiệu quả:</strong> Khi mới bắt đầu nghe bài mới, bạn hãy chọn mức{' '}
-              <strong className="text-emerald-600 dark:text-emerald-400">🐢 0.6x (Rất chậm)</strong> hoặc{' '}
-              <strong className="text-emerald-600 dark:text-emerald-400">🐢 0.75x (Chậm rãi)</strong> để nghe rõ từng âm tiết và âm nối; khi đã quen tai hãy tăng lên <strong>0.95x – 1.0x</strong>.
+              <strong className="text-emerald-600 dark:text-emerald-400">0.6x (Rất chậm)</strong> hoặc{' '}
+              <strong className="text-emerald-600 dark:text-emerald-400">0.75x (Chậm rãi)</strong> để nghe rõ từng âm tiết và âm nối; khi đã quen tai hãy tăng lên <strong>0.95x – 1.0x</strong>.
             </p>
           </div>
         </div>
