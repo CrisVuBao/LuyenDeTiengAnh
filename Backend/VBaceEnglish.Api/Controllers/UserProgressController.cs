@@ -74,4 +74,45 @@ public class UserProgressController : ControllerBase
         var result = await _progressService.ResetProgressAsync(userId, model);
         return Ok(result);
     }
+
+    [HttpGet("reflex")]
+    public async Task<IActionResult> GetReflexProgress()
+    {
+        int userId = GetCurrentUserId();
+        if (userId == 0) return Unauthorized(Response<string>.Failure("Chưa xác thực"));
+
+        var result = await _progressService.GetReflexProgressAsync(userId);
+        return Ok(result);
+    }
+
+    [HttpPost("reflex")]
+    public async Task<IActionResult> SaveReflexProgress([FromBody] UpsertReflexProgressDto model)
+    {
+        int userId = GetCurrentUserId();
+        if (userId == 0) return Unauthorized(Response<string>.Failure("Chưa xác thực"));
+
+        var result = await _progressService.SaveReflexProgressAsync(userId, model);
+        return Ok(result);
+    }
+
+    [HttpGet("ebook")]
+    public async Task<IActionResult> GetEbookProgress([FromQuery] string? bookSlug)
+    {
+        int userId = GetCurrentUserId();
+        if (userId == 0) return Unauthorized(Response<string>.Failure("Chưa xác thực"));
+
+        var result = await _progressService.GetEbookProgressAsync(userId, bookSlug);
+        return Ok(result);
+    }
+
+    [HttpPost("ebook")]
+    public async Task<IActionResult> SaveEbookProgress([FromBody] UpsertEbookProgressDto model)
+    {
+        int userId = GetCurrentUserId();
+        if (userId == 0) return Unauthorized(Response<string>.Failure("Chưa xác thực"));
+
+        var result = await _progressService.SaveEbookProgressAsync(userId, model);
+        return Ok(result);
+    }
 }
+

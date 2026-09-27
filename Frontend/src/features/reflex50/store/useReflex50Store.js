@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import useAuthStore from '../../../store/authStore';
+import progressApi from '../../../api/progressApi';
 
 const TOTAL_UNITS = 50;
 const SENTENCES_PER_UNIT = 30;
@@ -52,6 +53,7 @@ const loadInitialState = (customUserId) => {
 };
 
 let pendingSaveTimer = null;
+let pendingCloudSyncTimer = null;
 let latestPendingState = null;
 let latestPendingUserId = null;
 
@@ -74,7 +76,41 @@ const flushStateToStorage = (state, customUserId) => {
   }
 };
 
-// Ghi xuống localStorage bất đồng bộ theo từng tài khoản học viên (Non-blocking UI Thread)
+// Đồng bộ vĩnh viễn lên cơ sở dữ liệu SQL Server theo từng tài khoản học viên
+const syncStateToCloud = (state, customUserId) => {
+  const uid = customUserId ?? useAuthStore.getState().user?.id;
+  if (!uid || uid === 'guest') return;
+
+  if (pendingCloudSyncTimer) clearTimeout(pendingCloudSyncTimer);
+  pendingCloudSyncTimer = setTimeout(async () => {
+    pendingCloudSyncTimer = null;
+    try {
+      const masteredKeys = Object.keys(state.masteredIds || {});
+      const starredKeys = Object.keys(state.starredIds || {});
+      const weakKeys = Object.keys(state.weakIds || {});
+      const payload = {
+        masteredCount: masteredKeys.length,
+        starredCount: starredKeys.length,
+        weakCount: weakKeys.length,
+        lastStudiedUnit: state.lastStudiedUnit || 1,
+        dailyGoal: state.dailyGoal || 30,
+        progressDataJson: JSON.stringify({
+          masteredIds: state.masteredIds || {},
+          starredIds: state.starredIds || {},
+          weakIds: state.weakIds || {},
+          writingHistory: state.writingHistory || {},
+          speakingHistory: state.speakingHistory || {},
+          dailyLog: state.dailyLog || {}
+        })
+      };
+      await progressApi.saveReflexProgress(payload);
+    } catch (err) {
+      console.warn('Reflex 50 Cloud Sync warning:', err?.message || err);
+    }
+  }, 400);
+};
+
+// Ghi xuống bộ nhớ đệm và đồng bộ thẳng vào Database SQL Server
 const saveStateToStorage = (state) => {
   latestPendingState = state;
   latestPendingUserId = useAuthStore.getState().user?.id;
@@ -82,8 +118,10 @@ const saveStateToStorage = (state) => {
   pendingSaveTimer = setTimeout(() => {
     pendingSaveTimer = null;
     flushStateToStorage(latestPendingState, latestPendingUserId);
+    syncStateToCloud(latestPendingState, latestPendingUserId);
   }, 120);
 };
+
 
 if (typeof window !== 'undefined') {
   window.addEventListener('beforeunload', () => {
@@ -549,9 +587,11 @@ export const useReflex50Store = create((set, get) => ({
     };
   },
 
-  // Tải lại toàn bộ tiến độ Reflex 50 khi đăng nhập hoặc đổi tài khoản
-  loadForUser: (userId) => {
-    const userSaved = loadInitialState(userId);
+  // Tải lại toàn bộ tiến độ Reflex 50 từ SQL Server và bộ nhớ đệm khi đăng nhập hoặc mở web
+  loadForUser: async (userId) => {
+    const uid = userId ?? useAuthStore.getState().user?.id;
+    const userSaved = loadInitialState(uid);
+    // Cập nhật ngay lập tức từ bộ nhớ đệm cục bộ (0ms UI display)
     set({
       masteredIds: userSaved?.masteredIds || {},
       starredIds: userSaved?.starredIds || {},
@@ -562,6 +602,40 @@ export const useReflex50Store = create((set, get) => ({
       dailyGoal: userSaved?.dailyGoal || 30,
       dailyLog: userSaved?.dailyLog || {}
     });
+
+    if (!uid || uid === 'guest') return;
+
+    // Nạp trực tiếp từ SQL Server Database để bảo toàn dữ liệu vĩnh viễn (dù bị xóa cache trình duyệt)
+    try {
+      const res = await progressApi.getReflexProgress();
+      if (res?.data?.isSuccess && res.data.data) {
+        const cloud = res.data.data;
+        let details = {};
+        try {
+          details = JSON.parse(cloud.progressDataJson || '{}');
+        } catch {
+          details = {};
+        }
+
+        const currentLocal = loadInitialState(uid);
+        // Hợp nhất dữ liệu SQL Server và dữ liệu cục bộ an toàn
+        const merged = {
+          masteredIds: { ...(details.masteredIds || {}), ...(currentLocal?.masteredIds || {}) },
+          starredIds: { ...(details.starredIds || {}), ...(currentLocal?.starredIds || {}) },
+          weakIds: { ...(details.weakIds || {}), ...(currentLocal?.weakIds || {}) },
+          writingHistory: { ...(details.writingHistory || {}), ...(currentLocal?.writingHistory || {}) },
+          speakingHistory: { ...(details.speakingHistory || {}), ...(currentLocal?.speakingHistory || {}) },
+          lastStudiedUnit: cloud.lastStudiedUnit || currentLocal?.lastStudiedUnit || 1,
+          dailyGoal: cloud.dailyGoal || currentLocal?.dailyGoal || 30,
+          dailyLog: { ...(details.dailyLog || {}), ...(currentLocal?.dailyLog || {}) }
+        };
+
+        set(merged);
+        flushStateToStorage(merged, uid);
+      }
+    } catch (err) {
+      console.warn('Không thể nạp tiến độ từ SQL Server:', err?.message || err);
+    }
   }
 }));
 
@@ -579,6 +653,15 @@ if (typeof window !== 'undefined') {
       useReflex50Store.getState().loadForUser(newUid);
     }
   });
+
+  // Tự động nạp tiến độ từ SQL Server khi tải trang nếu học viên đã đăng nhập
+  const currentInitialUid = useAuthStore.getState().user?.id;
+  if (currentInitialUid && currentInitialUid !== 'guest') {
+    setTimeout(() => {
+      useReflex50Store.getState().loadForUser(currentInitialUid);
+    }, 50);
+  }
 }
 
 export default useReflex50Store;
+

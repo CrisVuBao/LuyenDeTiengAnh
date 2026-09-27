@@ -24,7 +24,13 @@ public static class DbInitializer
         // 1. Ensure Approval columns exist on AspNetUsers first (before Migrate or queries)
         try
         {
-            await context.Database.ExecuteSqlRawAsync(@"
+            var conn = context.Database.GetDbConnection();
+            if (conn.State != System.Data.ConnectionState.Open)
+            {
+                await conn.OpenAsync();
+            }
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = @"
                 IF COL_LENGTH('AspNetUsers', 'IsApproved') IS NULL
                 BEGIN
                     ALTER TABLE [AspNetUsers] ADD [IsApproved] bit NOT NULL CONSTRAINT [DF_AspNetUsers_IsApproved] DEFAULT 0;
@@ -33,12 +39,47 @@ public static class DbInitializer
                 BEGIN
                     ALTER TABLE [AspNetUsers] ADD [ApprovedAt] datetime2 NULL;
                 END
-            ");
+
+                IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'UserReflexProgresses')
+                BEGIN
+                    CREATE TABLE [UserReflexProgresses] (
+                        [Id] int IDENTITY(1,1) NOT NULL,
+                        [UserId] int NOT NULL,
+                        [MasteredCount] int NOT NULL CONSTRAINT [DF_UserReflexProgresses_MasteredCount] DEFAULT 0,
+                        [StarredCount] int NOT NULL CONSTRAINT [DF_UserReflexProgresses_StarredCount] DEFAULT 0,
+                        [WeakCount] int NOT NULL CONSTRAINT [DF_UserReflexProgresses_WeakCount] DEFAULT 0,
+                        [LastStudiedUnit] int NOT NULL CONSTRAINT [DF_UserReflexProgresses_LastStudiedUnit] DEFAULT 1,
+                        [DailyGoal] int NOT NULL CONSTRAINT [DF_UserReflexProgresses_DailyGoal] DEFAULT 30,
+                        [ProgressDataJson] nvarchar(max) NOT NULL CONSTRAINT [DF_UserReflexProgresses_ProgressDataJson] DEFAULT '{}',
+                        [UpdatedAt] datetime2 NOT NULL CONSTRAINT [DF_UserReflexProgresses_UpdatedAt] DEFAULT GETUTCDATE(),
+                        CONSTRAINT [PK_UserReflexProgresses] PRIMARY KEY ([Id]),
+                        CONSTRAINT [FK_UserReflexProgresses_AspNetUsers_UserId] FOREIGN KEY ([UserId]) REFERENCES [AspNetUsers] ([Id]) ON DELETE CASCADE
+                    );
+                    CREATE UNIQUE INDEX [IX_UserReflexProgresses_UserId] ON [UserReflexProgresses] ([UserId]);
+                END
+
+                IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'UserEbookProgresses')
+                BEGIN
+                    CREATE TABLE [UserEbookProgresses] (
+                        [Id] int IDENTITY(1,1) NOT NULL,
+                        [UserId] int NOT NULL,
+                        [BookSlug] nvarchar(100) NOT NULL CONSTRAINT [DF_UserEbookProgresses_BookSlug] DEFAULT 'chem-tieng-anh-khong-can-dong-nao',
+                        [LastCfi] nvarchar(500) NULL,
+                        [BookmarksJson] nvarchar(max) NOT NULL CONSTRAINT [DF_UserEbookProgresses_BookmarksJson] DEFAULT '[]',
+                        [UpdatedAt] datetime2 NOT NULL CONSTRAINT [DF_UserEbookProgresses_UpdatedAt] DEFAULT GETUTCDATE(),
+                        CONSTRAINT [PK_UserEbookProgresses] PRIMARY KEY ([Id]),
+                        CONSTRAINT [FK_UserEbookProgresses_AspNetUsers_UserId] FOREIGN KEY ([UserId]) REFERENCES [AspNetUsers] ([Id]) ON DELETE CASCADE
+                    );
+                    CREATE UNIQUE INDEX [IX_UserEbookProgresses_UserId_BookSlug] ON [UserEbookProgresses] ([UserId], [BookSlug]);
+                END
+            ";
+            await cmd.ExecuteNonQueryAsync();
         }
         catch (Exception ex)
         {
-            logger.LogWarning("Không thể tự động thêm cột IsApproved/ApprovedAt: {msg}", ex.Message);
+            logger.LogWarning("Không thể tự động khởi tạo bảng UserReflexProgresses / UserEbookProgresses: {msg}", ex.Message);
         }
+
 
         try
         {

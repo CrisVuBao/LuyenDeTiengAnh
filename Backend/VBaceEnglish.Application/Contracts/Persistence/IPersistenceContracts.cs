@@ -30,7 +30,16 @@ public interface IUserProgressRepository
     Task<int> GetTotalInteractionCountAsync();
     Task AddSummaryAsync(UserTestSummary summary);
     void UpdateSummary(UserTestSummary summary);
+
+    Task<UserReflexProgress?> GetReflexProgressAsync(int userId);
+    Task AddReflexProgressAsync(UserReflexProgress progress);
+    void UpdateReflexProgress(UserReflexProgress progress);
+
+    Task<UserEbookProgress?> GetEbookProgressAsync(int userId, string bookSlug);
+    Task AddEbookProgressAsync(UserEbookProgress progress);
+    void UpdateEbookProgress(UserEbookProgress progress);
 }
+
 
 public interface IBinoBookRepository
 {

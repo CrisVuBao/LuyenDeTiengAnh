@@ -35,6 +35,8 @@ public class AppDBContext : IdentityDbContext<ApplicationUser, Role, int>
     public DbSet<DialogueLine> DialogueLines => Set<DialogueLine>();
     public DbSet<UserDialogueProgress> UserDialogueProgresses => Set<UserDialogueProgress>();
     public DbSet<UserSRSReview> UserSRSReviews => Set<UserSRSReview>();
+    public DbSet<UserReflexProgress> UserReflexProgresses => Set<UserReflexProgress>();
+    public DbSet<UserEbookProgress> UserEbookProgresses => Set<UserEbookProgress>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -53,6 +55,8 @@ public class AppDBContext : IdentityDbContext<ApplicationUser, Role, int>
         builder.Entity<UserStudyProgress>().HasIndex(p => new { p.UserId, p.ToeicTestId, p.PartNumber, p.QuestionNumber });
 
         builder.Entity<UserTestSummary>().HasIndex(s => new { s.UserId, s.ToeicTestId }).IsUnique();
+        builder.Entity<UserReflexProgress>().HasIndex(r => r.UserId).IsUnique();
+        builder.Entity<UserEbookProgress>().HasIndex(e => new { e.UserId, e.BookSlug }).IsUnique();
 
         // Cascade Deletes for Test
         builder.Entity<ToeicTest>()

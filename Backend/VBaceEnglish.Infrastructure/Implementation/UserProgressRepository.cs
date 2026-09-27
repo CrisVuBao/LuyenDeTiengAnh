@@ -73,5 +73,38 @@ public class UserProgressRepository : IUserProgressRepository
 
     public async Task AddSummaryAsync(UserTestSummary summary) => await _context.UserTestSummaries.AddAsync(summary);
     public void UpdateSummary(UserTestSummary summary) => _context.UserTestSummaries.Update(summary);
+
+    public async Task<UserReflexProgress?> GetReflexProgressAsync(int userId)
+    {
+        return await _context.UserReflexProgresses
+            .FirstOrDefaultAsync(r => r.UserId == userId);
+    }
+
+    public async Task AddReflexProgressAsync(UserReflexProgress progress)
+    {
+        await _context.UserReflexProgresses.AddAsync(progress);
+    }
+
+    public void UpdateReflexProgress(UserReflexProgress progress)
+    {
+        _context.UserReflexProgresses.Update(progress);
+    }
+
+    public async Task<UserEbookProgress?> GetEbookProgressAsync(int userId, string bookSlug)
+    {
+        return await _context.UserEbookProgresses
+            .FirstOrDefaultAsync(e => e.UserId == userId && e.BookSlug == bookSlug);
+    }
+
+    public async Task AddEbookProgressAsync(UserEbookProgress progress)
+    {
+        await _context.UserEbookProgresses.AddAsync(progress);
+    }
+
+    public void UpdateEbookProgress(UserEbookProgress progress)
+    {
+        _context.UserEbookProgresses.Update(progress);
+    }
 }
+
 

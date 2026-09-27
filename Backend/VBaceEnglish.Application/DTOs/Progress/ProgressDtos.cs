@@ -50,3 +50,40 @@ public class UnsureQuestionDto
     public string? Explanation { get; set; }
     public DateTime UpdatedAt { get; set; }
 }
+
+public class UserReflexProgressDto
+{
+    public int MasteredCount { get; set; }
+    public int StarredCount { get; set; }
+    public int WeakCount { get; set; }
+    public int LastStudiedUnit { get; set; } = 1;
+    public int DailyGoal { get; set; } = 30;
+    public string ProgressDataJson { get; set; } = "{}";
+    public DateTime UpdatedAt { get; set; }
+}
+
+public class UpsertReflexProgressDto
+{
+    public int MasteredCount { get; set; }
+    public int StarredCount { get; set; }
+    public int WeakCount { get; set; }
+    public int LastStudiedUnit { get; set; } = 1;
+    public int DailyGoal { get; set; } = 30;
+    public string ProgressDataJson { get; set; } = "{}";
+}
+
+public class UserEbookProgressDto
+{
+    public string BookSlug { get; set; } = string.Empty;
+    public string? LastCfi { get; set; }
+    public string BookmarksJson { get; set; } = "[]";
+    public DateTime UpdatedAt { get; set; }
+}
+
+public class UpsertEbookProgressDto
+{
+    public string BookSlug { get; set; } = "chem-tieng-anh-khong-can-dong-nao";
+    public string? LastCfi { get; set; }
+    public string BookmarksJson { get; set; } = "[]";
+}
+

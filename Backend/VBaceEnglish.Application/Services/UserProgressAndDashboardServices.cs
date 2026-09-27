@@ -15,6 +15,10 @@ public interface IUserProgressService
     Task<Response<bool>> ResetProgressAsync(int userId, ResetPartProgressDto model);
     Task<Response<List<TestSummaryDto>>> GetAllSummariesAsync(int userId);
     Task<Response<List<UnsureQuestionDto>>> GetUnsureQuestionsAsync(int userId, int? testId);
+    Task<Response<UserReflexProgressDto>> GetReflexProgressAsync(int userId);
+    Task<Response<bool>> SaveReflexProgressAsync(int userId, UpsertReflexProgressDto dto);
+    Task<Response<UserEbookProgressDto>> GetEbookProgressAsync(int userId, string? bookSlug);
+    Task<Response<bool>> SaveEbookProgressAsync(int userId, UpsertEbookProgressDto dto);
 }
 
 public class UserProgressService : IUserProgressService
@@ -265,6 +269,127 @@ public class UserProgressService : IUserProgressService
         return Response<List<UnsureQuestionDto>>.SuccessResult(
             "Lấy danh sách câu hỏi chưa chắc thành công", 
             result.OrderByDescending(x => x.UpdatedAt).ToList());
+    }
+
+    public async Task<Response<UserReflexProgressDto>> GetReflexProgressAsync(int userId)
+    {
+        var entity = await _unitOfWork.UserProgresses.GetReflexProgressAsync(userId);
+        if (entity == null)
+        {
+            return Response<UserReflexProgressDto>.SuccessResult("Chưa có tiến độ phản xạ", new UserReflexProgressDto
+            {
+                MasteredCount = 0,
+                StarredCount = 0,
+                WeakCount = 0,
+                LastStudiedUnit = 1,
+                DailyGoal = 30,
+                ProgressDataJson = "{}",
+                UpdatedAt = DateTime.UtcNow
+            });
+        }
+
+        return Response<UserReflexProgressDto>.SuccessResult("Lấy tiến độ phản xạ thành công", new UserReflexProgressDto
+        {
+            MasteredCount = entity.MasteredCount,
+            StarredCount = entity.StarredCount,
+            WeakCount = entity.WeakCount,
+            LastStudiedUnit = entity.LastStudiedUnit,
+            DailyGoal = entity.DailyGoal,
+            ProgressDataJson = entity.ProgressDataJson,
+            UpdatedAt = entity.UpdatedAt
+        });
+    }
+
+    public async Task<Response<bool>> SaveReflexProgressAsync(int userId, UpsertReflexProgressDto dto)
+    {
+        var existing = await _unitOfWork.UserProgresses.GetReflexProgressAsync(userId);
+        if (existing == null)
+        {
+            var newEntity = new UserReflexProgress
+            {
+                UserId = userId,
+                MasteredCount = dto.MasteredCount,
+                StarredCount = dto.StarredCount,
+                WeakCount = dto.WeakCount,
+                LastStudiedUnit = dto.LastStudiedUnit,
+                DailyGoal = dto.DailyGoal,
+                ProgressDataJson = string.IsNullOrWhiteSpace(dto.ProgressDataJson) ? "{}" : dto.ProgressDataJson,
+                UpdatedAt = DateTime.UtcNow
+            };
+            await _unitOfWork.UserProgresses.AddReflexProgressAsync(newEntity);
+        }
+        else
+        {
+            existing.MasteredCount = dto.MasteredCount;
+            existing.StarredCount = dto.StarredCount;
+            existing.WeakCount = dto.WeakCount;
+            existing.LastStudiedUnit = dto.LastStudiedUnit;
+            existing.DailyGoal = dto.DailyGoal;
+            existing.ProgressDataJson = string.IsNullOrWhiteSpace(dto.ProgressDataJson) ? "{}" : dto.ProgressDataJson;
+            existing.UpdatedAt = DateTime.UtcNow;
+            _unitOfWork.UserProgresses.UpdateReflexProgress(existing);
+        }
+
+        await _unitOfWork.CompleteAsync();
+        return Response<bool>.SuccessResult("Đồng bộ tiến độ phản xạ thành công", true);
+    }
+
+    public async Task<Response<UserEbookProgressDto>> GetEbookProgressAsync(int userId, string? bookSlug)
+    {
+        var slug = string.IsNullOrWhiteSpace(bookSlug) ? "chem-tieng-anh-khong-can-dong-nao" : bookSlug;
+        var entity = await _unitOfWork.UserProgresses.GetEbookProgressAsync(userId, slug);
+        if (entity == null)
+        {
+            return Response<UserEbookProgressDto>.SuccessResult("Chưa có tiến độ đọc sách", new UserEbookProgressDto
+            {
+                BookSlug = slug,
+                LastCfi = null,
+                BookmarksJson = "[]",
+                UpdatedAt = DateTime.UtcNow
+            });
+        }
+
+        return Response<UserEbookProgressDto>.SuccessResult("Lấy tiến độ đọc sách thành công", new UserEbookProgressDto
+        {
+            BookSlug = entity.BookSlug,
+            LastCfi = entity.LastCfi,
+            BookmarksJson = entity.BookmarksJson,
+            UpdatedAt = entity.UpdatedAt
+        });
+    }
+
+    public async Task<Response<bool>> SaveEbookProgressAsync(int userId, UpsertEbookProgressDto dto)
+    {
+        var slug = string.IsNullOrWhiteSpace(dto.BookSlug) ? "chem-tieng-anh-khong-can-dong-nao" : dto.BookSlug;
+        var existing = await _unitOfWork.UserProgresses.GetEbookProgressAsync(userId, slug);
+        if (existing == null)
+        {
+            var newEntity = new UserEbookProgress
+            {
+                UserId = userId,
+                BookSlug = slug,
+                LastCfi = dto.LastCfi,
+                BookmarksJson = string.IsNullOrWhiteSpace(dto.BookmarksJson) ? "[]" : dto.BookmarksJson,
+                UpdatedAt = DateTime.UtcNow
+            };
+            await _unitOfWork.UserProgresses.AddEbookProgressAsync(newEntity);
+        }
+        else
+        {
+            if (dto.LastCfi != null)
+            {
+                existing.LastCfi = dto.LastCfi;
+            }
+            if (!string.IsNullOrWhiteSpace(dto.BookmarksJson))
+            {
+                existing.BookmarksJson = dto.BookmarksJson;
+            }
+            existing.UpdatedAt = DateTime.UtcNow;
+            _unitOfWork.UserProgresses.UpdateEbookProgress(existing);
+        }
+
+        await _unitOfWork.CompleteAsync();
+        return Response<bool>.SuccessResult("Đồng bộ tiến độ đọc sách thành công", true);
     }
 }
 

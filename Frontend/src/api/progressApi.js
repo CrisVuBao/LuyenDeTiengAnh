@@ -5,7 +5,11 @@ const progressApi = {
   getAllSummaries: () => axiosClient.get('/userprogress/all-summaries'),
   getUnsureQuestions: (testId) => axiosClient.get('/userprogress/unsure-questions', { params: testId ? { testId } : {} }),
   markProgress: (data) => axiosClient.post('/userprogress/mark', data),
-  resetProgress: (data) => axiosClient.post('/userprogress/reset', data)
+  resetProgress: (data) => axiosClient.post('/userprogress/reset', data),
+  getReflexProgress: () => axiosClient.get('/userprogress/reflex'),
+  saveReflexProgress: (data) => axiosClient.post('/userprogress/reflex', data),
+  getEbookProgress: (bookSlug) => axiosClient.get('/userprogress/ebook', { params: bookSlug ? { bookSlug } : {} }),
+  saveEbookProgress: (data) => axiosClient.post('/userprogress/ebook', data)
 };
 
 export default progressApi;

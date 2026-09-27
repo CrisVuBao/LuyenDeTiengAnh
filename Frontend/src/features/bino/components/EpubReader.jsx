@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import useAuthStore from '../../../store/authStore';
+import progressApi from '../../../api/progressApi';
 
 const getEpubBookmarksKey = () => `vbace_epub_bookmarks_u_${useAuthStore.getState().user?.id || 'guest'}`;
 const getEpubCfiKey = (bookTitle) => `vbace_epub_last_cfi_u_${useAuthStore.getState().user?.id || 'guest'}_${bookTitle}`;
@@ -172,6 +173,77 @@ export default function EpubReader({
     }
   });
 
+  const bookmarksRef = useRef(bookmarks);
+  useEffect(() => {
+    bookmarksRef.current = bookmarks;
+  }, [bookmarks]);
+
+  const syncEbookTimerRef = useRef(null);
+
+  // Đồng bộ vị trí đọc và bookmarks lên Database SQL Server vĩnh viễn
+  const syncEbookToCloud = useCallback((cfi, bmList) => {
+    const userId = useAuthStore.getState().user?.id;
+    if (!userId || userId === 'guest') return;
+
+    if (syncEbookTimerRef.current) clearTimeout(syncEbookTimerRef.current);
+    syncEbookTimerRef.current = setTimeout(async () => {
+      try {
+        await progressApi.saveEbookProgress({
+          bookSlug: 'chem-tieng-anh-khong-can-dong-nao',
+          lastCfi: cfi || null,
+          bookmarksJson: JSON.stringify(bmList || [])
+        });
+      } catch (err) {
+        console.warn('Ebook Cloud Sync warning:', err?.message || err);
+      }
+    }, 600);
+  }, []);
+
+  // Tự động nạp vị trí đọc và bookmarks từ SQL Server khi mở trang
+  useEffect(() => {
+    const userId = useAuthStore.getState().user?.id;
+    if (!userId || userId === 'guest') return;
+
+    let isSubscribed = true;
+    progressApi.getEbookProgress('chem-tieng-anh-khong-can-dong-nao')
+      .then((res) => {
+        if (!isSubscribed || !res?.data?.isSuccess || !res.data.data) return;
+        const data = res.data.data;
+        if (data.bookmarksJson) {
+          try {
+            const parsed = JSON.parse(data.bookmarksJson);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              setBookmarks((prev) => {
+                const existingCfis = new Set(prev.map((b) => b.cfi));
+                const merged = [...prev];
+                for (const item of parsed) {
+                  if (!existingCfis.has(item.cfi)) {
+                    merged.push(item);
+                    existingCfis.add(item.cfi);
+                  }
+                }
+                localStorage.setItem(getEpubBookmarksKey(), JSON.stringify(merged));
+                return merged;
+              });
+            }
+          } catch {}
+        }
+        if (data.lastCfi) {
+          localStorage.setItem(getEpubCfiKey(bookTitle), data.lastCfi);
+          if (renditionRef.current && !locationInfo.cfi) {
+            renditionRef.current.display(data.lastCfi).catch(() => {});
+          }
+        }
+      })
+      .catch((err) => {
+        console.warn('Không thể nạp tiến độ đọc từ SQL Server:', err);
+      });
+
+    return () => {
+      isSubscribed = false;
+    };
+  }, [bookTitle]);
+
   // Custom Local File Source
   const [customSource, setCustomSource] = useState(null);
   const [loadedFileName, setLoadedFileName] = useState('');
@@ -193,6 +265,7 @@ export default function EpubReader({
   // Load Book
   const loadBook = useCallback((source) => {
     if (!viewerRef.current) return;
+
     setLoading(true);
     setLoadingProgress(15);
 
@@ -274,9 +347,12 @@ export default function EpubReader({
       rendition.on('relocated', (location) => {
         updateLocationInfo(location);
         if (location && location.start && location.start.cfi) {
-          localStorage.setItem(getEpubCfiKey(bookTitle), location.start.cfi);
+          const cfi = location.start.cfi;
+          localStorage.setItem(getEpubCfiKey(bookTitle), cfi);
+          syncEbookToCloud(cfi, bookmarksRef.current);
         }
       });
+
 
       // Handle Key Navigation inside rendition iframe
       rendition.on('keyup', (e) => {
@@ -471,6 +547,7 @@ export default function EpubReader({
       const updated = bookmarks.filter(b => b.cfi !== locationInfo.cfi);
       setBookmarks(updated);
       localStorage.setItem(getEpubBookmarksKey(), JSON.stringify(updated));
+      syncEbookToCloud(locationInfo.cfi, updated);
       toast.success('Đã xóa đánh dấu trang');
     } else {
       const newBm = {
@@ -483,8 +560,10 @@ export default function EpubReader({
       const updated = [newBm, ...bookmarks];
       setBookmarks(updated);
       localStorage.setItem(getEpubBookmarksKey(), JSON.stringify(updated));
+      syncEbookToCloud(locationInfo.cfi, updated);
       toast.success('Đã đánh dấu trang thành công');
     }
+
   };
 
   // Handle Local EPUB File Upload
