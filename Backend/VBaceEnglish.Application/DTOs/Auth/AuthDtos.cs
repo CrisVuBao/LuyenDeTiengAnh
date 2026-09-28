@@ -21,12 +21,35 @@ public class RegisterDto
     [EmailAddress(ErrorMessage = "Email không hợp lệ")]
     public string Email { get; set; } = string.Empty;
 
-    [Phone(ErrorMessage = "Số điện thoại không hợp lệ")]
     public string? PhoneNumber { get; set; }
 
     [Required(ErrorMessage = "Vui lòng nhập Mật khẩu")]
     [MinLength(6, ErrorMessage = "Mật khẩu phải từ 6 ký tự trở lên")]
     public string Password { get; set; } = string.Empty;
+}
+
+public class UpdateProfileDto
+{
+    [Required(ErrorMessage = "Vui lòng nhập Họ và tên")]
+    [MaxLength(100)]
+    public string FullName { get; set; } = string.Empty;
+
+    public string? PhoneNumber { get; set; }
+}
+
+public class AccountAvailabilityDto
+{
+    public bool EmailAvailable { get; set; } = true;
+    public string? EmailMessage { get; set; }
+    public bool PhoneAvailable { get; set; } = true;
+    public string? PhoneMessage { get; set; }
+    public string? NormalizedPhone { get; set; }
+}
+
+public class LoginResultDto
+{
+    public string Token { get; set; } = string.Empty;
+    public UserDto User { get; set; } = new();
 }
 
 public class UserDto
@@ -51,3 +74,4 @@ public class ChangePasswordDto
     [MinLength(6)]
     public string NewPassword { get; set; } = string.Empty;
 }
+

@@ -24,7 +24,15 @@ axiosClient.interceptors.response.use(
         window.location.href = '/auth';
       }
     }
-    const message = error.response?.data?.message || error.response?.data?.detail || 'Có lỗi xảy ra';
+    const validationErrors = error.response?.data?.errors;
+    const firstValidationMsg = validationErrors
+      ? Object.values(validationErrors).flat()[0]
+      : null;
+    const message =
+      error.response?.data?.message ||
+      firstValidationMsg ||
+      error.response?.data?.detail ||
+      'Có lỗi xảy ra';
     return Promise.reject(new Error(message));
   }
 );

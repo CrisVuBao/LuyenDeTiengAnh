@@ -775,16 +775,30 @@ public class DashboardService : IDashboardService
         if (string.IsNullOrWhiteSpace(dto.Email) || string.IsNullOrWhiteSpace(dto.FullName) || string.IsNullOrWhiteSpace(dto.Password))
             return Response<AdminStudentProgressDto>.Failure("Vui lòng điền đầy đủ Họ tên, Email và Mật khẩu.");
 
-        var existingUser = await _userManager.FindByEmailAsync(dto.Email);
+        var cleanEmail = dto.Email.Trim();
+        var existingUser = await _userManager.FindByEmailAsync(cleanEmail);
         if (existingUser != null)
             return Response<AdminStudentProgressDto>.Failure("Email này đã được sử dụng bởi một tài khoản khác.");
 
+        if (!PhoneNumberHelper.Validate(dto.PhoneNumber, isRequired: false, out var normalizedPhone, out var phoneError))
+            return Response<AdminStudentProgressDto>.Failure(phoneError!);
+
+        if (!string.IsNullOrEmpty(normalizedPhone))
+        {
+            var existingPhoneUser = PhoneNumberHelper.FindUserByPhone(_userManager.Users, normalizedPhone);
+            if (existingPhoneUser != null)
+            {
+                return Response<AdminStudentProgressDto>.Failure(
+                    $"Số điện thoại {normalizedPhone} đã được đăng ký cho tài khoản \"{existingPhoneUser.FullName}\" ({existingPhoneUser.Email}). Không thể tạo trùng số điện thoại!");
+            }
+        }
+
         var user = new ApplicationUser
         {
-            UserName = dto.Email,
-            Email = dto.Email,
+            UserName = cleanEmail,
+            Email = cleanEmail,
             FullName = dto.FullName.Trim(),
-            PhoneNumber = dto.PhoneNumber?.Trim(),
+            PhoneNumber = normalizedPhone,
             IsApproved = dto.IsApproved,
             EmailConfirmed = dto.IsApproved,
             ApprovedAt = dto.IsApproved ? DateTime.UtcNow : null,
@@ -858,12 +872,25 @@ public class DashboardService : IDashboardService
         bool wasLocked = user.LockoutEnd.HasValue && user.LockoutEnd.Value > DateTimeOffset.UtcNow;
         bool wasApproved = user.IsApproved;
 
+        if (!PhoneNumberHelper.Validate(dto.PhoneNumber, isRequired: false, out var normalizedPhone, out var phoneError))
+            return Response<bool>.Failure(phoneError!);
+
+        if (!string.IsNullOrEmpty(normalizedPhone))
+        {
+            var existingPhoneUser = PhoneNumberHelper.FindUserByPhone(_userManager.Users, normalizedPhone, excludeUserId: userId);
+            if (existingPhoneUser != null)
+            {
+                return Response<bool>.Failure(
+                    $"Số điện thoại {normalizedPhone} đã được sử dụng bởi tài khoản \"{existingPhoneUser.FullName}\" ({existingPhoneUser.Email}). Không thể cập nhật trùng số điện thoại!");
+            }
+        }
+
         user.FullName = dto.FullName.Trim();
-        user.PhoneNumber = dto.PhoneNumber?.Trim();
+        user.PhoneNumber = normalizedPhone;
 
         if (!string.Equals(user.Email, dto.Email, StringComparison.OrdinalIgnoreCase))
         {
-            var existingEmail = await _userManager.FindByEmailAsync(dto.Email);
+            var existingEmail = await _userManager.FindByEmailAsync(dto.Email.Trim());
             if (existingEmail != null && existingEmail.Id != userId)
                 return Response<bool>.Failure("Email đã được sử dụng bởi tài khoản khác.");
             user.Email = dto.Email.Trim();

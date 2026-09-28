@@ -39,6 +39,7 @@ import {
   SlidersHorizontal
 } from 'lucide-react';
 import { dashboardApi } from '../../../api/dashboardAndAiApi';
+import { normalizeVietnamPhone, validateVietnamPhone } from '../../../api/authApi';
 import PageLoader from '../../../components/PageLoader';
 import toast from 'react-hot-toast';
 
@@ -318,9 +319,33 @@ export default function AdminStudents() {
       return;
     }
 
+    const phoneCheck = validateVietnamPhone(createForm.phoneNumber, false);
+    if (!phoneCheck.valid) {
+      toast.error(phoneCheck.error);
+      return;
+    }
+
+    if (phoneCheck.normalized) {
+      const dupStudent = students.find(
+        (s) => normalizeVietnamPhone(s.phoneNumber || '') === phoneCheck.normalized
+      );
+      if (dupStudent) {
+        toast.error(
+          `Số điện thoại ${phoneCheck.normalized} đã được đăng ký cho học viên "${dupStudent.fullName}" (${dupStudent.email})!`
+        );
+        return;
+      }
+    }
+
     try {
       setCreating(true);
-      const res = await dashboardApi.createStudent(createForm);
+      const payload = {
+        ...createForm,
+        fullName: createForm.fullName.trim(),
+        email: createForm.email.trim(),
+        phoneNumber: phoneCheck.normalized || null
+      };
+      const res = await dashboardApi.createStudent(payload);
       toast.success(res?.message || 'Đã tạo tài khoản thành công!');
       setCreateModalOpen(false);
       setCreateForm({
@@ -360,14 +385,40 @@ export default function AdminStudents() {
       return;
     }
 
+    const phoneCheck = validateVietnamPhone(editForm.phoneNumber, false);
+    if (!phoneCheck.valid) {
+      toast.error(phoneCheck.error);
+      return;
+    }
+
+    if (phoneCheck.normalized) {
+      const dupStudent = students.find(
+        (s) =>
+          s.userId !== editModalStudent.userId &&
+          normalizeVietnamPhone(s.phoneNumber || '') === phoneCheck.normalized
+      );
+      if (dupStudent) {
+        toast.error(
+          `Số điện thoại ${phoneCheck.normalized} đã được sử dụng bởi học viên "${dupStudent.fullName}" (${dupStudent.email})!`
+        );
+        return;
+      }
+    }
+
     try {
       setUpdating(true);
-      const res = await dashboardApi.updateStudent(editModalStudent.userId, editForm);
+      const payload = {
+        ...editForm,
+        fullName: editForm.fullName.trim(),
+        email: editForm.email.trim(),
+        phoneNumber: phoneCheck.normalized || null
+      };
+      const res = await dashboardApi.updateStudent(editModalStudent.userId, payload);
       toast.success(res?.message || 'Đã cập nhật thông tin thành công!');
       setEditModalStudent(null);
       fetchStudents();
       if (dossierStudent?.userId === editModalStudent.userId) {
-        handleOpenDossier({ ...editModalStudent, ...editForm });
+        handleOpenDossier({ ...editModalStudent, ...payload });
       }
     } catch (err) {
       toast.error(err?.response?.data?.message || err.message || 'Không thể cập nhật tài khoản');

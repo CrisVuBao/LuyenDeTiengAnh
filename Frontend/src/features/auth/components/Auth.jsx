@@ -1,7 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Sparkles, Mail, Lock, User, Phone, ArrowRight, ArrowLeft, Clock, CheckCircle2, ShieldAlert } from 'lucide-react';
-import authApi from '../../../api/authApi';
+import {
+  Sparkles,
+  Mail,
+  Lock,
+  User,
+  Phone,
+  ArrowRight,
+  ArrowLeft,
+  Clock,
+  CheckCircle2,
+  AlertCircle
+} from 'lucide-react';
+import authApi, { normalizeVietnamPhone, validateVietnamPhone } from '../../../api/authApi';
 import useAuthStore from '../../../store/authStore';
 import toast from 'react-hot-toast';
 
@@ -15,7 +26,7 @@ export default function Auth() {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const user = useAuthStore((state) => state.user);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isAuthenticated) {
       if (user?.role === 'Admin') {
         navigate('/admin/dashboard', { replace: true });
@@ -34,17 +45,139 @@ export default function Auth() {
     confirmPassword: ''
   });
 
+  // Trạng thái kiểm tra trùng lặp Email & Số điện thoại theo thời gian thực
+  const [availability, setAvailability] = useState({
+    checkingEmail: false,
+    emailAvailable: null,
+    emailMessage: null,
+    checkingPhone: false,
+    phoneAvailable: null,
+    phoneMessage: null
+  });
+
+  // Kiểm tra trùng lặp Email khi người dùng nhập ở form Đăng ký
+  useEffect(() => {
+    if (isLogin) return;
+    const email = registerData.email.trim();
+    if (!email) {
+      setAvailability((prev) => ({
+        ...prev,
+        checkingEmail: false,
+        emailAvailable: null,
+        emailMessage: null
+      }));
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setAvailability((prev) => ({
+        ...prev,
+        checkingEmail: false,
+        emailAvailable: false,
+        emailMessage: 'Định dạng Email chưa hợp lệ (VD: example@gmail.com).'
+      }));
+      return;
+    }
+
+    setAvailability((prev) => ({ ...prev, checkingEmail: true }));
+    const timer = setTimeout(async () => {
+      try {
+        const res = await authApi.checkAvailability({ email });
+        const data = res?.data;
+        if (data) {
+          setAvailability((prev) => ({
+            ...prev,
+            checkingEmail: false,
+            emailAvailable: data.emailAvailable,
+            emailMessage: data.emailMessage || null
+          }));
+        }
+      } catch {
+        setAvailability((prev) => ({ ...prev, checkingEmail: false }));
+      }
+    }, 380);
+
+    return () => clearTimeout(timer);
+  }, [registerData.email, isLogin]);
+
+  // Kiểm tra định dạng & trùng lặp Số điện thoại khi người dùng nhập ở form Đăng ký
+  useEffect(() => {
+    if (isLogin) return;
+    const rawPhone = registerData.phoneNumber.trim();
+    if (!rawPhone) {
+      setAvailability((prev) => ({
+        ...prev,
+        checkingPhone: false,
+        phoneAvailable: null,
+        phoneMessage: null
+      }));
+      return;
+    }
+
+    const phoneCheck = validateVietnamPhone(rawPhone, true);
+    if (!phoneCheck.valid) {
+      setAvailability((prev) => ({
+        ...prev,
+        checkingPhone: false,
+        phoneAvailable: false,
+        phoneMessage: phoneCheck.error
+      }));
+      return;
+    }
+
+    setAvailability((prev) => ({ ...prev, checkingPhone: true }));
+    const timer = setTimeout(async () => {
+      try {
+        const res = await authApi.checkAvailability({ phone: phoneCheck.normalized });
+        const data = res?.data;
+        if (data) {
+          setAvailability((prev) => ({
+            ...prev,
+            checkingPhone: false,
+            phoneAvailable: data.phoneAvailable,
+            phoneMessage: data.phoneMessage || null
+          }));
+        }
+      } catch {
+        setAvailability((prev) => ({ ...prev, checkingPhone: false }));
+      }
+    }, 350);
+
+    return () => clearTimeout(timer);
+  }, [registerData.phoneNumber, isLogin]);
+
+  // Nhận diện thông minh xem người dùng đang gõ SĐT hay Email ở ô Đăng nhập
+  const isLoginTypingPhone =
+    loginData.emailOrPhone.trim().length > 0 &&
+    !loginData.emailOrPhone.includes('@') &&
+    /^[0-9+\s.\-()]+$/.test(loginData.emailOrPhone.trim());
+
   const handleLogin = async (e) => {
     e.preventDefault();
-    if (!loginData.emailOrPhone || !loginData.password) {
-      toast.error('Vui lòng điền đầy đủ thông tin');
+    const rawIdentifier = loginData.emailOrPhone.trim();
+    if (!rawIdentifier || !loginData.password) {
+      toast.error('Vui lòng điền đầy đủ Email/Số điện thoại và Mật khẩu');
       return;
+    }
+
+    let finalIdentifier = rawIdentifier;
+    if (!rawIdentifier.includes('@') && /^[0-9+\s.\-()]+$/.test(rawIdentifier)) {
+      const phoneCheck = validateVietnamPhone(rawIdentifier, true);
+      if (!phoneCheck.valid) {
+        toast.error(phoneCheck.error);
+        return;
+      }
+      finalIdentifier = phoneCheck.normalized;
     }
 
     try {
       setLoading(true);
       setPendingApprovalNotice(null);
-      const res = await authApi.login(loginData);
+      const res = await authApi.login({
+        emailOrPhone: finalIdentifier,
+        password: loginData.password
+      });
       if (res?.data) {
         setAuth(res.data.user, res.data.token);
         toast.success(res.message || 'Đăng nhập thành công!');
@@ -71,6 +204,33 @@ export default function Auth() {
 
   const handleRegister = async (e) => {
     e.preventDefault();
+
+    if (!registerData.fullName.trim()) {
+      toast.error('Vui lòng nhập Họ và tên');
+      return;
+    }
+
+    const phoneValidation = validateVietnamPhone(registerData.phoneNumber, true);
+    if (!phoneValidation.valid) {
+      toast.error(phoneValidation.error);
+      return;
+    }
+
+    if (availability.emailAvailable === false) {
+      toast.error(availability.emailMessage || 'Email này đã được đăng ký trong hệ thống');
+      return;
+    }
+
+    if (availability.phoneAvailable === false) {
+      toast.error(availability.phoneMessage || 'Số điện thoại này đã được đăng ký trong hệ thống');
+      return;
+    }
+
+    if (registerData.password.length < 6) {
+      toast.error('Mật khẩu phải có ít nhất 6 ký tự');
+      return;
+    }
+
     if (registerData.password !== registerData.confirmPassword) {
       toast.error('Mật khẩu nhập lại không khớp');
       return;
@@ -79,9 +239,9 @@ export default function Auth() {
     try {
       setLoading(true);
       const res = await authApi.register({
-        fullName: registerData.fullName,
-        email: registerData.email,
-        phoneNumber: registerData.phoneNumber || null,
+        fullName: registerData.fullName.trim(),
+        email: registerData.email.trim(),
+        phoneNumber: phoneValidation.normalized,
         password: registerData.password
       });
 
@@ -94,10 +254,10 @@ export default function Auth() {
         type: 'success',
         title: 'Đăng ký thành công — Chờ Admin duyệt',
         message:
-          'Tài khoản học viên của bạn đã được gửi tới Quản trị viên. Ngay sau khi Admin phê duyệt, bạn có thể đăng nhập để bắt đầu học.'
+          'Tài khoản học viên của bạn đã được tạo. Ngay sau khi Admin phê duyệt, bạn có thể đăng nhập bằng Email hoặc Số điện thoại vừa đăng ký.'
       });
       setIsLogin(true);
-      setLoginData({ emailOrPhone: registerData.email, password: '' });
+      setLoginData({ emailOrPhone: phoneValidation.normalized || registerData.email.trim(), password: '' });
       setRegisterData({
         fullName: '',
         email: '',
@@ -188,7 +348,7 @@ export default function Auth() {
           <button
             type="button"
             onClick={() => setIsLogin(true)}
-            className={`flex-1 py-2.5 text-sm font-bold rounded-xl transition-all ${
+            className={`flex-1 py-2.5 text-sm font-bold rounded-xl transition-all cursor-pointer ${
               isLogin
                 ? 'bg-white dark:bg-slate-900 text-[#0071e3] dark:text-blue-400 shadow-sm'
                 : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white'
@@ -202,7 +362,7 @@ export default function Auth() {
               setIsLogin(false);
               setPendingApprovalNotice(null);
             }}
-            className={`flex-1 py-2.5 text-sm font-bold rounded-xl transition-all ${
+            className={`flex-1 py-2.5 text-sm font-bold rounded-xl transition-all cursor-pointer ${
               !isLogin
                 ? 'bg-white dark:bg-slate-900 text-[#0071e3] dark:text-blue-400 shadow-sm'
                 : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white'
@@ -216,16 +376,33 @@ export default function Auth() {
         {isLogin ? (
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label className="block text-xs font-bold text-slate-600 dark:text-slate-300 uppercase mb-1.5">
-                Email hoặc Số điện thoại
-              </label>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="block text-xs font-bold text-slate-600 dark:text-slate-300 uppercase">
+                  Email hoặc Số điện thoại
+                </label>
+                {loginData.emailOrPhone.trim() && (
+                  <span className="text-[11px] font-semibold text-[#0071e3] dark:text-sky-400">
+                    {isLoginTypingPhone ? '📱 Đăng nhập bằng SĐT' : '✉️ Đăng nhập bằng Email'}
+                  </span>
+                )}
+              </div>
               <div className="relative">
-                <Mail size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                {isLoginTypingPhone ? (
+                  <Phone size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#0071e3]" />
+                ) : (
+                  <Mail size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                )}
                 <input
                   type="text"
-                  placeholder="Nhập email hoặc số điện thoại..."
+                  placeholder="Nhập email hoặc số điện thoại (VD: 0912345678)..."
                   value={loginData.emailOrPhone}
                   onChange={(e) => setLoginData({ ...loginData, emailOrPhone: e.target.value })}
+                  onBlur={() => {
+                    if (isLoginTypingPhone) {
+                      const norm = normalizeVietnamPhone(loginData.emailOrPhone);
+                      if (norm) setLoginData((prev) => ({ ...prev, emailOrPhone: norm }));
+                    }
+                  }}
                   className="w-full pl-10 pr-4 py-3 bg-slate-50/80 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700/80 rounded-xl text-sm font-medium focus:ring-2 focus:ring-[#0071e3] focus:bg-white focus:outline-none dark:text-white transition-all"
                   required
                 />
@@ -252,7 +429,7 @@ export default function Auth() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3.5 mt-2 bg-[#0071e3] hover:bg-[#0077ed] text-white font-bold rounded-full shadow-sm transition-all flex items-center justify-center gap-2 active:scale-[0.99] disabled:opacity-50"
+              className="w-full py-3.5 mt-2 bg-[#0071e3] hover:bg-[#0077ed] text-white font-bold rounded-full shadow-sm transition-all flex items-center justify-center gap-2 active:scale-[0.99] disabled:opacity-50 cursor-pointer"
             >
               {loading ? 'Đang xác thực...' : 'Vào Học Ngay'} <ArrowRight size={18} />
             </button>
@@ -260,16 +437,9 @@ export default function Auth() {
         ) : (
           /* Register Form */
           <form onSubmit={handleRegister} className="space-y-3.5">
-            {/* <div className="p-3 rounded-xl bg-blue-50/80 dark:bg-blue-950/40 border border-blue-200/70 dark:border-blue-900/50 text-xs text-slate-600 dark:text-slate-300 flex items-center gap-2.5">
-              <Clock size={16} className="text-[#0071e3] shrink-0" />
-              <span>
-                Tài khoản đăng ký mới sẽ được <strong>Admin phê duyệt</strong> trước khi kích hoạt đăng nhập.
-              </span>
-            </div> */}
-
             <div>
               <label className="block text-xs font-bold text-slate-600 dark:text-slate-300 uppercase mb-1">
-                Họ và Tên
+                Họ và Tên <span className="text-red-500">*</span>
               </label>
               <div className="relative">
                 <User size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -285,9 +455,14 @@ export default function Auth() {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-600 dark:text-slate-300 uppercase mb-1">
-                Email
-              </label>
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-xs font-bold text-slate-600 dark:text-slate-300 uppercase">
+                  Email <span className="text-red-500">*</span>
+                </label>
+                {availability.checkingEmail && (
+                  <span className="text-[11px] text-slate-400">Đang kiểm tra...</span>
+                )}
+              </div>
               <div className="relative">
                 <Mail size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input
@@ -295,31 +470,101 @@ export default function Auth() {
                   placeholder="example@gmail.com"
                   value={registerData.email}
                   onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })}
-                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50/80 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700/80 rounded-xl text-sm font-medium focus:ring-2 focus:ring-[#0071e3] focus:bg-white focus:outline-none dark:text-white"
+                  className={`w-full pl-10 pr-4 py-2.5 bg-slate-50/80 dark:bg-slate-800/70 border rounded-xl text-sm font-medium focus:ring-2 focus:bg-white focus:outline-none dark:text-white transition-all ${
+                    availability.emailAvailable === false
+                      ? 'border-red-400 dark:border-red-500 focus:ring-red-500'
+                      : availability.emailAvailable === true
+                      ? 'border-emerald-400 dark:border-emerald-500 focus:ring-emerald-500'
+                      : 'border-slate-200 dark:border-slate-700/80 focus:ring-[#0071e3]'
+                  }`}
                   required
                 />
               </div>
+              {availability.emailAvailable === false && availability.emailMessage && (
+                <div className="mt-1.5 flex items-center justify-between gap-2 text-xs text-red-600 dark:text-red-400 font-medium">
+                  <span className="flex items-center gap-1">
+                    <AlertCircle size={13} className="shrink-0" />
+                    {availability.emailMessage}
+                  </span>
+                  {availability.emailMessage.includes('đã được sử dụng') && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsLogin(true);
+                        setLoginData({ emailOrPhone: registerData.email.trim(), password: '' });
+                      }}
+                      className="text-[#0071e3] dark:text-sky-400 font-bold underline shrink-0 cursor-pointer"
+                    >
+                      Đăng nhập ngay →
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-600 dark:text-slate-300 uppercase mb-1">
-                Số điện thoại (tùy chọn)
-              </label>
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-xs font-bold text-slate-600 dark:text-slate-300 uppercase">
+                  Số điện thoại <span className="text-red-500">*</span>
+                </label>
+                <span className="text-[11px] text-slate-400">
+                  {availability.checkingPhone
+                    ? 'Đang kiểm tra SĐT...'
+                    : 'Dùng để đăng nhập bằng SĐT'}
+                </span>
+              </div>
               <div className="relative">
                 <Phone size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input
                   type="tel"
-                  placeholder="0912345678"
+                  placeholder="0912345678 (10 chữ số)"
                   value={registerData.phoneNumber}
                   onChange={(e) => setRegisterData({ ...registerData, phoneNumber: e.target.value })}
-                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50/80 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700/80 rounded-xl text-sm font-medium focus:ring-2 focus:ring-[#0071e3] focus:bg-white focus:outline-none dark:text-white"
+                  onBlur={() => {
+                    const norm = normalizeVietnamPhone(registerData.phoneNumber);
+                    if (norm) setRegisterData((prev) => ({ ...prev, phoneNumber: norm }));
+                  }}
+                  className={`w-full pl-10 pr-4 py-2.5 bg-slate-50/80 dark:bg-slate-800/70 border rounded-xl text-sm font-medium focus:ring-2 focus:bg-white focus:outline-none dark:text-white transition-all ${
+                    availability.phoneAvailable === false
+                      ? 'border-red-400 dark:border-red-500 focus:ring-red-500'
+                      : availability.phoneAvailable === true
+                      ? 'border-emerald-400 dark:border-emerald-500 focus:ring-emerald-500'
+                      : 'border-slate-200 dark:border-slate-700/80 focus:ring-[#0071e3]'
+                  }`}
+                  required
                 />
               </div>
+              {availability.phoneAvailable === false && availability.phoneMessage && (
+                <div className="mt-1.5 flex items-center justify-between gap-2 text-xs text-red-600 dark:text-red-400 font-medium">
+                  <span className="flex items-center gap-1">
+                    <AlertCircle size={13} className="shrink-0" />
+                    {availability.phoneMessage}
+                  </span>
+                  {availability.phoneMessage.includes('đã được đăng ký') && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const norm = normalizeVietnamPhone(registerData.phoneNumber);
+                        setIsLogin(true);
+                        setLoginData({ emailOrPhone: norm || registerData.phoneNumber.trim(), password: '' });
+                      }}
+                      className="text-[#0071e3] dark:text-sky-400 font-bold underline shrink-0 cursor-pointer"
+                    >
+                      Đăng nhập SĐT này →
+                    </button>
+                  )}
+                </div>
+              )}
+              {availability.phoneAvailable === true && (
+                <p className="mt-1 text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
+                  <CheckCircle2 size={12} /> Số điện thoại hợp lệ và chưa có người đăng ký
+                </p>
+              )}
             </div>
 
             <div>
               <label className="block text-xs font-bold text-slate-600 dark:text-slate-300 uppercase mb-1">
-                Mật khẩu (từ 6 ký tự)
+                Mật khẩu (từ 6 ký tự) <span className="text-red-500">*</span>
               </label>
               <div className="relative">
                 <Lock size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -336,7 +581,7 @@ export default function Auth() {
 
             <div>
               <label className="block text-xs font-bold text-slate-600 dark:text-slate-300 uppercase mb-1">
-                Xác nhận mật khẩu
+                Xác nhận mật khẩu <span className="text-red-500">*</span>
               </label>
               <div className="relative">
                 <Lock size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -353,8 +598,12 @@ export default function Auth() {
 
             <button
               type="submit"
-              disabled={loading}
-              className="w-full py-3.5 mt-2 bg-[#0071e3] hover:bg-[#0077ed] text-white font-bold rounded-full shadow-sm transition-all flex items-center justify-center gap-2 active:scale-[0.99] disabled:opacity-50"
+              disabled={
+                loading ||
+                availability.emailAvailable === false ||
+                availability.phoneAvailable === false
+              }
+              className="w-full py-3.5 mt-2 bg-[#0071e3] hover:bg-[#0077ed] text-white font-bold rounded-full shadow-sm transition-all flex items-center justify-center gap-2 active:scale-[0.99] disabled:opacity-50 cursor-pointer"
             >
               {loading ? 'Đang gửi đăng ký...' : 'Gửi Đăng Ký Học Viên'}
             </button>
@@ -375,3 +624,4 @@ export default function Auth() {
     </div>
   );
 }
+
