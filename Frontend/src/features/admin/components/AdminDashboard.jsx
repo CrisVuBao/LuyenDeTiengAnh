@@ -11,7 +11,12 @@ import {
   Sparkles,
   Clock,
   CheckCircle2,
-  Headphones
+  Headphones,
+  Bell,
+  BarChart3,
+  Settings,
+  ScrollText,
+  Layers
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { dashboardApi } from '../../../api/dashboardAndAiApi';
@@ -313,6 +318,66 @@ export default function AdminDashboard() {
             </button>
 
             <button
+              onClick={() => navigate('/admin/notifications')}
+              className="w-full p-4 rounded-2xl bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 hover:border-[#0071e3] dark:hover:border-blue-500 flex items-center justify-between text-left group transition-all"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-rose-50 dark:bg-rose-950 text-rose-600 flex items-center justify-center">
+                  <Bell size={18} />
+                </div>
+                <div>
+                  <h4 className="font-bold text-sm text-slate-800 dark:text-slate-200 group-hover:text-[#0071e3] transition-colors">
+                    Trung Tâm Phát Thông Báo
+                  </h4>
+                  <p className="text-[11px] text-slate-400">
+                    Gửi thông báo đẩy Real-time tới học viên
+                  </p>
+                </div>
+              </div>
+              <ArrowRight size={16} className="text-slate-300 group-hover:text-[#0071e3] group-hover:translate-x-1 transition-all" />
+            </button>
+
+            <button
+              onClick={() => navigate('/admin/analytics')}
+              className="w-full p-4 rounded-2xl bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 hover:border-[#0071e3] dark:hover:border-blue-500 flex items-center justify-between text-left group transition-all"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950 text-amber-600 flex items-center justify-center">
+                  <BarChart3 size={18} />
+                </div>
+                <div>
+                  <h4 className="font-bold text-sm text-slate-800 dark:text-slate-200 group-hover:text-[#0071e3] transition-colors">
+                    Phân Tích & Báo Cáo VIP
+                  </h4>
+                  <p className="text-[11px] text-slate-400">
+                    Biểu đồ DAU/WAU/MAU & Cảnh báo vắng học
+                  </p>
+                </div>
+              </div>
+              <ArrowRight size={16} className="text-slate-300 group-hover:text-[#0071e3] group-hover:translate-x-1 transition-all" />
+            </button>
+
+            <button
+              onClick={() => navigate('/admin/settings')}
+              className="w-full p-4 rounded-2xl bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 hover:border-[#0071e3] dark:hover:border-blue-500 flex items-center justify-between text-left group transition-all"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-950 text-purple-600 flex items-center justify-center">
+                  <Settings size={18} />
+                </div>
+                <div>
+                  <h4 className="font-bold text-sm text-slate-800 dark:text-slate-200 group-hover:text-[#0071e3] transition-colors">
+                    Cài Đặt & Cấu Hình Hệ Thống
+                  </h4>
+                  <p className="text-[11px] text-slate-400">
+                    Auto-approve, X2 XP, AI Gemini & Backup
+                  </p>
+                </div>
+              </div>
+              <ArrowRight size={16} className="text-slate-300 group-hover:text-[#0071e3] group-hover:translate-x-1 transition-all" />
+            </button>
+
+            <button
               onClick={() => navigate('/admin/bino')}
               className="w-full p-4 rounded-2xl bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 hover:border-[#0071e3] dark:hover:border-blue-500 flex items-center justify-between text-left group transition-all"
             >
@@ -325,24 +390,6 @@ export default function AdminDashboard() {
                     Quản Lý Khóa Học Bino
                   </h4>
                   <p className="text-[11px] text-slate-400">12 chương, 72 bài hội thoại & audio</p>
-                </div>
-              </div>
-              <ArrowRight size={16} className="text-slate-300 group-hover:text-[#0071e3] group-hover:translate-x-1 transition-all" />
-            </button>
-
-            <button
-              onClick={() => navigate('/admin/tests')}
-              className="w-full p-4 rounded-2xl bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 hover:border-[#0071e3] dark:hover:border-blue-500 flex items-center justify-between text-left group transition-all"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950 text-indigo-600 flex items-center justify-center">
-                  <BookOpen size={18} />
-                </div>
-                <div>
-                  <h4 className="font-bold text-sm text-slate-800 dark:text-slate-200 group-hover:text-[#0071e3] transition-colors">
-                    Quản Lý Đề Thi TOEIC
-                  </h4>
-                  <p className="text-[11px] text-slate-400">Import JSON đề mới, xóa, sửa</p>
                 </div>
               </div>
               <ArrowRight size={16} className="text-slate-300 group-hover:text-[#0071e3] group-hover:translate-x-1 transition-all" />

@@ -19,6 +19,11 @@ const AdminDashboard = lazy(() => import("./features/admin/components/AdminDashb
 const AdminTests = lazy(() => import("./features/admin/components/AdminTests"));
 const AdminStudents = lazy(() => import("./features/admin/components/AdminStudents"));
 const AdminBinoManager = lazy(() => import("./features/admin/components/AdminBinoManager"));
+const AdminNotifications = lazy(() => import("./features/admin/components/AdminNotifications"));
+const AdminSettings = lazy(() => import("./features/admin/components/AdminSettings"));
+const AdminAnalytics = lazy(() => import("./features/admin/components/AdminAnalytics"));
+const AdminActivityLog = lazy(() => import("./features/admin/components/AdminActivityLog"));
+const AdminContentManager = lazy(() => import("./features/admin/components/AdminContentManager"));
 const Profile = lazy(() => import("./pages/Profile"));
 
 // Bino Book Learning System
@@ -127,6 +132,11 @@ function App() {
             <Route path="/admin/tests" element={<AdminTests />} />
             <Route path="/admin/students" element={<AdminStudents />} />
             <Route path="/admin/bino" element={<AdminBinoManager />} />
+            <Route path="/admin/notifications" element={<AdminNotifications />} />
+            <Route path="/admin/settings" element={<AdminSettings />} />
+            <Route path="/admin/analytics" element={<AdminAnalytics />} />
+            <Route path="/admin/activity-log" element={<AdminActivityLog />} />
+            <Route path="/admin/content" element={<AdminContentManager />} />
           </Route>
 
           <Route path="*" element={<Navigate to="/" replace />} />

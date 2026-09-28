@@ -24,11 +24,19 @@ public class GamificationService : IGamificationService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMemoryCache _memoryCache;
+    private readonly ISystemSettingsService _settingsService;
+    private readonly INotificationService _notificationService;
 
-    public GamificationService(IUnitOfWork unitOfWork, IMemoryCache memoryCache)
+    public GamificationService(
+        IUnitOfWork unitOfWork,
+        IMemoryCache memoryCache,
+        ISystemSettingsService settingsService,
+        INotificationService notificationService)
     {
         _unitOfWork = unitOfWork;
         _memoryCache = memoryCache;
+        _settingsService = settingsService;
+        _notificationService = notificationService;
     }
 
     private static DateTime GetVietnamTime() => DateTime.UtcNow.AddHours(7);
@@ -189,14 +197,33 @@ public class GamificationService : IGamificationService
         }
         gamification.LastActiveDate = nowVn;
 
-        // 2. Cộng XP và kiểm tra thăng cấp Level
+        // 2. Áp dụng hệ số nhân XP động từ Cài đặt Hệ thống (nếu không phải thưởng trực tiếp từ Admin)
+        if (!string.Equals(source, "AdminReward", StringComparison.OrdinalIgnoreCase))
+        {
+            double multiplier = await _settingsService.GetDoubleSettingAsync("gamification.xp_multiplier", 1.0);
+            if (multiplier > 1.0 && amount > 0)
+            {
+                amount = (int)Math.Round(amount * multiplier);
+            }
+        }
+
+        int prevLevel = gamification.CurrentLevel;
         gamification.TotalXP += amount;
         gamification.WeeklyXP += amount;
 
         int newLevel = CalculateLevel(gamification.TotalXP);
-        if (newLevel > gamification.CurrentLevel)
+        if (newLevel > prevLevel)
         {
             gamification.CurrentLevel = newLevel;
+            var levelTitle = GetLevelTitle(newLevel);
+            await _notificationService.TriggerUserNotificationAsync(
+                userId,
+                $"🏆 Chúc mừng thăng cấp Level {newLevel} ({levelTitle})!",
+                $"Tuyệt vời! Bạn vừa đạt mốc {gamification.TotalXP:N0} XP và chính thức bước lên Cấp độ {newLevel} — {levelTitle}!",
+                "Achievement",
+                "🏆",
+                "/leaderboard"
+            );
         }
 
         // 3. Ghi log giao dịch XP chính

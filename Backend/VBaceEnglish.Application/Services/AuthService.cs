@@ -18,11 +18,19 @@ public class AuthService : IAuthService
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IJwtTokenService _jwtTokenService;
+    private readonly ISystemSettingsService _settingsService;
+    private readonly INotificationService _notificationService;
 
-    public AuthService(UserManager<ApplicationUser> userManager, IJwtTokenService jwtTokenService)
+    public AuthService(
+        UserManager<ApplicationUser> userManager,
+        IJwtTokenService jwtTokenService,
+        ISystemSettingsService settingsService,
+        INotificationService notificationService)
     {
         _userManager = userManager;
         _jwtTokenService = jwtTokenService;
+        _settingsService = settingsService;
+        _notificationService = notificationService;
     }
 
     public async Task<Response<object>> LoginAsync(LoginDto model)
@@ -42,6 +50,21 @@ public class AuthService : IAuthService
 
         var roles = await _userManager.GetRolesAsync(user);
         var isAdmin = roles.Contains(UserRole.Admin.ToString());
+
+        // Kiểm tra chế độ bảo trì đối với học viên
+        if (!isAdmin && await _settingsService.GetBoolSettingAsync("app.maintenance_mode", false))
+        {
+            var maintMsg = await _settingsService.GetSettingValueAsync(
+                "app.maintenance_message",
+                "Hệ thống đang được bảo trì nâng cấp. Vui lòng quay lại sau ít phút!");
+            return Response<object>.Failure(maintMsg);
+        }
+
+        // Kiểm tra khóa tài khoản
+        if (!isAdmin && user.LockoutEnd.HasValue && user.LockoutEnd.Value > DateTimeOffset.UtcNow)
+        {
+            return Response<object>.Failure("Tài khoản của bạn đã bị Quản trị viên tạm khóa. Vui lòng liên hệ hỗ trợ!");
+        }
 
         // Tài khoản học viên bắt buộc phải được Admin phê duyệt mới được đăng nhập
         if (!isAdmin && !user.IsApproved)
@@ -78,9 +101,16 @@ public class AuthService : IAuthService
 
     public async Task<Response<UserDto>> RegisterAsync(RegisterDto model)
     {
+        if (!await _settingsService.GetBoolSettingAsync("app.registration_open", true))
+        {
+            return Response<UserDto>.Failure("Hệ thống hiện đang tạm đóng đăng ký tài khoản mới. Vui lòng liên hệ Quản trị viên!");
+        }
+
         var existingEmail = await _userManager.FindByEmailAsync(model.Email);
         if (existingEmail != null)
             return Response<UserDto>.Failure("Email đã được đăng ký trong hệ thống");
+
+        bool autoApprove = await _settingsService.GetBoolSettingAsync("app.auto_approve", false);
 
         var user = new ApplicationUser
         {
@@ -88,9 +118,9 @@ public class AuthService : IAuthService
             Email = model.Email,
             FullName = model.FullName,
             PhoneNumber = model.PhoneNumber,
-            IsApproved = false,
-            ApprovedAt = null,
-            EmailConfirmed = false,
+            IsApproved = autoApprove,
+            ApprovedAt = autoApprove ? DateTime.UtcNow : null,
+            EmailConfirmed = autoApprove,
             CreatedAt = DateTime.UtcNow
         };
 
@@ -103,6 +133,17 @@ public class AuthService : IAuthService
 
         await _userManager.AddToRoleAsync(user, UserRole.Student.ToString());
 
+        if (await _settingsService.GetBoolSettingAsync("notif.auto_notify_new_student", true))
+        {
+            await _notificationService.TriggerAdminsNotificationAsync(
+                "📋 Học viên mới đăng ký!",
+                $"Học viên \"{user.FullName}\" ({user.Email}) vừa đăng ký tài khoản {(autoApprove ? "(Đã tự động duyệt)" : "và đang chờ phê duyệt")}.",
+                "System",
+                "📋",
+                "/admin/students"
+            );
+        }
+
         var userDto = new UserDto
         {
             Id = user.Id,
@@ -110,14 +151,16 @@ public class AuthService : IAuthService
             Email = user.Email,
             PhoneNumber = user.PhoneNumber,
             Role = UserRole.Student.ToString(),
-            IsApproved = false,
-            ApprovedAt = null,
+            IsApproved = user.IsApproved,
+            ApprovedAt = user.ApprovedAt,
             CreatedAt = user.CreatedAt
         };
 
-        return Response<UserDto>.SuccessResult(
-            "Đăng ký tài khoản thành công! Tài khoản của bạn đang chờ Admin phê duyệt trước khi có thể đăng nhập.",
-            userDto);
+        var successMsg = autoApprove
+            ? "Đăng ký tài khoản thành công! Tài khoản đã được kích hoạt tự động, bạn có thể đăng nhập ngay."
+            : "Đăng ký tài khoản thành công! Tài khoản của bạn đang chờ Admin phê duyệt trước khi có thể đăng nhập.";
+
+        return Response<UserDto>.SuccessResult(successMsg, userDto);
     }
 
     public async Task<Response<UserDto>> GetProfileAsync(int userId)

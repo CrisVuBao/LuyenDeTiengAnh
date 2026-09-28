@@ -2,6 +2,7 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using VBaceEnglish.Application.Contracts.Persistence;
+using VBaceEnglish.Application.Contracts.Services;
 using VBaceEnglish.Application.DTOs.Dashboard;
 using VBaceEnglish.Application.DTOs.Progress;
 using VBaceEnglish.Application.Helpers;
@@ -475,15 +476,24 @@ public class DashboardService : IDashboardService
     private readonly IUnitOfWork _unitOfWork;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IGamificationService _gamificationService;
+    private readonly INotificationService _notificationService;
+    private readonly IActivityLogService _activityLog;
+    private readonly ICurrentUserService _currentUser;
 
     public DashboardService(
         IUnitOfWork unitOfWork, 
         UserManager<ApplicationUser> userManager,
-        IGamificationService gamificationService)
+        IGamificationService gamificationService,
+        INotificationService notificationService,
+        IActivityLogService activityLog,
+        ICurrentUserService currentUser)
     {
         _unitOfWork = unitOfWork;
         _userManager = userManager;
         _gamificationService = gamificationService;
+        _notificationService = notificationService;
+        _activityLog = activityLog;
+        _currentUser = currentUser;
     }
 
     public async Task<Response<DashboardStatsDto>> GetStatsAsync(int userId)
@@ -788,6 +798,24 @@ public class DashboardService : IDashboardService
             StreakDays = 0
         };
 
+        await _activityLog.LogAsync(
+            _currentUser.UserId,
+            _currentUser.Email ?? "Admin",
+            "student.create",
+            "Student",
+            user.Id,
+            $"Tạo mới tài khoản {roleToAssign}: \"{user.FullName}\" ({user.Email})"
+        );
+
+        await _notificationService.TriggerUserNotificationAsync(
+            user.Id,
+            "🎉 Chào mừng bạn đến với VBaceEnglish!",
+            $"Tài khoản của bạn ({user.FullName}) đã được Quản trị viên khởi tạo và kích hoạt thành công. Bắt đầu hành trình chinh phục tiếng Anh ngay hôm nay!",
+            "Approval",
+            "🎉",
+            "/home"
+        );
+
         return Response<AdminStudentProgressDto>.SuccessResult($"Đã tạo tài khoản {roleToAssign} thành công cho \"{user.FullName}\"!", studentDto);
     }
 
@@ -796,6 +824,9 @@ public class DashboardService : IDashboardService
         var user = await _userManager.FindByIdAsync(userId.ToString());
         if (user == null)
             return Response<bool>.Failure("Không tìm thấy tài khoản.");
+
+        bool wasLocked = user.LockoutEnd.HasValue && user.LockoutEnd.Value > DateTimeOffset.UtcNow;
+        bool wasApproved = user.IsApproved;
 
         user.FullName = dto.FullName.Trim();
         user.PhoneNumber = dto.PhoneNumber?.Trim();
@@ -837,6 +868,41 @@ public class DashboardService : IDashboardService
             await _userManager.AddToRoleAsync(user, desiredRole);
         }
 
+        string actionCode = (!wasLocked && dto.IsLocked) ? "student.lock"
+                          : (wasLocked && !dto.IsLocked) ? "student.unlock"
+                          : "student.update";
+
+        await _activityLog.LogAsync(
+            _currentUser.UserId,
+            _currentUser.Email ?? "Admin",
+            actionCode,
+            "Student",
+            user.Id,
+            $"Cập nhật tài khoản \"{user.FullName}\" ({user.Email}) — Vai trò: {desiredRole}, Duyệt: {dto.IsApproved}, Khóa: {dto.IsLocked}"
+        );
+
+        if (!wasLocked && dto.IsLocked)
+        {
+            await _notificationService.TriggerUserNotificationAsync(
+                user.Id,
+                "⚠️ Tài khoản bị tạm khóa",
+                "Tài khoản của bạn đã bị Quản trị viên tạm khóa. Vui lòng liên hệ hỗ trợ để biết thêm chi tiết.",
+                "Warning",
+                "⚠️"
+            );
+        }
+        else if (!wasApproved && dto.IsApproved)
+        {
+            await _notificationService.TriggerUserNotificationAsync(
+                user.Id,
+                "✅ Tài khoản đã được phê duyệt!",
+                "Chúc mừng! Tài khoản của bạn đã được kích hoạt thành công.",
+                "Approval",
+                "✅",
+                "/home"
+            );
+        }
+
         return Response<bool>.SuccessResult("Cập nhật thông tin tài khoản thành công!", true);
     }
 
@@ -856,6 +922,24 @@ public class DashboardService : IDashboardService
             var errors = string.Join("; ", addResult.Errors.Select(e => e.Description));
             return Response<bool>.Failure($"Không thể đặt lại mật khẩu: {errors}");
         }
+
+        await _activityLog.LogAsync(
+            _currentUser.UserId,
+            _currentUser.Email ?? "Admin",
+            "student.reset_password",
+            "Student",
+            user.Id,
+            $"Đặt lại mật khẩu mới cho học viên \"{user.FullName}\" ({user.Email})"
+        );
+
+        await _notificationService.TriggerUserNotificationAsync(
+            user.Id,
+            "🔑 Mật khẩu đã được đặt lại",
+            "Quản trị viên đã hỗ trợ đặt lại mật khẩu cho tài khoản của bạn. Hãy đổi mật khẩu mới trong mục Hồ sơ cá nhân để bảo mật.",
+            "System",
+            "🔑",
+            "/profile"
+        );
 
         return Response<bool>.SuccessResult($"Đã đặt lại mật khẩu mới cho tài khoản \"{user.FullName}\" ({user.Email})!", true);
     }
@@ -993,6 +1077,22 @@ public class DashboardService : IDashboardService
         if (dto.BonusXp > 0)
         {
             await _gamificationService.AddXPAsync(userId, dto.BonusXp, "AdminReward", dto.Reason ?? "Thưởng điểm từ Quản trị viên");
+            await _activityLog.LogAsync(
+                _currentUser.UserId,
+                _currentUser.Email ?? "Admin",
+                "student.reward_xp",
+                "Student",
+                user.Id,
+                $"Thưởng +{dto.BonusXp} XP cho học viên \"{user.FullName}\" — Lý do: {dto.Reason}"
+            );
+            await _notificationService.TriggerUserNotificationAsync(
+                user.Id,
+                $"🎁 Bạn nhận được +{dto.BonusXp:N0} XP từ Admin!",
+                $"Quản trị viên đã trao thưởng cho bạn +{dto.BonusXp:N0} XP. Lý do: {dto.Reason ?? "Tích cực học tập xuất sắc!"}",
+                "Reward",
+                "🎁",
+                "/leaderboard"
+            );
         }
 
         if (dto.RestoreStreakDays.HasValue && dto.RestoreStreakDays.Value > 0)
@@ -1009,6 +1109,24 @@ public class DashboardService : IDashboardService
                 await _unitOfWork.Gamification.UpsertAsync(gamification);
                 await _unitOfWork.CompleteAsync();
             }
+
+            await _activityLog.LogAsync(
+                _currentUser.UserId,
+                _currentUser.Email ?? "Admin",
+                "student.restore_streak",
+                "Student",
+                user.Id,
+                $"Khôi phục chuỗi Streak {dto.RestoreStreakDays.Value} ngày cho học viên \"{user.FullName}\""
+            );
+
+            await _notificationService.TriggerUserNotificationAsync(
+                user.Id,
+                $"🔥 Chuỗi Streak {dto.RestoreStreakDays.Value} ngày đã được khôi phục!",
+                $"Quản trị viên đã khôi phục chuỗi ngày học liên tiếp của bạn về mốc {dto.RestoreStreakDays.Value} ngày. Hãy tiếp tục duy trì phong độ nhé!",
+                "Reward",
+                "🔥",
+                "/leaderboard"
+            );
         }
 
         return Response<bool>.SuccessResult($"Đã điều chỉnh thành tích thành công cho học viên \"{user.FullName}\"!", true);
@@ -1027,6 +1145,29 @@ public class DashboardService : IDashboardService
         var result = await _userManager.UpdateAsync(user);
         if (!result.Succeeded)
             return Response<bool>.Failure("Không thể cập nhật trạng thái duyệt tài khoản.");
+
+        await _activityLog.LogAsync(
+            _currentUser.UserId,
+            _currentUser.Email ?? "Admin",
+            isApproved ? "student.approve" : "student.revoke",
+            "Student",
+            user.Id,
+            isApproved
+                ? $"Phê duyệt kích hoạt tài khoản học viên \"{user.FullName}\" ({user.Email})"
+                : $"Thu hồi quyền duyệt đối với học viên \"{user.FullName}\" ({user.Email})"
+        );
+
+        if (isApproved)
+        {
+            await _notificationService.TriggerUserNotificationAsync(
+                user.Id,
+                "✅ Tài khoản của bạn đã được phê duyệt!",
+                $"Chào mừng {user.FullName}! Tài khoản của bạn đã được Quản trị viên kích hoạt. Bạn đã có thể truy cập trọn bộ 4 chương trình học đỉnh cao!",
+                "Approval",
+                "✅",
+                "/home"
+            );
+        }
 
         var msg = isApproved
             ? $"Đã phê duyệt tài khoản học viên \"{user.FullName}\" ({user.Email}). Học viên đã có thể đăng nhập!"
@@ -1047,7 +1188,30 @@ public class DashboardService : IDashboardService
             s.EmailConfirmed = true;
             s.ApprovedAt = DateTime.UtcNow;
             var res = await _userManager.UpdateAsync(s);
-            if (res.Succeeded) count++;
+            if (res.Succeeded)
+            {
+                count++;
+                await _notificationService.TriggerUserNotificationAsync(
+                    s.Id,
+                    "✅ Tài khoản của bạn đã được phê duyệt!",
+                    $"Chào mừng {s.FullName}! Tài khoản của bạn đã được kích hoạt thành công. Bắt đầu học ngay nào!",
+                    "Approval",
+                    "✅",
+                    "/home"
+                );
+            }
+        }
+
+        if (count > 0)
+        {
+            await _activityLog.LogAsync(
+                _currentUser.UserId,
+                _currentUser.Email ?? "Admin",
+                "student.approve_all",
+                "Student",
+                null,
+                $"Phê duyệt hàng loạt {count} tài khoản học viên đang chờ"
+            );
         }
 
         return Response<int>.SuccessResult($"Đã phê duyệt tất cả {count} tài khoản học viên đang chờ!", count);
@@ -1063,10 +1227,22 @@ public class DashboardService : IDashboardService
         if (roles.Contains("Admin"))
             return Response<bool>.Failure("Không thể xóa tài khoản Quản trị viên.");
 
+        string deletedName = user.FullName;
+        string deletedEmail = user.Email ?? "";
+
         var result = await _userManager.DeleteAsync(user);
         if (!result.Succeeded)
             return Response<bool>.Failure("Lỗi khi xóa tài khoản học viên.");
 
-        return Response<bool>.SuccessResult($"Đã xóa tài khoản \"{user.FullName}\" ({user.Email}).", true);
+        await _activityLog.LogAsync(
+            _currentUser.UserId,
+            _currentUser.Email ?? "Admin",
+            "student.delete",
+            "Student",
+            userId,
+            $"Xóa vĩnh viễn tài khoản học viên \"{deletedName}\" ({deletedEmail})"
+        );
+
+        return Response<bool>.SuccessResult($"Đã xóa tài khoản \"{deletedName}\" ({deletedEmail}).", true);
     }
 }

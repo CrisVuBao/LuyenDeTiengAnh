@@ -125,12 +125,76 @@ public static class DbInitializer
                     );
                     CREATE INDEX [IX_XPTransactions_UserId] ON [XPTransactions] ([UserId]);
                 END
+
+                IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Notifications')
+                BEGIN
+                    CREATE TABLE [Notifications] (
+                        [Id] int IDENTITY(1,1) NOT NULL,
+                        [BatchId] nvarchar(64) NULL,
+                        [TargetScope] nvarchar(50) NOT NULL CONSTRAINT [DF_Notifications_TargetScope] DEFAULT 'Single',
+                        [TargetLabel] nvarchar(250) NOT NULL CONSTRAINT [DF_Notifications_TargetLabel] DEFAULT '',
+                        [RecipientUserId] int NULL,
+                        [SenderUserId] int NULL,
+                        [SenderName] nvarchar(150) NOT NULL CONSTRAINT [DF_Notifications_SenderName] DEFAULT N'Hệ thống VBaceEnglish',
+                        [Title] nvarchar(300) NOT NULL CONSTRAINT [DF_Notifications_Title] DEFAULT '',
+                        [Content] nvarchar(max) NOT NULL CONSTRAINT [DF_Notifications_Content] DEFAULT '',
+                        [Type] nvarchar(50) NOT NULL CONSTRAINT [DF_Notifications_Type] DEFAULT 'Announcement',
+                        [ActionUrl] nvarchar(300) NULL,
+                        [IconEmoji] nvarchar(20) NOT NULL CONSTRAINT [DF_Notifications_IconEmoji] DEFAULT N'🔔',
+                        [IsRead] bit NOT NULL CONSTRAINT [DF_Notifications_IsRead] DEFAULT 0,
+                        [CreatedAt] datetime2 NOT NULL CONSTRAINT [DF_Notifications_CreatedAt] DEFAULT GETUTCDATE(),
+                        [ReadAt] datetime2 NULL,
+                        [ExpiresAt] datetime2 NULL,
+                        [IsDeleted] bit NOT NULL CONSTRAINT [DF_Notifications_IsDeleted] DEFAULT 0,
+                        CONSTRAINT [PK_Notifications] PRIMARY KEY ([Id]),
+                        CONSTRAINT [FK_Notifications_AspNetUsers_RecipientUserId] FOREIGN KEY ([RecipientUserId]) REFERENCES [AspNetUsers] ([Id]) ON DELETE CASCADE
+                    );
+                    CREATE INDEX [IX_Notifications_Recipient_Read_Created] ON [Notifications] ([RecipientUserId], [IsRead], [CreatedAt]);
+                    CREATE INDEX [IX_Notifications_BatchId] ON [Notifications] ([BatchId]);
+                END
+
+                IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'SystemSettings')
+                BEGIN
+                    CREATE TABLE [SystemSettings] (
+                        [Id] int IDENTITY(1,1) NOT NULL,
+                        [Key] nvarchar(100) NOT NULL,
+                        [Value] nvarchar(max) NOT NULL CONSTRAINT [DF_SystemSettings_Value] DEFAULT '',
+                        [Category] nvarchar(50) NOT NULL CONSTRAINT [DF_SystemSettings_Category] DEFAULT 'General',
+                        [Description] nvarchar(300) NOT NULL CONSTRAINT [DF_SystemSettings_Description] DEFAULT '',
+                        [UpdatedAt] datetime2 NOT NULL CONSTRAINT [DF_SystemSettings_UpdatedAt] DEFAULT GETUTCDATE(),
+                        [UpdatedByUserId] int NULL,
+                        CONSTRAINT [PK_SystemSettings] PRIMARY KEY ([Id])
+                    );
+                    CREATE UNIQUE INDEX [IX_SystemSettings_Key] ON [SystemSettings] ([Key]);
+                    CREATE INDEX [IX_SystemSettings_Category] ON [SystemSettings] ([Category]);
+                END
+
+                IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'AdminActivityLogs')
+                BEGIN
+                    CREATE TABLE [AdminActivityLogs] (
+                        [Id] int IDENTITY(1,1) NOT NULL,
+                        [AdminUserId] int NULL,
+                        [AdminName] nvarchar(150) NOT NULL CONSTRAINT [DF_AdminActivityLogs_AdminName] DEFAULT 'Admin',
+                        [Action] nvarchar(100) NOT NULL CONSTRAINT [DF_AdminActivityLogs_Action] DEFAULT '',
+                        [EntityType] nvarchar(100) NOT NULL CONSTRAINT [DF_AdminActivityLogs_EntityType] DEFAULT '',
+                        [EntityId] int NULL,
+                        [Description] nvarchar(max) NOT NULL CONSTRAINT [DF_AdminActivityLogs_Description] DEFAULT '',
+                        [OldValue] nvarchar(max) NULL,
+                        [NewValue] nvarchar(max) NULL,
+                        [IpAddress] nvarchar(64) NOT NULL CONSTRAINT [DF_AdminActivityLogs_IpAddress] DEFAULT '',
+                        [CreatedAt] datetime2 NOT NULL CONSTRAINT [DF_AdminActivityLogs_CreatedAt] DEFAULT GETUTCDATE(),
+                        CONSTRAINT [PK_AdminActivityLogs] PRIMARY KEY ([Id])
+                    );
+                    CREATE INDEX [IX_AdminActivityLogs_CreatedAt] ON [AdminActivityLogs] ([CreatedAt]);
+                    CREATE INDEX [IX_AdminActivityLogs_Action] ON [AdminActivityLogs] ([Action]);
+                    CREATE INDEX [IX_AdminActivityLogs_EntityType] ON [AdminActivityLogs] ([EntityType]);
+                END
             ";
             await cmd.ExecuteNonQueryAsync();
         }
         catch (Exception ex)
         {
-            logger.LogWarning("Không thể tự động khởi tạo bảng UserReflexProgresses / UserEbookProgresses: {msg}", ex.Message);
+            logger.LogWarning("Không thể tự động khởi tạo các bảng hệ thống: {msg}", ex.Message);
         }
 
 
@@ -222,6 +286,83 @@ public static class DbInitializer
 
         // 5. Seed Bino's English Book System if empty
         await SeedBinoBookAsync(context, logger);
+
+        // 6. Seed Default System Settings if empty
+        await SeedSystemSettingsAsync(context, logger);
+    }
+
+    public static List<SystemSetting> GetDefaultSystemSettings() =>
+    [
+        // Tab 1: General (Cài đặt chung)
+        new() { Key = "app.name", Value = "VBaceEnglish", Category = "General", Description = "Tên ứng dụng hiển thị trên toàn hệ thống" },
+        new() { Key = "app.tagline", Value = "By Vũ Bảo Software", Category = "General", Description = "Slogan thương hiệu hiển thị dưới logo" },
+        new() { Key = "app.maintenance_mode", Value = "false", Category = "General", Description = "Bật chế độ bảo trì hệ thống (tạm ngưng học viên truy cập)" },
+        new() { Key = "app.maintenance_message", Value = "Hệ thống đang được nâng cấp tính năng mới. Vui lòng quay lại sau ít phút!", Category = "General", Description = "Thông điệp hiển thị khi bật chế độ bảo trì" },
+        new() { Key = "app.registration_open", Value = "true", Category = "General", Description = "Cho phép học viên mới đăng ký tài khoản" },
+        new() { Key = "app.auto_approve", Value = "false", Category = "General", Description = "Tự động phê duyệt kích hoạt ngay khi học viên đăng ký" },
+        new() { Key = "app.max_students", Value = "0", Category = "General", Description = "Giới hạn tổng số học viên tối đa (0 = Không giới hạn)" },
+
+        // Tab 2: Security (Bảo mật & Xác thực)
+        new() { Key = "auth.min_password_length", Value = "6", Category = "Security", Description = "Độ dài mật khẩu tối thiểu khi tạo/đổi mật khẩu" },
+        new() { Key = "auth.require_special_char", Value = "false", Category = "Security", Description = "Bắt buộc mật khẩu phải chứa ký tự đặc biệt" },
+        new() { Key = "auth.jwt_expiry_days", Value = "7", Category = "Security", Description = "Thời hạn hiệu lực của phiên đăng nhập JWT (ngày)" },
+        new() { Key = "auth.max_login_attempts", Value = "5", Category = "Security", Description = "Số lần nhập sai mật khẩu tối đa trước khi tạm khóa" },
+        new() { Key = "auth.lockout_minutes", Value = "15", Category = "Security", Description = "Thời gian tạm khóa tài khoản khi đăng nhập sai quá số lần (phút)" },
+        new() { Key = "auth.session_timeout_hours", Value = "24", Category = "Security", Description = "Thời gian tự động đăng xuất khi không hoạt động (giờ)" },
+
+        // Tab 3: Learning & Gamification (Học tập & Game hóa)
+        new() { Key = "gamification.enabled", Value = "true", Category = "Learning", Description = "Kích hoạt hệ thống XP, Cấp độ, Chuỗi Streak và Bảng xếp hạng" },
+        new() { Key = "gamification.daily_quests_count", Value = "4", Category = "Learning", Description = "Số lượng nhiệm vụ hàng ngày giao cho mỗi học viên" },
+        new() { Key = "gamification.xp_multiplier", Value = "1.0", Category = "Learning", Description = "Hệ số nhân điểm XP toàn hệ thống (VD: 1.5 hoặc 2.0 cho sự kiện X2 XP)" },
+        new() { Key = "gamification.streak_freeze_max", Value = "3", Category = "Learning", Description = "Số bùa đóng băng bảo vệ chuỗi Streak tối đa mỗi học viên" },
+        new() { Key = "gamification.leaderboard_reset_day", Value = "1", Category = "Learning", Description = "Ngày làm mới Bảng xếp hạng tuần (1 = Thứ Hai, 0 = Chủ Nhật)" },
+        new() { Key = "learning.vocab_topics_count", Value = "60", Category = "Learning", Description = "Số chủ đề 3000 Từ Vựng Oxford mở cho học viên" },
+        new() { Key = "learning.reflex_units_count", Value = "50", Category = "Learning", Description = "Số Unit Phản Xạ Nói - Viết mở cho học viên" },
+
+        // Tab 4: Notifications & Email (Thông báo & Email)
+        new() { Key = "notif.auto_notify_approval", Value = "true", Category = "Notifications", Description = "Tự động gửi thông báo chào mừng khi Admin duyệt tài khoản" },
+        new() { Key = "notif.auto_notify_reward", Value = "true", Category = "Notifications", Description = "Tự động gửi thông báo khi Admin thưởng XP hoặc khôi phục Streak" },
+        new() { Key = "notif.auto_notify_new_student", Value = "true", Category = "Notifications", Description = "Gửi cảnh báo thời gian thực cho Admin khi có học viên mới đăng ký" },
+        new() { Key = "notif.max_notifications_per_user", Value = "100", Category = "Notifications", Description = "Số thông báo lưu trữ tối đa cho mỗi tài khoản" },
+        new() { Key = "notif.notification_expiry_days", Value = "30", Category = "Notifications", Description = "Tự động dọn dẹp thông báo cũ sau số ngày quy định" },
+        new() { Key = "notif.email_enabled", Value = "false", Category = "Notifications", Description = "Kích hoạt gửi thông báo qua Email SMTP" },
+        new() { Key = "notif.email_smtp_host", Value = "smtp.gmail.com", Category = "Notifications", Description = "Địa chỉ máy chủ SMTP" },
+        new() { Key = "notif.email_smtp_port", Value = "587", Category = "Notifications", Description = "Cổng kết nối SMTP (587 TLS / 465 SSL)" },
+        new() { Key = "notif.email_smtp_user", Value = "", Category = "Notifications", Description = "Tài khoản đăng nhập SMTP" },
+        new() { Key = "notif.email_smtp_password", Value = "", Category = "Notifications", Description = "Mật khẩu ứng dụng SMTP (App Password)" },
+        new() { Key = "notif.email_from_name", Value = "VBaceEnglish - By Vũ Bảo Software", Category = "Notifications", Description = "Tên người gửi hiển thị trong Email" },
+        new() { Key = "notif.email_from_address", Value = "noreply@vbaceenglish.com", Category = "Notifications", Description = "Địa chỉ Email người gửi" },
+
+        // Tab 5: AI & Integrations (Trợ lý AI & Tích hợp)
+        new() { Key = "ai.enabled", Value = "true", Category = "AI", Description = "Bật/tắt Trợ lý AI giải thích câu hỏi TOEIC và hội thoại" },
+        new() { Key = "ai.provider", Value = "gemini", Category = "AI", Description = "Nhà cung cấp mô hình AI (gemini / openai)" },
+        new() { Key = "ai.model", Value = "gemini-1.5-flash", Category = "AI", Description = "Tên Model AI sử dụng" },
+        new() { Key = "ai.api_key", Value = "", Category = "AI", Description = "Khóa API Key (Để trống nếu dùng cấu hình mặc định trong appsettings.json)" },
+        new() { Key = "ai.max_tokens", Value = "2048", Category = "AI", Description = "Số lượng Token phản hồi tối đa cho mỗi câu trả lời" },
+        new() { Key = "ai.temperature", Value = "0.7", Category = "AI", Description = "Độ sáng tạo của AI (0.0 = Chính xác tuyệt đối, 1.0 = Sáng tạo cao)" },
+        new() { Key = "ai.daily_limit_per_user", Value = "50", Category = "AI", Description = "Giới hạn số lượt hỏi AI tối đa mỗi ngày trên một học viên" }
+    ];
+
+    private static async Task SeedSystemSettingsAsync(AppDBContext context, ILogger logger)
+    {
+        try
+        {
+            var existingKeys = await context.SystemSettings.Select(s => s.Key).ToListAsync();
+            var existingSet = existingKeys.ToHashSet(StringComparer.OrdinalIgnoreCase);
+            var defaults = GetDefaultSystemSettings();
+            var missing = defaults.Where(d => !existingSet.Contains(d.Key)).ToList();
+
+            if (missing.Count > 0)
+            {
+                await context.SystemSettings.AddRangeAsync(missing);
+                await context.SaveChangesAsync();
+                logger.LogInformation("Đã khởi tạo {Count} cài đặt hệ thống mặc định.", missing.Count);
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning("Không thể seed SystemSettings: {msg}", ex.Message);
+        }
     }
 
     private static async Task SeedBinoBookAsync(AppDBContext context, ILogger logger)

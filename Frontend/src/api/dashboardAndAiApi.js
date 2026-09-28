@@ -48,3 +48,38 @@ export const aiApi = {
   explainQuestion: (data) => axiosClient.post('/aichat/explain', data),
   chat: (prompt) => axiosClient.post('/aichat/chat', prompt)
 };
+
+export const notificationApi = {
+  getMyNotifications: (limit = 40) => axiosClient.get(`/notifications?limit=${limit}`),
+  getUnreadCount: () => axiosClient.get('/notifications/unread-count'),
+  markAsRead: (id) => axiosClient.put(`/notifications/${id}/read`),
+  markAllAsRead: () => axiosClient.put('/notifications/read-all'),
+
+  // Admin endpoints
+  sendNotification: (data) => axiosClient.post('/notifications/send', data),
+  getAdminHistory: () => axiosClient.get('/notifications/admin/history'),
+  getAdminStats: () => axiosClient.get('/notifications/admin/stats'),
+  deleteNotification: (idOrBatchKey) => axiosClient.delete(`/notifications/admin/${idOrBatchKey}`)
+};
+
+export const settingsApi = {
+  getAllSettings: () => axiosClient.get('/settings'),
+  updateSettings: (settingsMap) => axiosClient.put('/settings', { settings: settingsMap }),
+  resetToDefaults: () => axiosClient.post('/settings/reset'),
+  getSystemInfo: () => axiosClient.get('/settings/system-info'),
+  cleanupOldData: (data) => axiosClient.post('/settings/cleanup', data),
+  clearCache: () => axiosClient.post('/settings/clear-cache')
+};
+
+export const activityLogApi = {
+  getLogs: ({ action = 'all', entityType = 'all', search = '', page = 1, pageSize = 50 } = {}) =>
+    axiosClient.get('/activity-log', {
+      params: { action, entityType, search, page, pageSize }
+    }),
+  getStats: () => axiosClient.get('/activity-log/stats')
+};
+
+export const analyticsApi = {
+  getOverview: (period = '30d') => axiosClient.get(`/analytics/overview?period=${period}`)
+};
+

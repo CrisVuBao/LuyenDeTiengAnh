@@ -14,6 +14,12 @@ public static class DependencyInjection
         services.AddScoped<IBinoBookService, BinoBookService>();
         services.AddScoped<IGamificationService, GamificationService>();
 
+        // Admin Command Center v2.0 Services
+        services.AddScoped<IActivityLogService, ActivityLogService>();
+        services.AddScoped<ISystemSettingsService, SystemSettingsService>();
+        services.AddScoped<INotificationService, NotificationService>();
+        services.AddScoped<IAnalyticsService, AnalyticsService>();
+
         return services;
     }
 }

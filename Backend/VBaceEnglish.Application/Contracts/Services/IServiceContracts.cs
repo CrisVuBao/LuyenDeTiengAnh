@@ -32,4 +32,13 @@ public interface IFileStorageService
     Task<bool> DeleteFileAsync(string fileUrl);
 }
 
+public interface IRealTimeNotificationDispatcher
+{
+    Task SendToUserAsync(int userId, object notificationPayload);
+    Task SendToUsersAsync(IEnumerable<int> userIds, object notificationPayload);
+    Task SendToAdminsAsync(object notificationPayload);
+    Task BroadcastAsync(object notificationPayload);
+}
+
+
 

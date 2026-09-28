@@ -41,6 +41,11 @@ public class AppDBContext : IdentityDbContext<ApplicationUser, Role, int>
     public DbSet<UserGamification> UserGamifications => Set<UserGamification>();
     public DbSet<XPTransaction> XPTransactions => Set<XPTransaction>();
 
+    // Admin Command Center v2.0 Entities
+    public DbSet<Notification> Notifications => Set<Notification>();
+    public DbSet<SystemSetting> SystemSettings => Set<SystemSetting>();
+    public DbSet<AdminActivityLog> AdminActivityLogs => Set<AdminActivityLog>();
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -187,6 +192,24 @@ public class AppDBContext : IdentityDbContext<ApplicationUser, Role, int>
             .WithMany(v => v.SRSReviews)
             .HasForeignKey(r => r.VocabularyId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        // ==========================================
+        // Admin Command Center v2.0 Configurations
+        // ==========================================
+        builder.Entity<Notification>().HasIndex(n => new { n.RecipientUserId, n.IsRead, n.CreatedAt });
+        builder.Entity<Notification>().HasIndex(n => n.BatchId);
+        builder.Entity<Notification>()
+            .HasOne(n => n.RecipientUser)
+            .WithMany()
+            .HasForeignKey(n => n.RecipientUserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<SystemSetting>().HasIndex(s => s.Key).IsUnique();
+        builder.Entity<SystemSetting>().HasIndex(s => s.Category);
+
+        builder.Entity<AdminActivityLog>().HasIndex(l => l.CreatedAt);
+        builder.Entity<AdminActivityLog>().HasIndex(l => l.Action);
+        builder.Entity<AdminActivityLog>().HasIndex(l => l.EntityType);
     }
 }
 

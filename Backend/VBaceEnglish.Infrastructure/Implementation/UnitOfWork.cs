@@ -12,6 +12,7 @@ public class UnitOfWork : IUnitOfWork
     private IBinoBookRepository? _binoBooks;
     private IBinoLearningRepository? _binoLearning;
     private IGamificationRepository? _gamification;
+    private IAdminManagementRepository? _adminManagement;
 
     public UnitOfWork(AppDBContext context)
     {
@@ -23,6 +24,7 @@ public class UnitOfWork : IUnitOfWork
     public IBinoBookRepository BinoBooks => _binoBooks ??= new BinoBookRepository(_context);
     public IBinoLearningRepository BinoLearning => _binoLearning ??= new BinoLearningRepository(_context);
     public IGamificationRepository Gamification => _gamification ??= new GamificationRepository(_context);
+    public IAdminManagementRepository AdminManagement => _adminManagement ??= new AdminManagementRepository(_context);
 
     public async Task<int> CompleteAsync() => await _context.SaveChangesAsync();
 

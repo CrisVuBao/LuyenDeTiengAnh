@@ -48,6 +48,7 @@ builder.Services.AddControllers().AddJsonOptions(options => {
 });
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+builder.Services.AddScoped<IRealTimeNotificationDispatcher, SignalRNotificationDispatcher>();
 builder.Services.AddProblemDetails();
 
 // 4. Clean Architecture DI (A.4)
@@ -64,7 +65,7 @@ builder.Services.AddIdentity<ApplicationUser, Role>(opt => {
     opt.Password.RequiredLength = 6;
 }).AddEntityFrameworkStores<AppDBContext>().AddDefaultTokenProviders();
 
-// 6. JWT Authentication + Cookie extraction (A.4)
+// 6. JWT Authentication + Cookie & SignalR Token extraction (A.4)
 var jwtKey = builder.Configuration["Jwt:Key"] ?? "SUPER_SECRET_TOEIC_HACK_SPEED_KEY_2026_VERY_SECURE_KEY!";
 builder.Services.AddAuthentication(options => {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -79,10 +80,19 @@ builder.Services.AddAuthentication(options => {
         ValidateLifetime = true, 
         ValidateIssuerSigningKey = true
     };
-    // ĐỌC TOKEN TỪ HTTPONLY COOKIE (bảo mật XSS) (A.4)
+    // ĐỌC TOKEN TỪ HTTPONLY COOKIE HOẶC SIGNALR QUERY STRING (bảo mật XSS) (A.4)
     opt.Events = new JwtBearerEvents {
         OnMessageReceived = context => {
             var token = context.Request.Cookies["Authorization"]?.Replace("Bearer ", "");
+            if (string.IsNullOrEmpty(token))
+            {
+                var accessToken = context.Request.Query["access_token"];
+                var path = context.HttpContext.Request.Path;
+                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/notificationHub"))
+                {
+                    token = accessToken;
+                }
+            }
             if (!string.IsNullOrEmpty(token)) context.Token = token;
             return Task.CompletedTask;
         }

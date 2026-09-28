@@ -105,6 +105,39 @@ public interface IGamificationRepository
     Task<int> GetUserRankAsync(int userId);
 }
 
+public interface IAdminManagementRepository
+{
+    // Notifications
+    Task<List<Notification>> GetUserNotificationsAsync(int userId, int limit = 40);
+    Task<int> GetUnreadCountAsync(int userId);
+    Task<Notification?> GetNotificationByIdAsync(int id);
+    Task AddNotificationsAsync(IEnumerable<Notification> notifications);
+    Task<bool> MarkAsReadAsync(int userId, int notificationId);
+    Task<int> MarkAllAsReadAsync(int userId);
+    Task<int> DeleteNotificationOrBatchAsync(string idOrBatchId);
+    Task<List<Notification>> GetAllAdminNotificationsAsync(int limit = 500);
+    Task<int> DeleteOldNotificationsAsync(DateTime olderThan);
+
+    // SystemSettings
+    Task<List<SystemSetting>> GetAllSettingsAsync();
+    Task<SystemSetting?> GetSettingByKeyAsync(string key);
+    Task UpsertSettingsAsync(Dictionary<string, string> updates, int? updatedByUserId);
+    Task ResetAllSettingsAsync(IEnumerable<SystemSetting> defaultSettings, int? updatedByUserId);
+
+    // AdminActivityLogs
+    Task AddActivityLogAsync(AdminActivityLog log);
+    Task<(List<AdminActivityLog> Items, int TotalCount)> GetActivityLogsAsync(string? action, string? entityType, string? search, int page = 1, int pageSize = 50);
+    Task<List<AdminActivityLog>> GetRecentActivityLogsAsync(int limit = 200);
+    Task<int> DeleteOldActivityLogsAsync(DateTime olderThan);
+    Task<int> DeleteOldAiChatLogsAsync(DateTime olderThan);
+
+    // Analytics & System Metrics
+    Task<Dictionary<string, int>> GetDatabaseTableCountsAsync();
+    Task<List<UserVocabProgress>> GetAllVocabProgressesAsync();
+    Task<List<UserReflexProgress>> GetAllReflexProgressesAsync();
+    Task<List<UserGamification>> GetAllGamificationsAsync();
+}
+
 public interface IUnitOfWork : IDisposable
 {
     IToeicTestRepository ToeicTests { get; }
@@ -112,7 +145,9 @@ public interface IUnitOfWork : IDisposable
     IBinoBookRepository BinoBooks { get; }
     IBinoLearningRepository BinoLearning { get; }
     IGamificationRepository Gamification { get; }
+    IAdminManagementRepository AdminManagement { get; }
     Task<int> CompleteAsync();
     Task<IDbContextTransaction> BeginTransactionAsync();
 }
+
 

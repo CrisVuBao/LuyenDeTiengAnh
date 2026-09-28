@@ -13,6 +13,7 @@ import binoApi from '../api/binoApi';
 import toeicApi from '../api/toeicApi';
 import toast from 'react-hot-toast';
 import XPBar from '../features/gamification/components/XPBar';
+import NotificationBell from './NotificationBell';
 
 // Prefetch JS chunks & API data on hover
 const prefetchRoute = (route) => {
@@ -262,6 +263,9 @@ export default function StudentNavbar() {
             
             {/* Gamification XP Bar Widget */}
             <XPBar />
+
+            {/* Realtime Notification Bell */}
+            <NotificationBell />
             
             {/* Theme Toggle (Light / Dark) */}
             <button
