@@ -11,6 +11,7 @@ import useReflex50Store, { evaluateSentenceAttempt } from './store/useReflex50St
 import Reflex50MethodGuideModal from './components/Reflex50MethodGuideModal';
 import VoiceSettingsModal from '../../components/VoiceSettingsModal';
 import speechService from '../../utils/speechService';
+import { startSmartSpeechSession } from '../../utils/smartSpeechRecognition';
 import toast from 'react-hot-toast';
 
 const SPEED_OPTIONS = [
@@ -337,65 +338,52 @@ export default function Reflex50UnitStudyPage() {
   }, [activeMode, thinkTimerSeconds, countdownLeft, isRecording, speakingEval]);
 
   const startVoiceRecording = () => {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-      toast.error('Trình duyệt của bạn chưa hỗ trợ thu âm trực tiếp. Hãy dùng Chrome hoặc Edge nhé!');
-      return;
-    }
-
     if (isRecording && recognitionRef.current) {
       recognitionRef.current.stop();
-      setIsRecording(false);
       return;
     }
 
-    speechService.stop();
-    const recognition = new SpeechRecognition();
-    recognition.lang = 'en-US';
-    recognition.interimResults = true;
-    recognition.continuous = false;
-    recognitionRef.current = recognition;
+    if (!currentSpeakingSentence) return;
+    stopAutoPlay();
 
-    let finalTranscript = '';
-    setIsRecording(true);
     setSpokenTranscript('');
     setSpeakingEval(null);
 
-    recognition.onresult = (event) => {
-      let interim = '';
-      for (let i = event.resultIndex; i < event.results.length; i++) {
-        const tr = event.results[i][0].transcript;
-        if (event.results[i].isFinal) {
-          finalTranscript += tr + ' ';
-        } else {
-          interim += tr;
-        }
-      }
-      setSpokenTranscript((finalTranscript + interim).trim());
-    };
-
-    recognition.onerror = () => {
-      setIsRecording(false);
-    };
-
-    recognition.onend = () => {
-      setIsRecording(false);
-      setTimeout(() => {
-        setSpokenTranscript((latestText) => {
-          if (latestText && currentSpeakingSentence) {
-            const evalRes = evaluateSentenceAttempt(latestText, currentSpeakingSentence.en);
-            setSpeakingEval(evalRes);
-            setShowSpeakingAnswer(true);
-            recordSpeakingAttempt(currentSpeakingSentence.id, latestText, evalRes.score);
-            // Đọc lại câu mẫu chuẩn bản xứ để học viên nhại lại ngay
-            speechService.speak(currentSpeakingSentence.en, { rate: playbackSpeed });
+    const targetSentence = currentSpeakingSentence;
+    const session = startSmartSpeechSession({
+      targetText: targetSentence.en,
+      onStart: () => {
+        setIsRecording(true);
+      },
+      onInterimResult: (smartText) => {
+        setSpokenTranscript(smartText);
+      },
+      onFinalResult: ({ smartTranscript, hasSpoken }) => {
+        setIsRecording(false);
+        recognitionRef.current = null;
+        if (smartTranscript && hasSpoken) {
+          const evalRes = evaluateSentenceAttempt(smartTranscript, targetSentence.en, {
+            isSpeech: true
+          });
+          setSpokenTranscript(evalRes.smartTranscript || smartTranscript);
+          setSpeakingEval(evalRes);
+          setShowSpeakingAnswer(true);
+          recordSpeakingAttempt(targetSentence.id, evalRes.smartTranscript || smartTranscript, evalRes.score);
+          if (evalRes.score >= 85) {
+            toast.success(`🎙️ Phát âm chuẩn ${evalRes.score}%!`, { id: 'reflex-speak-score' });
           }
-          return latestText;
-        });
-      }, 150);
-    };
+          // Đọc lại câu mẫu chuẩn bản xứ để học viên đối chiếu
+          speechService.speak(targetSentence.en, { rate: playbackSpeed });
+        }
+      },
+      onError: (_code, message) => {
+        setIsRecording(false);
+        recognitionRef.current = null;
+        if (message) toast.error(message, { id: 'speech-err' });
+      }
+    });
 
-    recognition.start();
+    recognitionRef.current = session;
   };
 
   // ===========================================================================
@@ -916,26 +904,72 @@ export default function Reflex50UnitStudyPage() {
                       </div>
                     </div>
 
-                    {/* Inline Quick Writing Practice Drawer */}
+                    {/* Inline Quick Writing & Speaking Practice Drawer */}
                     {isInlineOpen && (
-                      <div className="mt-4 pt-4 border-t border-slate-200/70 dark:border-slate-800 space-y-3">
+                      <div className="mt-3.5 pt-3.5 border-t border-slate-200/70 dark:border-slate-800 space-y-3">
                         <div className="flex flex-col sm:flex-row gap-2">
-                          <input
-                            type="text"
-                            value={inlineInput}
-                            onChange={(e) => setInlineInput(e.target.value)}
-                            onKeyDown={(e) => {
-                              if (e.key === 'Enter') {
-                                const res = evaluateSentenceAttempt(inlineInput, s.en);
-                                setInlineResult(res);
-                                recordWritingAttempt(s.id, inlineInput, res.score);
-                                speakSentence(s, playbackSpeed);
-                              }
-                            }}
-                            placeholder="→ Gõ câu tiếng Anh của bạn vào đây rồi nhấn Enter..."
-                            className="flex-1 px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-[#0071e3]"
-                            autoFocus
-                          />
+                          <div className="flex-1 flex items-center gap-2">
+                            <input
+                              type="text"
+                              value={inlineInput}
+                              onChange={(e) => setInlineInput(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                  const res = evaluateSentenceAttempt(inlineInput, s.en);
+                                  setInlineResult(res);
+                                  recordWritingAttempt(s.id, inlineInput, res.score);
+                                  speakSentence(s, playbackSpeed);
+                                }
+                              }}
+                              placeholder="→ Gõ hoặc bấm Mic để đọc câu tiếng Anh..."
+                              className="flex-1 px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-[#0071e3]"
+                              autoFocus
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (isRecording && recognitionRef.current) {
+                                  recognitionRef.current.stop();
+                                  return;
+                                }
+                                stopAutoPlay();
+                                setInlineResult(null);
+                                const session = startSmartSpeechSession({
+                                  targetText: s.en,
+                                  onStart: () => setIsRecording(true),
+                                  onInterimResult: (smartText) => setInlineInput(smartText),
+                                  onFinalResult: ({ smartTranscript, hasSpoken }) => {
+                                    setIsRecording(false);
+                                    recognitionRef.current = null;
+                                    if (smartTranscript && hasSpoken) {
+                                      const evalRes = evaluateSentenceAttempt(smartTranscript, s.en, {
+                                        isSpeech: true
+                                      });
+                                      setInlineInput(evalRes.smartTranscript || smartTranscript);
+                                      setInlineResult(evalRes);
+                                      recordSpeakingAttempt(s.id, evalRes.smartTranscript || smartTranscript, evalRes.score);
+                                      speakSentence(s, playbackSpeed);
+                                    }
+                                  },
+                                  onError: (_code, message) => {
+                                    setIsRecording(false);
+                                    recognitionRef.current = null;
+                                    if (message) toast.error(message, { id: 'speech-err' });
+                                  }
+                                });
+                                recognitionRef.current = session;
+                              }}
+                              className={`px-3 py-2.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shrink-0 transition-all cursor-pointer ${
+                                isRecording
+                                  ? 'bg-rose-600 text-white animate-pulse'
+                                  : 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                              }`}
+                              title="Bấm để nói câu này bằng giọng của bạn"
+                            >
+                              <Mic size={15} />
+                              <span>{isRecording ? 'Đang nghe...' : 'Bấm Nói'}</span>
+                            </button>
+                          </div>
                           <button
                             onClick={() => {
                               const res = evaluateSentenceAttempt(inlineInput, s.en);

@@ -17,6 +17,8 @@ import BinoSentenceExpansionCard from './components/BinoSentenceExpansionCard';
 import BinoLearningGuideModal from './components/BinoLearningGuideModal';
 import { getExpansionsForLine } from './data/binoSentenceExpansions';
 import speechService, { SPEECH_SPEED_PRESETS } from '../../utils/speechService';
+import { startSmartSpeechSession } from '../../utils/smartSpeechRecognition';
+import { evaluateSentenceAttempt } from '../reflex50/store/useReflex50Store';
 import useAuthStore from '../../store/authStore';
 import useGamificationStore from '../gamification/store/useGamificationStore';
 import toast from 'react-hot-toast';
@@ -278,12 +280,17 @@ export default function BinoDialogueStudyPage() {
     };
   }, [handOffSingleLesson]);
 
-  // Roleplay state
+  // Roleplay & Inline Speaking state
   const [selectedRole, setSelectedRole] = useState('');
   const [roleplayStep, setRoleplayStep] = useState(0);
   const [roleplayRunning, setRoleplayRunning] = useState(false);
   const [userTranscript, setUserTranscript] = useState('');
+  const [roleplayEval, setRoleplayEval] = useState(null);
   const [isListening, setIsListening] = useState(false);
+  const [inlineSpeakIndex, setInlineSpeakIndex] = useState(null);
+  const [inlineSpeakTranscript, setInlineSpeakTranscript] = useState('');
+  const [inlineSpeakEval, setInlineSpeakEval] = useState(null);
+  const speechSessionRef = useRef(null);
 
   // Dynamic roles extraction from real dialogue lines
   const availableRoles = useMemo(() => {
@@ -649,33 +656,99 @@ export default function BinoDialogueStudyPage() {
     startDialogueCycle(1);
   };
 
-  // Speech Recognition for Roleplay
-  const startSpeechRecognition = () => {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-      toast.error('Trình duyệt không hỗ trợ nhận diện giọng nói. Hãy dùng Chrome nhé!');
+  // Smart Speech Recognition for Roleplay (Hỗ trợ cả Máy tính & Điện thoại + Chuẩn hóa giọng Việt-Anh)
+  const startSpeechRecognition = (customTargetText = null) => {
+    if (isListening && speechSessionRef.current) {
+      speechSessionRef.current.stop();
       return;
     }
 
-    const recognition = new SpeechRecognition();
-    recognition.lang = 'en-US';
-    recognition.continuous = false;
-    recognition.interimResults = false;
+    if (isPlayingAll) stopPlayback();
 
-    setIsListening(true);
-    recognition.onresult = (event) => {
-      const transcript = event.results[0][0].transcript;
-      setUserTranscript(transcript);
-      setIsListening(false);
-      toast.success(`Đã nhận diện: "${transcript}"`);
-    };
-    recognition.onerror = () => {
-      setIsListening(false);
-      toast.error('Không nghe rõ, bác thử lại nhé!');
-    };
-    recognition.onend = () => setIsListening(false);
+    const currentLine = lesson?.dialogueLines?.[roleplayStep];
+    const targetText = customTargetText || currentLine?.englishText || '';
 
-    recognition.start();
+    setUserTranscript('');
+    setRoleplayEval(null);
+
+    const session = startSmartSpeechSession({
+      targetText,
+      onStart: () => {
+        setIsListening(true);
+      },
+      onInterimResult: (smartText) => {
+        setUserTranscript(smartText);
+      },
+      onFinalResult: ({ smartTranscript, hasSpoken }) => {
+        setIsListening(false);
+        speechSessionRef.current = null;
+        if (smartTranscript && hasSpoken) {
+          const evalRes = evaluateSentenceAttempt(smartTranscript, targetText, {
+            isSpeech: true
+          });
+          const bestText = evalRes.smartTranscript || smartTranscript;
+          setUserTranscript(bestText);
+          setRoleplayEval(evalRes);
+          toast.success(`🎙️ Phát âm đạt ${evalRes.score}%: "${bestText}"`, {
+            id: 'bino-speech-result'
+          });
+        }
+      },
+      onError: (_code, message) => {
+        setIsListening(false);
+        speechSessionRef.current = null;
+        if (message) toast.error(message, { id: 'bino-speech-err' });
+      }
+    });
+
+    speechSessionRef.current = session;
+  };
+
+  // Luyện nói trực tiếp trên từng câu thoại ở Tab 1 (Bài Học)
+  const startInlineLineSpeech = (line, idx) => {
+    if (isListening && speechSessionRef.current) {
+      speechSessionRef.current.stop();
+      if (inlineSpeakIndex === idx) return;
+    }
+
+    if (isPlayingAll) stopPlayback();
+
+    setInlineSpeakIndex(idx);
+    setInlineSpeakTranscript('');
+    setInlineSpeakEval(null);
+
+    const targetText = line?.englishText || '';
+    const session = startSmartSpeechSession({
+      targetText,
+      onStart: () => {
+        setIsListening(true);
+      },
+      onInterimResult: (smartText) => {
+        setInlineSpeakTranscript(smartText);
+      },
+      onFinalResult: ({ smartTranscript, hasSpoken }) => {
+        setIsListening(false);
+        speechSessionRef.current = null;
+        if (smartTranscript && hasSpoken) {
+          const evalRes = evaluateSentenceAttempt(smartTranscript, targetText, {
+            isSpeech: true
+          });
+          const bestText = evalRes.smartTranscript || smartTranscript;
+          setInlineSpeakTranscript(bestText);
+          setInlineSpeakEval(evalRes);
+          if (evalRes.score >= 80) {
+            toast.success(`🎙️ Phát âm chuẩn ${evalRes.score}%!`, { id: 'bino-inline-speech' });
+          }
+        }
+      },
+      onError: (_code, message) => {
+        setIsListening(false);
+        speechSessionRef.current = null;
+        if (message) toast.error(message, { id: 'bino-speech-err' });
+      }
+    });
+
+    speechSessionRef.current = session;
   };
 
   if (loading) return <PageLoader />;
@@ -1280,8 +1353,21 @@ export default function BinoDialogueStudyPage() {
                         )}
                       </div>
 
-                      {/* Line Audio Play Buttons (Nghe tốc độ hiện tại + Nghe chậm rãi 0.7x) */}
+                      {/* Line Audio Play & Speaking Practice Buttons */}
                       <div className="flex items-center gap-1.5 shrink-0">
+                        <button
+                          onClick={() => startInlineLineSpeech(line, idx)}
+                          className={`px-2 sm:px-2.5 py-1.5 rounded-xl text-[10px] sm:text-[11px] font-extrabold transition-all active:scale-90 flex items-center gap-1 cursor-pointer ${
+                            isListening && inlineSpeakIndex === idx
+                              ? 'bg-rose-600 text-white animate-pulse shadow-md shadow-rose-500/25'
+                              : 'text-blue-700 dark:text-sky-300 bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/60 dark:hover:bg-blue-900/60 border border-blue-200/80 dark:border-blue-800/70'
+                          }`}
+                          title="Bấm Micro để luyện đọc câu này (Hỗ trợ cả Máy tính & Điện thoại)"
+                        >
+                          <Mic size={12} />
+                          <span>{isListening && inlineSpeakIndex === idx ? 'Đang nghe...' : 'Nói'}</span>
+                        </button>
+
                         <button
                           onClick={() => {
                             if (isPlayingAll) stopPlayback();
@@ -1326,6 +1412,60 @@ export default function BinoDialogueStudyPage() {
                       )}
                     </div>
 
+                    {/* Kết quả Luyện nói trực tiếp trên câu thoại này */}
+                    {inlineSpeakIndex === idx && (isListening || inlineSpeakTranscript || inlineSpeakEval) && (
+                      <div className="p-3 sm:p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-blue-200/80 dark:border-blue-800/60 space-y-2">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-xs font-bold text-slate-700 dark:text-slate-200">
+                            🎙️ {isListening ? 'Đang nghe giọng đọc của bạn...' : 'Giọng đọc nhận diện:'}{' '}
+                            <strong className="text-[#0071e3] dark:text-sky-400">
+                              "{inlineSpeakTranscript || '...'}"
+                            </strong>
+                          </span>
+                          <button
+                            onClick={() => {
+                              setInlineSpeakIndex(null);
+                              setInlineSpeakTranscript('');
+                              setInlineSpeakEval(null);
+                            }}
+                            className="text-[11px] text-slate-400 hover:text-slate-600 cursor-pointer"
+                          >
+                            Đóng
+                          </button>
+                        </div>
+
+                        {inlineSpeakEval && (
+                          <div className="space-y-1.5 pt-1 border-t border-slate-200/70 dark:border-slate-700">
+                            <div className="flex flex-wrap items-center justify-between gap-1">
+                              <span
+                                className={`text-xs font-extrabold ${
+                                  inlineSpeakEval.isPass ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'
+                                }`}
+                              >
+                                Điểm phát âm: {inlineSpeakEval.score}% — {inlineSpeakEval.feedback}
+                              </span>
+                            </div>
+                            <div className="flex flex-wrap gap-1.5">
+                              {inlineSpeakEval.wordDiffs.map((wd, wIdx) => (
+                                <button
+                                  key={wIdx}
+                                  onClick={() => speakText(wd.cleanWord || wd.word, line.characterName, 0.7)}
+                                  className={`px-2 py-0.5 rounded-lg text-xs font-bold cursor-pointer ${
+                                    wd.status === 'correct'
+                                      ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300'
+                                      : 'bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 underline'
+                                  }`}
+                                  title="Bấm để nghe phát âm từ này chậm 0.7x"
+                                >
+                                  {wd.word}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
                     {/* VBACE SENTENCE PATTERN SUBSTITUTION (VẬN DỤNG THỰC TẾ) */}
                     <BinoSentenceExpansionCard
                       expansionData={getExpansionsForLine(line.englishText, idx)}
@@ -1365,8 +1505,8 @@ export default function BinoDialogueStudyPage() {
             {availableRoles.map(r => (
               <button
                 key={r}
-                onClick={() => { setSelectedRole(r); setRoleplayStep(0); }}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                onClick={() => { setSelectedRole(r); setRoleplayStep(0); setUserTranscript(''); setRoleplayEval(null); }}
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                   selectedRole === r
                     ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25'
                     : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
@@ -1378,12 +1518,12 @@ export default function BinoDialogueStudyPage() {
           </div>
 
           {/* Interactive Roleplay Step Box */}
-          <div className="p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-amber-50/60 to-blue-50/60 dark:from-slate-800 dark:to-slate-850 border border-slate-200 dark:border-slate-700 space-y-4">
+          <div className="p-4 sm:p-6 rounded-2xl bg-gradient-to-br from-amber-50/60 to-blue-50/60 dark:from-slate-800 dark:to-slate-850 border border-slate-200 dark:border-slate-700 space-y-4">
             <div className="flex items-center justify-between text-xs font-bold text-slate-500">
               <span>Lượt thoại {roleplayStep + 1} / {lesson.dialogueLines?.length || 8}</span>
               <button
-                onClick={() => { setRoleplayStep(0); setUserTranscript(''); }}
-                className="flex items-center gap-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                onClick={() => { setRoleplayStep(0); setUserTranscript(''); setRoleplayEval(null); }}
+                className="flex items-center gap-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
               >
                 <RotateCcw size={13} /> Làm lại từ đầu
               </button>
@@ -1413,75 +1553,97 @@ export default function BinoDialogueStudyPage() {
                   )}
                 </div>
 
-                {/* Microphone / Speech button for user */}
-                {lesson.dialogueLines[roleplayStep].characterName === selectedRole ? (
-                  <div className="space-y-3 pt-2">
-                    <div className="flex flex-wrap items-center gap-3">
-                      <div className="relative">
-                        {isListening && (
-                          <div className="absolute inset-0 rounded-2xl bg-red-500 animate-radar pointer-events-none" />
-                        )}
-                        <button
-                          onClick={startSpeechRecognition}
-                          className={`relative z-10 px-5 py-3 rounded-2xl text-xs sm:text-sm font-extrabold flex items-center gap-2 shadow-lg transition-all active:scale-95 ${
-                            isListening
-                              ? 'bg-red-500 text-white animate-pulse shadow-red-500/30'
-                              : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-500/25'
-                          }`}
-                        >
-                          <Mic size={16} />
-                          <span>{isListening ? 'Đang lắng nghe giọng bạn...' : 'Bấm Nói Câu Này (Speech AI)'}</span>
-                        </button>
-                      </div>
-
+                {/* Microphone / Speech & Audio Buttons (Luôn cho phép bấm Mic nói ở cả lượt mình lẫn nhại theo lượt của Leo!) */}
+                <div className="space-y-3 pt-1">
+                  <div className="flex flex-wrap items-center gap-2.5">
+                    <div className="relative">
+                      {isListening && (
+                        <div className="absolute inset-0 rounded-2xl bg-red-500 animate-radar pointer-events-none" />
+                      )}
                       <button
-                        onClick={() => speakText(lesson.dialogueLines[roleplayStep].englishText, selectedRole)}
-                        className="px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-200 flex items-center gap-1.5 shadow-sm active:scale-95"
+                        onClick={() => startSpeechRecognition(lesson.dialogueLines[roleplayStep].englishText)}
+                        className={`relative z-10 px-4 sm:px-5 py-2.5 sm:py-3 rounded-2xl text-xs sm:text-sm font-extrabold flex items-center gap-2 shadow-lg transition-all active:scale-95 cursor-pointer ${
+                          isListening
+                            ? 'bg-red-500 text-white animate-pulse shadow-red-500/30'
+                            : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-500/25'
+                        }`}
                       >
-                        <Volume2 size={15} /> Nghe mẫu ({audioSpeed}x)
-                      </button>
-
-                      <button
-                        onClick={() => speakText(lesson.dialogueLines[roleplayStep].englishText, selectedRole, 0.7)}
-                        className="px-4 py-3 rounded-2xl border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/60 text-xs font-bold text-emerald-700 dark:text-emerald-300 flex items-center gap-1.5 shadow-sm active:scale-95"
-                      >
-                        <Headphones size={15} />
-                        <span>Nghe chậm rãi (0.7x)</span>
+                        <Mic size={16} />
+                        <span>
+                          {isListening
+                            ? 'Đang nghe bạn nói... (Bấm dừng)'
+                            : lesson.dialogueLines[roleplayStep].characterName === selectedRole
+                              ? 'Bấm Nói Câu Này (Speech AI)'
+                              : 'Bấm Nhại Theo Câu Này'}
+                        </span>
                       </button>
                     </div>
 
-                    {userTranscript && (
-                      <div className="p-3.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 text-xs sm:text-sm">
-                        <span className="font-bold text-emerald-800 dark:text-emerald-300">Máy nghe được: </span>
-                        <span className="italic font-semibold">"{userTranscript}"</span>
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <div className="flex flex-wrap items-center gap-2.5">
                     <button
                       onClick={() => speakText(lesson.dialogueLines[roleplayStep].englishText, lesson.dialogueLines[roleplayStep].characterName)}
-                      className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-md shadow-blue-500/20 active:scale-95 transition-all"
+                      className="px-4 py-2.5 sm:py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-200 flex items-center gap-1.5 shadow-sm active:scale-95 cursor-pointer"
                     >
-                      <Volume2 size={16} /> Phát giọng {lesson.dialogueLines[roleplayStep].characterName} ({audioSpeed}x)
+                      <Volume2 size={15} className="text-[#0071e3]" />
+                      <span>Nghe mẫu ({audioSpeed}x)</span>
                     </button>
 
                     <button
                       onClick={() => speakText(lesson.dialogueLines[roleplayStep].englishText, lesson.dialogueLines[roleplayStep].characterName, 0.7)}
-                      className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-emerald-500/20 active:scale-95 transition-all"
+                      className="px-4 py-2.5 sm:py-3 rounded-2xl border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/60 text-xs font-bold text-emerald-700 dark:text-emerald-300 flex items-center gap-1.5 shadow-sm active:scale-95 cursor-pointer"
                     >
                       <Headphones size={15} />
-                      <span>Nghe chậm rãi (0.7x)</span>
+                      <span>Nghe chậm (0.7x)</span>
                     </button>
                   </div>
-                )}
+
+                  {(isListening || userTranscript || roleplayEval) && (
+                    <div className="p-3.5 sm:p-4 rounded-2xl bg-white/90 dark:bg-slate-900/90 border border-emerald-200 dark:border-emerald-800/60 space-y-2.5">
+                      <div className="text-xs sm:text-sm text-slate-700 dark:text-slate-200">
+                        <span className="font-bold text-emerald-700 dark:text-emerald-400">
+                          🎙️ {isListening ? 'Đang nghe bạn đọc: ' : 'Giọng đọc nhận diện: '}
+                        </span>
+                        <span className="font-bold text-slate-900 dark:text-white">
+                          "{userTranscript || '...'}"
+                        </span>
+                      </div>
+
+                      {roleplayEval && (
+                        <div className="space-y-2 pt-2 border-t border-slate-200/70 dark:border-slate-700">
+                          <div className="text-xs font-extrabold">
+                            <span className={roleplayEval.isPass ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'}>
+                              Điểm phản xạ phát âm: {roleplayEval.score}% — {roleplayEval.feedback}
+                            </span>
+                          </div>
+                          <div className="text-[11px] text-slate-400 font-semibold">
+                            Chi tiết từng từ (Bấm vào từ bất kỳ để nghe phát âm chậm 0.7x):
+                          </div>
+                          <div className="flex flex-wrap gap-1.5">
+                            {roleplayEval.wordDiffs.map((wd, wIdx) => (
+                              <button
+                                key={wIdx}
+                                onClick={() => speakText(wd.cleanWord || wd.word, lesson.dialogueLines[roleplayStep].characterName, 0.7)}
+                                className={`px-2.5 py-1 rounded-lg text-xs sm:text-sm font-bold cursor-pointer ${
+                                  wd.status === 'correct'
+                                    ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300'
+                                    : 'bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 underline'
+                                }`}
+                              >
+                                {wd.word}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
 
                 {/* Navigation in roleplay */}
                 <div className="flex justify-between items-center pt-4 border-t border-slate-200/60 dark:border-slate-700">
                   <button
                     disabled={roleplayStep === 0}
-                    onClick={() => { setRoleplayStep(prev => prev - 1); setUserTranscript(''); }}
-                    className="px-4 py-2.5 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 disabled:opacity-40"
+                    onClick={() => { setRoleplayStep(prev => prev - 1); setUserTranscript(''); setRoleplayEval(null); }}
+                    className="px-4 py-2.5 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 disabled:opacity-40 cursor-pointer"
                   >
                     Câu Trước
                   </button>
@@ -1492,6 +1654,7 @@ export default function BinoDialogueStudyPage() {
                         useGamificationStore.getState().earnXP(10, 'bino_roleplay', 'Luyện đối đáp 1 câu Giao Tiếp Thực Chiến');
                         setRoleplayStep(prev => prev + 1);
                         setUserTranscript('');
+                        setRoleplayEval(null);
                       } else {
                         binoApi.markProgress({
                           dialogueLessonId: parseInt(id),
@@ -1502,7 +1665,7 @@ export default function BinoDialogueStudyPage() {
                         useGamificationStore.getState().earnXP(30, 'bino_roleplay', 'Hoàn thành lượt đóng vai 1:1');
                       }
                     }}
-                    className="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl text-xs font-bold shadow-md shadow-orange-500/20 flex items-center gap-1.5 active:scale-95"
+                    className="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl text-xs font-bold shadow-md shadow-orange-500/20 flex items-center gap-1.5 active:scale-95 cursor-pointer"
                   >
                     <span>{roleplayStep < lesson.dialogueLines.length - 1 ? 'Câu Tiếp Theo' : 'Hoàn Thành! 🎉'}</span>
                     <ChevronRight size={15} />

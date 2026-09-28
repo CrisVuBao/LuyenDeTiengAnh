@@ -1,17 +1,51 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trophy, Flame, ChevronRight, Award } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import useGamificationStore from '../store/useGamificationStore';
 
 export default function XPBar() {
   const { profile, fetchProfile } = useGamificationStore();
   const [expanded, setExpanded] = useState(false);
+  const containerRef = useRef(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     fetchProfile();
   }, [fetchProfile]);
+
+  // Đóng popup khi chuyển trang
+  useEffect(() => {
+    setExpanded(false);
+  }, [location.pathname]);
+
+  // Đóng popup khi bấm bất kỳ đâu bên ngoài hoặc nhấn phím Escape
+  useEffect(() => {
+    if (!expanded) return undefined;
+
+    const handleClickOutside = (event) => {
+      if (containerRef.current && !containerRef.current.contains(event.target)) {
+        setExpanded(false);
+      }
+    };
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        setExpanded(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside, { passive: true });
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [expanded]);
 
   if (!profile) return null;
 
@@ -25,10 +59,11 @@ export default function XPBar() {
     : Math.min(100, Math.max(0, (totalXP / nextLevelXP) * 100));
 
   return (
-    <div className="relative shrink-0">
+    <div className="relative shrink-0" ref={containerRef}>
       {/* Compact, Apple-style Status Pill: Zero overflow, zero clutter in navbar */}
       <button 
-        onClick={() => setExpanded(!expanded)}
+        type="button"
+        onClick={() => setExpanded((prev) => !prev)}
         className="flex items-center gap-1.5 sm:gap-2 bg-slate-100 hover:bg-slate-200/80 dark:bg-slate-800 dark:hover:bg-slate-700/80 transition-all rounded-full py-1 px-2.5 sm:px-3 border border-slate-200/80 dark:border-slate-700/80 cursor-pointer active:scale-95 shrink-0 select-none"
         title="Xem chi tiết Cấp độ, Điểm XP & Chuỗi học"
       >
@@ -50,21 +85,13 @@ export default function XPBar() {
       {/* Flyout Card: Rich details when user taps on the XP badge */}
       <AnimatePresence>
         {expanded && (
-          <>
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-40"
-              onClick={() => setExpanded(false)}
-            />
-            <motion.div 
-              initial={{ opacity: 0, y: 8, scale: 0.96 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 8, scale: 0.96 }}
-              transition={{ type: 'spring', stiffness: 350, damping: 25 }}
-              className="fixed inset-x-4 top-16 sm:absolute sm:inset-x-auto sm:right-0 sm:top-full sm:mt-2 w-auto sm:w-80 max-w-sm bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200/90 dark:border-slate-800 p-5 z-50 space-y-4"
-            >
+          <motion.div 
+            initial={{ opacity: 0, y: 8, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 8, scale: 0.96 }}
+            transition={{ type: 'spring', stiffness: 350, damping: 25 }}
+            className="fixed inset-x-4 top-16 sm:absolute sm:inset-x-auto sm:right-0 sm:top-full sm:mt-2 w-auto sm:w-80 max-w-sm bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200/90 dark:border-slate-800 p-5 z-50 space-y-4"
+          >
               {/* Header */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
@@ -123,7 +150,6 @@ export default function XPBar() {
                 <ChevronRight size={14} />
               </button>
             </motion.div>
-          </>
         )}
       </AnimatePresence>
     </div>

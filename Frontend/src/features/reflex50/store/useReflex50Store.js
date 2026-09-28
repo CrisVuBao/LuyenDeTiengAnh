@@ -180,9 +180,19 @@ export function normalizeEnglishForComparison(text = '') {
     .trim();
 }
 
+import {
+  vietPhoneticSimilarity,
+  reconstructSmartTranscript
+} from '../../../utils/smartSpeechRecognition';
+
 // Chấm điểm câu viết / nói so với câu chuẩn bản xứ & trả về diff chi tiết từng từ
-export function evaluateSentenceAttempt(userText = '', targetText = '') {
-  const normUser = normalizeEnglishForComparison(userText);
+export function evaluateSentenceAttempt(userText = '', targetText = '', options = {}) {
+  const isSpeech = Boolean(options?.isSpeech);
+  const effectiveUserText = isSpeech
+    ? reconstructSmartTranscript(userText, targetText)
+    : userText;
+
+  const normUser = normalizeEnglishForComparison(effectiveUserText);
   const normTarget = normalizeEnglishForComparison(targetText);
 
   if (!normUser) {
@@ -190,6 +200,7 @@ export function evaluateSentenceAttempt(userText = '', targetText = '') {
       score: 0,
       isExact: false,
       isPass: false,
+      smartTranscript: '',
       wordDiffs: [],
       missingWords: targetText.split(/\s+/),
       feedback: 'Hãy nhập hoặc nói câu tiếng Anh của bạn.'
@@ -202,15 +213,26 @@ export function evaluateSentenceAttempt(userText = '', targetText = '') {
       score: 100,
       isExact: true,
       isPass: true,
-      wordDiffs: rawTargetWords.map((w) => ({ word: w, status: 'correct' })),
+      smartTranscript: targetText.trim(),
+      wordDiffs: rawTargetWords.map((w) => ({
+        word: w,
+        cleanWord: w.toLowerCase().replace(/[^\w]/g, ''),
+        status: 'correct'
+      })),
       missingWords: [],
-      feedback: 'Chính xác tuyệt đối 100%! Phản xạ rất chuẩn xác.'
+      feedback: 'Chính xác tuyệt đối 100%! Phản xạ phát âm rất chuẩn xác.'
     };
   }
 
   const userWords = normUser.split(' ').filter(Boolean);
   const targetWords = normTarget.split(' ').filter(Boolean);
   const rawTargetWords = targetText.trim().split(/\s+/);
+
+  const isWordMatch = (tWord, uWord) => {
+    if (tWord === uWord) return true;
+    if (isSpeech && vietPhoneticSimilarity(uWord, tWord) >= 0.60) return true;
+    return false;
+  };
 
   // Quy hoạch động LCS (Longest Common Subsequence) để tìm các từ khớp đúng thứ tự
   const m = targetWords.length;
@@ -219,7 +241,7 @@ export function evaluateSentenceAttempt(userText = '', targetText = '') {
 
   for (let i = 1; i <= m; i++) {
     for (let j = 1; j <= n; j++) {
-      if (targetWords[i - 1] === userWords[j - 1]) {
+      if (isWordMatch(targetWords[i - 1], userWords[j - 1])) {
         dp[i][j] = dp[i - 1][j - 1] + 1;
       } else {
         dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
@@ -232,7 +254,7 @@ export function evaluateSentenceAttempt(userText = '', targetText = '') {
   let i = m;
   let j = n;
   while (i > 0 && j > 0) {
-    if (targetWords[i - 1] === userWords[j - 1]) {
+    if (isWordMatch(targetWords[i - 1], userWords[j - 1])) {
       matchedTargetIndices.add(i - 1);
       i--;
       j--;
@@ -243,12 +265,27 @@ export function evaluateSentenceAttempt(userText = '', targetText = '') {
     }
   }
 
-  const lcsLen = dp[m][n];
-  // Tính điểm dựa trên độ phủ câu chuẩn và độ chênh lệch độ dài
-  const recall = m > 0 ? lcsLen / m : 0;
-  const precision = n > 0 ? lcsLen / n : 0;
-  const f1 = recall + precision > 0 ? (2 * recall * precision) / (recall + precision) : 0;
-  const score = Math.round(f1 * 100);
+  // Nếu là chế độ nói (isSpeech), kiểm tra thêm những từ chưa khớp theo vị trí gần (phòng trường hợp đảo nhẹ hoặc tách từ)
+  if (isSpeech) {
+    for (let idx = 0; idx < m; idx++) {
+      if (matchedTargetIndices.has(idx)) continue;
+      const tW = targetWords[idx];
+      if (userWords.some((uW) => vietPhoneticSimilarity(uW, tW) >= 0.62)) {
+        matchedTargetIndices.add(idx);
+      }
+    }
+  }
+
+  const matchedCount = matchedTargetIndices.size;
+  // Tính điểm dựa trên độ phủ câu chuẩn (trong chế độ nói ưu tiên độ phủ từ mục tiêu để không phạt nặng nhiễu mic)
+  const recall = m > 0 ? matchedCount / m : 0;
+  const precision = n > 0 ? Math.min(1, matchedCount / n) : 0;
+  const rawScore = isSpeech
+    ? recall * 0.85 + precision * 0.15
+    : recall + precision > 0
+      ? (2 * recall * precision) / (recall + precision)
+      : 0;
+  const score = Math.min(100, Math.round(rawScore * 100));
 
   const wordDiffs = rawTargetWords.map((w, idx) => ({
     word: w,
@@ -257,23 +294,24 @@ export function evaluateSentenceAttempt(userText = '', targetText = '') {
   }));
 
   const missingWords = wordDiffs.filter((d) => d.status === 'missing').map((d) => d.word);
-  const isPass = score >= 80;
+  const isPass = score >= 75;
 
   let feedback = '';
   if (score >= 90) {
-    feedback = 'Rất tuyệt vời! Câu của bạn gần như hoàn hảo, chỉ lệch một chi tiết nhỏ.';
-  } else if (score >= 80) {
-    feedback = 'Đạt yêu cầu! Bạn đã nắm được cấu trúc chính, chú ý các từ được tô màu.';
-  } else if (score >= 55) {
-    feedback = 'Đã đúng được ý cơ bản. Hãy xem kỹ các từ còn thiếu và thử lại nhé!';
+    feedback = 'Rất tuyệt vời! Giọng đọc & cấu trúc câu của bạn cực kỳ chuẩn xác.';
+  } else if (score >= 75) {
+    feedback = 'Đạt yêu cầu! Bạn đã phát âm rõ ý chính, bấm vào từ màu đỏ để nghe lại nhé.';
+  } else if (score >= 50) {
+    feedback = 'Đã bắt được một nửa câu! Hãy nghe mẫu chậm 0.7x và đọc liền mạch hơn nhé.';
   } else {
-    feedback = 'Câu chưa khớp cấu trúc. Hãy bấm nghe chậm 0.75x và nhìn gợi ý cụm từ nhé.';
+    feedback = 'Hãy bấm nghe chậm 0.7x và đọc to, rõ từng cụm từ gợi ý nhé.';
   }
 
   return {
     score,
     isExact: score === 100,
     isPass,
+    smartTranscript: effectiveUserText,
     wordDiffs,
     missingWords,
     feedback
