@@ -215,7 +215,7 @@ public class GamificationService : IGamificationService
         await _unitOfWork.CompleteAsync();
 
         // 5. Kiểm tra và mở khóa huy hiệu thành tựu
-        await CheckAndUnlockAchievementsAsync(userId, gamification);
+        await CheckAndUnlockAchievementsAsync(userId, gamification, source);
 
         return await GetProfileAsync(userId);
     }
@@ -252,6 +252,40 @@ public class GamificationService : IGamificationService
             else if (source == "reflex_write" && q.QuestType == "reflex_write") matches = true;
             else if (source == "reflex_listen" && q.QuestType == "reflex_listen") matches = true;
             else if (source == "reflex_master" && q.QuestType == "reflex_master") matches = true;
+            else if ((source.StartsWith("vocab_flashcard") || source == "vocab_flip") && q.QuestType == "vocab_flashcard")
+            {
+                matches = true;
+                if (source.StartsWith("vocab_flashcard:"))
+                {
+                    if (int.TryParse(source.Substring("vocab_flashcard:".Length), out int countVal) && countVal > 0)
+                    {
+                        increment = countVal;
+                    }
+                }
+            }
+            else if (source == "vocab_quiz" && q.QuestType == "vocab_quiz") matches = true;
+            else if (source.StartsWith("vocab_spelling") && q.QuestType == "vocab_spelling")
+            {
+                matches = true;
+                if (source.StartsWith("vocab_spelling:"))
+                {
+                    if (int.TryParse(source.Substring("vocab_spelling:".Length), out int countVal) && countVal > 0)
+                    {
+                        increment = countVal;
+                    }
+                }
+            }
+            else if (source.StartsWith("vocab_master") && q.QuestType == "vocab_master")
+            {
+                matches = true;
+                if (source.StartsWith("vocab_master:"))
+                {
+                    if (int.TryParse(source.Substring("vocab_master:".Length), out int countVal) && countVal > 0)
+                    {
+                        increment = countVal;
+                    }
+                }
+            }
 
             if (matches)
             {
@@ -340,8 +374,9 @@ public class GamificationService : IGamificationService
     }
 
     /// <summary>
-    /// Tạo 4 nhiệm vụ hàng ngày: CHỈ DÀNH CHO BINO (2 nhiệm vụ) VÀ PHẢN XẠ 50 CHỦ ĐỀ (2 nhiệm vụ).
-    /// Tập trung vào HÀNH ĐỘNG HỌC THỰC TẾ HÀNG NGÀY (Micro-learning & Habit building), không phụ thuộc vào việc phải hoàn thành cả bài lớn.
+    /// Tạo 4 nhiệm vụ hàng ngày: Chọn lọc cân bằng từ Bino Giao Tiếp, Phản Xạ 50 Chủ Đề và 3000 Từ Vựng Thiết Yếu.
+    /// Hoàn toàn loại bỏ TOEIC theo đúng yêu cầu học viên.
+    /// Tập trung vào HÀNH ĐỘNG HỌC THỰC TẾ HÀNG NGÀY (Micro-learning & Habit building).
     /// </summary>
     private List<DailyQuestDto> GenerateDailyQuests(int userId, DateTime dateVn)
     {
@@ -365,18 +400,37 @@ public class GamificationService : IGamificationService
             new() { QuestId = "q_reflex_master_3", Title = "Ghi nhớ 3 câu phản xạ", Description = "Ghi nhớ và làm chủ 3 câu phản xạ giao tiếp mới", TargetCount = 3, XPReward = 50, QuestType = "reflex_master" }
         };
 
+        var vocabPool = new List<DailyQuestDto>
+        {
+            new() { QuestId = "q_vocab_card_10", Title = "Ôn 10 thẻ từ vựng 3000", Description = "Luyện phản xạ lật thẻ 10 từ vựng theo chủ đề", TargetCount = 10, XPReward = 35, QuestType = "vocab_flashcard" },
+            new() { QuestId = "q_vocab_card_20", Title = "Luyện 20 thẻ từ vựng", Description = "Nạp vốn từ vựng với 20 thẻ Flashcard 3D thông minh", TargetCount = 20, XPReward = 60, QuestType = "vocab_flashcard" },
+            new() { QuestId = "q_vocab_quiz_1", Title = "Thử thách trắc nghiệm từ vựng", Description = "Hoàn thành 1 bài trắc nghiệm nhanh kiểm tra vốn từ", TargetCount = 1, XPReward = 40, QuestType = "vocab_quiz" },
+            new() { QuestId = "q_vocab_spelling_5", Title = "Gõ chính tả 5 từ vựng", Description = "Luyện kỹ năng nhớ mặt chữ và gõ đúng 5 từ vựng", TargetCount = 5, XPReward = 45, QuestType = "vocab_spelling" },
+            new() { QuestId = "q_vocab_master_5", Title = "Ghi nhớ 5 từ vựng mới", Description = "Đánh dấu thuộc 5 từ vựng mới trong các chủ đề", TargetCount = 5, XPReward = 50, QuestType = "vocab_master" }
+        };
+
         var seed = $"{userId}_{dateVn:yyyyMMdd}";
         using var md5 = MD5.Create();
         var hash = md5.ComputeHash(Encoding.UTF8.GetBytes(seed));
         var random = new Random(BitConverter.ToInt32(hash, 0));
 
-        // Luôn chọn chính xác 2 nhiệm vụ từ Bino và 2 nhiệm vụ từ Phản Xạ 50 Chủ Đề
-        var selectedBino = binoPool.OrderBy(x => random.Next()).Take(2).ToList();
-        var selectedReflex = reflexPool.OrderBy(x => random.Next()).Take(2).ToList();
+        // Phân bổ cân đối: 1 từ Bino, 1 từ Reflex 50, 1 từ 3000 Từ Vựng, và 1 ngẫu nhiên từ phần còn lại
+        var selectedBino = binoPool.OrderBy(_ => random.Next()).Take(1).ToList();
+        var selectedReflex = reflexPool.OrderBy(_ => random.Next()).Take(1).ToList();
+        var selectedVocab = vocabPool.OrderBy(_ => random.Next()).Take(1).ToList();
+
+        var remainingPool = binoPool.Except(selectedBino)
+            .Concat(reflexPool.Except(selectedReflex))
+            .Concat(vocabPool.Except(selectedVocab))
+            .OrderBy(_ => random.Next())
+            .Take(1)
+            .ToList();
 
         var selected = new List<DailyQuestDto>();
         selected.AddRange(selectedBino);
         selected.AddRange(selectedReflex);
+        selected.AddRange(selectedVocab);
+        selected.AddRange(remainingPool);
         return selected;
     }
 
@@ -494,7 +548,18 @@ public class GamificationService : IGamificationService
             // TOEIC
             new() { BadgeId = "toeic_first", Title = "Chiến Binh Luyện Đề", Description = "Làm đề thi TOEIC đầu tiên", Icon = "🎯" },
             new() { BadgeId = "toeic_confident_50", Title = "Bộ Não Thép", Description = "Đánh dấu chắc chắn 50 câu hỏi TOEIC", Icon = "💎" },
-            new() { BadgeId = "toeic_master", Title = "Chuyên Gia TOEIC", Description = "Hoàn thành học tập 5 đề thi ETS", Icon = "📚" }
+            new() { BadgeId = "toeic_master", Title = "Chuyên Gia TOEIC", Description = "Hoàn thành học tập 5 đề thi ETS", Icon = "📚" },
+
+            // 3000 Essential Vocabulary
+            new() { BadgeId = "vocab_starter", Title = "Khởi Động 3000 Từ", Description = "Master 10 từ vựng cốt lõi đầu tiên", Icon = "🌱" },
+            new() { BadgeId = "vocab_50", Title = "Nhập Môn Từ Vựng", Description = "Master 50 từ vựng thông dụng", Icon = "🌿" },
+            new() { BadgeId = "vocab_100", Title = "Vốn Từ Vững Vàng", Description = "Master 100 từ vựng cốt lõi", Icon = "🌳" },
+            new() { BadgeId = "vocab_300", Title = "Chiến Thần Tra Từ", Description = "Master 300 từ vựng qua các chủ đề", Icon = "📚" },
+            new() { BadgeId = "vocab_500", Title = "Kho Báu 500 Từ", Description = "Master 500 từ vựng tiếng Anh", Icon = "💎" },
+            new() { BadgeId = "vocab_1000", Title = "Bậc Thầy Từ Vựng", Description = "Master 1.000 từ vựng cốt lõi", Icon = "🏆" },
+            new() { BadgeId = "vocab_legend", Title = "Huyền Thoại 3000 Từ", Description = "Master toàn bộ kho từ vựng tiếng Anh theo chủ đề", Icon = "👑" },
+            new() { BadgeId = "vocab_quiz_ace", Title = "Trắc Nghiệm Hoàn Hảo", Description = "Đạt 100% điểm trong bài kiểm tra trắc nghiệm từ vựng", Icon = "🎯" },
+            new() { BadgeId = "vocab_spelling_master", Title = "Bậc Thầy Chính Tả", Description = "Luyện tập gõ đúng chính tả từ vựng", Icon = "✍️" }
         };
 
         foreach (var b in allBadges)
@@ -549,7 +614,7 @@ public class GamificationService : IGamificationService
         await _unitOfWork.CompleteAsync();
     }
 
-    private async Task<List<string>> CheckAndUnlockAchievementsAsync(int userId, UserGamification gam)
+    private async Task<List<string>> CheckAndUnlockAchievementsAsync(int userId, UserGamification gam, string source = "")
     {
         var unlocked = JsonSerializer.Deserialize<List<string>>(gam.UnlockedBadgesJson) ?? new List<string>();
         var newUnlocked = new List<string>();
@@ -690,6 +755,75 @@ public class GamificationService : IGamificationService
         {
             unlocked.Add("toeic_master");
             newUnlocked.Add("toeic_master");
+        }
+
+        // 5. 3000 Essential Vocabulary Achievements (Từ dữ liệu thật UserVocabProgress)
+        var vocabProgress = await _unitOfWork.UserProgresses.GetVocabProgressAsync(userId);
+        if (vocabProgress != null)
+        {
+            if (!unlocked.Contains("vocab_starter") && vocabProgress.MasteredCount >= 10)
+            {
+                unlocked.Add("vocab_starter");
+                newUnlocked.Add("vocab_starter");
+            }
+            if (!unlocked.Contains("vocab_50") && vocabProgress.MasteredCount >= 50)
+            {
+                unlocked.Add("vocab_50");
+                newUnlocked.Add("vocab_50");
+            }
+            if (!unlocked.Contains("vocab_100") && vocabProgress.MasteredCount >= 100)
+            {
+                unlocked.Add("vocab_100");
+                newUnlocked.Add("vocab_100");
+            }
+            if (!unlocked.Contains("vocab_300") && vocabProgress.MasteredCount >= 300)
+            {
+                unlocked.Add("vocab_300");
+                newUnlocked.Add("vocab_300");
+            }
+            if (!unlocked.Contains("vocab_500") && vocabProgress.MasteredCount >= 500)
+            {
+                unlocked.Add("vocab_500");
+                newUnlocked.Add("vocab_500");
+            }
+            if (!unlocked.Contains("vocab_1000") && vocabProgress.MasteredCount >= 1000)
+            {
+                unlocked.Add("vocab_1000");
+                newUnlocked.Add("vocab_1000");
+            }
+            if (!unlocked.Contains("vocab_legend") && vocabProgress.MasteredCount >= 1700)
+            {
+                unlocked.Add("vocab_legend");
+                newUnlocked.Add("vocab_legend");
+            }
+
+            // Kiểm tra topicScores từ ProgressDataJson cho vocab_quiz_ace
+            if (!unlocked.Contains("vocab_quiz_ace") && !string.IsNullOrWhiteSpace(vocabProgress.ProgressDataJson))
+            {
+                try
+                {
+                    using var doc = JsonDocument.Parse(vocabProgress.ProgressDataJson);
+                    if (doc.RootElement.TryGetProperty("topicScores", out var topicScoresElement) && topicScoresElement.ValueKind == JsonValueKind.Object)
+                    {
+                        foreach (var topicProp in topicScoresElement.EnumerateObject())
+                        {
+                            if (topicProp.Value.TryGetProperty("bestScore", out var bestScoreProp) && bestScoreProp.GetInt32() >= 100)
+                            {
+                                unlocked.Add("vocab_quiz_ace");
+                                newUnlocked.Add("vocab_quiz_ace");
+                                break;
+                            }
+                        }
+                    }
+                }
+                catch {}
+            }
+        }
+
+        if (!unlocked.Contains("vocab_spelling_master") && source.StartsWith("vocab_spelling"))
+        {
+            unlocked.Add("vocab_spelling_master");
+            newUnlocked.Add("vocab_spelling_master");
         }
 
         if (newUnlocked.Any())

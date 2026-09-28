@@ -5,6 +5,7 @@ import {
   Sparkles, ArrowRight, Lightbulb, Trophy
 } from 'lucide-react';
 import useVocabStore from '../store/useVocabStore';
+import useGamificationStore from '../../gamification/store/useGamificationStore';
 import confetti from 'canvas-confetti';
 
 export default function VocabSpellingMode({ topic, onSwitchToFlashcard }) {
@@ -54,6 +55,18 @@ export default function VocabSpellingMode({ topic, onSwitchToFlashcard }) {
       }, 100);
     }
   }, [currentIndex, testWords, isFinished, speakWord]);
+
+  // Award XP and complete quest on spelling session finish
+  useEffect(() => {
+    if (isFinished && testWords.length > 0) {
+      const earnedXP = Math.max(10, score * 4);
+      useGamificationStore.getState().earnXP(
+        earnedXP,
+        `vocab_spelling:${score}`,
+        `Luyện chính tả từ vựng: đúng ${score}/${testWords.length} từ`
+      );
+    }
+  }, [isFinished]);
 
   const normalize = (str) => str.trim().toLowerCase().replace(/[^a-z0-9 ]/g, '');
 
@@ -123,6 +136,10 @@ export default function VocabSpellingMode({ topic, onSwitchToFlashcard }) {
           <h3 className="text-3xl font-black text-slate-900 dark:text-white">
             Đúng {score}/{testWords.length} Từ ({accuracy}%)
           </h3>
+          <div className="mt-2.5 inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-200/60 dark:border-indigo-900/60 text-indigo-600 dark:text-indigo-400 font-bold text-xs">
+            <Sparkles size={13} />
+            <span>+{Math.max(10, score * 4)} XP Thưởng Hoàn Thành</span>
+          </div>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3 pt-2">

@@ -32,7 +32,18 @@ const DEFAULT_ACHIEVEMENTS = [
   { badgeId: 'toeic_first', category: 'toeic', title: 'Chiến Binh Luyện Đề', description: 'Làm đề thi TOEIC đầu tiên', icon: '🎯', xp: 80 },
   { badgeId: 'toeic_part5_master', category: 'toeic', title: 'Khắc Tinh Part 5', description: 'Tự tin 100% câu hỏi Part 5 của 1 đề thi', icon: '🧠', xp: 200 },
   { badgeId: 'toeic_master', category: 'toeic', title: 'Chuyên Gia TOEIC', description: 'Hoàn thành học tập 10 đề thi ETS', icon: '📚', xp: 800 },
-  { badgeId: 'toeic_confident_100', category: 'toeic', title: 'Bộ Não Thép', description: 'Đánh dấu chắc chắn 100 câu hỏi TOEIC', icon: '💎', xp: 300 }
+  { badgeId: 'toeic_confident_100', category: 'toeic', title: 'Bộ Não Thép', description: 'Đánh dấu chắc chắn 100 câu hỏi TOEIC', icon: '💎', xp: 300 },
+
+  // 3000 Từ Vựng
+  { badgeId: 'vocab_starter', category: 'vocab', title: 'Khởi Động 3000 Từ', description: 'Master 10 từ vựng cốt lõi đầu tiên', icon: '🌱', xp: 50 },
+  { badgeId: 'vocab_50', category: 'vocab', title: 'Nhập Môn Từ Vựng', description: 'Master 50 từ vựng thông dụng', icon: '🌿', xp: 100 },
+  { badgeId: 'vocab_100', category: 'vocab', title: 'Vốn Từ Vững Vàng', description: 'Master 100 từ vựng cốt lõi', icon: '🌳', xp: 200 },
+  { badgeId: 'vocab_300', category: 'vocab', title: 'Chiến Thần Tra Từ', description: 'Master 300 từ vựng qua các chủ đề', icon: '📚', xp: 400 },
+  { badgeId: 'vocab_500', category: 'vocab', title: 'Kho Báu 500 Từ', description: 'Master 500 từ vựng tiếng Anh', icon: '💎', xp: 800 },
+  { badgeId: 'vocab_1000', category: 'vocab', title: 'Bậc Thầy Từ Vựng', description: 'Master 1.000 từ vựng cốt lõi', icon: '🏆', xp: 1500 },
+  { badgeId: 'vocab_legend', category: 'vocab', title: 'Huyền Thoại 3000 Từ', description: 'Master toàn bộ kho từ vựng tiếng Anh theo chủ đề', icon: '👑', xp: 3000 },
+  { badgeId: 'vocab_quiz_ace', category: 'vocab', title: 'Trắc Nghiệm Hoàn Hảo', description: 'Đạt 100% điểm trong bài kiểm tra trắc nghiệm từ vựng', icon: '🎯', xp: 150 },
+  { badgeId: 'vocab_spelling_master', category: 'vocab', title: 'Bậc Thầy Chính Tả', description: 'Luyện tập gõ đúng chính tả từ vựng', icon: '✍️', xp: 150 }
 ];
 
 export default function AchievementGallery() {
@@ -131,6 +142,7 @@ export default function AchievementGallery() {
         {[
           { id: 'all', label: 'Tất cả' },
           { id: 'streak', label: 'Chuỗi ngày' },
+          { id: 'vocab', label: '3000 Từ Vựng' },
           { id: 'bino', label: 'Chém Tiếng Anh' },
           { id: 'reflex', label: 'Phản Xạ 50' },
           { id: 'toeic', label: 'Luyện đề TOEIC' }

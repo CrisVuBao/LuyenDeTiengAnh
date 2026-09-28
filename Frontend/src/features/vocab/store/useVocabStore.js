@@ -212,6 +212,11 @@ const useVocabStore = create((set, get) => ({
       return { masteredWords: nextMastered };
     });
     get().saveProgress();
+    if (isMastered) {
+      try {
+        useGamificationStore.getState().earnXP(2, 'vocab_master', 'Ghi nhớ từ vựng mới');
+      } catch {}
+    }
   },
 
   // Toggle star / bookmark

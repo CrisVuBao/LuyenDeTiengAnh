@@ -14,13 +14,19 @@ import binoApi from '../../../api/binoApi';
 import { dashboardApi, invalidateStatsCache } from '../../../api/dashboardAndAiApi';
 import useReflex50Store from '../../reflex50/store/useReflex50Store';
 import reflex50Data from '../../reflex50/data/reflex50Data.json';
+import useVocabStore from '../../vocab/store/useVocabStore';
+import vocabData from '../../../data/vocab3000Data.json';
 import useGamificationStore from '../../gamification/store/useGamificationStore';
 import PageLoader from '../../../components/PageLoader';
 import toast from 'react-hot-toast';
 
 export default function StudyProgressPage() {
-  // Chế độ chính: 'bino' (Khóa học Chém Tiếng Anh Bino - Mặc định) | 'toeic' (Luyện đề TOEIC)
+  // Chế độ chính: 'bino' (Chém Tiếng Anh Bino) | 'reflex50' (Phản Xạ 50) | 'vocab' (3000 Từ Vựng) | 'toeic' (TOEIC)
   const [courseMode, setCourseMode] = useState('bino');
+
+  // Vocab state
+  const [vocabSearch, setVocabSearch] = useState('');
+  const [vocabFilter, setVocabFilter] = useState('all'); // 'all' | 'completed' | 'in_progress' | 'unstarted'
 
   // Bino state
   const [binoSummary, setBinoSummary] = useState(null);
@@ -47,7 +53,8 @@ export default function StudyProgressPage() {
         binoApi.getProgressSummary(true),
         dashboardApi.getStats(true),
         progressApi.getAllSummaries(),
-        progressApi.getUnsureQuestions()
+        progressApi.getUnsureQuestions(),
+        useVocabStore.getState().fetchProgress()
       ]);
 
       if (binoRes.status === 'fulfilled' && binoRes.value?.data) {
@@ -238,6 +245,18 @@ export default function StudyProgressPage() {
           >
             <Zap size={14} />
             <span>Phản Xạ 50 Chủ Đề</span>
+          </button>
+
+          <button
+            onClick={() => setCourseMode('vocab')}
+            className={`flex-1 sm:flex-none px-5 py-2 rounded-full text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer ${
+              courseMode === 'vocab'
+                ? 'bg-white dark:bg-slate-900 text-[#0071e3] dark:text-sky-400 shadow-xs'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+            }`}
+          >
+            <Layers size={14} />
+            <span>3000 Từ Vựng</span>
           </button>
 
           <button
@@ -1152,6 +1171,237 @@ export default function StudyProgressPage() {
                     </div>
                   );
                 })}
+              </div>
+            </div>
+          </motion.div>
+        );
+      })()}
+
+      {/* ===================================================================== */}
+      {/* MODE 4: QUẢN LÝ TIẾN ĐỘ "3000 TỪ VỰNG TIẾNG ANH THEO 60 CHỦ ĐỀ"        */}
+      {/* ===================================================================== */}
+      {courseMode === 'vocab' && (() => {
+        const topics = vocabData.topics || [];
+        const totalWords = vocabData.totalWords || 1760;
+        const masteredWords = useVocabStore.getState().masteredWords || {};
+        const starredWords = useVocabStore.getState().starredWords || {};
+        const topicScores = useVocabStore.getState().topicScores || {};
+
+        const masteredCount = Object.keys(masteredWords).filter(k => masteredWords[k]).length;
+        const starredCount = Object.keys(starredWords).filter(k => starredWords[k]).length;
+        const overallPercent = Math.min(100, Math.round((masteredCount / totalWords) * 100));
+
+        let completedTopics = 0;
+        let inProgressTopics = 0;
+        let unstartedTopics = 0;
+
+        const topicProgressList = topics.map(t => {
+          const tWords = t.words || [];
+          const tMastered = tWords.filter(w => !!masteredWords[w.id]).length;
+          const tStarred = tWords.filter(w => !!starredWords[w.id]).length;
+          const tScoreObj = topicScores[t.id];
+          const tPercent = tWords.length > 0 ? Math.round((tMastered / tWords.length) * 100) : 0;
+          const isDone = tWords.length > 0 && tMastered === tWords.length;
+
+          if (isDone) completedTopics++;
+          else if (tMastered > 0 || (tScoreObj?.attempts || 0) > 0) inProgressTopics++;
+          else unstartedTopics++;
+
+          return {
+            ...t,
+            wordsCount: tWords.length,
+            masteredCount: tMastered,
+            starredCount: tStarred,
+            percent: tPercent,
+            isDone,
+            bestScore: tScoreObj?.bestScore,
+            attempts: tScoreObj?.attempts || 0
+          };
+        });
+
+        const filteredTopics = topicProgressList.filter(t => {
+          if (vocabFilter === 'completed' && !t.isDone) return false;
+          if (vocabFilter === 'in_progress' && (t.isDone || (t.masteredCount === 0 && t.attempts === 0))) return false;
+          if (vocabFilter === 'unstarted' && (t.masteredCount > 0 || t.attempts > 0)) return false;
+
+          if (vocabSearch.trim()) {
+            const q = vocabSearch.toLowerCase();
+            return t.title.toLowerCase().includes(q) || (t.titleVi && t.titleVi.toLowerCase().includes(q)) || String(t.id).includes(q);
+          }
+          return true;
+        });
+
+        return (
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-6"
+          >
+            {/* 4 KPI Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-1">
+                <div className="text-xs font-semibold text-slate-400">Tổng từ vựng đã thuộc</div>
+                <div className="text-2xl font-bold text-slate-900 dark:text-white">
+                  {masteredCount} <span className="text-xs font-normal text-slate-400">/ {totalWords} từ</span>
+                </div>
+                <div className="text-xs font-semibold text-[#0071e3]">
+                  Đạt {overallPercent}% toàn bộ kho từ vựng
+                </div>
+              </div>
+
+              <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-1">
+                <div className="text-xs font-semibold text-slate-400">Chủ đề hoàn thành</div>
+                <div className="text-2xl font-bold text-emerald-600">
+                  {completedTopics} <span className="text-xs font-normal text-slate-400">/ {topics.length} Chủ Đề</span>
+                </div>
+                <div className="text-xs text-slate-500">
+                  Đang học dở: {inProgressTopics} • Chưa học: {unstartedTopics}
+                </div>
+              </div>
+
+              <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-1">
+                <div className="text-xs font-semibold text-slate-400">Sổ tay từ quan trọng</div>
+                <div className="text-2xl font-bold text-amber-500">
+                  {starredCount} <span className="text-xs font-normal text-slate-400">từ đã gắn sao ⭐</span>
+                </div>
+                <div className="text-xs text-slate-500">
+                  Ôn tập ưu tiên trong Thẻ Flashcard
+                </div>
+              </div>
+
+              <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-1">
+                <div className="text-xs font-semibold text-slate-400">Thử thách Trắc nghiệm</div>
+                <div className="text-2xl font-bold text-indigo-600">
+                  {Object.keys(topicScores).length} <span className="text-xs font-normal text-slate-400">chủ đề đã thi</span>
+                </div>
+                <div className="text-xs text-slate-500">
+                  Tích lũy điểm thưởng XP qua từng bài
+                </div>
+              </div>
+            </div>
+
+            {/* 60 Topics Progress Grid */}
+            <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+                    Chi Tiết Tiến Độ 60 Chủ Đề Từ Vựng Cốt Lõi
+                  </h2>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    Theo dõi tỷ lệ ghi nhớ từng chủ đề, lật thẻ flashcard và làm bài kiểm tra trắc nghiệm.
+                  </p>
+                </div>
+                <button
+                  onClick={() => navigate('/vocab')}
+                  className="px-4 py-2 rounded-full bg-[#0071e3] text-white text-xs font-semibold cursor-pointer shrink-0"
+                >
+                  Mở Phòng Học 3000 Từ
+                </button>
+              </div>
+
+              {/* Filter and Search Bar */}
+              <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                <div className="relative flex-1">
+                  <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <input
+                    type="text"
+                    value={vocabSearch}
+                    onChange={(e) => setVocabSearch(e.target.value)}
+                    placeholder="Tìm kiếm chủ đề từ vựng (ví dụ: Family, Food, Công việc)..."
+                    className="w-full pl-10 pr-4 py-2 text-xs rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 focus:outline-none focus:border-[#0071e3]"
+                  />
+                </div>
+
+                <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
+                  {[
+                    { id: 'all', label: `Tất cả (${topics.length})` },
+                    { id: 'completed', label: `Đã xong (${completedTopics})` },
+                    { id: 'in_progress', label: `Đang học (${inProgressTopics})` },
+                    { id: 'unstarted', label: `Chưa học (${unstartedTopics})` }
+                  ].map(f => (
+                    <button
+                      key={f.id}
+                      onClick={() => setVocabFilter(f.id)}
+                      className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap cursor-pointer transition-colors ${
+                        vocabFilter === f.id
+                          ? 'bg-[#0071e3] text-white shadow-xs'
+                          : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
+                      }`}
+                    >
+                      {f.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Topics Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 pt-2">
+                {filteredTopics.map((t) => (
+                  <div
+                    key={t.id}
+                    className="p-4 rounded-2xl bg-slate-50/80 dark:bg-slate-800/50 border border-slate-200/70 dark:border-slate-800 flex flex-col justify-between gap-3 hover:border-[#0071e3]/40 transition-colors"
+                  >
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xl">{t.icon || '📖'}</span>
+                          <span className="px-2 py-0.5 rounded-md bg-[#0071e3]/10 text-[#0071e3] dark:text-sky-400 text-[10px] font-bold">
+                            Chủ đề {t.id}
+                          </span>
+                        </div>
+                        {t.isDone ? (
+                          <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 px-2 py-0.5 rounded-full flex items-center gap-1">
+                            <CheckCircle2 size={11} /> Đã thuộc
+                          </span>
+                        ) : t.bestScore !== undefined ? (
+                          <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/50 px-2 py-0.5 rounded-full">
+                            Thi: {t.bestScore}%
+                          </span>
+                        ) : null}
+                      </div>
+
+                      <div>
+                        <h4
+                          onClick={() => navigate(`/vocab/${t.id}`)}
+                          className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white truncate hover:text-[#0071e3] cursor-pointer"
+                        >
+                          {t.title}
+                        </h4>
+                        {t.titleVi && (
+                          <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
+                            {t.titleVi}
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="w-full h-1.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
+                        <div
+                          className={`h-full rounded-full transition-all duration-500 ${
+                            t.isDone ? 'bg-emerald-500' : 'bg-[#0071e3]'
+                          }`}
+                          style={{ width: `${t.percent}%` }}
+                        />
+                      </div>
+
+                      <div className="flex items-center justify-between text-[11px] text-slate-500">
+                        <span>Đã thuộc: <strong>{t.masteredCount}/{t.wordsCount}</strong> ({t.percent}%)</span>
+                        {t.starredCount > 0 && (
+                          <span className="text-amber-500 font-medium">⭐ {t.starredCount}</span>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 pt-2 border-t border-slate-200/50 dark:border-slate-800">
+                      <button
+                        onClick={() => navigate(`/vocab/${t.id}`)}
+                        className="flex-1 py-1.5 px-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-800 dark:text-slate-200 hover:border-[#0071e3] hover:text-[#0071e3] transition-colors cursor-pointer flex items-center justify-center gap-1.5"
+                      >
+                        <Play size={12} />
+                        <span>Học Ngay</span>
+                      </button>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </motion.div>

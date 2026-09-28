@@ -5,6 +5,7 @@ import {
   Sparkles, Star, Shuffle, Play, Check, Trophy, CheckCheck, RotateCcw
 } from 'lucide-react';
 import useVocabStore from '../store/useVocabStore';
+import useGamificationStore from '../../gamification/store/useGamificationStore';
 
 export default function VocabFlashcardMode({ topic, onSwitchToQuiz }) {
   const words = topic?.words || [];
@@ -92,6 +93,19 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz }) {
       return () => clearTimeout(timer);
     }
   }, [currentIndex, currentWord, autoPlayAudio, isFinished, speakWord]);
+
+  // Award XP and advance daily quest on session finish
+  useEffect(() => {
+    if (isFinished && (learnedCount > 0 || reviewCount > 0)) {
+      const totalCards = learnedCount + reviewCount;
+      const earnedXP = Math.max(10, (learnedCount * 3) + (reviewCount * 1));
+      useGamificationStore.getState().earnXP(
+        earnedXP,
+        `vocab_flashcard:${totalCards}`,
+        `Hoàn thành phiên lật thẻ từ vựng (${totalCards} thẻ)`
+      );
+    }
+  }, [isFinished]);
 
   // Snappy Flip Card
   const handleFlip = useCallback(() => {
@@ -239,6 +253,10 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz }) {
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             Bạn vừa luyện xong {totalInDeck} thẻ từ vựng chủ đề <strong>{topic.title}</strong>
           </p>
+          <div className="mt-2.5 inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-blue-50 dark:bg-blue-950/50 border border-blue-200/60 dark:border-blue-900/60 text-[#0071e3] dark:text-sky-400 font-bold text-xs">
+            <Sparkles size={13} />
+            <span>+{Math.max(10, (learnedCount * 3) + (reviewCount * 1))} XP Thưởng Hoàn Thành</span>
+          </div>
         </div>
 
         <div className="grid grid-cols-2 gap-3 max-w-xs mx-auto">
