@@ -3,8 +3,9 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ArrowLeft, BookOpen, Layers, Zap, PenTool, ListOrdered, 
-  ChevronLeft, ChevronRight, Trophy, Sparkles, CheckCircle2
+  ChevronLeft, ChevronRight, Trophy, Sparkles, CheckCircle2, RotateCcw
 } from 'lucide-react';
+import toast from 'react-hot-toast';
 import useVocabStore from './store/useVocabStore';
 import VocabFlashcardMode from './components/VocabFlashcardMode';
 import VocabQuizMode from './components/VocabQuizMode';
@@ -15,13 +16,16 @@ export default function VocabStudyPage() {
   const { topicId } = useParams();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('flashcard'); // 'flashcard', 'quiz', 'spelling', 'list'
+  const [showResetModal, setShowResetModal] = useState(false);
+  const [resetKey, setResetKey] = useState(0);
 
   const { 
     topics, 
     masteredWords, 
     topicScores, 
     fetchProgress, 
-    setLastStudiedTopic 
+    setLastStudiedTopic,
+    resetTopicProgress 
   } = useVocabStore();
 
   useEffect(() => {
@@ -117,7 +121,7 @@ export default function VocabStudyPage() {
           </div>
 
           {/* Mastered Progress Widget */}
-          <div className="p-3.5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex sm:flex-col items-center justify-between sm:justify-center gap-2 shrink-0 min-w-[140px] text-center">
+          <div className="p-3.5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex sm:flex-col items-center justify-between sm:justify-center gap-2 shrink-0 min-w-[145px] text-center">
             <div className="text-left sm:text-center">
               <span className="text-[11px] font-semibold text-blue-100 block">Đã ghi nhớ</span>
               <span className="text-xl sm:text-2xl font-black text-amber-300">
@@ -130,6 +134,17 @@ export default function VocabStudyPage() {
                 style={{ width: `${progressPercent}%` }}
               />
             </div>
+            {masteredCount > 0 && (
+              <button
+                type="button"
+                onClick={() => setShowResetModal(true)}
+                className="mt-0.5 px-3 py-1 rounded-xl bg-white/15 hover:bg-white/25 active:scale-95 text-white text-[11px] font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-xs border border-white/20"
+                title="Đặt lại toàn bộ từ vựng chủ đề này để học lại từ đầu"
+              >
+                <RotateCcw size={12} />
+                <span>Học lại từ đầu</span>
+              </button>
+            )}
           </div>
         </div>
 
@@ -176,8 +191,10 @@ export default function VocabStudyPage() {
           >
             {activeTab === 'flashcard' && (
               <VocabFlashcardMode 
+                key={`${topic.id}-${resetKey}`}
                 topic={topic} 
                 onSwitchToQuiz={() => setActiveTab('quiz')} 
+                onReset={() => setResetKey((k) => k + 1)}
               />
             )}
 
@@ -202,6 +219,60 @@ export default function VocabStudyPage() {
           </motion.div>
         </AnimatePresence>
       </div>
+      {/* Modal xác nhận Đặt lại tiến độ chủ đề */}
+      <AnimatePresence>
+        {showResetModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              className="w-full max-w-md p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-2xl space-y-5"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+                  <RotateCcw size={24} />
+                </div>
+                <div>
+                  <h3 className="text-lg font-black text-slate-900 dark:text-white">
+                    Đặt Lại Chủ Đề {topic.id}?
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    {topic.title}
+                  </p>
+                </div>
+              </div>
+
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200/60 dark:border-slate-700/60">
+                Toàn bộ <strong className="text-amber-600 dark:text-amber-400 font-bold">{masteredCount} từ</strong> bạn đã đánh dấu thuộc trong chủ đề này sẽ được chuyển về trạng thái <strong>Chưa thuộc</strong> và vị trí học sẽ quay về thẻ số 1 để bạn luyện tập lại từ đầu.
+              </p>
+
+              <div className="flex items-center justify-end gap-2.5 pt-1">
+                <button
+                  type="button"
+                  onClick={() => setShowResetModal(false)}
+                  className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold transition-colors cursor-pointer"
+                >
+                  Hủy bỏ
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    resetTopicProgress(topic.id);
+                    setResetKey((k) => k + 1);
+                    setShowResetModal(false);
+                    toast.success(`Đã đặt lại Chủ đề ${topic.id}! Bạn có thể bắt đầu học từ đầu.`);
+                  }}
+                  className="px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold transition-all shadow-md shadow-amber-600/25 cursor-pointer flex items-center gap-1.5"
+                >
+                  <RotateCcw size={14} />
+                  <span>Xác Nhận Đặt Lại</span>
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

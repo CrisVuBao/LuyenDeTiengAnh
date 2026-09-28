@@ -1,13 +1,14 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Volume2, RotateCw, CheckCircle2, XCircle, ArrowLeft, ArrowRight, 
   Sparkles, Star, Shuffle, Play, Check, Trophy, CheckCheck, RotateCcw
 } from 'lucide-react';
+import toast from 'react-hot-toast';
 import useVocabStore from '../store/useVocabStore';
 import useGamificationStore from '../../gamification/store/useGamificationStore';
 
-export default function VocabFlashcardMode({ topic, onSwitchToQuiz }) {
+export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
   const words = topic?.words || [];
 
   const { 
@@ -22,58 +23,163 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz }) {
     toggleAutoPlayAudio,
     playEffect,
     topicLastIndex,
-    setTopicLastIndex
+    topicLastWordId,
+    topicFilterMode,
+    setTopicLastPosition,
+    setTopicFilterMode,
+    resetTopicProgress
   } = useVocabStore();
 
   // Word Subsets
   const unmasteredList = useMemo(() => words.filter((w) => !masteredWords[w.id]), [words, masteredWords]);
   const starredList = useMemo(() => words.filter((w) => !!starredWords[w.id]), [words, starredWords]);
 
-  // Filter modes: 'unmastered' (Chưa thuộc), 'all' (Tất cả), 'starred' (Đã gắn sao)
-  // Smart default: If unmastered words exist, prioritize unmastered so user doesn't repeat learned words!
-  const [filterMode, setFilterMode] = useState(() => (unmasteredList.length > 0 ? 'unmastered' : 'all'));
-  const [sessionDeck, setSessionDeck] = useState(() => (unmasteredList.length > 0 ? unmasteredList : words));
-  const [currentIndex, setCurrentIndex] = useState(0);
+  // Helper to find best card index in any given deck
+  const findBestIndexInDeck = useCallback((deck, targetWordId, fallbackIdx = 0) => {
+    if (!deck || deck.length === 0) return 0;
+
+    // 1. Exact match by word ID
+    if (targetWordId) {
+      const idx = deck.findIndex((w) => w.id === targetWordId);
+      if (idx !== -1) return idx;
+    }
+
+    // 2. If target word was mastered, find the next sequential word in topic that exists in this deck
+    if (targetWordId && words.length > 0) {
+      const fullTargetIdx = words.findIndex((w) => w.id === targetWordId);
+      if (fullTargetIdx !== -1) {
+        for (let i = fullTargetIdx + 1; i < words.length; i++) {
+          const nextId = words[i].id;
+          const deckIdx = deck.findIndex((w) => w.id === nextId);
+          if (deckIdx !== -1) return deckIdx;
+        }
+      }
+    }
+
+    // 3. Fallback to index if within bounds
+    if (typeof fallbackIdx === 'number' && fallbackIdx >= 0 && fallbackIdx < deck.length) {
+      return fallbackIdx;
+    }
+
+    return 0;
+  }, [words]);
+
+  // Get saved filter mode from store or smart default
+  const getInitialFilterMode = useCallback(() => {
+    const saved = topicFilterMode?.[topic?.id];
+    const unmastered = words.filter((w) => !masteredWords[w.id]);
+    const starred = words.filter((w) => !!starredWords[w.id]);
+
+    if (saved === 'starred' && starred.length > 0) return 'starred';
+    if (saved === 'all') return 'all';
+    if (saved === 'unmastered' && unmastered.length > 0) return 'unmastered';
+    return unmastered.length > 0 ? 'unmastered' : 'all';
+  }, [topic?.id, topicFilterMode, words, masteredWords, starredWords]);
+
+  const getDeckForMode = useCallback((mode) => {
+    if (mode === 'unmastered') {
+      const unmastered = words.filter((w) => !masteredWords[w.id]);
+      return unmastered.length > 0 ? unmastered : words;
+    }
+    if (mode === 'starred') {
+      const starred = words.filter((w) => !!starredWords[w.id]);
+      return starred.length > 0 ? starred : words;
+    }
+    return words;
+  }, [words, masteredWords, starredWords]);
+
+  // Synchronously initialize state so 1st frame on F5 has the exact active card
+  const [filterMode, setFilterMode] = useState(() => getInitialFilterMode());
+  const [sessionDeck, setSessionDeck] = useState(() => {
+    const mode = getInitialFilterMode();
+    return getDeckForMode(mode);
+  });
+  const [currentIndex, setCurrentIndex] = useState(() => {
+    const mode = getInitialFilterMode();
+    const deck = getDeckForMode(mode);
+    const savedWordId = topicLastWordId?.[topic?.id];
+    const savedIdx = topicLastIndex?.[topic?.id] || 0;
+    return findBestIndexInDeck(deck, savedWordId, savedIdx);
+  });
+
   const [isFlipped, setIsFlipped] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
   const [learnedCount, setLearnedCount] = useState(0);
   const [reviewCount, setReviewCount] = useState(0);
+  const [showResetConfirmModal, setShowResetConfirmModal] = useState(false);
 
-  // Initialize or re-sync session deck when topic changes
+  const handleResetTopic = () => {
+    resetTopicProgress(topic.id);
+    setShowResetConfirmModal(false);
+    toast.success(`Đã đặt lại Chủ đề ${topic.id}! Bạn có thể bắt đầu học từ đầu.`);
+    if (onReset) {
+      onReset();
+    } else {
+      setFilterMode('unmastered');
+      setSessionDeck(words);
+      setCurrentIndex(0);
+      setIsFlipped(false);
+      setIsFinished(false);
+      setLearnedCount(0);
+      setReviewCount(0);
+    }
+  };
+
+  // Re-sync session deck ONLY if topic ID changes (never during card review)
+  const prevTopicIdRef = useRef(topic?.id);
   useEffect(() => {
-    const unmastered = words.filter((w) => !masteredWords[w.id]);
-    const nextMode = unmastered.length > 0 ? 'unmastered' : 'all';
-    const nextDeck = nextMode === 'unmastered' ? unmastered : words;
+    if (prevTopicIdRef.current === topic?.id) return;
+    prevTopicIdRef.current = topic?.id;
+
+    const nextMode = getInitialFilterMode();
+    const nextDeck = getDeckForMode(nextMode);
+    const savedWordId = topicLastWordId?.[topic?.id];
+    const savedIdx = topicLastIndex?.[topic?.id] || 0;
+    const initialIdx = findBestIndexInDeck(nextDeck, savedWordId, savedIdx);
 
     setFilterMode(nextMode);
     setSessionDeck(nextDeck);
-
-    // Resume from saved index if valid
-    const savedIdx = topicLastIndex?.[topic?.id] || 0;
-    const initialIdx = (savedIdx >= 0 && savedIdx < nextDeck.length) ? savedIdx : 0;
     setCurrentIndex(initialIdx);
 
     setIsFlipped(false);
     setIsFinished(false);
     setLearnedCount(0);
     setReviewCount(0);
-  }, [topic?.id]); // Re-initialize only when topic ID actually changes
+  }, [topic?.id, getInitialFilterMode, getDeckForMode, findBestIndexInDeck, topicLastWordId, topicLastIndex]);
 
-  // Switch Filter Tab
-  const handleSwitchFilter = (mode) => {
-    setFilterMode(mode);
-    let targetDeck = words;
-    if (mode === 'unmastered') {
-      targetDeck = words.filter((w) => !masteredWords[w.id]);
-    } else if (mode === 'starred') {
-      targetDeck = words.filter((w) => !!starredWords[w.id]);
+  // Background cloud sync: re-align once if remote progress is received while user hasn't interacted
+  const hasSyncedCloudRef = useRef(false);
+  useEffect(() => {
+    if (!topic?.id || hasSyncedCloudRef.current) return;
+    const savedWordId = topicLastWordId?.[topic.id];
+    if (savedWordId && currentIndex === 0 && sessionDeck.length > 0 && sessionDeck[0]?.id !== savedWordId) {
+      const alignedIdx = findBestIndexInDeck(sessionDeck, savedWordId, topicLastIndex?.[topic.id] || 0);
+      if (alignedIdx > 0) {
+        setCurrentIndex(alignedIdx);
+        hasSyncedCloudRef.current = true;
+      }
     }
+  }, [topicLastWordId, topicLastIndex, topic?.id, sessionDeck, currentIndex, findBestIndexInDeck]);
 
-    setSessionDeck(targetDeck);
-    setCurrentIndex(0);
+  // Switch Filter Tab without losing current position!
+  const handleSwitchFilter = (nextMode) => {
+    setFilterMode(nextMode);
     if (topic?.id) {
-      setTopicLastIndex(topic.id, 0);
+      setTopicFilterMode(topic.id, nextMode);
     }
+
+    const targetDeck = getDeckForMode(nextMode);
+    setSessionDeck(targetDeck);
+
+    // Keep the exact word the user was currently looking at or start from 0 if coming from finished
+    const targetWordId = isFinished ? null : (currentWord?.id || topicLastWordId?.[topic?.id]);
+    const newIdx = isFinished ? 0 : findBestIndexInDeck(targetDeck, targetWordId, 0);
+
+    setCurrentIndex(newIdx);
+    if (topic?.id && targetDeck[newIdx]) {
+      setTopicLastPosition(topic.id, newIdx, targetDeck[newIdx].id);
+    }
+
     setIsFlipped(false);
     setIsFinished(false);
     setLearnedCount(0);
@@ -113,9 +219,10 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz }) {
     setIsFlipped((prev) => !prev);
   }, [playEffect]);
 
-  // Next Word (Đã thuộc hoặc Chưa nhớ)
+  // Next Word (Đã thuộc hoặc Chưa nhớ) - Saves both index and word ID!
   const handleNextWord = useCallback((mastered) => {
     if (!currentWord) return;
+    hasSyncedCloudRef.current = true;
 
     if (mastered) {
       playEffect('correct');
@@ -131,23 +238,31 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz }) {
 
     const nextIndex = currentIndex + 1;
     if (nextIndex < sessionDeck.length) {
+      const nextWord = sessionDeck[nextIndex];
       setCurrentIndex(nextIndex);
-      if (topic?.id) setTopicLastIndex(topic.id, nextIndex);
+      if (topic?.id && nextWord) {
+        setTopicLastPosition(topic.id, nextIndex, nextWord.id);
+      }
     } else {
       setIsFinished(true);
-      if (topic?.id) setTopicLastIndex(topic.id, 0);
+      if (topic?.id) {
+        setTopicLastPosition(topic.id, 0, null);
+      }
     }
-  }, [currentWord, currentIndex, sessionDeck.length, topic?.id, markWordMastered, setTopicLastIndex, playEffect]);
+  }, [currentWord, currentIndex, sessionDeck, topic?.id, markWordMastered, setTopicLastPosition, playEffect]);
 
-  // Previous Card Navigation
+  // Previous Card Navigation - Saves both index and word ID!
   const handlePrevCard = useCallback(() => {
     if (currentIndex > 0) {
       setIsFlipped(false);
       const prevIdx = currentIndex - 1;
+      const prevWord = sessionDeck[prevIdx];
       setCurrentIndex(prevIdx);
-      if (topic?.id) setTopicLastIndex(topic.id, prevIdx);
+      if (topic?.id && prevWord) {
+        setTopicLastPosition(topic.id, prevIdx, prevWord.id);
+      }
     }
-  }, [currentIndex, topic?.id, setTopicLastIndex]);
+  }, [currentIndex, sessionDeck, topic?.id, setTopicLastPosition]);
 
   // Keyboard navigation shortcuts
   useEffect(() => {
@@ -177,7 +292,10 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz }) {
 
   const handleRestart = () => {
     setCurrentIndex(0);
-    if (topic?.id) setTopicLastIndex(topic.id, 0);
+    const firstWord = sessionDeck[0];
+    if (topic?.id) {
+      setTopicLastPosition(topic.id, 0, firstWord?.id || null);
+    }
     setIsFlipped(false);
     setIsFinished(false);
     setLearnedCount(0);
@@ -220,7 +338,14 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz }) {
             className="flex-1 py-3 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
           >
             <RotateCw size={15} />
-            <span>Ôn Tập Lại Tất Cả ({words.length})</span>
+            <span>Ôn Tập Toàn Bộ ({words.length})</span>
+          </button>
+          <button
+            onClick={() => setShowResetConfirmModal(true)}
+            className="flex-1 py-3 px-4 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs transition-colors flex items-center justify-center gap-2 shadow-lg shadow-amber-500/25 cursor-pointer"
+          >
+            <RotateCcw size={15} />
+            <span>Học Lại Chủ Đề Từ Đầu</span>
           </button>
           {onSwitchToQuiz && (
             <button
@@ -270,29 +395,48 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz }) {
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-3 pt-2">
+        <div className="flex flex-col sm:flex-row flex-wrap gap-3 pt-2">
           {remainingUnmastered > 0 ? (
             <button
               onClick={() => handleSwitchFilter('unmastered')}
-              className="flex-1 py-3 px-4 rounded-xl bg-[#0071e3] hover:bg-[#0077ED] text-white font-bold text-xs transition-colors flex items-center justify-center gap-2 shadow-lg shadow-blue-500/25 cursor-pointer"
+              className="flex-1 min-w-[140px] py-3 px-4 rounded-xl bg-[#0071e3] hover:bg-[#0077ED] text-white font-bold text-xs transition-colors flex items-center justify-center gap-2 shadow-lg shadow-blue-500/25 cursor-pointer"
             >
               <RotateCw size={15} />
-              <span>Tiếp Tục Học Từ Chưa Nhớ ({remainingUnmastered})</span>
+              <span>Tiếp Tục Học ({remainingUnmastered} từ)</span>
             </button>
           ) : (
             <button
-              onClick={handleRestart}
-              className="flex-1 py-3 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
+              onClick={() => setShowResetConfirmModal(true)}
+              className="flex-1 min-w-[140px] py-3 px-4 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs transition-colors flex items-center justify-center gap-2 shadow-lg shadow-amber-500/25 cursor-pointer"
             >
-              <RotateCw size={15} />
-              <span>Luyện Lại Từ Đầu</span>
+              <RotateCcw size={15} />
+              <span>Học Lại Chủ Đề Từ Đầu</span>
+            </button>
+          )}
+
+          <button
+            onClick={handleRestart}
+            className="flex-1 min-w-[140px] py-3 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
+          >
+            <RotateCw size={15} />
+            <span>Luyện Lại Bộ Thẻ Này</span>
+          </button>
+
+          {remainingUnmastered > 0 && (
+            <button
+              onClick={() => setShowResetConfirmModal(true)}
+              className="py-3 px-3 rounded-xl bg-amber-50 dark:bg-amber-950/40 hover:bg-amber-100 dark:hover:bg-amber-900/50 text-amber-700 dark:text-amber-300 font-bold text-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer border border-amber-200/60 dark:border-amber-800/40"
+              title="Đặt lại toàn bộ tiến độ chủ đề này để học lại từ đầu"
+            >
+              <RotateCcw size={14} />
+              <span>Reset từ đầu</span>
             </button>
           )}
 
           {onSwitchToQuiz && (
             <button
               onClick={onSwitchToQuiz}
-              className="flex-1 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-colors flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20 cursor-pointer"
+              className="flex-1 min-w-[140px] py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-colors flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20 cursor-pointer"
             >
               <Sparkles size={15} />
               <span>Thử Thách Trắc Nghiệm</span>
@@ -307,7 +451,9 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz }) {
     return <div className="text-center py-12 text-slate-500">Không có từ vựng nào trong danh mục này.</div>;
   }
 
-  const progressPercent = Math.round(((currentIndex + 1) / sessionDeck.length) * 100);
+  const progressPercent = sessionDeck.length > 0 
+    ? Math.min(100, Math.round(((currentIndex + 1) / sessionDeck.length) * 100)) 
+    : 0;
 
   return (
     <div className="max-w-xl mx-auto space-y-4">
@@ -392,7 +538,7 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz }) {
               title="Quay lại thẻ trước [P / ↓]"
               className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-600 dark:text-slate-300 text-xs transition-colors cursor-pointer"
             >
-              <RotateCcw size={15} />
+              <ArrowLeft size={15} />
             </button>
           )}
           <button
@@ -402,6 +548,15 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz }) {
           >
             <Shuffle size={15} />
           </button>
+          {words.length - unmasteredList.length > 0 && (
+            <button
+              onClick={() => setShowResetConfirmModal(true)}
+              title="Đặt lại toàn bộ tiến độ chủ đề này để học lại từ đầu"
+              className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-amber-100 dark:hover:bg-amber-950/60 text-slate-600 dark:text-slate-300 hover:text-amber-600 dark:hover:text-amber-400 text-xs transition-colors cursor-pointer"
+            >
+              <RotateCcw size={15} />
+            </button>
+          )}
           <button
             onClick={() => setSpeechRate(speechRate === 1.0 ? 0.8 : 1.0)}
             title="Tốc độ giọng đọc"
@@ -547,6 +702,60 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz }) {
         <span><kbd className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border">→</kbd> Đã thuộc</span>
         <span><kbd className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border">P / ↓</kbd> Thẻ trước</span>
       </div>
+
+      {/* Confirmation Modal */}
+      <AnimatePresence>
+        {showResetConfirmModal && (
+          <div 
+            onClick={() => setShowResetConfirmModal(false)}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-md p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-2xl space-y-5"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+                  <RotateCcw size={24} />
+                </div>
+                <div>
+                  <h3 className="text-lg font-black text-slate-900 dark:text-white">
+                    Đặt Lại Chủ Đề {topic?.id}?
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    {topic?.title}
+                  </p>
+                </div>
+              </div>
+
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200/60 dark:border-slate-700/60">
+                Toàn bộ từ bạn đã đánh dấu thuộc trong chủ đề này sẽ được chuyển về trạng thái <strong>Chưa thuộc</strong> và vị trí học sẽ quay về thẻ số 1 để bạn luyện tập lại từ đầu.
+              </p>
+
+              <div className="flex items-center justify-end gap-2.5 pt-1">
+                <button
+                  type="button"
+                  onClick={() => setShowResetConfirmModal(false)}
+                  className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold transition-colors cursor-pointer"
+                >
+                  Hủy bỏ
+                </button>
+                <button
+                  type="button"
+                  onClick={handleResetTopic}
+                  className="px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold transition-all shadow-md shadow-amber-600/25 cursor-pointer flex items-center gap-1.5"
+                >
+                  <RotateCcw size={14} />
+                  <span>Xác Nhận Đặt Lại</span>
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

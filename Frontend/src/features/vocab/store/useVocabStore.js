@@ -66,16 +66,35 @@ const playSoundEffect = (type) => {
 
 let syncTimer = null;
 
+// Synchronously load progress from localStorage at module import so 1st frame on F5 has real data!
+const getInitialVocabProgress = () => {
+  if (typeof window === 'undefined') return {};
+  try {
+    const authState = useAuthStore.getState();
+    const userId = authState?.user?.id || 'guest';
+    const localCached = localStorage.getItem(`vbace_vocab_progress_${userId}`) || localStorage.getItem('vbace_vocab_progress_guest');
+    if (localCached) {
+      return JSON.parse(localCached);
+    }
+  } catch {}
+  return {};
+};
+
+const initialProgress = getInitialVocabProgress();
+
 const useVocabStore = create((set, get) => ({
   topics: vocabData.topics || [],
   totalWords: vocabData.totalWords || 1760,
 
-  // User state
-  masteredWords: {},  // { [wordId]: true }
-  starredWords: {},   // { [wordId]: true }
-  topicScores: {},    // { [topicId]: { bestScore: 90, lastScore: 80, attempts: 2 } }
-  topicLastIndex: {}, // { [topicId]: number } - remembers last card studied per topic
-  lastStudiedTopic: 1,
+  // User state (Synchronously pre-populated for 0ms immediate render on F5)
+  masteredWords: initialProgress.masteredWords || {},
+  starredWords: initialProgress.starredWords || {},
+  topicScores: initialProgress.topicScores || {},
+  topicLastIndex: initialProgress.topicLastIndex || {},
+  topicLastWordId: initialProgress.topicLastWordId || {},
+  topicFilterMode: initialProgress.topicFilterMode || {},
+  lastStudiedTopic: initialProgress.lastStudiedTopic || 1,
+  isProgressLoaded: !!initialProgress.masteredWords,
 
   // Preferences
   speechRate: 1.0,     // 0.8 or 1.0
@@ -98,7 +117,10 @@ const useVocabStore = create((set, get) => ({
           starredWords: parsed.starredWords || {},
           topicScores: parsed.topicScores || {},
           topicLastIndex: parsed.topicLastIndex || {},
-          lastStudiedTopic: parsed.lastStudiedTopic || 1
+          topicLastWordId: parsed.topicLastWordId || {},
+          topicFilterMode: parsed.topicFilterMode || {},
+          lastStudiedTopic: parsed.lastStudiedTopic || 1,
+          isProgressLoaded: true
         });
       }
     } catch {}
@@ -116,6 +138,8 @@ const useVocabStore = create((set, get) => ({
             const mergedStarred = { ...get().starredWords, ...(remoteParsed.starredWords || {}) };
             const mergedScores = { ...get().topicScores, ...(remoteParsed.topicScores || {}) };
             const mergedLastIndex = { ...get().topicLastIndex, ...(remoteParsed.topicLastIndex || {}) };
+            const mergedLastWordId = { ...get().topicLastWordId, ...(remoteParsed.topicLastWordId || {}) };
+            const mergedFilterMode = { ...get().topicFilterMode, ...(remoteParsed.topicFilterMode || {}) };
             const lastTopic = data.lastStudiedTopic || remoteParsed.lastStudiedTopic || get().lastStudiedTopic || 1;
 
             set({
@@ -123,7 +147,10 @@ const useVocabStore = create((set, get) => ({
               starredWords: mergedStarred,
               topicScores: mergedScores,
               topicLastIndex: mergedLastIndex,
+              topicLastWordId: mergedLastWordId,
+              topicFilterMode: mergedFilterMode,
               lastStudiedTopic: lastTopic,
+              isProgressLoaded: true,
               isLoading: false
             });
 
@@ -133,6 +160,8 @@ const useVocabStore = create((set, get) => ({
               starredWords: mergedStarred,
               topicScores: mergedScores,
               topicLastIndex: mergedLastIndex,
+              topicLastWordId: mergedLastWordId,
+              topicFilterMode: mergedFilterMode,
               lastStudiedTopic: lastTopic
             }));
           } catch {
@@ -160,6 +189,8 @@ const useVocabStore = create((set, get) => ({
       starredWords: state.starredWords,
       topicScores: state.topicScores,
       topicLastIndex: state.topicLastIndex,
+      topicLastWordId: state.topicLastWordId,
+      topicFilterMode: state.topicFilterMode,
       lastStudiedTopic: state.lastStudiedTopic
     };
 
@@ -189,7 +220,65 @@ const useVocabStore = create((set, get) => ({
     }, 1200);
   },
 
-  // Remember last card index per topic
+  // Remember exact card position (index + wordId) per topic
+  setTopicLastPosition: (topicId, index, wordId) => {
+    set((state) => ({
+      topicLastIndex: {
+        ...state.topicLastIndex,
+        [topicId]: Math.max(0, index)
+      },
+      topicLastWordId: {
+        ...state.topicLastWordId,
+        ...(wordId ? { [topicId]: wordId } : {})
+      }
+    }));
+    get().saveProgress();
+  },
+
+  // Remember active filter mode per topic ('unmastered', 'all', 'starred')
+  setTopicFilterMode: (topicId, mode) => {
+    set((state) => ({
+      topicFilterMode: {
+        ...state.topicFilterMode,
+        [topicId]: mode
+      }
+    }));
+    get().saveProgress();
+  },
+
+  // Reset all words of a specific topic back to unlearned status
+  resetTopicProgress: (topicId) => {
+    const state = get();
+    const topic = state.topics.find((t) => t.id === topicId);
+    if (!topic) return;
+
+    const topicWordIds = new Set((topic.words || []).map((w) => w.id));
+
+    // Remove this topic's words from masteredWords
+    const nextMastered = { ...state.masteredWords };
+    topicWordIds.forEach((id) => {
+      delete nextMastered[id];
+    });
+
+    // Reset topic card position to 0 and remove topicLastWordId
+    const nextTopicLastIndex = { ...state.topicLastIndex, [topicId]: 0 };
+    const nextTopicLastWordId = { ...state.topicLastWordId };
+    delete nextTopicLastWordId[topicId];
+
+    // Reset topic filter mode to 'unmastered'
+    const nextTopicFilterMode = { ...state.topicFilterMode, [topicId]: 'unmastered' };
+
+    set({
+      masteredWords: nextMastered,
+      topicLastIndex: nextTopicLastIndex,
+      topicLastWordId: nextTopicLastWordId,
+      topicFilterMode: nextTopicFilterMode
+    });
+
+    get().saveProgress();
+  },
+
+  // Legacy helper
   setTopicLastIndex: (topicId, index) => {
     set((state) => ({
       topicLastIndex: {

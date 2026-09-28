@@ -66,7 +66,7 @@ export default function BinoDialogueStudyPage() {
   const [lesson, setLesson] = useState(() => binoApi.peekDialogueDetail(id));
   const [book, setBook] = useState(() => binoApi.peekBookOverview());
   const [loading, setLoading] = useState(() => !binoApi.peekDialogueDetail(id));
-  const [activeTab, setActiveTab] = useState('lesson'); // 'lesson', 'roleplay', 'dictation', 'scan'
+  const [activeTab, setActiveTab] = useState('lesson'); // 'lesson', 'roleplay', 'dictation'
   const [showVietsub, setShowVietsub] = useState(true);
   const [addedVocabs, setAddedVocabs] = useState(() => getLocalFlashcardMap());
   const [togglingVocabId, setTogglingVocabId] = useState(null);
@@ -1053,7 +1053,6 @@ export default function BinoDialogueStudyPage() {
           { id: 'lesson', label: 'Bài Học & Từ Khóa', icon: BookOpen },
           { id: 'roleplay', label: 'Luyện Phản Xạ 1:1', icon: MessageSquare },
           { id: 'dictation', label: 'Chép Chính Tả', icon: FileText },
-          { id: 'scan', label: 'Xem Trang Sách Gốc', icon: Eye },
         ].map(tab => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -1637,50 +1636,7 @@ export default function BinoDialogueStudyPage() {
         </motion.div>
       )}
 
-      {/* ========================================================================= */}
-      {/* TAB 4: XEM TRANG SÁCH GỐC (ẢNH THỰC TẾ TRANG 15 & 16) */}
-      {/* ========================================================================= */}
-      {activeTab === 'scan' && (
-        <motion.div 
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="glass-card p-5 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-6 shadow-xl"
-        >
-          <div>
-            <h3 className="text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
-              <BookOpen size={20} className="text-amber-500" />
-              <span>Bản Quét Trang Sách Gốc (Trang 15 & 16)</span>
-            </h3>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-              So sánh trực tiếp giao diện số hóa với trang sách in thực tế của tác giả Bino.
-            </p>
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <span className="text-xs font-bold text-slate-500">Trang 15: Chapter 01 - Hội thoại 3</span>
-              <div className="rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 shadow-md group">
-                <img
-                  src="/images/bino/page15.jpg"
-                  alt="Trang 15 sách Bino"
-                  className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <span className="text-xs font-bold text-slate-500">Trang 16: Chapter 01 - Hội thoại 4</span>
-              <div className="rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 shadow-md group">
-                <img
-                  src="/images/bino/page16.jpg"
-                  alt="Trang 16 sách Bino"
-                  className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-              </div>
-            </div>
-          </div>
-        </motion.div>
-      )}
 
       {/* Studio Voice Settings Modal */}
       <VoiceSettingsModal
