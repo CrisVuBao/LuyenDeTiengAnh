@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using Microsoft.Extensions.Caching.Memory;
 using VBaceEnglish.Application.Contracts.Persistence;
 using VBaceEnglish.Application.DTOs.Gamification;
 using VBaceEnglish.Application.Helpers;
@@ -22,10 +23,12 @@ public interface IGamificationService
 public class GamificationService : IGamificationService
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IMemoryCache _memoryCache;
 
-    public GamificationService(IUnitOfWork unitOfWork)
+    public GamificationService(IUnitOfWork unitOfWork, IMemoryCache memoryCache)
     {
         _unitOfWork = unitOfWork;
+        _memoryCache = memoryCache;
     }
 
     private static DateTime GetVietnamTime() => DateTime.UtcNow.AddHours(7);
@@ -488,6 +491,12 @@ public class GamificationService : IGamificationService
 
     public async Task<Response<List<LeaderboardEntryDto>>> GetLeaderboardAsync()
     {
+        const string cacheKey = "weekly_leaderboard_top20";
+        if (_memoryCache.TryGetValue(cacheKey, out List<LeaderboardEntryDto>? cachedList) && cachedList != null)
+        {
+            return Response<List<LeaderboardEntryDto>>.SuccessResult("Bảng xếp hạng tuần", cachedList);
+        }
+
         var top = await _unitOfWork.Gamification.GetWeeklyLeaderboardAsync(20);
         var list = new List<LeaderboardEntryDto>();
         int rank = 1;
@@ -507,6 +516,7 @@ public class GamificationService : IGamificationService
             });
         }
 
+        _memoryCache.Set(cacheKey, list, TimeSpan.FromSeconds(30));
         return Response<List<LeaderboardEntryDto>>.SuccessResult("Bảng xếp hạng tuần", list);
     }
 
@@ -668,155 +678,174 @@ public class GamificationService : IGamificationService
             newUnlocked.Add("early_bird");
         }
 
-        // 2. Reflex 50 Achievements (Từ dữ liệu thật UserReflexProgress)
-        var reflexProgress = await _unitOfWork.UserProgresses.GetReflexProgressAsync(userId);
-        if (reflexProgress != null)
+        // 2. Reflex 50 Achievements (Chỉ query khi source liên quan đến Reflex và chưa đạt max badge)
+        bool checkReflex = (string.IsNullOrEmpty(source) || source.StartsWith("reflex")) && !unlocked.Contains("reflex_legend");
+        if (checkReflex)
         {
-            if (!unlocked.Contains("reflex_10") && reflexProgress.MasteredCount >= 10)
+            var reflexProgress = await _unitOfWork.UserProgresses.GetReflexProgressAsync(userId);
+            if (reflexProgress != null)
             {
-                unlocked.Add("reflex_10");
-                newUnlocked.Add("reflex_10");
-            }
-            if (!unlocked.Contains("reflex_50") && reflexProgress.MasteredCount >= 50)
-            {
-                unlocked.Add("reflex_50");
-                newUnlocked.Add("reflex_50");
-            }
-            if (!unlocked.Contains("reflex_100") && reflexProgress.MasteredCount >= 100)
-            {
-                unlocked.Add("reflex_100");
-                newUnlocked.Add("reflex_100");
-            }
-            if (!unlocked.Contains("reflex_king") && reflexProgress.MasteredCount >= 500)
-            {
-                unlocked.Add("reflex_king");
-                newUnlocked.Add("reflex_king");
-            }
-            if (!unlocked.Contains("reflex_legend") && reflexProgress.MasteredCount >= 1500)
-            {
-                unlocked.Add("reflex_legend");
-                newUnlocked.Add("reflex_legend");
-            }
-        }
-
-        // 3. Bino Achievements (Từ dữ liệu thật BinoLearning)
-        var binoProgresses = (await _unitOfWork.BinoLearning.GetProgressByUserAsync(userId)).ToList();
-        int binoCompleted = binoProgresses.Count(p => p.IsCompleted);
-        int binoRoleplay = binoProgresses.Count(p => p.RoleplayCompleted);
-        int binoDictationPro = binoProgresses.Count(p => (p.DictationScore ?? 0) >= 85);
-
-        if (!unlocked.Contains("bino_starter") && binoCompleted >= 1)
-        {
-            unlocked.Add("bino_starter");
-            newUnlocked.Add("bino_starter");
-        }
-        if (!unlocked.Contains("bino_chapter_1") && binoCompleted >= 6)
-        {
-            unlocked.Add("bino_chapter_1");
-            newUnlocked.Add("bino_chapter_1");
-        }
-        if (!unlocked.Contains("bino_roleplay_master") && binoRoleplay >= 10)
-        {
-            unlocked.Add("bino_roleplay_master");
-            newUnlocked.Add("bino_roleplay_master");
-        }
-        if (!unlocked.Contains("bino_dictation_pro") && binoDictationPro >= 10)
-        {
-            unlocked.Add("bino_dictation_pro");
-            newUnlocked.Add("bino_dictation_pro");
-        }
-        if (!unlocked.Contains("bino_champion") && binoCompleted >= 72)
-        {
-            unlocked.Add("bino_champion");
-            newUnlocked.Add("bino_champion");
-        }
-
-        var srsReviews = await _unitOfWork.BinoLearning.GetAllSRSReviewsByUserAsync(userId);
-        if (!unlocked.Contains("bino_srs_collector") && srsReviews.Count() >= 30)
-        {
-            unlocked.Add("bino_srs_collector");
-            newUnlocked.Add("bino_srs_collector");
-        }
-
-        // 4. TOEIC Achievements (Huy hiệu tổng thể)
-        var summaries = (await _unitOfWork.UserProgresses.GetSummariesByUserAsync(userId)).ToList();
-        if (summaries.Any() && !unlocked.Contains("toeic_first"))
-        {
-            unlocked.Add("toeic_first");
-            newUnlocked.Add("toeic_first");
-        }
-        int totalConfident = summaries.Sum(s => s.ConfidentQuestions);
-        if (totalConfident >= 50 && !unlocked.Contains("toeic_confident_50"))
-        {
-            unlocked.Add("toeic_confident_50");
-            newUnlocked.Add("toeic_confident_50");
-        }
-        if (summaries.Count >= 5 && !unlocked.Contains("toeic_master"))
-        {
-            unlocked.Add("toeic_master");
-            newUnlocked.Add("toeic_master");
-        }
-
-        // 5. 3000 Essential Vocabulary Achievements (Từ dữ liệu thật UserVocabProgress)
-        var vocabProgress = await _unitOfWork.UserProgresses.GetVocabProgressAsync(userId);
-        if (vocabProgress != null)
-        {
-            if (!unlocked.Contains("vocab_starter") && vocabProgress.MasteredCount >= 10)
-            {
-                unlocked.Add("vocab_starter");
-                newUnlocked.Add("vocab_starter");
-            }
-            if (!unlocked.Contains("vocab_50") && vocabProgress.MasteredCount >= 50)
-            {
-                unlocked.Add("vocab_50");
-                newUnlocked.Add("vocab_50");
-            }
-            if (!unlocked.Contains("vocab_100") && vocabProgress.MasteredCount >= 100)
-            {
-                unlocked.Add("vocab_100");
-                newUnlocked.Add("vocab_100");
-            }
-            if (!unlocked.Contains("vocab_300") && vocabProgress.MasteredCount >= 300)
-            {
-                unlocked.Add("vocab_300");
-                newUnlocked.Add("vocab_300");
-            }
-            if (!unlocked.Contains("vocab_500") && vocabProgress.MasteredCount >= 500)
-            {
-                unlocked.Add("vocab_500");
-                newUnlocked.Add("vocab_500");
-            }
-            if (!unlocked.Contains("vocab_1000") && vocabProgress.MasteredCount >= 1000)
-            {
-                unlocked.Add("vocab_1000");
-                newUnlocked.Add("vocab_1000");
-            }
-            if (!unlocked.Contains("vocab_legend") && vocabProgress.MasteredCount >= 1700)
-            {
-                unlocked.Add("vocab_legend");
-                newUnlocked.Add("vocab_legend");
-            }
-
-            // Kiểm tra topicScores từ ProgressDataJson cho vocab_quiz_ace
-            if (!unlocked.Contains("vocab_quiz_ace") && !string.IsNullOrWhiteSpace(vocabProgress.ProgressDataJson))
-            {
-                try
+                if (!unlocked.Contains("reflex_10") && reflexProgress.MasteredCount >= 10)
                 {
-                    using var doc = JsonDocument.Parse(vocabProgress.ProgressDataJson);
-                    if (doc.RootElement.TryGetProperty("topicScores", out var topicScoresElement) && topicScoresElement.ValueKind == JsonValueKind.Object)
+                    unlocked.Add("reflex_10");
+                    newUnlocked.Add("reflex_10");
+                }
+                if (!unlocked.Contains("reflex_50") && reflexProgress.MasteredCount >= 50)
+                {
+                    unlocked.Add("reflex_50");
+                    newUnlocked.Add("reflex_50");
+                }
+                if (!unlocked.Contains("reflex_100") && reflexProgress.MasteredCount >= 100)
+                {
+                    unlocked.Add("reflex_100");
+                    newUnlocked.Add("reflex_100");
+                }
+                if (!unlocked.Contains("reflex_king") && reflexProgress.MasteredCount >= 500)
+                {
+                    unlocked.Add("reflex_king");
+                    newUnlocked.Add("reflex_king");
+                }
+                if (!unlocked.Contains("reflex_legend") && reflexProgress.MasteredCount >= 1500)
+                {
+                    unlocked.Add("reflex_legend");
+                    newUnlocked.Add("reflex_legend");
+                }
+            }
+        }
+
+        // 3. Bino Achievements (Chỉ query khi source liên quan đến Bino/SRS)
+        bool checkBino = (string.IsNullOrEmpty(source) || source.StartsWith("bino") || source == "flashcard_review") && !unlocked.Contains("bino_champion");
+        if (checkBino)
+        {
+            var binoProgresses = (await _unitOfWork.BinoLearning.GetProgressByUserAsync(userId)).ToList();
+            int binoCompleted = binoProgresses.Count(p => p.IsCompleted);
+            int binoRoleplay = binoProgresses.Count(p => p.RoleplayCompleted);
+            int binoDictationPro = binoProgresses.Count(p => (p.DictationScore ?? 0) >= 85);
+
+            if (!unlocked.Contains("bino_starter") && binoCompleted >= 1)
+            {
+                unlocked.Add("bino_starter");
+                newUnlocked.Add("bino_starter");
+            }
+            if (!unlocked.Contains("bino_chapter_1") && binoCompleted >= 6)
+            {
+                unlocked.Add("bino_chapter_1");
+                newUnlocked.Add("bino_chapter_1");
+            }
+            if (!unlocked.Contains("bino_roleplay_master") && binoRoleplay >= 10)
+            {
+                unlocked.Add("bino_roleplay_master");
+                newUnlocked.Add("bino_roleplay_master");
+            }
+            if (!unlocked.Contains("bino_dictation_pro") && binoDictationPro >= 10)
+            {
+                unlocked.Add("bino_dictation_pro");
+                newUnlocked.Add("bino_dictation_pro");
+            }
+            if (!unlocked.Contains("bino_champion") && binoCompleted >= 72)
+            {
+                unlocked.Add("bino_champion");
+                newUnlocked.Add("bino_champion");
+            }
+        }
+
+        if ((string.IsNullOrEmpty(source) || source.StartsWith("bino") || source == "flashcard_review") && !unlocked.Contains("bino_srs_collector"))
+        {
+            var srsReviews = await _unitOfWork.BinoLearning.GetAllSRSReviewsByUserAsync(userId);
+            if (srsReviews.Count() >= 30)
+            {
+                unlocked.Add("bino_srs_collector");
+                newUnlocked.Add("bino_srs_collector");
+            }
+        }
+
+        // 4. TOEIC Achievements (Chỉ query khi làm bài TOEIC)
+        bool checkToeic = (string.IsNullOrEmpty(source) || source.StartsWith("toeic")) && !unlocked.Contains("toeic_master");
+        if (checkToeic)
+        {
+            var summaries = (await _unitOfWork.UserProgresses.GetSummariesByUserAsync(userId)).ToList();
+            if (summaries.Any() && !unlocked.Contains("toeic_first"))
+            {
+                unlocked.Add("toeic_first");
+                newUnlocked.Add("toeic_first");
+            }
+            int totalConfident = summaries.Sum(s => s.ConfidentQuestions);
+            if (totalConfident >= 50 && !unlocked.Contains("toeic_confident_50"))
+            {
+                unlocked.Add("toeic_confident_50");
+                newUnlocked.Add("toeic_confident_50");
+            }
+            if (summaries.Count >= 5 && !unlocked.Contains("toeic_master"))
+            {
+                unlocked.Add("toeic_master");
+                newUnlocked.Add("toeic_master");
+            }
+        }
+
+        // 5. 3000 Essential Vocabulary Achievements (Chỉ query khi học Vocab)
+        bool checkVocab = (string.IsNullOrEmpty(source) || source.StartsWith("vocab")) && (!unlocked.Contains("vocab_legend") || !unlocked.Contains("vocab_quiz_ace"));
+        if (checkVocab)
+        {
+            var vocabProgress = await _unitOfWork.UserProgresses.GetVocabProgressAsync(userId);
+            if (vocabProgress != null)
+            {
+                if (!unlocked.Contains("vocab_starter") && vocabProgress.MasteredCount >= 10)
+                {
+                    unlocked.Add("vocab_starter");
+                    newUnlocked.Add("vocab_starter");
+                }
+                if (!unlocked.Contains("vocab_50") && vocabProgress.MasteredCount >= 50)
+                {
+                    unlocked.Add("vocab_50");
+                    newUnlocked.Add("vocab_50");
+                }
+                if (!unlocked.Contains("vocab_100") && vocabProgress.MasteredCount >= 100)
+                {
+                    unlocked.Add("vocab_100");
+                    newUnlocked.Add("vocab_100");
+                }
+                if (!unlocked.Contains("vocab_300") && vocabProgress.MasteredCount >= 300)
+                {
+                    unlocked.Add("vocab_300");
+                    newUnlocked.Add("vocab_300");
+                }
+                if (!unlocked.Contains("vocab_500") && vocabProgress.MasteredCount >= 500)
+                {
+                    unlocked.Add("vocab_500");
+                    newUnlocked.Add("vocab_500");
+                }
+                if (!unlocked.Contains("vocab_1000") && vocabProgress.MasteredCount >= 1000)
+                {
+                    unlocked.Add("vocab_1000");
+                    newUnlocked.Add("vocab_1000");
+                }
+                if (!unlocked.Contains("vocab_legend") && vocabProgress.MasteredCount >= 1700)
+                {
+                    unlocked.Add("vocab_legend");
+                    newUnlocked.Add("vocab_legend");
+                }
+
+                // Kiểm tra topicScores từ ProgressDataJson cho vocab_quiz_ace
+                if (!unlocked.Contains("vocab_quiz_ace") && !string.IsNullOrWhiteSpace(vocabProgress.ProgressDataJson))
+                {
+                    try
                     {
-                        foreach (var topicProp in topicScoresElement.EnumerateObject())
+                        using var doc = JsonDocument.Parse(vocabProgress.ProgressDataJson);
+                        if (doc.RootElement.TryGetProperty("topicScores", out var topicScoresElement) && topicScoresElement.ValueKind == JsonValueKind.Object)
                         {
-                            if (topicProp.Value.TryGetProperty("bestScore", out var bestScoreProp) && bestScoreProp.GetInt32() >= 100)
+                            foreach (var topicProp in topicScoresElement.EnumerateObject())
                             {
-                                unlocked.Add("vocab_quiz_ace");
-                                newUnlocked.Add("vocab_quiz_ace");
-                                break;
+                                if (topicProp.Value.TryGetProperty("bestScore", out var bestScoreProp) && bestScoreProp.GetInt32() >= 100)
+                                {
+                                    unlocked.Add("vocab_quiz_ace");
+                                    newUnlocked.Add("vocab_quiz_ace");
+                                    break;
+                                }
                             }
                         }
                     }
+                    catch {}
                 }
-                catch {}
             }
         }
 

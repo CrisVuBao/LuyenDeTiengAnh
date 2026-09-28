@@ -13,16 +13,18 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration config)
     {
-        // SQL Server DbContext with Connection Pooling
-        services.AddDbContext<AppDBContext>(options =>
+        // SQL Server DbContext with Connection Pooling (128 instances) & Query Splitting
+        services.AddDbContextPool<AppDBContext>(options =>
         {
             options.UseSqlServer(config.GetConnectionString("DefaultConnection"), sqlOptions =>
             {
                 sqlOptions.MigrationsAssembly(typeof(AppDBContext).Assembly.FullName);
                 sqlOptions.EnableRetryOnFailure(maxRetryCount: 3, maxRetryDelay: TimeSpan.FromSeconds(5), errorNumbersToAdd: null);
+                sqlOptions.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+                sqlOptions.CommandTimeout(30);
             });
             options.ConfigureWarnings(w => w.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning));
-        });
+        }, poolSize: 128);
 
         // Repositories & Unit of Work
         services.AddScoped<IToeicTestRepository, ToeicTestRepository>();

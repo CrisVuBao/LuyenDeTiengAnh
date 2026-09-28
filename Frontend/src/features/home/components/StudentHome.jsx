@@ -15,10 +15,10 @@ import useAuthStore from '../../../store/authStore';
 import useReflex50Store, { loadReflex50FullData } from '../../reflex50/store/useReflex50Store';
 import reflex50Meta from '../../reflex50/data/reflex50Meta.json';
 import useVocabStore from '../../vocab/store/useVocabStore';
-import vocabData from '../../../data/vocab3000Data.json';
 import PageLoader from '../../../components/PageLoader';
 import DailyQuestsPanel from '../../gamification/components/DailyQuestsPanel';
 import useGamificationStore from '../../gamification/store/useGamificationStore';
+import VocabShowcaseSection from './VocabShowcaseSection';
 
 // Apple-style Spring Variants (120FPS GPU-accelerated transform & opacity)
 const pageContainerVariants = {
@@ -811,112 +811,7 @@ export default function StudentHome() {
       {/* ===================================================================== */}
       {/* 3.5. CHƯƠNG TRÌNH TRỌNG TÂM: 3000 TỪ VỰNG TIẾNG ANH THEO 60 CHỦ ĐỀ  */}
       {/* ===================================================================== */}
-      {(() => {
-        const topics = vocabData.topics || [];
-        const totalWords = vocabData.totalWords || 1760;
-        const masteredWords = useVocabStore.getState().masteredWords || {};
-        const lastTopicId = useVocabStore.getState().lastStudiedTopic || 1;
-        const activeTopic = topics.find((t) => t.id === lastTopicId) || topics[0];
-        const masteredCount = Object.keys(masteredWords).filter((k) => masteredWords[k]).length;
-        const vocabPercent = Math.min(100, Math.round((masteredCount / totalWords) * 100));
-
-        // 5 sample topics to preview
-        const previewTopics = [
-          topics[0] || { id: 1, title: 'Con Người & Ngoại Hình', icon: '👤', words: [] },
-          topics[1] || { id: 2, title: 'Gia Đình & Bạn Bè', icon: '👨‍👩‍👧', words: [] },
-          topics[7] || { id: 8, title: 'Công Việc & Sự Nghiệp', icon: '💼', words: [] },
-          topics[14] || { id: 15, title: 'Mua Sắm & Chi Tiêu', icon: '🛍️', words: [] },
-          topics[21] || { id: 22, title: 'Du Lịch & Phương Tiện', icon: '✈️', words: [] }
-        ];
-
-        return (
-          <motion.section
-            variants={sectionRevealVariants}
-            className="p-7 sm:p-8 rounded-[28px] bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/90 shadow-[0_2px_16px_rgb(0,0,0,0.03)] space-y-6"
-          >
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-              <div className="space-y-2 max-w-2xl">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 text-xs font-semibold">
-                  <Layers size={13} />
-                  <span>Kho Từ Vựng Toàn Diện • 3000 Từ Cốt Lõi • 60 Chủ Đề</span>
-                </div>
-                <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-                  3000 Từ Vựng Tiếng Anh Cốt Lõi Oxford (60 Chủ Đề)
-                </h2>
-                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-                  Phương pháp học Flashcard 3D thông minh, luyện phát âm chuẩn bản xứ, kiểm tra trắc nghiệm phản xạ 2 chiều và thử thách gõ chính tả giúp nhớ sâu từ vựng nhanh gấp 3 lần.
-                </p>
-              </div>
-
-              <div className="flex flex-wrap items-center gap-2.5 shrink-0">
-                <button
-                  onClick={() => navigate(`/vocab/${activeTopic.id}`)}
-                  className="px-5 py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm font-semibold flex items-center gap-2 transition-all cursor-pointer shadow-xs"
-                >
-                  <span>Học Chủ đề {activeTopic.id}: {activeTopic.title}</span>
-                  <ArrowRight size={15} />
-                </button>
-                <button
-                  onClick={() => navigate('/vocab')}
-                  className="px-4 py-2.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200/80 text-slate-800 dark:text-slate-200 text-xs sm:text-sm font-semibold transition-colors cursor-pointer"
-                >
-                  Xem đủ 60 Chủ đề ({masteredCount}/{totalWords} từ • {vocabPercent}%)
-                </button>
-              </div>
-            </div>
-
-            {/* 5 Topic Cards Preview */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-              {previewTopics.map((top) => {
-                const topWords = top.words || [];
-                const topMastered = topWords.filter((w) => !!masteredWords[w.id]).length;
-                const topPercent = topWords.length > 0 ? Math.round((topMastered / topWords.length) * 100) : 0;
-
-                return (
-                  <div
-                    key={top.id}
-                    onClick={() => navigate(`/vocab/${top.id}`)}
-                    className="p-4 rounded-2xl bg-slate-50/90 dark:bg-slate-800/50 border border-slate-200/70 dark:border-slate-800 hover:border-emerald-500/50 transition-all cursor-pointer group flex flex-col justify-between gap-2.5"
-                  >
-                    <div>
-                      <div className="flex items-center justify-between text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
-                        <span className="flex items-center gap-1.5">
-                          <span>{top.icon || '📖'}</span>
-                          <span>Chủ đề {top.id}</span>
-                        </span>
-                        <span>{topWords.length} từ</span>
-                      </div>
-                      <h3 className="text-sm font-bold text-slate-900 dark:text-white mt-1.5 group-hover:text-emerald-600 transition-colors">
-                        {top.title}
-                      </h3>
-                      {top.titleVi && (
-                        <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
-                          {top.titleVi}
-                        </p>
-                      )}
-                    </div>
-
-                    <div className="space-y-1.5 pt-1">
-                      <div className="w-full h-1 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
-                        <div
-                          className="h-full rounded-full bg-emerald-500 transition-all duration-500"
-                          style={{ width: `${topPercent}%` }}
-                        />
-                      </div>
-                      <div className="flex items-center justify-between text-[10px] text-slate-400">
-                        <span>Đã thuộc: {topMastered}/{topWords.length}</span>
-                        <span className="font-semibold text-emerald-600 group-hover:underline flex items-center gap-0.5">
-                          Học ngay <ChevronRight size={10} />
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </motion.section>
-        );
-      })()}
+      <VocabShowcaseSection sectionRevealVariants={sectionRevealVariants} />
 
       {/* ===================================================================== */}
       {/* 4. KHU VỰC BỔ TRỢ: LUYỆN ĐỀ TOEIC & TIỆN ÍCH HỌC TẬP                 */}

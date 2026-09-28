@@ -29,4 +29,26 @@ axiosClient.interceptors.response.use(
   }
 );
 
+// In-flight GET request deduplication (Ngăn chặn bắn duplicate requests đồng thời từ nhiều component)
+const pendingGets = new Map();
+const originalGet = axiosClient.get.bind(axiosClient);
+
+axiosClient.get = function (url, config = {}) {
+  if (config.skipDedup) {
+    return originalGet(url, config);
+  }
+
+  const key = `${url}_${JSON.stringify(config.params || {})}`;
+  if (pendingGets.has(key)) {
+    return pendingGets.get(key);
+  }
+
+  const requestPromise = originalGet(url, config).finally(() => {
+    pendingGets.delete(key);
+  });
+
+  pendingGets.set(key, requestPromise);
+  return requestPromise;
+};
+
 export default axiosClient;

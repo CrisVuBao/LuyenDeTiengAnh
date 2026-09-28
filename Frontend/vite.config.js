@@ -43,6 +43,9 @@ export default defineConfig({
           if (id.includes('reflex50Data.json')) {
             return 'data-reflex50';
           }
+          if (id.includes('vocab3000Data.json')) {
+            return 'data-vocab3000';
+          }
           if (id.includes('node_modules')) {
             if (id.includes('epubjs') || id.includes('jszip') || id.includes('@xmldom'))
               return 'vendor-epub';

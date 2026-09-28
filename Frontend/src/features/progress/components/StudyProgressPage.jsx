@@ -13,9 +13,8 @@ import progressApi from '../../../api/progressApi';
 import binoApi from '../../../api/binoApi';
 import { dashboardApi, invalidateStatsCache } from '../../../api/dashboardAndAiApi';
 import useReflex50Store from '../../reflex50/store/useReflex50Store';
-import reflex50Data from '../../reflex50/data/reflex50Data.json';
+import reflex50Meta from '../../reflex50/data/reflex50Meta.json';
 import useVocabStore from '../../vocab/store/useVocabStore';
-import vocabData from '../../../data/vocab3000Data.json';
 import useGamificationStore from '../../gamification/store/useGamificationStore';
 import PageLoader from '../../../components/PageLoader';
 import toast from 'react-hot-toast';
@@ -1100,7 +1099,7 @@ export default function StudyProgressPage() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {reflex50Data.units.map((u) => {
+                {reflex50Meta.units.map((u) => {
                   const st = getUnitStats(u.unitNumber);
                   return (
                     <div
@@ -1181,11 +1180,12 @@ export default function StudyProgressPage() {
       {/* MODE 4: QUẢN LÝ TIẾN ĐỘ "3000 TỪ VỰNG TIẾNG ANH THEO 60 CHỦ ĐỀ"        */}
       {/* ===================================================================== */}
       {courseMode === 'vocab' && (() => {
-        const topics = vocabData.topics || [];
-        const totalWords = vocabData.totalWords || 1760;
-        const masteredWords = useVocabStore.getState().masteredWords || {};
-        const starredWords = useVocabStore.getState().starredWords || {};
-        const topicScores = useVocabStore.getState().topicScores || {};
+        const vocabState = useVocabStore.getState();
+        const topics = vocabState.topics || [];
+        const totalWords = vocabState.totalWords || 1760;
+        const masteredWords = vocabState.masteredWords || {};
+        const starredWords = vocabState.starredWords || {};
+        const topicScores = vocabState.topicScores || {};
 
         const masteredCount = Object.keys(masteredWords).filter(k => masteredWords[k]).length;
         const starredCount = Object.keys(starredWords).filter(k => starredWords[k]).length;
