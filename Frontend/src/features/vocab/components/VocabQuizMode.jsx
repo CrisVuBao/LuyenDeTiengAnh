@@ -214,16 +214,16 @@ export default function VocabQuizMode({ topic, allTopics, onSwitchToFlashcard })
   const progressPercent = Math.round(((currentIndex + 1) / questions.length) * 100);
 
   return (
-    <div className="max-w-xl mx-auto space-y-6">
+    <div className="max-w-xl mx-auto space-y-3.5 sm:space-y-6">
       
       {/* Top Status: Question number & Streak indicator */}
       <div className="flex items-center justify-between gap-4">
         <div className="flex-1">
-          <div className="flex justify-between items-center text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5">
+          <div className="flex justify-between items-center text-[11px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1 sm:mb-1.5">
             <span>Câu {currentIndex + 1} / {questions.length}</span>
             <span>{score} đúng</span>
           </div>
-          <div className="w-full h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+          <div className="w-full h-1.5 sm:h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
             <motion.div 
               className="h-full bg-gradient-to-r from-[#0071e3] to-sky-400 rounded-full"
               initial={{ width: 0 }}
@@ -246,19 +246,19 @@ export default function VocabQuizMode({ topic, allTopics, onSwitchToFlashcard })
       </div>
 
       {/* Question Card */}
-      <div className="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-[0_4px_25px_rgb(0,0,0,0.05)] text-center space-y-3">
+      <div className="p-5 sm:p-8 rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-[0_4px_25px_rgb(0,0,0,0.05)] text-center space-y-2 sm:space-y-3">
         <span className="text-[11px] font-bold uppercase tracking-wider text-[#0071e3] dark:text-sky-400 block">
           {currentQ.isEnToVn ? 'Chọn nghĩa tiếng Việt đúng' : 'Chọn từ tiếng Anh phù hợp'}
         </span>
 
-        <div className="flex items-center justify-center gap-3">
-          <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white">
+        <div className="flex items-center justify-center gap-2.5 sm:gap-3">
+          <h2 className="text-2xl sm:text-4xl font-black text-slate-900 dark:text-white leading-snug">
             {currentQ.prompt}
           </h2>
           {currentQ.isEnToVn && (
             <button
               onClick={() => speakWord(currentQ.targetWord.word)}
-              className="p-2 rounded-full bg-blue-50 dark:bg-blue-950/60 text-[#0071e3] hover:scale-110 active:scale-95 transition-all cursor-pointer"
+              className="p-2 rounded-full bg-blue-50 dark:bg-blue-950/60 text-[#0071e3] hover:scale-110 active:scale-95 transition-all cursor-pointer shrink-0"
               title="Nghe phát âm"
             >
               <Volume2 size={20} />
@@ -267,14 +267,14 @@ export default function VocabQuizMode({ topic, allTopics, onSwitchToFlashcard })
         </div>
 
         {currentQ.subPrompt && (
-          <p className="text-sm font-medium text-slate-400 font-mono">
+          <p className="text-xs sm:text-sm font-medium text-slate-400 font-mono">
             {currentQ.subPrompt}
           </p>
         )}
       </div>
 
       {/* 4 Options Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
         {currentQ.options.map((option, idx) => {
           const isSelected = selectedOption === option;
           let btnStyle = 'bg-white dark:bg-slate-900 border-slate-200/80 dark:border-slate-800 text-slate-800 dark:text-slate-100 hover:border-[#0071e3]/60 hover:bg-blue-50/30 dark:hover:bg-slate-800/80';
@@ -294,7 +294,7 @@ export default function VocabQuizMode({ topic, allTopics, onSwitchToFlashcard })
               key={idx}
               disabled={isAnswered}
               onClick={() => handleSelectOption(option)}
-              className={`p-4 rounded-2xl border text-left font-bold text-sm sm:text-base transition-all flex items-center justify-between gap-3 shadow-sm select-none cursor-pointer ${btnStyle}`}
+              className={`p-3.5 sm:p-4 rounded-2xl border text-left font-bold text-sm sm:text-base transition-all flex items-center justify-between gap-3 shadow-sm select-none cursor-pointer ${btnStyle}`}
             >
               <span className="flex-1">{option.text}</span>
               {isAnswered && option.isCorrect && <CheckCircle size={18} className="shrink-0" />}

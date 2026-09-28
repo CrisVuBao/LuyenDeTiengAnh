@@ -100,48 +100,49 @@ export default function VocabOverviewPage() {
   }, [topics, activeFilter, masteredWords, starredWords]);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-6 sm:py-10 space-y-8">
+    <div className="max-w-7xl mx-auto space-y-4 sm:space-y-8">
       
       {/* 1. Hero Banner */}
-      <div className="relative overflow-hidden rounded-[32px] bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white p-7 sm:p-10 border border-slate-800 shadow-2xl">
-        <div className="relative z-10 max-w-3xl space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/20 text-sky-300 text-xs font-bold border border-blue-400/30 backdrop-blur-md">
-            <Sparkles size={14} />
-            <span>Oxford & Cambridge Standard • 60 Chủ Đề Giao Tiếp Cốt Lõi</span>
+      <div className="relative overflow-hidden rounded-2xl sm:rounded-[32px] bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white p-4 sm:p-10 border border-slate-800 shadow-2xl">
+        <div className="relative z-10 max-w-3xl space-y-2.5 sm:space-y-4">
+          <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-blue-500/20 text-sky-300 text-[11px] sm:text-xs font-bold border border-blue-400/30 backdrop-blur-md">
+            <Sparkles size={13} className="shrink-0" />
+            <span className="truncate">Oxford & Cambridge • 60 Chủ Đề Cốt Lõi</span>
           </div>
 
-          <h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-tight">
-            3000 Từ Vựng Tiếng Anh <br className="hidden sm:inline" />
+          <h1 className="text-2xl sm:text-5xl font-black tracking-tight leading-tight">
+            3000 Từ Vựng Tiếng Anh{' '}
+            <br className="hidden sm:inline" />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-[#0071e3]">
               Theo Chủ Đề
             </span>
           </h1>
 
-          <p className="text-sm sm:text-base text-slate-300 font-medium leading-relaxed max-w-2xl">
+          <p className="text-xs sm:text-base text-slate-300 font-medium leading-relaxed max-w-2xl line-clamp-2 sm:line-clamp-none">
             Nền tảng vốn từ thiết yếu giúp bạn tự tin giao tiếp, đọc hiểu và phản xạ trong mọi ngữ cảnh đời sống. Học qua Flashcard 3D, Trắc nghiệm phản xạ và Luyện gõ chính tả.
           </p>
 
           {/* Overall Stats Bar */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-            <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
-              <span className="text-[11px] font-semibold text-slate-400 block">Đã ghi nhớ</span>
-              <span className="text-xl sm:text-2xl font-black text-amber-300">
-                {masteredCount} <span className="text-xs font-bold text-slate-400">/ {totalWords}</span>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 pt-1 sm:pt-2">
+            <div className="p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
+              <span className="text-[10px] sm:text-[11px] font-semibold text-slate-400 block">Đã ghi nhớ</span>
+              <span className="text-base sm:text-2xl font-black text-amber-300">
+                {masteredCount} <span className="text-[11px] sm:text-xs font-bold text-slate-400">/ {totalWords}</span>
               </span>
             </div>
-            <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
-              <span className="text-[11px] font-semibold text-slate-400 block">Tiến độ toàn kho</span>
-              <span className="text-xl sm:text-2xl font-black text-sky-400">{totalProgressPercent}%</span>
+            <div className="p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
+              <span className="text-[10px] sm:text-[11px] font-semibold text-slate-400 block">Tiến độ toàn kho</span>
+              <span className="text-base sm:text-2xl font-black text-sky-400">{totalProgressPercent}%</span>
             </div>
-            <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
-              <span className="text-[11px] font-semibold text-slate-400 block">Chủ đề hoàn thành</span>
-              <span className="text-xl sm:text-2xl font-black text-emerald-400">
-                {completedTopicsCount} <span className="text-xs font-bold text-slate-400">/ 60</span>
+            <div className="p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
+              <span className="text-[10px] sm:text-[11px] font-semibold text-slate-400 block">Chủ đề hoàn thành</span>
+              <span className="text-base sm:text-2xl font-black text-emerald-400">
+                {completedTopicsCount} <span className="text-[11px] sm:text-xs font-bold text-slate-400">/ 60</span>
               </span>
             </div>
-            <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
-              <span className="text-[11px] font-semibold text-slate-400 block">Từ vựng yêu thích</span>
-              <span className="text-xl sm:text-2xl font-black text-purple-400">{starredCount}</span>
+            <div className="p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
+              <span className="text-[10px] sm:text-[11px] font-semibold text-slate-400 block">Từ vựng yêu thích</span>
+              <span className="text-base sm:text-2xl font-black text-purple-400">{starredCount}</span>
             </div>
           </div>
         </div>
@@ -151,21 +152,21 @@ export default function VocabOverviewPage() {
       </div>
 
       {/* 2. Global Search & Filter Bar */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-2.5 sm:gap-4">
         {/* Instant Search Bar */}
         <div className="relative w-full sm:w-96">
-          <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Search size={17} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Tra cứu từ tiếng Anh hoặc nghĩa tiếng Việt..."
-            className="w-full pl-11 pr-4 py-3 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 text-sm font-medium outline-none focus:border-[#0071e3] shadow-sm transition-all text-slate-900 dark:text-white"
+            className="w-full pl-10 pr-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 text-xs sm:text-sm font-medium outline-none focus:border-[#0071e3] shadow-sm transition-all text-slate-900 dark:text-white"
           />
         </div>
 
         {/* Filter Tabs */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 w-full sm:w-auto">
+        <div className="flex items-center gap-1.5 overflow-x-auto whitespace-nowrap hide-scrollbar pb-0.5 sm:pb-0 w-full sm:w-auto">
           {[
             { id: 'all', label: `Tất cả (60)` },
             { id: 'learning', label: 'Đang học' },
@@ -175,7 +176,7 @@ export default function VocabOverviewPage() {
             <button
               key={tab.id}
               onClick={() => setActiveFilter(tab.id)}
-              className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
+              className={`px-3.5 sm:px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer shrink-0 ${
                 activeFilter === tab.id
                   ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-md'
                   : 'bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50'
@@ -189,7 +190,7 @@ export default function VocabOverviewPage() {
 
       {/* 3. Global Search Results (Instant Dropdown Grid) */}
       {globalSearchResults && (
-        <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-blue-200/80 dark:border-blue-900/60 shadow-xl space-y-4">
+        <div className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-900 border border-blue-200/80 dark:border-blue-900/60 shadow-xl space-y-3 sm:space-y-4">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-[#0071e3] uppercase tracking-wider">
               Kết quả tra cứu nhanh ({globalSearchResults.length} từ)
@@ -202,11 +203,11 @@ export default function VocabOverviewPage() {
             </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5 sm:gap-3">
             {globalSearchResults.map((item, idx) => (
               <div 
                 key={idx}
-                className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between gap-2"
+                className="p-3 sm:p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between gap-2"
               >
                 <div className="min-w-0">
                   <div className="flex items-center gap-1.5">
@@ -248,7 +249,7 @@ export default function VocabOverviewPage() {
       )}
 
       {/* 4. Topics 60 Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-4">
         {filteredTopics.map((topic) => {
           const words = topic.words || [];
           const mCount = words.filter((w) => masteredWords[w.id]).length;
@@ -263,49 +264,49 @@ export default function VocabOverviewPage() {
               whileHover={{ y: -4 }}
               transition={{ duration: 0.2 }}
               onClick={() => navigate(`/vocab/${topic.id}`)}
-              className={`p-5 rounded-3xl border transition-all cursor-pointer flex flex-col justify-between gap-4 select-none ${
+              className={`p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl border transition-all cursor-pointer flex flex-col justify-between gap-2.5 sm:gap-4 select-none ${
                 isAllMastered
                   ? 'bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-300 dark:border-emerald-800/60 shadow-sm'
                   : 'bg-white dark:bg-slate-900 border-slate-200/80 dark:border-slate-800 hover:border-[#0071e3]/60 hover:shadow-lg hover:shadow-blue-500/5'
               }`}
             >
               {/* Header: Icon & Topic # */}
-              <div className="flex items-start justify-between gap-3">
-                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-xl shrink-0 ${
+              <div className="flex items-start justify-between gap-2">
+                <div className={`w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center shrink-0 ${
                   isAllMastered
                     ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/25'
                     : 'bg-blue-50 dark:bg-blue-950/60 text-[#0071e3] dark:text-sky-400'
                 }`}>
-                  <IconComp size={22} />
+                  <IconComp size={18} className="sm:w-[22px] sm:h-[22px]" />
                 </div>
 
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-1">
                   {scoreObj && scoreObj.bestScore > 0 && (
-                    <span className="px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 text-[10px] font-bold border border-amber-200/60 dark:border-amber-800/40">
+                    <span className="px-1.5 sm:px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 text-[10px] font-bold border border-amber-200/60 dark:border-amber-800/40">
                       🏆 {scoreObj.bestScore}%
                     </span>
                   )}
-                  <span className="px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-xs font-bold">
+                  <span className="px-2 sm:px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px] sm:text-xs font-bold">
                     #{topic.id}
                   </span>
                 </div>
               </div>
 
               {/* Title & Word count */}
-              <div className="space-y-1">
-                <h3 className="font-bold text-base sm:text-lg text-slate-900 dark:text-white line-clamp-1">
+              <div className="space-y-0.5 sm:space-y-1">
+                <h3 className="font-bold text-[13px] sm:text-lg text-slate-900 dark:text-white line-clamp-1">
                   {topic.title}
                 </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-                  {words.length} từ vựng giao tiếp
+                <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium">
+                  {words.length} từ vựng
                 </p>
               </div>
 
               {/* Progress bar */}
-              <div className="space-y-1.5 pt-2 border-t border-slate-100 dark:border-slate-800/80">
-                <div className="flex justify-between items-center text-[11px] font-semibold text-slate-500">
-                  <div className="flex items-center gap-1.5">
-                    <span>{mCount}/{words.length} từ</span>
+              <div className="space-y-1 sm:space-y-1.5 pt-1.5 sm:pt-2 border-t border-slate-100 dark:border-slate-800/80">
+                <div className="flex justify-between items-center text-[10px] sm:text-[11px] font-semibold text-slate-500">
+                  <div className="flex items-center gap-1">
+                    <span>{mCount}/{words.length}</span>
                     {mCount > 0 && (
                       <button
                         type="button"
@@ -313,10 +314,10 @@ export default function VocabOverviewPage() {
                           e.stopPropagation();
                           setTopicToReset(topic);
                         }}
-                        className="p-1 rounded-md text-slate-400 hover:text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-950/40 transition-colors"
+                        className="p-0.5 sm:p-1 rounded-md text-slate-400 hover:text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-950/40 transition-colors"
                         title="Đặt lại tiến độ chủ đề này để học lại từ đầu"
                       >
-                        <RotateCcw size={12} />
+                        <RotateCcw size={11} />
                       </button>
                     )}
                   </div>

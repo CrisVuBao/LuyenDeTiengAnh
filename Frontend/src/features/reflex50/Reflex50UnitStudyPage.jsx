@@ -430,49 +430,52 @@ export default function Reflex50UnitStudyPage() {
   const [vocabFilter, setVocabFilter] = useState('');
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6 pb-16">
+    <div className="max-w-6xl mx-auto space-y-3.5 sm:space-y-6 pb-12 sm:pb-16">
       {/* ===================================================================== */}
       {/* 1. TOP HEADER & UNIT NAVIGATION                                       */}
       {/* ===================================================================== */}
-      <div className="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-5 sm:p-6 shadow-2xs space-y-5">
-        <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-3.5 sm:p-6 shadow-2xs space-y-3.5 sm:space-y-5">
+        <div className="flex items-center justify-between gap-1.5 sm:gap-3">
           <button
             onClick={() => navigate('/reflex-50')}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200/80 text-xs font-semibold transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200/80 text-xs font-semibold transition-colors shrink-0 cursor-pointer"
           >
             <ArrowLeft size={14} />
-            <span>50 Chủ Đề Phản Xạ</span>
+            <span className="hidden sm:inline">50 Chủ Đề Phản Xạ</span>
+            <span className="sm:hidden">50 Chủ đề</span>
           </button>
 
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto whitespace-nowrap hide-scrollbar">
             <button
               onClick={() => setIsMethodModalOpen(true)}
-              className="px-3.5 py-1.5 rounded-full bg-blue-50 dark:bg-blue-950/50 text-[#0071e3] dark:text-sky-400 border border-blue-200/70 dark:border-blue-800/60 text-xs font-semibold flex items-center gap-1.5 hover:bg-blue-100 transition-colors cursor-pointer"
+              className="px-2.5 sm:px-3.5 py-1.5 rounded-full bg-blue-50 dark:bg-blue-950/50 text-[#0071e3] dark:text-sky-400 border border-blue-200/70 dark:border-blue-800/60 text-[11px] sm:text-xs font-semibold flex items-center gap-1 hover:bg-blue-100 transition-colors shrink-0 cursor-pointer"
             >
-              <Sparkles size={13} />
-              <span>Phương pháp học & làm bài</span>
+              <Sparkles size={12} />
+              <span className="hidden sm:inline">Phương pháp học & làm bài</span>
+              <span className="sm:hidden">Cách học</span>
             </button>
 
             <button
               onClick={() => setIsVoiceModalOpen(true)}
-              className="px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-semibold flex items-center gap-1.5 hover:bg-slate-200/70 transition-colors cursor-pointer"
+              className="px-2.5 sm:px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-[11px] sm:text-xs font-semibold flex items-center gap-1 hover:bg-slate-200/70 transition-colors shrink-0 cursor-pointer"
             >
-              <Headphones size={13} className="text-[#0071e3]" />
-              <span>Cài đặt Giọng AI</span>
+              <Headphones size={12} className="text-[#0071e3]" />
+              <span className="hidden sm:inline">Cài đặt Giọng AI</span>
+              <span className="sm:hidden">Giọng AI</span>
             </button>
 
             {/* Prev / Next Unit */}
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
               <button
                 disabled={uNum <= 1}
                 onClick={() => navigate(`/reflex-50/unit/${uNum - 1}?mode=${activeMode}`)}
                 className="p-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 disabled:opacity-40 hover:bg-slate-200 cursor-pointer"
                 title="Unit trước"
               >
-                <ChevronLeft size={16} />
+                <ChevronLeft size={15} />
               </button>
-              <span className="text-xs font-bold px-2 text-slate-700 dark:text-slate-200">
-                Unit {uNum}/50
+              <span className="text-[11px] sm:text-xs font-bold px-1.5 sm:px-2 text-slate-700 dark:text-slate-200">
+                U{uNum}/50
               </span>
               <button
                 disabled={uNum >= 50}
@@ -480,72 +483,71 @@ export default function Reflex50UnitStudyPage() {
                 className="p-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 disabled:opacity-40 hover:bg-slate-200 cursor-pointer"
                 title="Unit tiếp theo"
               >
-                <ChevronRight size={16} />
+                <ChevronRight size={15} />
               </button>
             </div>
           </div>
         </div>
 
         {/* Unit Title & Progress Row */}
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <div className="space-y-1.5">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="px-2.5 py-0.5 rounded-full bg-[#0071e3] text-white text-xs font-bold">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 sm:gap-4">
+          <div className="space-y-1">
+            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+              <span className="px-2.5 py-0.5 rounded-full bg-[#0071e3] text-white text-[11px] sm:text-xs font-bold">
                 UNIT {uNum < 10 ? `0${uNum}` : uNum}
               </span>
               {category && (
-                <span className="px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-medium">
+                <span className="px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[11px] sm:text-xs font-medium truncate max-w-[240px] sm:max-w-none">
                   Nhóm {category.order}: {category.titleVi}
                 </span>
               )}
             </div>
-            <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            <h1 className="text-lg sm:text-2xl font-bold text-slate-900 dark:text-white leading-snug">
               {unit.titleEn} — <span className="text-[#0071e3]">{unit.titleVi}</span>
             </h1>
           </div>
 
           {/* Unit Mastery Actions */}
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="px-4 py-2 rounded-2xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200/70 dark:border-slate-700/70 flex items-center gap-3">
-              <div>
-                <div className="text-[10px] uppercase tracking-wider font-semibold text-slate-400">
-                  Tiến độ Unit {uNum}
-                </div>
-                <div className="text-sm font-bold text-slate-900 dark:text-white">
-                  Đã thuộc {unitStats.masteredCount}/30 câu ({unitStats.percent}%)
-                </div>
+          <div className="flex items-center justify-between sm:justify-start gap-2.5 px-3 sm:px-4 py-2 rounded-xl sm:rounded-2xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200/70 dark:border-slate-700/70">
+            <div>
+              <div className="text-[10px] uppercase tracking-wider font-semibold text-slate-400">
+                Tiến độ Unit {uNum}
               </div>
-              <button
-                onClick={() => {
-                  const nextState = !unitStats.isCompleted;
-                  markUnitMastered(uNum, nextState);
-                  toast.success(
-                    nextState
-                      ? `Đã đánh dấu thuộc cả 30 câu Unit ${uNum}!`
-                      : `Đã bỏ đánh dấu thuộc Unit ${uNum}`
-                  );
-                }}
-                className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer ${
-                  unitStats.isCompleted
-                    ? 'bg-emerald-500 text-white'
-                    : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-[#0071e3]'
-                }`}
-              >
-                <CheckCircle2 size={14} />
-                <span>{unitStats.isCompleted ? 'Đã hoàn thành Unit' : 'Đánh dấu thuộc cả Unit'}</span>
-              </button>
+              <div className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">
+                Đã thuộc {unitStats.masteredCount}/30 câu ({unitStats.percent}%)
+              </div>
             </div>
+            <button
+              onClick={() => {
+                const nextState = !unitStats.isCompleted;
+                markUnitMastered(uNum, nextState);
+                toast.success(
+                  nextState
+                    ? `Đã đánh dấu thuộc cả 30 câu Unit ${uNum}!`
+                    : `Đã bỏ đánh dấu thuộc Unit ${uNum}`
+                );
+              }}
+              className={`px-2.5 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-semibold flex items-center gap-1.5 transition-colors shrink-0 cursor-pointer ${
+                unitStats.isCompleted
+                  ? 'bg-emerald-500 text-white'
+                  : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-[#0071e3]'
+              }`}
+            >
+              <CheckCircle2 size={13} />
+              <span className="hidden sm:inline">{unitStats.isCompleted ? 'Đã hoàn thành Unit' : 'Đánh dấu thuộc cả Unit'}</span>
+              <span className="sm:hidden">{unitStats.isCompleted ? 'Đã xong ✓' : 'Thuộc cả Unit'}</span>
+            </button>
           </div>
         </div>
 
-        {/* 5 Main Mode Tabs */}
-        <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-slate-100 dark:border-slate-800">
+        {/* 5 Main Mode Tabs - Single Horizontal Scroll Row on Mobile, Wrap on Desktop */}
+        <div className="flex items-center gap-1.5 overflow-x-auto whitespace-nowrap hide-scrollbar sm:flex-wrap pt-2.5 border-t border-slate-100 dark:border-slate-800">
           {[
-            { id: 'study', label: '1. Học Phản Xạ & Cụm Từ (30 câu)', icon: BookOpen },
-            { id: 'worksheet', label: '2. Làm Bài Tập Viết (→ _____)', icon: PenTool, badge: `${unitStats.writtenCount}/30` },
-            { id: 'speaking', label: '3. Phản Xạ Nói 3 Giây (AI chấm)', icon: Mic, badge: `${unitStats.spokenCount}/30` },
-            { id: 'listening', label: '4. Nghe & Chép Chính Tả', icon: Headphones },
-            { id: 'collocations', label: '5. Sổ Tay Collocations & Từ Vựng', icon: Layers, badge: unit.keyVocab.length }
+            { id: 'study', label: '1. Học Phản Xạ & Cụm Từ (30 câu)', shortLabel: '1. Học 30 câu', icon: BookOpen },
+            { id: 'worksheet', label: '2. Làm Bài Tập Viết (→ _____)', shortLabel: '2. Bài viết', icon: PenTool, badge: `${unitStats.writtenCount}/30` },
+            { id: 'speaking', label: '3. Phản Xạ Nói 3 Giây (AI chấm)', shortLabel: '3. Nói 3s', icon: Mic, badge: `${unitStats.spokenCount}/30` },
+            { id: 'listening', label: '4. Nghe & Chép Chính Tả', shortLabel: '4. Nghe chép', icon: Headphones },
+            { id: 'collocations', label: '5. Sổ Tay Collocations & Từ Vựng', shortLabel: '5. Từ vựng', icon: Layers, badge: unit.keyVocab.length }
           ].map((tab) => {
             const Icon = tab.icon;
             const active = activeMode === tab.id;
@@ -553,14 +555,15 @@ export default function Reflex50UnitStudyPage() {
               <button
                 key={tab.id}
                 onClick={() => handleModeChange(tab.id)}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-semibold transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl text-xs font-semibold transition-all shrink-0 cursor-pointer ${
                   active
                     ? 'bg-[#0071e3] text-white shadow-xs'
                     : 'bg-slate-100/90 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 hover:bg-slate-200/70 dark:hover:bg-slate-700'
                 }`}
               >
-                <Icon size={14} />
-                <span>{tab.label}</span>
+                <Icon size={14} className="shrink-0" />
+                <span className="hidden sm:inline">{tab.label}</span>
+                <span className="sm:hidden">{tab.shortLabel}</span>
                 {tab.badge !== undefined && (
                   <span
                     className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
@@ -579,19 +582,19 @@ export default function Reflex50UnitStudyPage() {
       </div>
 
       {/* ===================================================================== */}
-      {/* 2. STICKY FILTER & SPEED TOOLBAR (CHO STUDY / WORKSHEET / SPEAKING)   */}
+      {/* 2. STICKY FILTER & SPEED TOOLBAR (ULTRA-COMPACT ON MOBILE)            */}
       {/* ===================================================================== */}
       {activeMode !== 'collocations' && (
-        <div className="sticky top-14 z-30 rounded-2xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800 p-3.5 shadow-xs flex flex-wrap items-center justify-between gap-3">
-          {/* Tier Filter Pills */}
-          <div className="flex flex-wrap items-center gap-1.5">
+        <div className="sticky top-14 z-30 rounded-2xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800 p-2 sm:p-3.5 shadow-xs flex flex-col lg:flex-row lg:items-center justify-between gap-1.5 sm:gap-3">
+          {/* Tier Filter Pills - Single horizontal scroll row on mobile */}
+          <div className="flex items-center gap-1 sm:gap-1.5 overflow-x-auto whitespace-nowrap hide-scrollbar">
             {[
-              { id: 'all', label: 'Tất cả (30 câu)' },
-              { id: 'basic', label: 'Tầng 1: Cơ bản (1–10)' },
-              { id: 'intermediate', label: 'Tầng 2: Mở rộng (11–20)' },
-              { id: 'advanced', label: 'Tầng 3: Nâng cao (21–30)' },
-              { id: 'unmastered', label: `Chưa thuộc (${30 - unitStats.masteredCount})` },
-              { id: 'starred', label: `Lưu Sao / Sai (${unitStats.starredCount + unitStats.weakCount})` }
+              { id: 'all', label: 'Tất cả (30 câu)', shortLabel: 'Tất cả (30)' },
+              { id: 'basic', label: 'Tầng 1: Cơ bản (1–10)', shortLabel: 'Tầng 1 (1–10)' },
+              { id: 'intermediate', label: 'Tầng 2: Mở rộng (11–20)', shortLabel: 'Tầng 2 (11–20)' },
+              { id: 'advanced', label: 'Tầng 3: Nâng cao (21–30)', shortLabel: 'Tầng 3 (21–30)' },
+              { id: 'unmastered', label: `Chưa thuộc (${30 - unitStats.masteredCount})`, shortLabel: `Chưa thuộc (${30 - unitStats.masteredCount})` },
+              { id: 'starred', label: `Lưu Sao / Sai (${unitStats.starredCount + unitStats.weakCount})`, shortLabel: `Lưu Sao (${unitStats.starredCount + unitStats.weakCount})` }
             ].map((tf) => (
               <button
                 key={tf.id}
@@ -600,39 +603,39 @@ export default function Reflex50UnitStudyPage() {
                   setSpeakingIndex(0);
                   setDictationIndex(0);
                 }}
-                className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors cursor-pointer ${
+                className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-semibold transition-colors shrink-0 cursor-pointer ${
                   tierFilter === tf.id
                     ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900'
                     : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200/70'
                 }`}
               >
-                {tf.label}
+                <span className="hidden sm:inline">{tf.label}</span>
+                <span className="sm:hidden">{tf.shortLabel}</span>
               </button>
             ))}
           </div>
 
-          {/* Speed Selector Bar */}
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-full">
-              {SPEED_OPTIONS.map((sp) => {
-                const active = Math.abs(playbackSpeed - sp.rate) < 0.03;
-                return (
-                  <button
-                    key={sp.rate}
-                    onClick={() => handleSpeedChange(sp.rate)}
-                    title={sp.title}
-                    className={`px-2.5 py-1 rounded-full text-[11px] font-semibold flex items-center gap-1 transition-all cursor-pointer ${
-                      active
-                        ? 'bg-[#0071e3] text-white shadow-2xs'
-                        : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
-                    }`}
-                  >
-                    {sp.isSlow && <Headphones size={11} />}
-                    <span>{sp.label}</span>
-                  </button>
-                );
-              })}
-            </div>
+          {/* Speed Selector Bar - Single horizontal scroll row on mobile */}
+          <div className="flex items-center overflow-x-auto whitespace-nowrap hide-scrollbar gap-1 bg-slate-100 dark:bg-slate-800 p-0.5 sm:p-1 rounded-full">
+            <span className="text-[10px] font-bold text-slate-400 pl-2 pr-1 sm:hidden shrink-0">Tốc độ:</span>
+            {SPEED_OPTIONS.map((sp) => {
+              const active = Math.abs(playbackSpeed - sp.rate) < 0.03;
+              return (
+                <button
+                  key={sp.rate}
+                  onClick={() => handleSpeedChange(sp.rate)}
+                  title={sp.title}
+                  className={`px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-[11px] font-semibold flex items-center gap-1 transition-all shrink-0 cursor-pointer ${
+                    active
+                      ? 'bg-[#0071e3] text-white shadow-2xs'
+                      : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  {sp.isSlow && <Headphones size={10} />}
+                  <span>{sp.label}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
       )}
@@ -641,67 +644,71 @@ export default function Reflex50UnitStudyPage() {
       {/* MODE 1: STUDY — HỌC PHẢN XẠ & TƯ DUY CỤM TỪ (30 CÂU)                  */}
       {/* ===================================================================== */}
       {activeMode === 'study' && (
-        <div className="space-y-5">
+        <div className="space-y-3.5 sm:space-y-5">
           {/* Active Recall & Auto-Play Control Strip */}
-          <div className="p-4 rounded-2xl bg-blue-50/70 dark:bg-slate-900 border border-blue-200/70 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3">
-            <div className="flex flex-wrap items-center gap-2">
+          <div className="p-3 sm:p-4 rounded-2xl bg-blue-50/70 dark:bg-slate-900 border border-blue-200/70 dark:border-slate-800 flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center justify-between gap-2.5 sm:gap-3">
+            <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2">
               <button
                 onClick={() => {
                   setHideEnglishGlobal((prev) => !prev);
                   setRevealedCardIds({});
                 }}
-                className={`px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
+                className={`justify-center px-3 sm:px-3.5 py-2 rounded-xl text-[11px] sm:text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
                   hideEnglishGlobal
                     ? 'bg-emerald-600 text-white shadow-xs'
                     : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700'
                 }`}
               >
-                {hideEnglishGlobal ? <EyeOff size={14} /> : <Eye size={14} />}
-                <span>
+                {hideEnglishGlobal ? <EyeOff size={14} className="shrink-0" /> : <Eye size={14} className="shrink-0" />}
+                <span className="hidden sm:inline">
                   {hideEnglishGlobal
                     ? 'Đang Ẩn Đáp Án Tiếng Anh (Chế độ Tự Phản Xạ 3s)'
                     : 'Ẩn Đáp Án Tiếng Anh (Để tự nhẩm nói trước)'}
+                </span>
+                <span className="sm:hidden truncate">
+                  {hideEnglishGlobal ? 'Đang ẩn Tiếng Anh' : 'Ẩn Tiếng Anh'}
                 </span>
               </button>
 
               <button
                 onClick={() => setHideHintsGlobal((prev) => !prev)}
-                className={`px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
+                className={`justify-center px-3 sm:px-3.5 py-2 rounded-xl text-[11px] sm:text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
                   hideHintsGlobal
                     ? 'bg-indigo-600 text-white shadow-xs'
                     : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700'
                 }`}
               >
-                <Layers size={14} />
-                <span>{hideHintsGlobal ? 'Đang Ẩn Gợi Ý Từ Vựng' : 'Ẩn Gợi Ý Từ Vựng'}</span>
+                <Layers size={14} className="shrink-0" />
+                <span className="truncate">{hideHintsGlobal ? 'Đang ẩn Gợi ý' : 'Ẩn Gợi Ý Từ Vựng'}</span>
               </button>
             </div>
 
             {/* Auto-Play 30 Sentences Button */}
-            <div className="flex flex-wrap items-center gap-2">
-              <label className="flex items-center gap-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 cursor-pointer select-none">
+            <div className="flex items-center justify-between sm:justify-end gap-2 pt-1.5 sm:pt-0 border-t sm:border-t-0 border-blue-200/50 dark:border-slate-800">
+              <label className="flex items-center gap-1.5 text-[11px] sm:text-xs font-medium text-slate-600 dark:text-slate-300 cursor-pointer select-none">
                 <input
                   type="checkbox"
                   checked={shadowingPause}
                   onChange={(e) => setShadowingPause(e.target.checked)}
                   className="rounded text-[#0071e3]"
                 />
-                <span>Nghỉ 3.5s giữa mỗi câu để nhại theo</span>
+                <span className="hidden sm:inline">Nghỉ 3.5s giữa mỗi câu để nhại theo</span>
+                <span className="sm:hidden">Nghỉ 3.5s nhại theo</span>
               </label>
 
               <button
                 onClick={toggleAutoPlayLoop}
-                className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-[11px] sm:text-xs font-bold flex items-center gap-1.5 transition-all shrink-0 cursor-pointer ${
                   isAutoPlaying
                     ? 'bg-rose-600 text-white shadow-sm'
                     : 'bg-[#0071e3] hover:bg-[#0077ed] text-white shadow-xs'
                 }`}
               >
-                {isAutoPlaying ? <Pause size={14} /> : <Play size={14} />}
+                {isAutoPlaying ? <Pause size={13} /> : <Play size={13} />}
                 <span>
                   {isAutoPlaying
-                    ? 'Dừng Phát Liên Tục'
-                    : `Phát Liên Tục (${filteredSentences.length} câu)`}
+                    ? 'Dừng Phát'
+                    : `Phát Liên Tục (${filteredSentences.length})`}
                 </span>
               </button>
             </div>
@@ -709,7 +716,7 @@ export default function Reflex50UnitStudyPage() {
 
           {/* Sentences List */}
           {filteredSentences.length === 0 ? (
-            <div className="p-12 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-center space-y-3">
+            <div className="p-8 sm:p-12 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-center space-y-3">
               <p className="text-sm font-semibold text-slate-600 dark:text-slate-300">
                 Không có câu nào trong bộ lọc này.
               </p>
@@ -721,7 +728,7 @@ export default function Reflex50UnitStudyPage() {
               </button>
             </div>
           ) : (
-            <div className="space-y-3.5">
+            <div className="space-y-3 sm:space-y-3.5">
               {filteredSentences.map((s) => {
                 const isMastered = Boolean(masteredIds[s.id]);
                 const isStarred = Boolean(starredIds[s.id]);
@@ -740,7 +747,7 @@ export default function Reflex50UnitStudyPage() {
                   <div
                     key={s.id}
                     id={`reflex-card-${s.id}`}
-                    className={`rounded-3xl bg-white dark:bg-slate-900 border p-5 transition-all ${
+                    className={`rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-900 border p-3.5 sm:p-5 transition-all ${
                       isPlayingThis
                         ? 'border-[#0071e3] ring-2 ring-[#0071e3]/20 shadow-md'
                         : isMastered
@@ -748,68 +755,70 @@ export default function Reflex50UnitStudyPage() {
                         : 'border-slate-200/80 dark:border-slate-800'
                     }`}
                   >
-                    <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
+                    <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-3 sm:gap-4">
                       {/* Left Content */}
-                      <div className="space-y-3 flex-1">
+                      <div className="space-y-2.5 sm:space-y-3 flex-1">
                         {/* Badges Row */}
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className="w-7 h-7 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-xs font-bold flex items-center justify-center">
+                        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                          <span className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg sm:rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-xs font-bold flex items-center justify-center shrink-0">
                             {s.number}
                           </span>
-                          <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-semibold ${tierBadge.cls}`}>
+                          <span className={`px-2 sm:px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-semibold ${tierBadge.cls}`}>
                             {tierBadge.label}
                           </span>
-                          <span className="px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[11px] font-medium">
+                          <span className="px-2 sm:px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px] sm:text-[11px] font-medium">
                             {s.grammarNote}
                           </span>
                         </div>
 
                         {/* Vietnamese Prompt */}
-                        <div className="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-snug">
+                        <div className="text-[15px] sm:text-lg font-bold text-slate-900 dark:text-white leading-snug">
                           {s.vi}
                         </div>
 
                         {/* Clickable Vocabulary & Phrase Hints */}
                         {!hideHintsGlobal && s.hints.length > 0 && (
-                          <div className="flex flex-wrap items-center gap-2">
-                            <span className="text-[11px] font-semibold text-slate-400">
+                          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                            <span className="text-[11px] font-semibold text-slate-400 hidden sm:inline">
                               Cụm từ gợi ý (bấm để nghe):
                             </span>
                             {s.hints.map((h, hIdx) => (
                               <button
                                 key={hIdx}
                                 onClick={() => speechService.speak(h.term.split('/')[0].trim(), { rate: 0.88 })}
-                                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-50 dark:bg-slate-800/90 hover:bg-blue-50 dark:hover:bg-blue-950/40 border border-slate-200/80 dark:border-slate-700 text-xs transition-colors cursor-pointer group"
+                                className="inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 rounded-xl bg-slate-50 dark:bg-slate-800/90 hover:bg-blue-50 dark:hover:bg-blue-950/40 border border-slate-200/80 dark:border-slate-700 text-[11px] sm:text-xs transition-colors cursor-pointer group text-left"
                                 title="Bấm để nghe phát âm cụm từ gợi ý"
                               >
-                                <Volume2 size={12} className="text-[#0071e3] opacity-80 group-hover:scale-110 transition-transform" />
-                                <span className="font-bold text-[#0071e3] dark:text-sky-400">{h.term}</span>
-                                {h.pos && (
-                                  <span className="text-[10px] italic text-slate-400">({h.pos})</span>
-                                )}
-                                {h.meaning && (
-                                  <span className="text-slate-600 dark:text-slate-300">: {h.meaning}</span>
-                                )}
+                                <Volume2 size={11} className="text-[#0071e3] opacity-80 group-hover:scale-110 transition-transform shrink-0" />
+                                <span>
+                                  <strong className="font-bold text-[#0071e3] dark:text-sky-400">{h.term}</strong>
+                                  {h.pos && (
+                                    <span className="text-[10px] italic text-slate-400 ml-0.5">({h.pos})</span>
+                                  )}
+                                  {h.meaning && (
+                                    <span className="text-slate-600 dark:text-slate-300">: {h.meaning}</span>
+                                  )}
+                                </span>
                               </button>
                             ))}
                           </div>
                         )}
 
                         {/* Target English Answer (or Active Recall Reveal Button) */}
-                        <div className="pt-1">
+                        <div className="pt-0.5">
                           {isEnglishHidden ? (
                             <button
                               onClick={() => {
                                 setRevealedCardIds((prev) => ({ ...prev, [s.id]: true }));
                                 speakSentence(s, playbackSpeed);
                               }}
-                              className="px-4 py-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-950/40 border border-dashed border-slate-300 dark:border-slate-700 text-xs font-semibold text-[#0071e3] dark:text-sky-400 flex items-center gap-2 transition-all cursor-pointer"
+                              className="w-full sm:w-auto px-3.5 sm:px-4 py-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-950/40 border border-dashed border-slate-300 dark:border-slate-700 text-xs font-semibold text-[#0071e3] dark:text-sky-400 flex items-center justify-center sm:justify-start gap-2 transition-all cursor-pointer"
                             >
-                              <Eye size={14} />
-                              <span>Hãy tự bật ra câu tiếng Anh trong 3 giây → Bấm để mở đáp án & nghe mẫu</span>
+                              <Eye size={14} className="shrink-0" />
+                              <span>Tự bật ra tiếng Anh trong 3s → Bấm mở đáp án</span>
                             </button>
                           ) : (
-                            <div className="p-3.5 rounded-2xl bg-blue-50/50 dark:bg-slate-800/60 border border-blue-200/60 dark:border-slate-700/70 flex flex-wrap items-center justify-between gap-3">
+                            <div className="p-3 sm:p-3.5 rounded-2xl bg-blue-50/50 dark:bg-slate-800/60 border border-blue-200/60 dark:border-slate-700/70 flex flex-wrap items-center justify-between gap-2 sm:gap-3">
                               <div className="text-sm sm:text-base font-bold text-[#0071e3] dark:text-sky-300">
                                 → {s.en}
                               </div>
@@ -832,12 +841,12 @@ export default function Reflex50UnitStudyPage() {
                         </div>
                       </div>
 
-                      {/* Right Action Buttons */}
-                      <div className="flex flex-wrap lg:flex-col items-center lg:items-end justify-between gap-2 shrink-0">
+                      {/* Right Action Buttons - Clean single row on mobile */}
+                      <div className="flex lg:flex-col items-center lg:items-end justify-between gap-1.5 sm:gap-2 pt-2 lg:pt-0 border-t lg:border-t-0 border-slate-100 dark:border-slate-800/80 shrink-0">
                         <div className="flex items-center gap-1.5">
                           <button
                             onClick={() => speakSentence(s, playbackSpeed)}
-                            className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
+                            className={`px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1 transition-all cursor-pointer ${
                               isPlayingThis
                                 ? 'bg-[#0071e3] text-white shadow-xs'
                                 : 'bg-blue-50 dark:bg-slate-800 text-[#0071e3] dark:text-sky-400 hover:bg-blue-100'
@@ -850,7 +859,7 @@ export default function Reflex50UnitStudyPage() {
 
                           <button
                             onClick={() => speakSentence(s, 0.7)}
-                            className="px-2.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer"
+                            className="px-2 sm:px-2.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer"
                             title="Nghe chậm rãi 0.7x để bắt rõ từng âm"
                           >
                             <Headphones size={13} />
@@ -981,42 +990,45 @@ export default function Reflex50UnitStudyPage() {
       {/* MODE 2: WORKSHEET — LÀM BÀI TẬP VIẾT & GHÉP CỤM TỪ (→ _________)      */}
       {/* ===================================================================== */}
       {activeMode === 'worksheet' && (
-        <div className="space-y-5">
+        <div className="space-y-3.5 sm:space-y-5">
           {/* Worksheet Mode Switcher & Batch Actions */}
-          <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-2">
+          <div className="p-3 sm:p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 flex flex-col sm:flex-row sm:flex-wrap sm:items-center justify-between gap-2.5 sm:gap-3">
+            <div className="grid grid-cols-2 sm:flex items-center gap-1.5 sm:gap-2">
               <button
                 onClick={() => setWorksheetSubMode('type')}
-                className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                className={`px-3 sm:px-4 py-2 rounded-xl text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
                   worksheetSubMode === 'type'
                     ? 'bg-[#0071e3] text-white'
                     : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
                 }`}
               >
-                <PenTool size={14} />
-                <span>Chế độ 1: Tự Gõ Cả Câu (→ _________)</span>
+                <PenTool size={14} className="shrink-0" />
+                <span className="sm:hidden">1. Tự Gõ Câu</span>
+                <span className="hidden sm:inline">Chế độ 1: Tự Gõ Cả Câu (→ _________)</span>
               </button>
 
               <button
                 onClick={() => setWorksheetSubMode('chunks')}
-                className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                className={`px-3 sm:px-4 py-2 rounded-xl text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
                   worksheetSubMode === 'chunks'
                     ? 'bg-[#0071e3] text-white'
                     : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
                 }`}
               >
-                <Layers size={14} />
-                <span>Chế độ 2: Ghép Khối Cụm Từ (Word Blocks)</span>
+                <Layers size={14} className="shrink-0" />
+                <span className="sm:hidden">2. Ghép Cụm Từ</span>
+                <span className="hidden sm:inline">Chế độ 2: Ghép Khối Cụm Từ (Word Blocks)</span>
               </button>
             </div>
 
             <div className="flex items-center gap-2">
               <button
                 onClick={handleCheckAllWorksheet}
-                className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer"
+                className="flex-1 sm:flex-initial justify-center px-3.5 sm:px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] sm:text-xs font-bold flex items-center gap-1.5 cursor-pointer"
               >
                 <Check size={14} />
-                <span>Chấm Tất Cả Các Câu Đã Viết</span>
+                <span className="sm:hidden">Chấm Tất Cả</span>
+                <span className="hidden sm:inline">Chấm Tất Cả Các Câu Đã Viết</span>
               </button>
 
               <button
@@ -1025,7 +1037,7 @@ export default function Reflex50UnitStudyPage() {
                   setWorksheetResults({});
                   setSelectedChunksMap({});
                 }}
-                className="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 text-xs font-semibold flex items-center gap-1 cursor-pointer"
+                className="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 text-[11px] sm:text-xs font-semibold flex items-center gap-1 cursor-pointer"
               >
                 <RotateCcw size={13} />
                 <span>Làm lại</span>
@@ -1034,7 +1046,7 @@ export default function Reflex50UnitStudyPage() {
           </div>
 
           {/* 30 Worksheet Items */}
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {filteredSentences.map((s) => {
               const res = worksheetResults[s.id];
               const userVal = worksheetInputs[s.id] || '';
@@ -1044,26 +1056,26 @@ export default function Reflex50UnitStudyPage() {
               return (
                 <div
                   key={s.id}
-                  className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-3"
+                  className="p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-2.5 sm:space-y-3"
                 >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="space-y-1.5">
-                      <div className="flex items-center gap-2">
-                        <span className="w-6 h-6 rounded-lg bg-[#0071e3] text-white text-xs font-bold flex items-center justify-center">
+                  <div className="flex items-start justify-between gap-2.5 sm:gap-3">
+                    <div className="space-y-1.5 flex-1 min-w-0">
+                      <div className="flex items-start gap-2">
+                        <span className="w-6 h-6 rounded-lg bg-[#0071e3] text-white text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
                           {s.number}
                         </span>
-                        <span className="text-base font-bold text-slate-900 dark:text-white">
+                        <span className="text-[15px] sm:text-base font-bold text-slate-900 dark:text-white leading-snug">
                           {s.vi}
                         </span>
                       </div>
 
                       {/* Hints */}
-                      <div className="flex flex-wrap gap-1.5 pl-8">
+                      <div className="flex flex-wrap gap-1.5 pl-0 sm:pl-8">
                         {s.hints.map((h, idx) => (
                           <button
                             key={idx}
                             onClick={() => speechService.speak(h.term.split('/')[0].trim(), { rate: 0.88 })}
-                            className="px-2.5 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-xs text-slate-700 dark:text-slate-300 hover:text-[#0071e3] cursor-pointer"
+                            className="px-2 sm:px-2.5 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-[11px] sm:text-xs text-slate-700 dark:text-slate-300 hover:text-[#0071e3] cursor-pointer text-left"
                           >
                             • <strong className="text-[#0071e3] dark:text-sky-400">{h.term}</strong>
                             {h.pos ? ` (${h.pos})` : ''}: {h.meaning}
@@ -1092,7 +1104,7 @@ export default function Reflex50UnitStudyPage() {
 
                   {/* Input Area: Type or Chunks */}
                   {worksheetSubMode === 'type' ? (
-                    <div className="pl-8 flex flex-col sm:flex-row gap-2">
+                    <div className="pl-0 sm:pl-8 flex flex-col sm:flex-row gap-2">
                       <div className="relative flex-1">
                         <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold">
                           →
@@ -1106,7 +1118,7 @@ export default function Reflex50UnitStudyPage() {
                           onKeyDown={(e) => {
                             if (e.key === 'Enter') handleCheckSingleWorksheet(s);
                           }}
-                          placeholder="_______________________________________________________"
+                          placeholder="Gõ câu tiếng Anh tương ứng..."
                           className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 text-sm font-medium text-slate-900 dark:text-white focus:outline-none focus:border-[#0071e3]"
                         />
                       </div>
@@ -1118,13 +1130,13 @@ export default function Reflex50UnitStudyPage() {
                       </button>
                     </div>
                   ) : (
-                    <div className="pl-8 space-y-2.5">
+                    <div className="pl-0 sm:pl-8 space-y-2.5">
                       {/* Assembled line */}
                       <div className="min-h-11 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-dashed border-slate-300 dark:border-slate-700 flex flex-wrap items-center gap-1.5">
                         <span className="text-slate-400 font-bold mr-1">→</span>
                         {pickedIds.length === 0 ? (
                           <span className="text-xs text-slate-400">
-                            Bấm vào các khối từ bên dưới theo đúng thứ tự để ghép thành câu hoàn chỉnh...
+                            Bấm vào các khối từ bên dưới theo đúng thứ tự để ghép thành câu...
                           </span>
                         ) : (
                           pickedIds.map((cid) => {
@@ -1215,7 +1227,7 @@ export default function Reflex50UnitStudyPage() {
                   {/* Evaluation Diff Box */}
                   {res && (
                     <div
-                      className={`ml-8 p-3.5 rounded-2xl border space-y-2 ${
+                      className={`ml-0 sm:ml-8 p-3 sm:p-3.5 rounded-2xl border space-y-2 ${
                         res.isPass
                           ? 'bg-emerald-50/70 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-800/60'
                           : 'bg-amber-50/70 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800/60'
@@ -1263,21 +1275,21 @@ export default function Reflex50UnitStudyPage() {
       {/* MODE 3: SPEAKING — PHẢN XẠ NÓI 3 GIÂY (3-SECOND SPEAKING STUDIO)      */}
       {/* ===================================================================== */}
       {activeMode === 'speaking' && currentSpeakingSentence && (
-        <div className="max-w-3xl mx-auto space-y-5">
+        <div className="max-w-3xl mx-auto space-y-3.5 sm:space-y-5">
           {/* Top Controls: Think Timer & Progress */}
-          <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3">
+          <div className="p-3 sm:p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2.5 sm:gap-3">
             <div className="flex items-center gap-2">
               <span className="text-xs font-bold text-slate-700 dark:text-slate-200">
                 Câu {speakingIndex + 1} / {filteredSentences.length}
               </span>
               <span className="text-xs text-slate-400">•</span>
-              <span className="text-xs text-[#0071e3] font-semibold">
+              <span className="text-xs text-[#0071e3] font-semibold truncate max-w-[180px] sm:max-w-none">
                 {currentSpeakingSentence.grammarNote}
               </span>
             </div>
 
-            <div className="flex items-center gap-1.5">
-              <span className="text-xs text-slate-500">Thời gian bật phản xạ:</span>
+            <div className="flex items-center gap-1.5 overflow-x-auto whitespace-nowrap hide-scrollbar w-full sm:w-auto">
+              <span className="text-[11px] sm:text-xs text-slate-500">Đếm giờ:</span>
               {[
                 { sec: 3, label: '3s Nhanh' },
                 { sec: 5, label: '5s Chuẩn' },
@@ -1286,7 +1298,7 @@ export default function Reflex50UnitStudyPage() {
                 <button
                   key={opt.sec}
                   onClick={() => setThinkTimerSeconds(opt.sec)}
-                  className={`px-2.5 py-1 rounded-full text-xs font-semibold cursor-pointer ${
+                  className={`px-2.5 py-1 rounded-full text-[11px] sm:text-xs font-semibold cursor-pointer ${
                     thinkTimerSeconds === opt.sec
                       ? 'bg-[#0071e3] text-white'
                       : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
@@ -1299,11 +1311,11 @@ export default function Reflex50UnitStudyPage() {
           </div>
 
           {/* Main Speaking Card */}
-          <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-6 text-center">
+          <div className="p-4 sm:p-8 rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 sm:space-y-6 text-center">
             {/* Think Countdown Badge */}
             {thinkTimerSeconds > 0 && !speakingEval && (
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-300 text-xs font-bold">
-                <Zap size={14} />
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-300 text-[11px] sm:text-xs font-bold">
+                <Zap size={14} className="shrink-0" />
                 <span>
                   {countdownLeft > 0
                     ? `Hãy bật thành tiếng trong ${countdownLeft} giây...`
@@ -1312,24 +1324,24 @@ export default function Reflex50UnitStudyPage() {
               </div>
             )}
 
-            <div className="space-y-2">
-              <div className="text-xs font-bold uppercase tracking-wider text-slate-400">
+            <div className="space-y-1.5 sm:space-y-2">
+              <div className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-400">
                 Phản xạ dịch nói sang Tiếng Anh câu #{currentSpeakingSentence.number}
               </div>
-              <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+              <h2 className="text-lg sm:text-2xl font-bold text-slate-900 dark:text-white leading-snug">
                 "{currentSpeakingSentence.vi}"
               </h2>
             </div>
 
             {/* Hints */}
-            <div className="flex flex-wrap items-center justify-center gap-2">
+            <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
               {currentSpeakingSentence.hints.map((h, idx) => (
                 <button
                   key={idx}
                   onClick={() => speechService.speak(h.term.split('/')[0].trim(), { rate: 0.85 })}
-                  className="px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-700 dark:text-slate-200 hover:border-[#0071e3] flex items-center gap-1.5 cursor-pointer"
+                  className="px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[11px] sm:text-xs font-medium text-slate-700 dark:text-slate-200 hover:border-[#0071e3] flex items-center gap-1.5 cursor-pointer"
                 >
-                  <Volume2 size={13} className="text-[#0071e3]" />
+                  <Volume2 size={13} className="text-[#0071e3] shrink-0" />
                   <strong className="text-[#0071e3] dark:text-sky-400">{h.term}</strong>
                   <span>: {h.meaning}</span>
                 </button>
@@ -1337,17 +1349,17 @@ export default function Reflex50UnitStudyPage() {
             </div>
 
             {/* Microphone Record Button & Audio Preview */}
-            <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 pt-1 sm:pt-2">
               <button
                 onClick={startVoiceRecording}
-                className={`px-6 py-3.5 rounded-full text-sm font-bold flex items-center gap-2.5 shadow-md transition-all cursor-pointer ${
+                className={`w-full sm:w-auto justify-center px-6 py-3 sm:py-3.5 rounded-full text-xs sm:text-sm font-bold flex items-center gap-2.5 shadow-md transition-all cursor-pointer ${
                   isRecording
                     ? 'bg-rose-600 text-white animate-pulse'
                     : 'bg-[#0071e3] hover:bg-[#0077ed] text-white'
                 }`}
               >
                 <Mic size={18} />
-                <span>{isRecording ? 'Đang nghe bạn nói... (Bấm để dừng)' : 'Bấm Để Nói Tiếng Anh'}</span>
+                <span>{isRecording ? 'Đang nghe... (Bấm dừng)' : 'Bấm Để Nói Tiếng Anh'}</span>
               </button>
 
               <button
@@ -1355,7 +1367,7 @@ export default function Reflex50UnitStudyPage() {
                   setShowSpeakingAnswer(true);
                   speakSentence(currentSpeakingSentence, playbackSpeed);
                 }}
-                className="px-4 py-3.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
+                className="flex-1 sm:flex-initial justify-center px-3.5 sm:px-4 py-2.5 sm:py-3.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
               >
                 <Volume2 size={15} className="text-[#0071e3]" />
                 <span>Nghe mẫu ({playbackSpeed}x)</span>
@@ -1366,16 +1378,16 @@ export default function Reflex50UnitStudyPage() {
                   setShowSpeakingAnswer(true);
                   speakSentence(currentSpeakingSentence, 0.7);
                 }}
-                className="px-4 py-3.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
+                className="flex-1 sm:flex-initial justify-center px-3.5 sm:px-4 py-2.5 sm:py-3.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
               >
                 <Headphones size={15} />
-                <span>Nghe chậm rãi (0.7x)</span>
+                <span>Chậm (0.7x)</span>
               </button>
             </div>
 
             {/* Live Transcript & Evaluation */}
             {(spokenTranscript || speakingEval || showSpeakingAnswer) && (
-              <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-left space-y-3">
+              <div className="p-3.5 sm:p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-left space-y-2.5 sm:space-y-3">
                 {spokenTranscript && (
                   <div className="text-xs text-slate-600 dark:text-slate-300">
                     🎙️ Giọng nói nhận diện được:{' '}
@@ -1411,7 +1423,7 @@ export default function Reflex50UnitStudyPage() {
                       <button
                         key={idx}
                         onClick={() => speechService.speak(wd.cleanWord, { rate: 0.7 })}
-                        className={`px-2.5 py-1 rounded-lg text-sm font-bold cursor-pointer ${
+                        className={`px-2.5 py-1 rounded-lg text-xs sm:text-sm font-bold cursor-pointer ${
                           wd.status === 'correct'
                             ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300'
                             : 'bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 underline'
@@ -1426,13 +1438,13 @@ export default function Reflex50UnitStudyPage() {
             )}
 
             {/* Bottom Navigation */}
-            <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800">
+            <div className="flex items-center justify-between gap-2 pt-3 sm:pt-4 border-t border-slate-100 dark:border-slate-800">
               <button
                 disabled={speakingIndex <= 0}
                 onClick={() => setSpeakingIndex((i) => Math.max(0, i - 1))}
-                className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 disabled:opacity-40 cursor-pointer"
+                className="px-3 sm:px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 disabled:opacity-40 cursor-pointer shrink-0"
               >
-                ← Câu trước
+                ← Trước
               </button>
 
               <button
@@ -1446,17 +1458,18 @@ export default function Reflex50UnitStudyPage() {
                     toast.success('Đã hoàn thành lượt luyện nói!');
                   }
                 }}
-                className="px-4 py-2 rounded-xl bg-emerald-600 text-white text-xs font-bold cursor-pointer"
+                className="px-3 sm:px-4 py-2 rounded-xl bg-emerald-600 text-white text-[11px] sm:text-xs font-bold cursor-pointer truncate"
               >
-                Đã bật thành tiếng • Sang câu tiếp →
+                <span className="sm:hidden">Đã nói • Tiếp →</span>
+                <span className="hidden sm:inline">Đã bật thành tiếng • Sang câu tiếp →</span>
               </button>
 
               <button
                 disabled={speakingIndex >= filteredSentences.length - 1}
                 onClick={() => setSpeakingIndex((i) => Math.min(filteredSentences.length - 1, i + 1))}
-                className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 disabled:opacity-40 cursor-pointer"
+                className="px-3 sm:px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 disabled:opacity-40 cursor-pointer shrink-0"
               >
-                Câu tiếp →
+                Tiếp →
               </button>
             </div>
           </div>
@@ -1467,25 +1480,25 @@ export default function Reflex50UnitStudyPage() {
       {/* MODE 4: LISTENING & DICTATION — NGHE PHẢN XẠ & CHÉP CHÍNH TẢ          */}
       {/* ===================================================================== */}
       {activeMode === 'listening' && currentDictationSentence && (
-        <div className="max-w-3xl mx-auto space-y-5">
-          <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-6">
-            <div className="flex items-center justify-between">
-              <span className="px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/60 text-[#0071e3] dark:text-sky-400 text-xs font-bold">
-                Nghe & Chép Chính Tả • Câu {dictationIndex + 1} / {filteredSentences.length}
+        <div className="max-w-3xl mx-auto space-y-3.5 sm:space-y-5">
+          <div className="p-4 sm:p-8 rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 sm:space-y-6">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <span className="px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/60 text-[#0071e3] dark:text-sky-400 text-[11px] sm:text-xs font-bold">
+                Chép Chính Tả • Câu {dictationIndex + 1} / {filteredSentences.length}
               </span>
               <button
                 onClick={() => setShowFirstLetterHint((prev) => !prev)}
-                className="text-xs font-semibold text-[#0071e3] hover:underline cursor-pointer"
+                className="text-[11px] sm:text-xs font-semibold text-[#0071e3] hover:underline cursor-pointer"
               >
-                {showFirstLetterHint ? 'Ẩn gợi ý chữ cái đầu' : '💡 Gợi ý chữ cái đầu & nghĩa tiếng Việt'}
+                {showFirstLetterHint ? 'Ẩn gợi ý' : '💡 Gợi ý chữ đầu & nghĩa'}
               </button>
             </div>
 
             {/* Audio Trigger Buttons */}
-            <div className="flex flex-wrap items-center justify-center gap-3 py-4">
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 py-2 sm:py-4">
               <button
                 onClick={() => speakSentence(currentDictationSentence, 0.95)}
-                className="px-6 py-3.5 rounded-2xl bg-[#0071e3] hover:bg-[#0077ed] text-white text-sm font-bold flex items-center gap-2 shadow-sm cursor-pointer"
+                className="w-full sm:w-auto justify-center px-5 sm:px-6 py-3 sm:py-3.5 rounded-2xl bg-[#0071e3] hover:bg-[#0077ed] text-white text-xs sm:text-sm font-bold flex items-center gap-2 shadow-sm cursor-pointer"
               >
                 <Volume2 size={18} />
                 <span>Nghe Tốc Độ Chuẩn (0.95x)</span>
@@ -1493,17 +1506,17 @@ export default function Reflex50UnitStudyPage() {
 
               <button
                 onClick={() => speakSentence(currentDictationSentence, 0.75)}
-                className="px-5 py-3.5 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center gap-2 cursor-pointer"
+                className="flex-1 sm:flex-initial justify-center px-3.5 sm:px-5 py-2.5 sm:py-3.5 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center gap-1.5 cursor-pointer"
               >
-                <Headphones size={16} className="text-[#0071e3]" />
-                <span>Nghe Chậm Rãi (0.75x)</span>
+                <Headphones size={15} className="text-[#0071e3]" />
+                <span>Chậm (0.75x)</span>
               </button>
 
               <button
                 onClick={() => speakSentence(currentDictationSentence, 0.6)}
-                className="px-5 py-3.5 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center gap-2 cursor-pointer"
+                className="flex-1 sm:flex-initial justify-center px-3.5 sm:px-5 py-2.5 sm:py-3.5 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center gap-1.5 cursor-pointer"
               >
-                <Gauge size={16} className="text-amber-500" />
+                <Gauge size={15} className="text-amber-500" />
                 <span>Rất Chậm (0.6x)</span>
               </button>
             </div>
@@ -1524,7 +1537,7 @@ export default function Reflex50UnitStudyPage() {
             )}
 
             {/* Dictation Input */}
-            <div className="flex flex-col sm:flex-row gap-2.5">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-2.5">
               <input
                 type="text"
                 value={dictationInput}
@@ -1544,7 +1557,7 @@ export default function Reflex50UnitStudyPage() {
             </div>
 
             {dictationEval && (
-              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 space-y-2.5">
+              <div className="p-3.5 sm:p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 space-y-2.5">
                 <div className="flex items-center justify-between">
                   <span
                     className={`text-xs font-bold ${
@@ -1598,13 +1611,13 @@ export default function Reflex50UnitStudyPage() {
       {/* MODE 5: COLLOCATIONS, REAL-LIFE EXPRESSIONS & KEY VOCAB               */}
       {/* ===================================================================== */}
       {activeMode === 'collocations' && (
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* 1. Collocations chuẩn bản xứ */}
-          <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-4">
+          <div className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-3.5 sm:space-y-4">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div>
-                <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                  <Sparkles size={18} className="text-[#0071e3]" />
+                <h2 className="text-[15px] sm:text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                  <Sparkles size={18} className="text-[#0071e3] shrink-0" />
                   <span>💡 Cụm Từ & Collocations Chuẩn Bản Xứ — {unit.titleEn}</span>
                 </h2>
                 <p className="text-xs text-slate-500 mt-0.5">

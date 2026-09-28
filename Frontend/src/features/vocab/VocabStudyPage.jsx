@@ -61,10 +61,10 @@ export default function VocabStudyPage() {
   const nextTopic = topics.find((t) => t.id === currentTopicId + 1);
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8 space-y-6">
+    <div className="max-w-4xl mx-auto space-y-3 sm:space-y-6">
       
       {/* Top Navigation & Breadcrumb */}
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex items-center justify-between gap-2 sm:gap-4">
         <button
           onClick={() => navigate('/vocab')}
           className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
@@ -73,17 +73,17 @@ export default function VocabStudyPage() {
           <span>Tất Cả 60 Chủ Đề</span>
         </button>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           {prevTopic && (
             <button
               onClick={() => {
                 navigate(`/vocab/${prevTopic.id}`);
                 setActiveTab('flashcard');
               }}
-              className="p-1.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer"
+              className="px-2.5 py-1.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer"
               title={`Chủ đề trước: ${prevTopic.title}`}
             >
-              <ChevronLeft size={16} />
+              <ChevronLeft size={15} />
               <span className="hidden sm:inline">Chủ đề {prevTopic.id}</span>
             </button>
           )}
@@ -94,41 +94,61 @@ export default function VocabStudyPage() {
                 navigate(`/vocab/${nextTopic.id}`);
                 setActiveTab('flashcard');
               }}
-              className="p-1.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer"
+              className="px-2.5 py-1.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer"
               title={`Chủ đề kế tiếp: ${nextTopic.title}`}
             >
               <span className="hidden sm:inline">Chủ đề {nextTopic.id}</span>
-              <ChevronRight size={16} />
+              <ChevronRight size={15} />
             </button>
           )}
         </div>
       </div>
 
       {/* Topic Header Card (Glassmorphic) */}
-      <div className="p-6 sm:p-7 rounded-3xl bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 text-white shadow-xl relative overflow-hidden">
-        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="space-y-1.5">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-[11px] font-bold tracking-wider uppercase">
-              <Sparkles size={12} />
-              <span>Chủ Đề {topic.id} / 60</span>
+      <div className="p-3.5 sm:p-7 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 text-white shadow-xl relative overflow-hidden">
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-4">
+          <div className="space-y-1 sm:space-y-1.5">
+            <div className="flex items-center justify-between sm:justify-start gap-2">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-white/20 backdrop-blur-md text-[10px] sm:text-[11px] font-bold tracking-wider uppercase">
+                <Sparkles size={11} />
+                <span>Chủ Đề {topic.id} / 60</span>
+              </div>
+
+              {/* Mobile inline progress + reset */}
+              <div className="flex sm:hidden items-center gap-2">
+                <span className="text-xs font-black text-amber-300">
+                  {masteredCount}/{words.length} từ ({progressPercent}%)
+                </span>
+                {masteredCount > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setShowResetModal(true)}
+                    className="p-1 rounded-lg bg-white/15 hover:bg-white/25 text-white border border-white/20 cursor-pointer"
+                    title="Học lại từ đầu"
+                  >
+                    <RotateCcw size={12} />
+                  </button>
+                )}
+              </div>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
+
+            <h1 className="text-lg sm:text-3xl font-black tracking-tight leading-snug">
               {topic.title}
             </h1>
-            <p className="text-xs sm:text-sm text-blue-100">
+            <p className="hidden sm:block text-xs sm:text-sm text-blue-100">
               Tổng cộng <strong>{words.length} từ vựng</strong> thiết yếu trong giao tiếp hàng ngày
             </p>
           </div>
 
-          {/* Mastered Progress Widget */}
-          <div className="p-3.5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex sm:flex-col items-center justify-between sm:justify-center gap-2 shrink-0 min-w-[145px] text-center">
-            <div className="text-left sm:text-center">
+          {/* Desktop Mastered Progress Widget */}
+          <div className="hidden sm:flex p-3.5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex-col items-center justify-center gap-2 shrink-0 min-w-[145px] text-center">
+            <div className="text-center">
               <span className="text-[11px] font-semibold text-blue-100 block">Đã ghi nhớ</span>
               <span className="text-xl sm:text-2xl font-black text-amber-300">
                 {masteredCount}/{words.length} từ
               </span>
             </div>
-            <div className="w-24 sm:w-full h-2 rounded-full bg-black/20 overflow-hidden">
+            <div className="w-full h-2 rounded-full bg-black/20 overflow-hidden">
               <div 
                 className="h-full bg-amber-300 rounded-full transition-all duration-500"
                 style={{ width: `${progressPercent}%` }}
@@ -152,13 +172,13 @@ export default function VocabStudyPage() {
         <div className="absolute -right-12 -bottom-12 w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none" />
       </div>
 
-      {/* 4 Mode Tabs (Apple-style Pills) */}
-      <div className="flex items-center gap-1 p-1 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 overflow-x-auto">
+      {/* 4 Mode Tabs (Segmented on mobile, Apple-style Pills on desktop) */}
+      <div className="grid grid-cols-4 sm:flex items-center gap-1 p-1 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800">
         {[
-          { id: 'flashcard', label: 'Flashcard 3D', icon: Layers },
-          { id: 'quiz', label: 'Trắc Nghiệm Nhanh', icon: Zap },
-          { id: 'spelling', label: 'Gõ Chính Tả', icon: PenTool },
-          { id: 'list', label: `Danh Sách (${words.length})`, icon: ListOrdered }
+          { id: 'flashcard', label: 'Flashcard 3D', shortLabel: 'Flashcard', icon: Layers },
+          { id: 'quiz', label: 'Trắc Nghiệm Nhanh', shortLabel: 'Trắc nghiệm', icon: Zap },
+          { id: 'spelling', label: 'Gõ Chính Tả', shortLabel: 'Chính tả', icon: PenTool },
+          { id: 'list', label: `Danh Sách (${words.length})`, shortLabel: `Từ (${words.length})`, icon: ListOrdered }
         ].map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -166,21 +186,22 @@ export default function VocabStudyPage() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex-1 min-w-[120px] py-2.5 px-3 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-2 cursor-pointer ${
+              className={`sm:flex-1 py-2 sm:py-2.5 px-1.5 sm:px-3 rounded-xl font-bold text-[11px] sm:text-xs transition-all flex items-center justify-center gap-1 sm:gap-2 cursor-pointer ${
                 isActive
                   ? 'bg-white dark:bg-slate-800 text-[#0071e3] dark:text-sky-400 shadow-sm'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
-              <Icon size={15} />
-              <span>{tab.label}</span>
+              <Icon size={14} className="shrink-0" />
+              <span className="sm:hidden truncate">{tab.shortLabel}</span>
+              <span className="hidden sm:inline">{tab.label}</span>
             </button>
           );
         })}
       </div>
 
       {/* Main Tab Content */}
-      <div className="pt-2">
+      <div className="pt-0.5 sm:pt-2">
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}

@@ -57,27 +57,27 @@ export default function BinoBookOverviewPage() {
   }) || [];
 
   return (
-    <div className="space-y-6 sm:space-y-8 max-w-6xl mx-auto pb-16 px-1 sm:px-0">
+    <div className="space-y-4 sm:space-y-8 max-w-6xl mx-auto pb-12 sm:pb-16">
       {loading && <PageLoader />}
       
       {/* ========================================================================= */}
       {/* 1. HERO BANNER GIÁO TRÌNH VBACE - ULTRA SHARP & FULL RESPONSIVE */}
       {/* ========================================================================= */}
       <div 
-        className="p-5 sm:p-8 md:p-10 rounded-3xl relative overflow-hidden bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-sm"
+        className="p-4 sm:p-8 md:p-10 rounded-2xl sm:rounded-3xl relative overflow-hidden bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-sm"
       >
         {/* Subtle decorative background circles */}
         <div className="absolute -top-24 -right-24 w-72 h-72 bg-amber-400/10 dark:bg-amber-400/5 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-24 -left-24 w-72 h-72 bg-blue-500/10 dark:bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 relative z-10">
-          <div className="space-y-3.5 max-w-2xl">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 sm:gap-6 relative z-10">
+          <div className="space-y-2.5 sm:space-y-3.5 max-w-2xl w-full">
             {/* Tag Badges */}
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-300 flex items-center gap-1.5 shadow-2xs border border-amber-300/80 dark:border-amber-800">
-                <Sparkles size={13} className="text-amber-600 dark:text-amber-400" /> Vũ Bảo Software
+            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+              <span className="px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[11px] sm:text-xs font-black uppercase tracking-wider bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-300 flex items-center gap-1 shadow-2xs border border-amber-300/80 dark:border-amber-800">
+                <Sparkles size={12} className="text-amber-600 dark:text-amber-400" /> Vũ Bảo Software
               </span>
-              <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-blue-100 text-blue-900 dark:bg-blue-950 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+              <span className="px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[11px] sm:text-xs font-extrabold bg-blue-100 text-blue-900 dark:bg-blue-950 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
                 {book?.totalChapters || 12} Chương • {book?.totalLessonsCount || 72} Bài Học
               </span>
               <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 hidden sm:inline-flex">
@@ -86,87 +86,122 @@ export default function BinoBookOverviewPage() {
             </div>
 
             {/* Title */}
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
+            <h1 className="text-xl sm:text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
               Giao Tiếp Thực Chiến: <span className="bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 bg-clip-text text-transparent">Phản Xạ Tiếng Anh Tức Thì</span>
             </h1>
 
-            <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
-              Phương pháp phản xạ ngôn ngữ tự nhiên VBace Flow: Học từ vựng theo giấy note ghim, luyện nói 1:1 nhập vai với Leo, vận dụng đổi từ Substitution Drilling, kèm đầy đủ Mẫu câu mở rộng (Section B) & VBaceEnglish Mindset cuối mỗi chương.
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-normal line-clamp-2 sm:line-clamp-none">
+              Phương pháp phản xạ ngôn ngữ tự nhiên: Học từ vựng theo giấy note ghim, luyện nói 1:1 nhập vai với Leo, vận dụng đổi từ Substitution Drilling, kèm đầy đủ Mẫu câu mở rộng (Section B) & VBaceEnglish Mindset cuối mỗi chương.
             </p>
 
-            {/* Quick Action Buttons - Grid 2 cols on mobile, flex on desktop */}
-            <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2.5 pt-2">
-              {/* Nút Nghe Toàn Bộ - Tràn rộng nổi bật */}
-              <button
-                onClick={() => openPlaylistWith(null, true)}
-                className="col-span-2 sm:col-span-1 px-5 py-3 bg-[#0071e3] hover:bg-[#0077ED] dark:bg-sky-500 dark:hover:bg-sky-400 text-white font-extrabold rounded-2xl shadow-[0_4px_14px_rgba(0,113,227,0.28)] flex items-center justify-center gap-2 text-xs sm:text-sm transition-all duration-150 hover:-translate-y-0.5 cursor-pointer"
-              >
-                <ListMusic size={17} />
-                <span>Nghe Toàn Bộ ({book?.totalLessonsCount || 72} Bài)</span>
-              </button>
+            {/* Primary CTA Row + Secondary Horizontal Scroll Strip on Mobile */}
+            <div className="space-y-2 pt-1">
+              <div className="grid grid-cols-12 sm:flex sm:flex-wrap items-center gap-2 sm:gap-2.5">
+                {/* Nút Nghe Toàn Bộ - Nổi bật */}
+                <button
+                  onClick={() => openPlaylistWith(null, true)}
+                  className="col-span-7 sm:col-span-1 px-3.5 sm:px-5 py-2.5 sm:py-3 bg-[#0071e3] hover:bg-[#0077ED] dark:bg-sky-500 dark:hover:bg-sky-400 text-white font-extrabold rounded-xl sm:rounded-2xl shadow-[0_4px_14px_rgba(0,113,227,0.28)] flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm transition-all duration-150 hover:-translate-y-0.5 cursor-pointer"
+                >
+                  <ListMusic size={16} className="shrink-0" />
+                  <span className="truncate">Nghe Toàn Bộ ({book?.totalLessonsCount || 72} Bài)</span>
+                </button>
 
-              <button
-                onClick={() => openPlaylistWith(null, false)}
-                className="px-3.5 py-2.5 sm:px-4 sm:py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-2xl shadow-xs shadow-amber-500/25 flex items-center justify-center gap-1.5 text-xs sm:text-sm transition-all duration-150 hover:-translate-y-0.5 cursor-pointer"
-              >
-                <ListMusic size={15} />
-                <span>Chọn Bài Nghe</span>
-              </button>
+                <button
+                  onClick={() => openPlaylistWith(null, false)}
+                  className="col-span-5 sm:col-span-1 px-3 sm:px-4 py-2.5 sm:py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl sm:rounded-2xl shadow-xs shadow-amber-500/25 flex items-center justify-center gap-1.5 text-xs sm:text-sm transition-all duration-150 hover:-translate-y-0.5 cursor-pointer"
+                >
+                  <ListMusic size={15} className="shrink-0" />
+                  <span className="truncate">Chọn Bài Nghe</span>
+                </button>
 
-              <button
-                onClick={() => navigate('/bino/dialogue/3')}
-                className="px-3.5 py-2.5 sm:px-4 sm:py-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold rounded-2xl border border-slate-300 dark:border-slate-700 flex items-center justify-center gap-1.5 text-xs sm:text-sm shadow-xs transition-all duration-150 hover:-translate-y-0.5 cursor-pointer"
-              >
-                <Play size={14} fill="currentColor" className="text-amber-500" />
-                <span>Bài Mẫu (Hội thoại 3)</span>
-              </button>
+                {/* Desktop inline buttons (hidden on mobile where they sit in the swipe bar below) */}
+                <button
+                  onClick={() => navigate('/bino/dialogue/3')}
+                  className="hidden sm:flex px-4 py-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold rounded-2xl border border-slate-300 dark:border-slate-700 items-center justify-center gap-1.5 text-sm shadow-xs transition-all duration-150 hover:-translate-y-0.5 cursor-pointer"
+                >
+                  <Play size={14} fill="currentColor" className="text-amber-500" />
+                  <span>Bài Mẫu (Hội thoại 3)</span>
+                </button>
 
-              <button
-                onClick={() => navigate('/bino/reader')}
-                className="px-3.5 py-2.5 sm:px-4 sm:py-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold rounded-2xl border border-slate-300 dark:border-slate-700 flex items-center justify-center gap-1.5 text-xs sm:text-sm shadow-xs transition-all duration-150 hover:-translate-y-0.5 cursor-pointer"
-              >
-                <BookMarked size={15} className="text-blue-500" />
-                <span>Mở Ebook</span>
-              </button>
+                {/* <button
+                  onClick={() => navigate('/bino/reader')}
+                  className="hidden sm:flex px-4 py-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold rounded-2xl border border-slate-300 dark:border-slate-700 items-center justify-center gap-1.5 text-sm shadow-xs transition-all duration-150 hover:-translate-y-0.5 cursor-pointer"
+                >
+                  <BookMarked size={15} className="text-blue-500" />
+                  <span>Mở Ebook</span>
+                </button> */}
 
-              <button
-                onClick={() => navigate('/bino/flashcards')}
-                className="px-3.5 py-2.5 sm:px-4 sm:py-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold rounded-2xl border border-slate-300 dark:border-slate-700 flex items-center justify-center gap-1.5 text-xs sm:text-sm shadow-xs transition-all duration-150 hover:-translate-y-0.5 cursor-pointer"
-              >
-                <Layers size={15} className="text-emerald-500" />
-                <span>Ôn Từ Vựng (SRS)</span>
-              </button>
+                <button
+                  onClick={() => navigate('/bino/flashcards')}
+                  className="hidden sm:flex px-4 py-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold rounded-2xl border border-slate-300 dark:border-slate-700 items-center justify-center gap-1.5 text-sm shadow-xs transition-all duration-150 hover:-translate-y-0.5 cursor-pointer"
+                >
+                  <Layers size={15} className="text-emerald-500" />
+                  <span>Ôn Từ Vựng (SRS)</span>
+                </button>
 
-              <button
-                onClick={() => setIsGuideModalOpen(true)}
-                className="px-3.5 py-2.5 sm:px-4 sm:py-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-black rounded-2xl shadow-xs shadow-amber-500/25 flex items-center justify-center gap-1.5 text-xs sm:text-sm transition-all duration-150 hover:-translate-y-0.5 cursor-pointer"
-              >
-                <Lightbulb size={16} className="text-white" />
-                <span>Cách Học 4 Bước 💡</span>
-              </button>
+                <button
+                  onClick={() => setIsGuideModalOpen(true)}
+                  className="hidden sm:flex px-4 py-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-black rounded-2xl shadow-xs shadow-amber-500/25 items-center justify-center gap-1.5 text-sm transition-all duration-150 hover:-translate-y-0.5 cursor-pointer"
+                >
+                  <Lightbulb size={16} className="text-white" />
+                  <span>Cách Học 4 Bước 💡</span>
+                </button>
+              </div>
+
+              {/* Mobile Horizontal Swipe Strip for Secondary Actions (1 compact row instead of 3 rows) */}
+              <div className="flex sm:hidden items-center gap-2 overflow-x-auto whitespace-nowrap hide-scrollbar pb-0.5">
+                <button
+                  onClick={() => setIsGuideModalOpen(true)}
+                  className="px-3 py-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-black rounded-xl text-xs flex items-center gap-1.5 shrink-0 shadow-2xs cursor-pointer"
+                >
+                  <Lightbulb size={13} />
+                  <span>Cách Học 4 Bước 💡</span>
+                </button>
+                <button
+                  onClick={() => navigate('/bino/flashcards')}
+                  className="px-3 py-2 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold rounded-xl border border-slate-200 dark:border-slate-700 flex items-center gap-1.5 text-xs shrink-0 cursor-pointer"
+                >
+                  <Layers size={13} className="text-emerald-500" />
+                  <span>Ôn Từ Vựng SRS</span>
+                </button>
+                {/* <button
+                  onClick={() => navigate('/bino/reader')}
+                  className="px-3 py-2 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold rounded-xl border border-slate-200 dark:border-slate-700 flex items-center gap-1.5 text-xs shrink-0 cursor-pointer"
+                >
+                  <BookMarked size={13} className="text-blue-500" />
+                  <span>Mở Ebook</span>
+                </button> */}
+                <button
+                  onClick={() => navigate('/bino/dialogue/3')}
+                  className="px-3 py-2 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold rounded-xl border border-slate-200 dark:border-slate-700 flex items-center gap-1.5 text-xs shrink-0 cursor-pointer"
+                >
+                  <Play size={12} fill="currentColor" className="text-amber-500" />
+                  <span>Bài Mẫu #3</span>
+                </button>
+              </div>
             </div>
           </div>
 
-          {/* Progress Mini Card */}
-          <div className="w-full lg:w-72 bg-slate-50 dark:bg-slate-800 rounded-3xl p-5 border border-slate-200 dark:border-slate-700 shadow-xs flex flex-col justify-between space-y-4 shrink-0">
-            <div>
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Tiến độ bài học</span>
+          {/* Progress Mini Card (Compact inline bar on mobile, card on lg) */}
+          <div className="w-full lg:w-72 bg-slate-50 dark:bg-slate-800 rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 border border-slate-200 dark:border-slate-700 shadow-xs flex flex-col justify-between space-y-2 sm:space-y-4 shrink-0">
+            <div className="flex items-center justify-between lg:block">
+              <div className="flex items-center gap-2 lg:justify-between">
+                <span className="text-[11px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Tiến độ học</span>
                 <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300">
                   {book?.progressPercentage || 0}%
                 </span>
               </div>
-              <div className="flex items-baseline gap-2 mt-1.5">
-                <span className="text-3xl font-black text-slate-900 dark:text-white">
+              <div className="flex items-baseline gap-1.5 lg:mt-1.5">
+                <span className="text-lg sm:text-3xl font-black text-slate-900 dark:text-white">
                   {book?.completedLessonsCount || 0}
                 </span>
-                <span className="text-xs text-slate-500 dark:text-slate-400 font-bold">/ {book?.totalLessonsCount || 72} bài hoàn thành</span>
+                <span className="text-xs text-slate-500 dark:text-slate-400 font-bold">/ {book?.totalLessonsCount || 72} bài</span>
               </div>
             </div>
 
             {/* Progress Bar */}
             <div className="space-y-1.5">
-              <div className="w-full bg-slate-200 dark:bg-slate-700 h-2.5 rounded-full overflow-hidden p-0.5">
+              <div className="w-full bg-slate-200 dark:bg-slate-700 h-2 sm:h-2.5 rounded-full overflow-hidden p-0.5">
                 <div
                   style={{ width: `${book?.progressPercentage || 0}%` }}
                   className="bg-gradient-to-r from-amber-500 to-orange-500 h-full rounded-full transition-all duration-700"
@@ -174,7 +209,7 @@ export default function BinoBookOverviewPage() {
               </div>
             </div>
 
-            <div className="text-[11px] text-slate-600 dark:text-slate-300 flex items-center gap-1.5 pt-2 border-t border-slate-200/80 dark:border-slate-700 font-medium">
+            <div className="hidden sm:flex text-[11px] text-slate-600 dark:text-slate-300 items-center gap-1.5 pt-2 border-t border-slate-200/80 dark:border-slate-700 font-medium">
               <CheckCircle2 size={14} className="text-emerald-500 shrink-0" />
               <span>Trọn bộ 12 Chương • 72 Bài Thực Chiến</span>
             </div>
@@ -184,40 +219,40 @@ export default function BinoBookOverviewPage() {
 
 
       {/* ========================================================================= */}
-      {/* 2. MOBILE HORIZONTAL CHAPTERS SWIPE CAROUSEL (< lg) */}
+      {/* 2. MOBILE HORIZONTAL CHAPTERS SWIPE CAROUSEL (< lg) - STICKY & SLEEK */}
       {/* ========================================================================= */}
-      <div className="block lg:hidden space-y-2">
-        <div className="flex items-center justify-between px-1">
-          <span className="text-xs font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-            <Compass size={14} className="text-blue-500" /> Chọn Chương ({book?.chapters?.length || 12})
+      <div className="block lg:hidden sticky top-14 z-30 -mx-3 px-3 py-2 bg-slate-50/95 dark:bg-slate-950/95 backdrop-blur-md border-b border-slate-200/60 dark:border-slate-800/80 space-y-1.5">
+        <div className="flex items-center justify-between px-0.5">
+          <span className="text-[11px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1">
+            <Compass size={13} className="text-blue-500" /> Chọn Chương ({book?.chapters?.length || 12})
           </span>
-          <span className="text-[11px] text-amber-600 dark:text-amber-400 font-bold">
-            Vuốt ngang để chọn ➔
+          <span className="text-[10px] text-amber-600 dark:text-amber-400 font-bold">
+            Vuốt ngang ➔
           </span>
         </div>
 
-        <div className="flex gap-2 overflow-x-auto pb-2 pt-1 px-1 custom-scrollbar scroll-smooth snap-x">
+        <div className="flex gap-1.5 overflow-x-auto pb-0.5 hide-scrollbar scroll-smooth snap-x">
           {book?.chapters?.map((chap) => {
             const isSelected = chap.chapterNumber === selectedChapter;
             return (
               <button
                 key={chap.id}
                 onClick={() => setSelectedChapter(chap.chapterNumber)}
-                className={`relative px-4 py-2.5 rounded-2xl text-xs font-bold transition-all shrink-0 snap-start flex items-center gap-2 border ${
+                className={`relative px-3 py-2 rounded-xl text-xs font-bold transition-all shrink-0 snap-start flex items-center gap-2 border ${
                   isSelected
-                    ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-500/30'
-                    : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-slate-300'
+                    ? 'bg-blue-600 text-white border-blue-600 shadow-sm shadow-blue-500/25'
+                    : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:border-slate-300'
                 }`}
               >
-                <span className={`w-6 h-6 rounded-lg flex items-center justify-center text-[11px] font-black ${
-                  isSelected ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
+                <span className={`w-5 h-5 rounded-md flex items-center justify-center text-[10px] font-black ${
+                  isSelected ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
                 }`}>
                   {chap.chapterNumber < 10 ? `0${chap.chapterNumber}` : chap.chapterNumber}
                 </span>
 
                 <div className="text-left">
-                  <div className="truncate max-w-[120px]">{chap.title}</div>
-                  <div className={`text-[10px] ${isSelected ? 'text-blue-100' : 'text-slate-400'}`}>
+                  <div className="truncate max-w-[110px] text-[11px] leading-tight">{chap.title}</div>
+                  <div className={`text-[9px] leading-tight ${isSelected ? 'text-blue-100' : 'text-slate-400'}`}>
                     {chap.completedLessons}/{chap.totalLessons} bài
                   </div>
                 </div>
@@ -225,7 +260,7 @@ export default function BinoBookOverviewPage() {
                 {isSelected && (
                   <motion.div 
                     layoutId="activeMobilePill"
-                    className="absolute inset-0 rounded-2xl border-2 border-blue-400 pointer-events-none"
+                    className="absolute inset-0 rounded-xl border-2 border-blue-400 pointer-events-none"
                     transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                   />
                 )}
@@ -322,21 +357,21 @@ export default function BinoBookOverviewPage() {
                         const chapterDialogueIds = activeChapter.dialogues?.map(d => d.id) || [];
                         openPlaylistWith(chapterDialogueIds, true);
                       }}
-                      className="px-3.5 py-2 bg-[#0071e3] hover:bg-[#0077ED] dark:bg-sky-500 dark:hover:bg-sky-400 text-white rounded-xl font-bold text-xs shadow-[0_4px_14px_rgba(0,113,227,0.25)] flex items-center gap-1.5 transition-all duration-150 hover:-translate-y-0.5 cursor-pointer"
+                      className="flex-1 sm:flex-initial justify-center px-3 sm:px-3.5 py-2 bg-[#0071e3] hover:bg-[#0077ED] dark:bg-sky-500 dark:hover:bg-sky-400 text-white rounded-xl font-bold text-xs shadow-[0_4px_14px_rgba(0,113,227,0.25)] flex items-center gap-1.5 transition-all duration-150 hover:-translate-y-0.5 cursor-pointer"
                       title={`Phát liên tục tất cả bài học Chương ${activeChapter.chapterNumber}`}
                     >
-                      <Play size={13} fill="currentColor" />
-                      <span>Nghe Cả Chương {activeChapter.chapterNumber}</span>
+                      <Play size={13} fill="currentColor" className="shrink-0" />
+                      <span className="truncate">Nghe Chương {activeChapter.chapterNumber}</span>
                     </button>
 
                     {activeChapter.hasBonus && (
                       <button
                         onMouseEnter={() => binoApi.prefetchBonus(activeChapter.chapterNumber)}
                         onClick={() => navigate(`/bino/chapter/${activeChapter.chapterNumber}/bonus`)}
-                        className="px-3.5 py-2 bg-amber-50 dark:bg-amber-950/80 hover:bg-amber-100 dark:hover:bg-amber-900/60 text-amber-900 dark:text-amber-300 rounded-xl font-black text-xs border border-amber-300 dark:border-amber-700 flex items-center gap-1.5 transition-all duration-150 hover:-translate-y-0.5 shadow-2xs cursor-pointer"
+                        className="flex-1 sm:flex-initial justify-center px-3 sm:px-3.5 py-2 bg-amber-50 dark:bg-amber-950/80 hover:bg-amber-100 dark:hover:bg-amber-900/60 text-amber-900 dark:text-amber-300 rounded-xl font-black text-xs border border-amber-300 dark:border-amber-700 flex items-center gap-1.5 transition-all duration-150 hover:-translate-y-0.5 shadow-2xs cursor-pointer"
                       >
-                        <Star size={13} className="text-amber-500 fill-amber-500" />
-                        <span>Mục B, C & Mindset</span>
+                        <Star size={13} className="text-amber-500 fill-amber-500 shrink-0" />
+                        <span className="truncate">Mục B, C & Mindset</span>
                       </button>
                     )}
                   </div>

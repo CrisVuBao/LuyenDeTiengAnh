@@ -456,13 +456,13 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
     : 0;
 
   return (
-    <div className="max-w-xl mx-auto space-y-4">
+    <div className="max-w-xl mx-auto space-y-3 sm:space-y-4">
       
       {/* 1. Deck Filter Tabs (Apple Pill Design) */}
-      <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-xs">
+      <div className="flex items-center gap-1 sm:gap-1.5 p-1 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-[11px] sm:text-xs">
         <button
           onClick={() => handleSwitchFilter('unmastered')}
-          className={`flex-1 py-1.5 px-3 rounded-xl font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+          className={`flex-1 py-1.5 px-2 sm:px-3 rounded-xl font-bold transition-all flex items-center justify-center gap-1 sm:gap-1.5 cursor-pointer ${
             filterMode === 'unmastered'
               ? 'bg-white dark:bg-slate-800 text-[#0071e3] dark:text-sky-400 shadow-sm'
               : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
@@ -479,7 +479,7 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
 
         <button
           onClick={() => handleSwitchFilter('all')}
-          className={`flex-1 py-1.5 px-3 rounded-xl font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+          className={`flex-1 py-1.5 px-2 sm:px-3 rounded-xl font-bold transition-all flex items-center justify-center gap-1 sm:gap-1.5 cursor-pointer ${
             filterMode === 'all'
               ? 'bg-white dark:bg-slate-800 text-[#0071e3] dark:text-sky-400 shadow-sm'
               : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
@@ -497,15 +497,16 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
         <button
           onClick={() => handleSwitchFilter('starred')}
           disabled={starredList.length === 0}
-          className={`flex-1 py-1.5 px-3 rounded-xl font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed ${
+          className={`flex-1 py-1.5 px-2 sm:px-3 rounded-xl font-bold transition-all flex items-center justify-center gap-1 sm:gap-1.5 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed ${
             filterMode === 'starred'
               ? 'bg-white dark:bg-slate-800 text-amber-600 dark:text-amber-400 shadow-sm'
               : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
           }`}
           title={starredList.length === 0 ? 'Chưa có từ nào được đánh dấu sao' : 'Danh sách từ vựng bạn đã đánh dấu sao'}
         >
-          <Star size={12} fill={starredList.length > 0 ? 'currentColor' : 'none'} className={starredList.length > 0 ? 'text-amber-500' : ''} />
-          <span>Đã gắn sao</span>
+          <Star size={12} fill={starredList.length > 0 ? 'currentColor' : 'none'} className={`shrink-0 ${starredList.length > 0 ? 'text-amber-500' : ''}`} />
+          <span className="sm:hidden">Gắn sao</span>
+          <span className="hidden sm:inline">Đã gắn sao</span>
           <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-extrabold ${
             filterMode === 'starred' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/60 dark:text-amber-300' : 'bg-slate-200 dark:bg-slate-800'
           }`}>
@@ -515,13 +516,13 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
       </div>
 
       {/* 2. Top Controls: Session progress & Settings */}
-      <div className="flex items-center justify-between gap-4 pt-1">
+      <div className="flex items-center justify-between gap-3 sm:gap-4 pt-0.5 sm:pt-1">
         <div className="flex-1">
-          <div className="flex justify-between items-center text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5">
-            <span>Tiến độ thẻ: {currentIndex + 1} / {sessionDeck.length}</span>
+          <div className="flex justify-between items-center text-[11px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">
+            <span>Thẻ {currentIndex + 1} / {sessionDeck.length}</span>
             <span>{progressPercent}%</span>
           </div>
-          <div className="w-full h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+          <div className="w-full h-1.5 sm:h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
             <motion.div 
               className="h-full bg-gradient-to-r from-[#0071e3] to-sky-400 rounded-full"
               initial={{ width: 0 }}
@@ -574,7 +575,7 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
       {/* 3. 3D Flip Card Container (Instant, Snappy Flip - No Lag) */}
       <div 
         onClick={handleFlip}
-        className="relative h-[340px] sm:h-[380px] w-full cursor-pointer select-none perspective-[1200px]"
+        className="relative h-[260px] sm:h-[380px] w-full cursor-pointer select-none perspective-[1200px]"
       >
         <motion.div
           className="w-full h-full relative [transform-style:preserve-3d]"
@@ -583,11 +584,11 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
         >
           {/* Card Front: English Word & Audio */}
           <div 
-            className="absolute inset-0 w-full h-full rounded-3xl p-8 bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-[0_10px_35px_rgb(0,0,0,0.06)] flex flex-col justify-between [backface-visibility:hidden]"
+            className="absolute inset-0 w-full h-full rounded-2xl sm:rounded-3xl p-5 sm:p-8 bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-[0_10px_35px_rgb(0,0,0,0.06)] flex flex-col justify-between [backface-visibility:hidden]"
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-50 dark:bg-blue-950/50 text-[#0071e3] dark:text-sky-400 border border-blue-200/60 dark:border-blue-900/60">
+                <span className="px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[11px] sm:text-xs font-bold uppercase tracking-wider bg-blue-50 dark:bg-blue-950/50 text-[#0071e3] dark:text-sky-400 border border-blue-200/60 dark:border-blue-900/60">
                   {currentWord.pos || 'vocabulary'}
                 </span>
                 {isMastered && (
@@ -614,31 +615,31 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
             </div>
 
             {/* Word Center */}
-            <div className="text-center space-y-3 my-auto">
-              <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+            <div className="text-center space-y-2 sm:space-y-3 my-auto">
+              <h2 className="text-2xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
                 {currentWord.word}
               </h2>
               {currentWord.ipa && (
-                <p className="text-sm sm:text-base font-medium text-slate-500 dark:text-slate-400 font-mono tracking-wide">
+                <p className="text-xs sm:text-base font-medium text-slate-500 dark:text-slate-400 font-mono tracking-wide">
                   {currentWord.ipa}
                 </p>
               )}
             </div>
 
             {/* Bottom Actions of Front */}
-            <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800/80">
+            <div className="flex items-center justify-between pt-3 sm:pt-4 border-t border-slate-100 dark:border-slate-800/80">
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   speakWord(currentWord.word);
                 }}
-                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-[#0071e3] dark:text-sky-400 font-bold text-xs hover:bg-blue-100 transition-colors cursor-pointer active:scale-95"
+                className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-[#0071e3] dark:text-sky-400 font-bold text-xs hover:bg-blue-100 transition-colors cursor-pointer active:scale-95"
               >
-                <Volume2 size={16} />
+                <Volume2 size={15} />
                 <span>Nghe phát âm</span>
               </button>
 
-              <span className="text-xs text-slate-400 flex items-center gap-1 font-medium">
+              <span className="text-[11px] sm:text-xs text-slate-400 flex items-center gap-1 font-medium">
                 <RotateCw size={13} />
                 <span>Chạm để lật nghĩa</span>
               </span>
@@ -647,26 +648,26 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
 
           {/* Card Back: Vietnamese Meaning & IPA */}
           <div 
-            className="absolute inset-0 w-full h-full rounded-3xl p-8 bg-gradient-to-br from-slate-900 to-slate-950 text-white border border-slate-800 shadow-2xl flex flex-col justify-between [transform:rotateY(180deg)] [backface-visibility:hidden]"
+            className="absolute inset-0 w-full h-full rounded-2xl sm:rounded-3xl p-5 sm:p-8 bg-gradient-to-br from-slate-900 to-slate-950 text-white border border-slate-800 shadow-2xl flex flex-col justify-between [transform:rotateY(180deg)] [backface-visibility:hidden]"
           >
             <div className="flex items-center justify-between">
-              <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-white/10 text-sky-300 border border-white/10">
+              <span className="px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[11px] sm:text-xs font-bold uppercase tracking-wider bg-white/10 text-sky-300 border border-white/10">
                 Nghĩa tiếng Việt
               </span>
               <span className="text-xs text-slate-400 font-mono">{currentWord.ipa}</span>
             </div>
 
             {/* Meaning Center */}
-            <div className="text-center space-y-3 my-auto px-4">
+            <div className="text-center space-y-2 sm:space-y-3 my-auto px-2 sm:px-4">
               <span className="text-xs text-sky-400 font-bold uppercase tracking-widest block">
                 {currentWord.word} ({currentWord.pos})
               </span>
-              <h3 className="text-2xl sm:text-3xl font-black text-amber-300">
+              <h3 className="text-xl sm:text-3xl font-black text-amber-300 leading-snug">
                 {currentWord.meaning}
               </h3>
             </div>
 
-            <div className="flex items-center justify-center pt-4 border-t border-white/10 text-xs text-slate-400 gap-1">
+            <div className="flex items-center justify-center pt-3 sm:pt-4 border-t border-white/10 text-[11px] sm:text-xs text-slate-400 gap-1">
               <span>Đánh giá mức độ ghi nhớ của bạn ở bên dưới</span>
             </div>
           </div>
@@ -674,21 +675,21 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
       </div>
 
       {/* Decision Buttons: "Chưa nhớ" vs "Đã thuộc" */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-2.5 sm:gap-4">
         <button
           onClick={() => handleNextWord(false)}
-          className="py-3.5 px-4 rounded-2xl bg-white dark:bg-slate-900 border border-rose-200 dark:border-rose-900/60 hover:bg-rose-50 dark:hover:bg-rose-950/30 text-rose-600 dark:text-rose-400 font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-sm hover:scale-[1.02] active:scale-95 cursor-pointer"
+          className="py-3 sm:py-3.5 px-4 rounded-2xl bg-white dark:bg-slate-900 border border-rose-200 dark:border-rose-900/60 hover:bg-rose-50 dark:hover:bg-rose-950/30 text-rose-600 dark:text-rose-400 font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 shadow-sm hover:scale-[1.02] active:scale-95 cursor-pointer"
         >
-          <XCircle size={18} />
+          <XCircle size={17} />
           <span>Chưa Nhớ</span>
           <span className="hidden sm:inline text-[11px] opacity-60 font-mono ml-1">[←]</span>
         </button>
 
         <button
           onClick={() => handleNextWord(true)}
-          className="py-3.5 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20 hover:scale-[1.02] active:scale-95 cursor-pointer"
+          className="py-3 sm:py-3.5 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20 hover:scale-[1.02] active:scale-95 cursor-pointer"
         >
-          <CheckCircle2 size={18} />
+          <CheckCircle2 size={17} />
           <span>Đã Thuộc</span>
           <span className="hidden sm:inline text-[11px] opacity-75 font-mono ml-1">[→]</span>
         </button>

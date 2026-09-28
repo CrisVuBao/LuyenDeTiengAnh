@@ -684,7 +684,7 @@ export default function BinoDialogueStudyPage() {
   const currentDictationLine = lesson?.dialogueLines?.[dictationIndex];
 
   return (
-    <div className="space-y-5 sm:space-y-6 max-w-5xl mx-auto pb-16 px-1 sm:px-0">
+    <div className="space-y-3.5 sm:space-y-6 max-w-5xl mx-auto pb-12 sm:pb-16">
       
       {/* ========================================================================= */}
       {/* 1. TOP BREADCRUMB & COMPLETION TOGGLE */}
@@ -692,79 +692,80 @@ export default function BinoDialogueStudyPage() {
       <motion.div 
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3.5"
+        className="flex items-start sm:items-center justify-between gap-2.5 sm:gap-3.5"
       >
-        <div className="flex items-center gap-3">
+        <div className="flex items-start sm:items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => navigate('/bino')}
-            className="p-2.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-750 text-slate-600 dark:text-slate-300 transition-all shadow-sm shrink-0"
+            className="p-2 sm:p-2.5 rounded-xl sm:rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-750 text-slate-600 dark:text-slate-300 transition-all shadow-sm shrink-0 mt-0.5 sm:mt-0 cursor-pointer"
             title="Quay về danh sách chương"
           >
-            <ArrowLeft size={18} />
+            <ArrowLeft size={17} />
           </motion.button>
-          <div>
-            <div className="flex items-center gap-2 text-xs font-bold text-amber-600 dark:text-amber-400">
-              <span>Chương {lesson.chapterNumber < 10 ? `0${lesson.chapterNumber}` : lesson.chapterNumber}: {lesson.chapterTitle}</span>
+          <div className="min-w-0">
+            <div className="flex items-center gap-1.5 text-[11px] sm:text-xs font-bold text-amber-600 dark:text-amber-400 truncate">
+              <span className="truncate">Chương {lesson.chapterNumber < 10 ? `0${lesson.chapterNumber}` : lesson.chapterNumber}: {lesson.chapterTitle}</span>
               <span>•</span>
-              <span>Hội thoại {lesson.dialogueNumber}</span>
+              <span className="shrink-0">Bài {lesson.dialogueNumber}</span>
             </div>
-            <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight leading-snug">
+            <h1 className="text-base sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight leading-snug line-clamp-2 sm:line-clamp-none">
               {lesson.title}
             </h1>
           </div>
         </div>
 
-        {/* Complete Toggle */}
+        {/* Complete Toggle - Compact pill on mobile so it sits on the same top row! */}
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.96 }}
           onClick={handleToggleComplete}
-          className={`w-full sm:w-auto px-4 py-2.5 rounded-2xl font-extrabold text-xs flex items-center justify-center gap-2 transition-all shadow-sm ${
+          className={`shrink-0 px-2.5 sm:px-4 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl font-extrabold text-[11px] sm:text-xs flex items-center justify-center gap-1.5 sm:gap-2 transition-all shadow-sm cursor-pointer ${
             isCompleted
               ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800'
               : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-emerald-500'
           }`}
         >
-          <CheckCircle2 size={16} className={isCompleted ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'} />
-          <span>{isCompleted ? 'Đã Hoàn Thành ✓' : 'Đánh Dấu Hoàn Thành'}</span>
+          <CheckCircle2 size={15} className={isCompleted ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'} />
+          <span className="hidden sm:inline">{isCompleted ? 'Đã Hoàn Thành ✓' : 'Đánh Dấu Hoàn Thành'}</span>
+          <span className="sm:hidden">{isCompleted ? 'Đã Xong ✓' : 'Hoàn thành'}</span>
         </motion.button>
       </motion.div>
 
       {/* ========================================================================= */}
-      {/* 2. STUDIO AUDIO TOOLBAR - MOBILE-FIRST REDESIGN */}
+      {/* 2. STUDIO AUDIO TOOLBAR - MOBILE-FIRST SLEEK REDESIGN */}
       {/* ========================================================================= */}
       <motion.div 
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`glass-card p-3.5 sm:p-4 rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-lg space-y-3 bg-gradient-to-br from-amber-500/10 via-white to-blue-500/10 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900 relative ${
+        className={`glass-card p-3 sm:p-4 rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-lg space-y-2.5 bg-gradient-to-br from-amber-500/10 via-white to-blue-500/10 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900 relative ${
           isRepeatMenuOpen ? 'z-40' : 'z-20'
         }`}
       >
         {/* TẦNG 1: NÚT PLAY/PAUSE CHÍNH & LIVE SOUNDWAVE */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 sm:gap-3">
           
           {/* Main Big Play/Pause Button with Pulse Glow */}
           <motion.button
             whileHover={{ scale: 1.01 }}
             whileTap={{ scale: 0.98 }}
             onClick={playAllLines}
-            className={`w-full sm:w-auto px-5 py-3 rounded-2xl font-extrabold text-xs sm:text-sm flex items-center justify-center gap-3 transition-all shadow-md ${
+            className={`w-full sm:w-auto px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2.5 sm:gap-3 transition-all shadow-md cursor-pointer ${
               isPlayingAll
                 ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-amber-500/30 animate-pulse-glow'
                 : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-blue-500/25'
             }`}
           >
             <div className="w-7 h-7 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
-              {isPlayingAll ? <Pause size={16} /> : <Play size={16} fill="currentColor" />}
+              {isPlayingAll ? <Pause size={15} /> : <Play size={15} fill="currentColor" />}
             </div>
 
-            <div className="text-left flex-1 sm:flex-none">
-              <div className="text-xs font-black tracking-wide">
+            <div className="text-left flex-1 sm:flex-none min-w-0">
+              <div className="text-xs font-black tracking-wide truncate">
                 {isPlayingAll ? 'TẠM DỪNG BÀI HỘI THOẠI' : 'NGHE TOÀN BỘ HỘI THOẠI'}
               </div>
-              <div className="text-[11px] font-semibold opacity-90">
+              <div className="text-[10px] sm:text-[11px] font-semibold opacity-90 truncate">
                 {isPlayingAll
                   ? activeLineIndex !== null
                     ? `Đang đọc câu ${activeLineIndex + 1}/${lesson?.dialogueLines?.length || 0} • ${checkIsInfinite(repeatCount) ? `Vòng ${currentLoopCycle}/∞` : `Vòng ${currentLoopCycle}/${repeatCount}`}`
@@ -775,7 +776,7 @@ export default function BinoDialogueStudyPage() {
 
             {/* Equalizer Wave animated when playing */}
             {isPlayingAll && (
-              <div className="flex items-end gap-0.5 h-4 ml-2">
+              <div className="flex items-end gap-0.5 h-4 ml-1 shrink-0">
                 <span className="equalizer-bar" />
                 <span className="equalizer-bar" />
                 <span className="equalizer-bar" />
@@ -785,20 +786,20 @@ export default function BinoDialogueStudyPage() {
           </motion.button>
 
           {/* Quick Info & Playlist Shortcut on the right */}
-          <div className="flex items-center justify-between sm:justify-end gap-2 shrink-0">
+          <div className="grid grid-cols-2 sm:flex items-center justify-between sm:justify-end gap-2 shrink-0">
             {/* Vietsub Toggle Button */}
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowVietsub(prev => !prev)}
-              className={`px-3 py-2 rounded-2xl border text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm ${
+              className={`px-3 py-2 rounded-xl sm:rounded-2xl border text-xs font-bold flex items-center justify-center gap-1.5 transition-all shadow-2xs cursor-pointer ${
                 showVietsub 
                   ? 'bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-900/60'
                   : 'bg-white dark:bg-slate-800 text-slate-500 border-slate-200 dark:border-slate-700'
               }`}
               title={showVietsub ? 'Tắt dịch tiếng Việt' : 'Bật dịch tiếng Việt'}
             >
-              {showVietsub ? <Eye size={14} className="text-rose-500" /> : <EyeOff size={14} />}
-              <span className="font-vietsub">{showVietsub ? 'Vietsub: Bật' : 'Vietsub: Tắt'}</span>
+              {showVietsub ? <Eye size={14} className="text-rose-500 shrink-0" /> : <EyeOff size={14} className="shrink-0" />}
+              <span className="font-vietsub truncate">{showVietsub ? 'Vietsub: Bật' : 'Vietsub: Tắt'}</span>
             </motion.button>
 
             {/* Continuous Playlist Modal Button */}
@@ -813,22 +814,22 @@ export default function BinoDialogueStudyPage() {
                   book
                 });
               }}
-              className="px-3 py-2 rounded-2xl border border-blue-200 dark:border-blue-800 bg-blue-50/80 hover:bg-blue-100 dark:bg-blue-950/50 text-blue-800 dark:text-blue-300 text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm"
+              className="px-3 py-2 rounded-xl sm:rounded-2xl border border-blue-200 dark:border-blue-800 bg-blue-50/80 hover:bg-blue-100 dark:bg-blue-950/50 text-blue-800 dark:text-blue-300 text-xs font-bold flex items-center justify-center gap-1.5 transition-all shadow-2xs cursor-pointer"
               title="Mở trình phát liên tục tất cả các bài"
             >
-              <ListMusic size={15} className="text-blue-600 dark:text-blue-400" />
-              <span>Phát Nhiều Bài 🎧</span>
+              <ListMusic size={14} className="text-blue-600 dark:text-blue-400 shrink-0" />
+              <span className="truncate">Phát Nhiều Bài 🎧</span>
             </motion.button>
           </div>
         </div>
 
-        {/* TẦNG 2: THANH ACTION CHUYÊN NGHIỆP (Tốc độ, Lặp lại, Giọng đọc AI) */}
-        <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100 dark:border-slate-800/80">
+        {/* TẦNG 2: THANH ACTION CHUYÊN NGHIỆP (Tốc độ cuộn ngang 1 dòng + Lặp, Giọng AI, Cách học) */}
+        <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center justify-between gap-2 pt-2 border-t border-slate-100 dark:border-slate-800/80">
           
-          <div className="flex flex-wrap items-center gap-2">
-            {/* Speed selector (Có chế độ đọc chậm rãi nghe kỹ 0.6x, 0.75x, 0.85x) */}
-            <div className="flex flex-wrap items-center rounded-xl bg-slate-100 dark:bg-slate-800 p-1 text-[11px] font-bold border border-slate-200/60 dark:border-slate-700 gap-0.5">
-              <span className="text-[10px] text-slate-400 px-1.5 font-extrabold uppercase hidden sm:inline items-center gap-1">
+          <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-2">
+            {/* Speed selector - Single horizontal scrollable line on mobile */}
+            <div className="flex items-center overflow-x-auto whitespace-nowrap hide-scrollbar rounded-xl bg-slate-100 dark:bg-slate-800 p-1 text-[11px] font-bold border border-slate-200/60 dark:border-slate-700 gap-0.5">
+              <span className="text-[10px] text-slate-400 px-1.5 font-extrabold uppercase shrink-0 flex items-center gap-1">
                 Tốc độ:
               </span>
               {SPEECH_SPEED_PRESETS.map((preset) => {
@@ -839,7 +840,7 @@ export default function BinoDialogueStudyPage() {
                     type="button"
                     onClick={() => handleChangeSpeed(preset.value)}
                     title={preset.desc}
-                    className={`px-2 py-1 rounded-lg transition-all flex items-center gap-1 ${
+                    className={`px-2 py-1 rounded-lg transition-all flex items-center gap-1 shrink-0 cursor-pointer ${
                       isSelected
                         ? preset.isSlow
                           ? 'bg-emerald-600 text-white shadow-sm font-black'
@@ -859,187 +860,188 @@ export default function BinoDialogueStudyPage() {
               })}
             </div>
 
-            {/* Repeat Selector Popover */}
-            <div className="relative z-50" ref={repeatMenuRef}>
-              <motion.button
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setIsRepeatMenuOpen(prev => !prev)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm border ${
-                  checkIsInfinite(repeatCount)
-                    ? 'bg-purple-100 dark:bg-purple-950/70 text-purple-900 dark:text-purple-200 border-purple-300 dark:border-purple-700 shadow-purple-500/20'
-                    : repeatCount !== 1
-                    ? 'bg-amber-100 dark:bg-amber-950/70 text-amber-900 dark:text-amber-200 border-amber-300 dark:border-amber-700 shadow-amber-500/20'
-                    : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50'
-                }`}
-              >
-                {checkIsInfinite(repeatCount) ? (
-                  <InfinityIcon size={15} className="text-purple-600 dark:text-purple-400 animate-pulse" />
-                ) : (
-                  <Repeat size={13} className={repeatCount !== 1 ? 'text-amber-600 dark:text-amber-400' : 'text-slate-400'} />
-                )}
-                <span>
-                  {checkIsInfinite(repeatCount)
-                    ? 'Lặp Vô Hạn (∞)'
-                    : repeatCount === 1
-                    ? 'Lặp: 1 lần'
-                    : `Lặp: ${repeatCount} lần`}
-                </span>
-                {(checkIsInfinite(repeatCount) || repeatCount !== 1) && (
-                  <span className="text-[10px] px-1.5 py-0.2 rounded font-black bg-amber-200/90 dark:bg-amber-900/80 text-amber-950 dark:text-amber-200">
-                    {repeatScope === 'all' ? 'Toàn bài' : 'Từng câu'}
+            {/* Secondary Controls Row: Repeat + Voice AI + 4-Step Guide in 1 clean row on mobile */}
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              {/* Repeat Selector Popover */}
+              <div className="relative z-50 shrink-0" ref={repeatMenuRef}>
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setIsRepeatMenuOpen(prev => !prev)}
+                  className={`px-2.5 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold flex items-center gap-1 transition-all shadow-2xs border cursor-pointer ${
+                    checkIsInfinite(repeatCount)
+                      ? 'bg-purple-100 dark:bg-purple-950/70 text-purple-900 dark:text-purple-200 border-purple-300 dark:border-purple-700'
+                      : repeatCount !== 1
+                      ? 'bg-amber-100 dark:bg-amber-950/70 text-amber-900 dark:text-amber-200 border-amber-300 dark:border-amber-700'
+                      : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50'
+                  }`}
+                >
+                  {checkIsInfinite(repeatCount) ? (
+                    <InfinityIcon size={14} className="text-purple-600 dark:text-purple-400 animate-pulse shrink-0" />
+                  ) : (
+                    <Repeat size={12} className={repeatCount !== 1 ? 'text-amber-600 dark:text-amber-400 shrink-0' : 'text-slate-400 shrink-0'} />
+                  )}
+                  <span className="whitespace-nowrap">
+                    {checkIsInfinite(repeatCount)
+                      ? 'Lặp: ∞'
+                      : `Lặp: ${repeatCount}x`}
                   </span>
-                )}
-                <ChevronDown size={13} className={`text-slate-400 transition-transform ${isRepeatMenuOpen ? 'rotate-180' : ''}`} />
-              </motion.button>
+                  {(checkIsInfinite(repeatCount) || repeatCount !== 1) && (
+                    <span className="hidden sm:inline text-[10px] px-1.5 py-0.2 rounded font-black bg-amber-200/90 dark:bg-amber-900/80 text-amber-950 dark:text-amber-200">
+                      {repeatScope === 'all' ? 'Toàn bài' : 'Từng câu'}
+                    </span>
+                  )}
+                  <ChevronDown size={12} className={`text-slate-400 transition-transform shrink-0 ${isRepeatMenuOpen ? 'rotate-180' : ''}`} />
+                </motion.button>
 
-              {/* Repeat Popover Dropdown */}
-              {isRepeatMenuOpen && (
-                <div className="absolute top-full left-0 mt-2 z-50 w-80 max-w-[calc(100vw-2.5rem)] p-4 bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 space-y-4 animate-fade-in ring-1 ring-black/10 dark:ring-white/10">
-                  <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
-                    <div className="flex items-center gap-2">
-                      <Repeat size={16} className="text-amber-500" />
-                      <span className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">
-                        Cài Đặt Lặp Lại Hội Thoại
-                      </span>
+                {/* Repeat Popover Dropdown */}
+                {isRepeatMenuOpen && (
+                  <div className="absolute top-full left-0 mt-2 z-50 w-80 max-w-[calc(100vw-2rem)] p-4 bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 space-y-4 animate-fade-in ring-1 ring-black/10 dark:ring-white/10">
+                    <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
+                      <div className="flex items-center gap-2">
+                        <Repeat size={16} className="text-amber-500" />
+                        <span className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">
+                          Cài Đặt Lặp Lại Hội Thoại
+                        </span>
+                      </div>
+                      <button
+                        onClick={() => setIsRepeatMenuOpen(false)}
+                        className="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                      >
+                        <X size={14} />
+                      </button>
                     </div>
+
+                    {/* Scope: Lặp toàn bài vs Lặp từng câu */}
+                    <div className="space-y-1.5">
+                      <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400">Kiểu lặp lại:</span>
+                      <div className="grid grid-cols-2 gap-1.5 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl">
+                        <button
+                          onClick={() => handleSelectRepeatScope('all')}
+                          className={`py-1.5 px-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                            repeatScope === 'all'
+                              ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-300 shadow-sm'
+                              : 'text-slate-500 hover:text-slate-800'
+                          }`}
+                        >
+                          <RotateCcw size={12} />
+                          <span>Lặp Toàn Bài</span>
+                        </button>
+                        <button
+                          onClick={() => handleSelectRepeatScope('line')}
+                          className={`py-1.5 px-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                            repeatScope === 'line'
+                              ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-300 shadow-sm'
+                              : 'text-slate-500 hover:text-slate-800'
+                          }`}
+                        >
+                          <Repeat1 size={13} />
+                          <span>Lặp Từng Câu</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Presets */}
+                    <div className="space-y-1.5">
+                      <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400">Số lần lặp lại:</span>
+                      <div className="grid grid-cols-3 gap-1.5">
+                        {[
+                          { label: '1 lần', value: 1 },
+                          { label: '2 lần', value: 2 },
+                          { label: '3 lần', value: 3 },
+                          { label: '5 lần', value: 5 },
+                          { label: '10 lần', value: 10 },
+                          { label: 'Vô hạn ∞', value: 'infinite', isSpecial: true },
+                        ].map(opt => {
+                          const isSelected = opt.isSpecial
+                            ? checkIsInfinite(repeatCount)
+                            : (!checkIsInfinite(repeatCount) && repeatCount === opt.value);
+                          return (
+                            <button
+                              type="button"
+                              key={String(opt.value)}
+                              onClick={() => handleSelectRepeatCount(opt.value)}
+                              className={`py-2 px-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 border ${
+                                isSelected
+                                  ? opt.isSpecial
+                                    ? 'bg-purple-600 text-white border-purple-600 shadow-md ring-2 ring-purple-400/40'
+                                    : 'bg-amber-500 text-white border-amber-500 shadow-md ring-2 ring-amber-400/40'
+                                  : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-amber-400'
+                              }`}
+                            >
+                              {isSelected && <Check size={11} strokeWidth={3} />}
+                              {opt.label}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Custom Input */}
+                    <div className="space-y-1.5 pt-1 border-t border-slate-100 dark:border-slate-800">
+                      <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400">Hoặc tự nhập số lần tùy thích:</span>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="text"
+                          placeholder="Ví dụ: 15, 20 hoặc vô hạn..."
+                          value={customRepeatInput}
+                          onChange={(e) => setCustomRepeatInput(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') handleApplyCustomRepeat();
+                          }}
+                          className="flex-1 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                        />
+                        <button
+                          type="button"
+                          onClick={handleApplyCustomRepeat}
+                          className="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-bold transition-all shadow-sm active:scale-95"
+                        >
+                          Áp Dụng
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Done button */}
                     <button
-                      onClick={() => setIsRepeatMenuOpen(false)}
-                      className="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                      type="button"
+                      onClick={() => {
+                        setIsRepeatMenuOpen(false);
+                        if (checkIsInfinite(repeatCount)) {
+                          toast.success('Đã lưu: Lặp Vô Hạn (∞) ✨', { icon: '♾️' });
+                        } else {
+                          toast.success(`Đã lưu: Lặp ${repeatCount} lần!`);
+                        }
+                      }}
+                      className="w-full py-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold rounded-xl text-xs transition-all shadow-md active:scale-95 flex items-center justify-center gap-1.5"
                     >
-                      <X size={14} />
+                      <Check size={14} />
+                      <span>Xong & Đóng Menu</span>
                     </button>
                   </div>
+                )}
+              </div>
 
-                  {/* Scope: Lặp toàn bài vs Lặp từng câu */}
-                  <div className="space-y-1.5">
-                    <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400">Kiểu lặp lại:</span>
-                    <div className="grid grid-cols-2 gap-1.5 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl">
-                      <button
-                        onClick={() => handleSelectRepeatScope('all')}
-                        className={`py-1.5 px-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
-                          repeatScope === 'all'
-                            ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-300 shadow-sm'
-                            : 'text-slate-500 hover:text-slate-800'
-                        }`}
-                      >
-                        <RotateCcw size={12} />
-                        <span>Lặp Toàn Bài</span>
-                      </button>
-                      <button
-                        onClick={() => handleSelectRepeatScope('line')}
-                        className={`py-1.5 px-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
-                          repeatScope === 'line'
-                            ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-300 shadow-sm'
-                            : 'text-slate-500 hover:text-slate-800'
-                        }`}
-                      >
-                        <Repeat1 size={13} />
-                        <span>Lặp Từng Câu</span>
-                      </button>
-                    </div>
-                  </div>
+              {/* Studio AI Voice Modal */}
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setIsVoiceSettingsOpen(true)}
+                className="flex-1 sm:flex-initial justify-center px-2.5 sm:px-3 py-1.5 rounded-xl border border-amber-300 dark:border-amber-800 bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/50 text-amber-900 dark:text-amber-200 text-[11px] sm:text-xs font-bold flex items-center gap-1 transition-all shadow-2xs cursor-pointer truncate"
+                title="Tùy chỉnh giọng đọc Studio Neural"
+              >
+                <Sparkles size={12} className="text-amber-500 shrink-0" />
+                <span className="truncate">Giọng AI 🎙️</span>
+              </motion.button>
 
-                  {/* Presets */}
-                  <div className="space-y-1.5">
-                    <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400">Số lần lặp lại:</span>
-                    <div className="grid grid-cols-3 gap-1.5">
-                      {[
-                        { label: '1 lần', value: 1 },
-                        { label: '2 lần', value: 2 },
-                        { label: '3 lần', value: 3 },
-                        { label: '5 lần', value: 5 },
-                        { label: '10 lần', value: 10 },
-                        { label: 'Vô hạn ∞', value: 'infinite', isSpecial: true },
-                      ].map(opt => {
-                        const isSelected = opt.isSpecial
-                          ? checkIsInfinite(repeatCount)
-                          : (!checkIsInfinite(repeatCount) && repeatCount === opt.value);
-                        return (
-                          <button
-                            type="button"
-                            key={String(opt.value)}
-                            onClick={() => handleSelectRepeatCount(opt.value)}
-                            className={`py-2 px-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 border ${
-                              isSelected
-                                ? opt.isSpecial
-                                  ? 'bg-purple-600 text-white border-purple-600 shadow-md ring-2 ring-purple-400/40'
-                                  : 'bg-amber-500 text-white border-amber-500 shadow-md ring-2 ring-amber-400/40'
-                                : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-amber-400'
-                            }`}
-                          >
-                            {isSelected && <Check size={11} strokeWidth={3} />}
-                            {opt.label}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  {/* Custom Input */}
-                  <div className="space-y-1.5 pt-1 border-t border-slate-100 dark:border-slate-800">
-                    <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400">Hoặc tự nhập số lần tùy thích:</span>
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="text"
-                        placeholder="Ví dụ: 15, 20 hoặc vô hạn..."
-                        value={customRepeatInput}
-                        onChange={(e) => setCustomRepeatInput(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') handleApplyCustomRepeat();
-                        }}
-                        className="flex-1 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
-                      />
-                      <button
-                        type="button"
-                        onClick={handleApplyCustomRepeat}
-                        className="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-bold transition-all shadow-sm active:scale-95"
-                      >
-                        Áp Dụng
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Done button */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsRepeatMenuOpen(false);
-                      if (checkIsInfinite(repeatCount)) {
-                        toast.success('Đã lưu: Lặp Vô Hạn (∞) ✨', { icon: '♾️' });
-                      } else {
-                        toast.success(`Đã lưu: Lặp ${repeatCount} lần!`);
-                      }
-                    }}
-                    className="w-full py-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold rounded-xl text-xs transition-all shadow-md active:scale-95 flex items-center justify-center gap-1.5"
-                  >
-                    <Check size={14} />
-                    <span>Xong & Đóng Menu</span>
-                  </button>
-                </div>
-              )}
+              {/* 4-Step Learning Guide Modal Button */}
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setIsGuideModalOpen(true)}
+                className="flex-1 sm:flex-initial justify-center px-2.5 sm:px-3 py-1.5 rounded-xl border border-amber-400/80 dark:border-amber-700 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-[11px] sm:text-xs font-black flex items-center gap-1 transition-all shadow-sm shadow-amber-500/20 active:scale-95 cursor-pointer truncate"
+                title="Xem cẩm nang hướng dẫn phương pháp học 4 bước VBace Flow"
+              >
+                <Lightbulb size={12} className="text-white shrink-0" />
+                <span className="truncate">Cách Học 💡</span>
+              </motion.button>
             </div>
-
-            {/* Studio AI Voice Modal */}
-            <motion.button
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setIsVoiceSettingsOpen(true)}
-              className="px-3 py-1.5 rounded-xl border border-amber-300 dark:border-amber-800 bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/50 text-amber-900 dark:text-amber-200 text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm"
-              title="Tùy chỉnh giọng đọc Studio Neural"
-            >
-              <Sparkles size={13} className="text-amber-500" />
-              <span>Giọng Đọc Studio AI 🎙️</span>
-            </motion.button>
-
-            {/* 4-Step Learning Guide Modal Button */}
-            <motion.button
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setIsGuideModalOpen(true)}
-              className="px-3 py-1.5 rounded-xl border border-amber-400/80 dark:border-amber-700 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-xs font-black flex items-center gap-1.5 transition-all shadow-md shadow-amber-500/25 active:scale-95"
-              title="Xem cẩm nang hướng dẫn phương pháp học 4 bước VBace Flow"
-            >
-              <Lightbulb size={13} className="text-white animate-pulse" />
-              <span>Cách Học 4 Bước 💡</span>
-            </motion.button>
           </div>
 
           <div className="text-[11px] text-slate-400 font-bold hidden md:block">
@@ -1051,11 +1053,11 @@ export default function BinoDialogueStudyPage() {
       {/* ========================================================================= */}
       {/* 3. SEGMENTED INTERACTIVE STUDY TABS (Framer Motion spring physics) */}
       {/* ========================================================================= */}
-      <div className="relative p-1 bg-slate-100/80 dark:bg-slate-800/80 rounded-2xl flex gap-1 overflow-x-auto custom-scrollbar border border-slate-200/60 dark:border-slate-700/60">
+      <div className="relative p-1 bg-slate-100/80 dark:bg-slate-800/80 rounded-2xl grid grid-cols-3 gap-1 border border-slate-200/60 dark:border-slate-700/60">
         {[
-          { id: 'lesson', label: 'Bài Học & Từ Khóa', icon: BookOpen },
-          { id: 'roleplay', label: 'Luyện Phản Xạ 1:1', icon: MessageSquare },
-          { id: 'dictation', label: 'Chép Chính Tả', icon: FileText },
+          { id: 'lesson', label: 'Bài Học & Từ Khóa', shortLabel: 'Bài Học', icon: BookOpen },
+          { id: 'roleplay', label: 'Luyện Phản Xạ 1:1', shortLabel: 'Phản Xạ 1:1', icon: MessageSquare },
+          { id: 'dictation', label: 'Chép Chính Tả', shortLabel: 'Chính Tả', icon: FileText },
         ].map(tab => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -1063,7 +1065,7 @@ export default function BinoDialogueStudyPage() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`relative flex items-center justify-center gap-2 px-3.5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all shrink-0 flex-1 ${
+              className={`relative flex items-center justify-center gap-1.5 px-2 sm:px-3.5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                 isActive
                   ? 'text-white'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
@@ -1076,9 +1078,10 @@ export default function BinoDialogueStudyPage() {
                   transition={{ type: 'spring', stiffness: 450, damping: 35 }}
                 />
               )}
-              <span className="relative z-10 flex items-center gap-1.5 truncate">
-                <Icon size={15} />
-                <span>{tab.label}</span>
+              <span className="relative z-10 flex items-center gap-1 sm:gap-1.5 truncate">
+                <Icon size={14} className="shrink-0" />
+                <span className="hidden sm:inline truncate">{tab.label}</span>
+                <span className="sm:hidden truncate">{tab.shortLabel}</span>
               </span>
             </button>
           );
@@ -1093,48 +1096,48 @@ export default function BinoDialogueStudyPage() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
-          className="space-y-6 sm:space-y-8"
+          className="space-y-5 sm:space-y-8"
         >
           
           {/* 1. KEY WORDS (TỪ KHÓA GHIM NOTE PHONG CÁCH VBACE) */}
           {lesson?.vocabularies?.length > 0 && (
-            <div className="relative p-5 sm:p-7 rounded-3xl bg-gradient-to-br from-amber-50 via-amber-50/50 to-orange-50/30 dark:from-amber-950/40 dark:via-slate-850 dark:to-slate-850 border-2 border-dashed border-amber-300 dark:border-amber-800/80 shadow-md">
+            <div className="relative p-4 sm:p-7 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-amber-50 via-amber-50/50 to-orange-50/30 dark:from-amber-950/40 dark:via-slate-850 dark:to-slate-850 border-2 border-dashed border-amber-300 dark:border-amber-800/80 shadow-md">
               {/* Decorative Pin / Clip Icon */}
-              <div className="absolute -top-3 left-6 sm:left-8 px-3 py-1 bg-amber-400 text-amber-950 rounded-full text-[11px] font-black uppercase tracking-wider flex items-center gap-1 shadow-sm">
+              <div className="absolute -top-3 left-4 sm:left-8 px-2.5 sm:px-3 py-0.5 sm:py-1 bg-amber-400 text-amber-950 rounded-full text-[10px] sm:text-[11px] font-black uppercase tracking-wider flex items-center gap-1 shadow-sm">
                 <span>📎 Note Ghi Nhớ</span>
               </div>
 
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-4 pt-1">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1.5 mb-3 sm:mb-4 pt-1">
                 <div>
-                  <h3 className="text-base sm:text-lg font-black text-amber-950 dark:text-amber-200 flex items-center gap-2">
+                  <h3 className="text-sm sm:text-lg font-black text-amber-950 dark:text-amber-200 flex items-center gap-2">
                     <span>Key words (Từ khóa)</span>
                     <span className="text-xs font-semibold text-amber-700 dark:text-amber-400">
-                      • {lesson.vocabularies.length} từ trong bài
+                      • {lesson.vocabularies.length} từ
                     </span>
                   </h3>
-                  <p className="text-xs text-amber-800/80 dark:text-amber-300/80 mt-0.5 font-medium">
-                    Bấm loa để nghe phát âm chuẩn hoặc bấm "+" để lưu vào bộ Flashcard Spaced Repetition (SRS)!
+                  <p className="text-[11px] sm:text-xs text-amber-800/80 dark:text-amber-300/80 mt-0.5 font-medium">
+                    Bấm loa nghe phát âm hoặc bấm "+" lưu vào bộ Flashcard ôn tập!
                   </p>
                 </div>
               </div>
 
               {/* Vocabularies List Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-3 pt-1">
                 {lesson.vocabularies.map((v) => {
                   const isAdded = addedVocabs[v.id];
                   return (
                     <motion.div
                       key={v.id}
                       whileHover={{ scale: 1.01 }}
-                      className="p-3.5 rounded-2xl bg-white/95 dark:bg-slate-800/95 border border-amber-200/80 dark:border-amber-900/50 shadow-sm flex items-center justify-between gap-3 group hover:border-amber-400 transition-all"
+                      className="p-3 sm:p-3.5 rounded-2xl bg-white/95 dark:bg-slate-800/95 border border-amber-200/80 dark:border-amber-900/50 shadow-sm flex items-center justify-between gap-2.5 group hover:border-amber-400 transition-all"
                     >
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-2">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center flex-wrap gap-1.5">
                           <span className="font-black text-sm text-slate-900 dark:text-white">
                             {v.word}
                           </span>
                           {v.phonetic && (
-                            <span className="text-xs text-amber-700 dark:text-amber-400 font-vietsub font-medium">
+                            <span className="text-[11px] sm:text-xs text-amber-700 dark:text-amber-400 font-vietsub font-medium">
                               {v.phonetic}
                             </span>
                           )}
@@ -1149,21 +1152,21 @@ export default function BinoDialogueStudyPage() {
                         </p>
                       </div>
 
-                      <div className="flex items-center gap-1.5 shrink-0">
+                      <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
                         <button
                           onClick={() => speakVocab(v.word)}
-                          className="p-2 rounded-xl text-slate-500 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950 transition-colors"
+                          className="p-1.5 sm:p-2 rounded-xl text-slate-500 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950 transition-colors cursor-pointer"
                           title={`Nghe phát âm (${audioSpeed}x)`}
                         >
-                          <Volume2 size={16} />
+                          <Volume2 size={15} />
                         </button>
 
                         <button
                           onClick={() => speakVocab(v.word, 0.65)}
-                          className="px-2 py-1.5 rounded-xl text-[11px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/60 border border-emerald-200/70 dark:border-emerald-800/60 transition-all active:scale-90 flex items-center gap-1"
+                          className="px-1.5 sm:px-2 py-1 sm:py-1.5 rounded-xl text-[10px] sm:text-[11px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/60 border border-emerald-200/70 dark:border-emerald-800/60 transition-all active:scale-90 flex items-center gap-1 cursor-pointer"
                           title="Nghe phát âm chậm rãi từng âm tiết (0.65x)"
                         >
-                          <Headphones size={12} />
+                          <Headphones size={11} />
                           <span>0.65x</span>
                         </button>
 
@@ -1173,7 +1176,7 @@ export default function BinoDialogueStudyPage() {
                           whileTap={{ scale: 0.91 }}
                           onClick={() => handleAddToSRS(v)}
                           title={isAdded ? 'Bấm lần nữa để thoát / bỏ khỏi Flashcard' : 'Bấm để thêm vào bộ Flashcard ôn tập'}
-                          className={`px-3 py-1.5 rounded-xl text-xs font-extrabold flex items-center gap-1.5 transition-all select-none shadow-sm border ${
+                          className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-xl text-xs font-extrabold flex items-center gap-1 transition-all select-none shadow-sm border cursor-pointer ${
                             isAdded
                               ? 'bg-emerald-500 hover:bg-rose-500 text-white border-emerald-500 hover:border-rose-500 group/btn shadow-emerald-500/20'
                               : 'bg-amber-100 hover:bg-amber-500 hover:text-white dark:bg-amber-900/60 dark:hover:bg-amber-600 text-amber-900 dark:text-amber-200 border-amber-300/70 dark:border-amber-700/70'
@@ -1181,15 +1184,16 @@ export default function BinoDialogueStudyPage() {
                         >
                           {isAdded ? (
                             <>
-                              <Check size={13} strokeWidth={3} className="group-hover/btn:hidden" />
-                              <X size={13} strokeWidth={3} className="hidden group-hover/btn:inline" />
-                              <span className="text-[11px] group-hover/btn:hidden">Đã lưu</span>
-                              <span className="text-[11px] hidden group-hover/btn:inline">Thoát thẻ</span>
+                              <Check size={12} strokeWidth={3} className="group-hover/btn:hidden" />
+                              <X size={12} strokeWidth={3} className="hidden group-hover/btn:inline" />
+                              <span className="text-[10px] sm:text-[11px] group-hover/btn:hidden">Đã lưu</span>
+                              <span className="text-[10px] sm:text-[11px] hidden group-hover/btn:inline">Bỏ lưu</span>
                             </>
                           ) : (
                             <>
-                              <span className="text-sm leading-none font-black">+</span>
-                              <span className="text-[11px]">Flashcard</span>
+                              <span className="text-xs sm:text-sm leading-none font-black">+</span>
+                              <span className="text-[10px] sm:text-[11px] hidden sm:inline">Flashcard</span>
+                              <span className="text-[10px] sm:hidden">Thẻ</span>
                             </>
                           )}
                         </motion.button>
@@ -1202,7 +1206,7 @@ export default function BinoDialogueStudyPage() {
           )}
 
           {/* 2. KHUNG HỘI THOẠI SONG NGỮ (TRANSCRIPT THEO LƯỢT THOẠI) */}
-          <div className="space-y-3.5">
+          <div className="space-y-3">
             <div className="flex items-center justify-between px-1">
               <h3 className="text-sm sm:text-base font-black text-slate-900 dark:text-white flex items-center gap-2">
                 <span>Kịch Bản Hội Thoại Song Ngữ</span>
@@ -1210,7 +1214,7 @@ export default function BinoDialogueStudyPage() {
               </h3>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-2.5 sm:space-y-3">
               {lesson.dialogueLines?.map((line, idx) => {
                 const isActive = activeLineIndex === idx;
                 const upperChar = (line.characterName || '').toUpperCase();
@@ -1222,7 +1226,7 @@ export default function BinoDialogueStudyPage() {
                     ref={(el) => { if (el) lineRefs.current[idx] = el; }}
                     layout
                     transition={{ duration: 0.2 }}
-                    className={`p-4 sm:p-5 rounded-2xl transition-all duration-300 border relative overflow-hidden ${
+                    className={`p-3.5 sm:p-5 rounded-2xl transition-all duration-300 border relative overflow-hidden ${
                       isActive
                         ? 'bg-gradient-to-r from-amber-50/95 via-white to-amber-50/70 dark:from-amber-950/60 dark:via-slate-800 dark:to-slate-800 border-amber-400 dark:border-amber-600 shadow-xl ring-2 ring-amber-400/40 animate-pulse-glow'
                         : isBino
@@ -1235,58 +1239,44 @@ export default function BinoDialogueStudyPage() {
                       <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-amber-500 to-orange-500" />
                     )}
 
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="space-y-2 flex-1">
-                        {/* Character Badge & Live Equalizer */}
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <span className={`text-[11px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-lg ${
-                            isBino
-                              ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm'
-                              : 'bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800'
-                          }`}>
-                            {line.characterName}
-                          </span>
+                    {/* Top Row: Character Badge + Live Status + Audio Buttons on the same row so text below gets 100% width! */}
+                    <div className="flex items-center justify-between gap-2 mb-2">
+                      <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap min-w-0">
+                        <span className={`text-[10px] sm:text-[11px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-lg ${
+                          isBino
+                            ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm'
+                            : 'bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800'
+                        }`}>
+                          {line.characterName}
+                        </span>
 
-                          {/* Equalizer when this specific line is being spoken */}
-                          {isActive && isPlayingAll && (
-                            <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-amber-100 dark:bg-amber-950/80 text-amber-900 dark:text-amber-200 text-[10px] font-black">
-                              <div className="flex items-end gap-0.5 h-3">
-                                <span className="equalizer-bar" />
-                                <span className="equalizer-bar" />
-                                <span className="equalizer-bar" />
-                              </div>
-                              <span>Đang đọc</span>
+                        {/* Equalizer when this specific line is being spoken */}
+                        {isActive && isPlayingAll && (
+                          <div className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-100 dark:bg-amber-950/80 text-amber-900 dark:text-amber-200 text-[10px] font-black">
+                            <div className="flex items-end gap-0.5 h-3">
+                              <span className="equalizer-bar" />
+                              <span className="equalizer-bar" />
+                              <span className="equalizer-bar" />
                             </div>
-                          )}
+                            <span>Đang đọc</span>
+                          </div>
+                        )}
 
-                          {/* Repeat counter badge */}
-                          {isActive && isPlayingAll && (checkIsInfinite(repeatCount) || repeatCount !== 1) && (
-                            <span className="text-[10px] font-black px-2 py-0.5 rounded-md bg-amber-500 text-white shadow-sm flex items-center gap-1">
-                              {repeatScope === 'all' ? (
-                                <>
-                                  <RotateCcw size={10} />
-                                  <span>Vòng {currentLoopCycle}/{checkIsInfinite(repeatCount) ? '∞' : repeatCount}</span>
-                                </>
-                              ) : (
-                                <>
-                                  <Repeat1 size={11} />
-                                  <span>Lần {currentLineRepeat}/{checkIsInfinite(repeatCount) ? '∞' : repeatCount}</span>
-                                </>
-                              )}
-                            </span>
-                          )}
-                        </div>
-
-                        {/* English Line */}
-                        <p className="text-base sm:text-lg font-black text-slate-900 dark:text-white leading-relaxed tracking-tight">
-                          "{line.englishText}"
-                        </p>
-
-                        {/* Vietnamese Translation (Chuẩn font Be Vietnam Pro, không lỗi dãn dấu 'đế m') */}
-                        {showVietsub && line.vietnameseText && (
-                          <p className="text-xs sm:text-sm text-rose-600 dark:text-rose-400 font-vietsub font-semibold leading-relaxed tracking-normal">
-                            ({line.vietnameseText})
-                          </p>
+                        {/* Repeat counter badge */}
+                        {isActive && isPlayingAll && (checkIsInfinite(repeatCount) || repeatCount !== 1) && (
+                          <span className="text-[10px] font-black px-2 py-0.5 rounded-md bg-amber-500 text-white shadow-sm flex items-center gap-1">
+                            {repeatScope === 'all' ? (
+                              <>
+                                <RotateCcw size={10} />
+                                <span>Vòng {currentLoopCycle}/{checkIsInfinite(repeatCount) ? '∞' : repeatCount}</span>
+                              </>
+                            ) : (
+                              <>
+                                <Repeat1 size={11} />
+                                <span>Lần {currentLineRepeat}/{checkIsInfinite(repeatCount) ? '∞' : repeatCount}</span>
+                              </>
+                            )}
+                          </span>
                         )}
                       </div>
 
@@ -1298,10 +1288,10 @@ export default function BinoDialogueStudyPage() {
                             setActiveLineIndex(idx);
                             speakText(line.englishText, line.characterName, 0.7);
                           }}
-                          className="px-2.5 py-2 rounded-xl text-[11px] font-extrabold text-emerald-700 dark:text-emerald-300 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/60 border border-emerald-200/80 dark:border-emerald-800/70 transition-all active:scale-90 flex items-center gap-1"
+                          className="px-2 sm:px-2.5 py-1.5 rounded-xl text-[10px] sm:text-[11px] font-extrabold text-emerald-700 dark:text-emerald-300 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/60 border border-emerald-200/80 dark:border-emerald-800/70 transition-all active:scale-90 flex items-center gap-1 cursor-pointer"
                           title="Nghe chậm rãi câu này (0.7x) để nghe kỹ từng từ"
                         >
-                          <Headphones size={13} />
+                          <Headphones size={12} />
                           <span>Chậm</span>
                         </button>
 
@@ -1311,16 +1301,29 @@ export default function BinoDialogueStudyPage() {
                             setActiveLineIndex(idx);
                             speakText(line.englishText, line.characterName);
                           }}
-                          className={`p-2.5 rounded-xl transition-all shrink-0 active:scale-90 ${
+                          className={`p-2 rounded-xl transition-all shrink-0 active:scale-90 cursor-pointer ${
                             isActive
                               ? 'text-white bg-amber-500 shadow-md shadow-amber-500/25'
-                              : 'text-slate-400 hover:text-amber-600 hover:bg-slate-100 dark:hover:bg-slate-700'
+                              : 'text-slate-500 bg-slate-100/80 dark:bg-slate-700/60 hover:text-amber-600 hover:bg-slate-100 dark:hover:bg-slate-700'
                           }`}
                           title={`Nghe riêng câu này theo giọng nhân vật (${audioSpeed}x)`}
                         >
-                          <Volume2 size={17} />
+                          <Volume2 size={16} />
                         </button>
                       </div>
+                    </div>
+
+                    {/* Full-width Dialogue Text (English + Vietnamese) */}
+                    <div className="space-y-1.5">
+                      <p className="text-[15px] sm:text-lg font-black text-slate-900 dark:text-white leading-relaxed tracking-tight">
+                        "{line.englishText}"
+                      </p>
+
+                      {showVietsub && line.vietnameseText && (
+                        <p className="text-xs sm:text-sm text-rose-600 dark:text-rose-400 font-vietsub font-semibold leading-relaxed tracking-normal">
+                          ({line.vietnameseText})
+                        </p>
+                      )}
                     </div>
 
                     {/* VBACE SENTENCE PATTERN SUBSTITUTION (VẬN DỤNG THỰC TẾ) */}
@@ -1486,7 +1489,7 @@ export default function BinoDialogueStudyPage() {
                   <button
                     onClick={() => {
                       if (roleplayStep < lesson.dialogueLines.length - 1) {
-                        useGamificationStore.getState().earnXP(10, 'bino_roleplay', 'Luyện đối đáp 1 câu Giao Tiếp 72');
+                        useGamificationStore.getState().earnXP(10, 'bino_roleplay', 'Luyện đối đáp 1 câu Giao Tiếp Thực Chiến');
                         setRoleplayStep(prev => prev + 1);
                         setUserTranscript('');
                       } else {

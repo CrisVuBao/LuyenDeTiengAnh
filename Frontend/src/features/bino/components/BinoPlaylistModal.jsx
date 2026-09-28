@@ -474,9 +474,9 @@ export default function BinoPlaylistModal() {
         initial={{ opacity: 0, scale: 0.8, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.8, y: 20 }}
-        className="fixed bottom-5 right-4 sm:right-6 z-50 max-w-sm w-[calc(100vw-2rem)]"
+        className="fixed bottom-20 md:bottom-5 right-3 sm:right-6 z-40 max-w-sm w-[calc(100vw-1.5rem)]"
       >
-        <div className="glass-card p-4 rounded-3xl border border-amber-300 dark:border-amber-800 shadow-2xl bg-gradient-to-r from-amber-500/10 via-white to-blue-500/10 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900 space-y-2.5 animate-pulse-glow">
+        <div className="glass-card p-3 sm:p-4 rounded-2xl sm:rounded-3xl border border-amber-300 dark:border-amber-800 shadow-2xl bg-gradient-to-r from-amber-500/10 via-white to-blue-500/10 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900 space-y-2 animate-pulse-glow">
           <div className="flex items-center justify-between">
             <div 
               onClick={() => {
@@ -957,9 +957,9 @@ export default function BinoPlaylistModal() {
                 </div>
 
                 {/* Bottom Media Controls Bar */}
-                <div className="p-3.5 sm:p-4 border-t border-slate-200/80 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-850 shrink-0 flex flex-wrap items-center justify-between gap-3 shadow-inner">
+                <div className="p-3 sm:p-4 border-t border-slate-200/80 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-850 shrink-0 flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center justify-between gap-2.5 sm:gap-3 shadow-inner">
                   {/* Speed selector (Hỗ trợ tốc độ chậm rãi nghe kỹ 0.6x, 0.75x, 0.85x) */}
-                  <div className="flex flex-wrap items-center rounded-xl bg-white dark:bg-slate-800 p-1 text-[11px] font-bold border border-slate-200 dark:border-slate-700 shadow-sm gap-0.5">
+                  <div className="flex items-center overflow-x-auto whitespace-nowrap hide-scrollbar rounded-xl bg-white dark:bg-slate-800 p-1 text-[11px] font-bold border border-slate-200 dark:border-slate-700 shadow-sm gap-0.5">
                     {SPEECH_SPEED_PRESETS.map((preset) => {
                       const isSelected = Math.abs(audioSpeed - preset.value) < 0.02;
                       return (
@@ -968,7 +968,7 @@ export default function BinoPlaylistModal() {
                           type="button"
                           onClick={() => handleChangeSpeed(preset.value)}
                           title={preset.desc}
-                          className={`px-2 py-0.5 rounded-lg transition-colors flex items-center gap-1 ${
+                          className={`px-2 py-1 sm:py-0.5 rounded-lg transition-colors flex items-center gap-1 shrink-0 ${
                             isSelected
                               ? preset.isSlow
                                 ? 'bg-emerald-600 text-white shadow-sm font-black'
@@ -983,56 +983,58 @@ export default function BinoPlaylistModal() {
                     })}
                   </div>
 
-                  {/* Main Playback Buttons */}
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => playPrevLesson()}
-                      className="p-2.5 rounded-xl hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition-all shadow-sm active:scale-90"
-                      title="Bài trước đó"
-                    >
-                      <SkipBack size={18} />
-                    </button>
+                  <div className="flex items-center justify-between sm:justify-end gap-2">
+                    {/* Main Playback Buttons */}
+                    <div className="flex items-center gap-1.5 sm:gap-2">
+                      <button
+                        onClick={() => playPrevLesson()}
+                        className="p-2 sm:p-2.5 rounded-xl bg-white sm:bg-transparent dark:bg-slate-800 sm:dark:bg-transparent hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition-all shadow-sm active:scale-90"
+                        title="Bài trước đó"
+                      >
+                        <SkipBack size={17} />
+                      </button>
 
-                    <button
-                      onClick={togglePlayPause}
-                      className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-extrabold text-xs shadow-lg shadow-amber-500/25 transition-all active:scale-95 flex items-center gap-2"
-                    >
-                      {isPlaying ? <Pause size={17} /> : <Play size={17} fill="currentColor" />}
-                      <span>{isPlaying ? 'Tạm Dừng' : 'Tiếp Tục'}</span>
-                    </button>
+                      <button
+                        onClick={togglePlayPause}
+                        className="px-4 sm:px-5 py-2 sm:py-2.5 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-extrabold text-xs shadow-lg shadow-amber-500/25 transition-all active:scale-95 flex items-center gap-1.5 sm:gap-2"
+                      >
+                        {isPlaying ? <Pause size={16} /> : <Play size={16} fill="currentColor" />}
+                        <span>{isPlaying ? 'Tạm Dừng' : 'Tiếp Tục'}</span>
+                      </button>
 
-                    <button
-                      onClick={() => playNextLesson()}
-                      className="p-2.5 rounded-xl hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition-all shadow-sm active:scale-90"
-                      title="Bài tiếp theo"
-                    >
-                      <SkipForward size={18} />
-                    </button>
-                  </div>
+                      <button
+                        onClick={() => playNextLesson()}
+                        className="p-2 sm:p-2.5 rounded-xl bg-white sm:bg-transparent dark:bg-slate-800 sm:dark:bg-transparent hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition-all shadow-sm active:scale-90"
+                        title="Bài tiếp theo"
+                      >
+                        <SkipForward size={17} />
+                      </button>
+                    </div>
 
-                  {/* Repeat Mode Switch */}
-                  <div className="flex items-center gap-1 bg-white dark:bg-slate-800 p-1 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold shadow-sm">
-                    <button
-                      onClick={() => setRepeatMode('all')}
-                      className={`px-2 py-1 rounded-lg transition-all flex items-center gap-1 ${
-                        repeatMode === 'all' ? 'bg-amber-500 text-white shadow-sm' : 'text-slate-400 hover:text-slate-700'
-                      }`}
-                      title="Lặp lại toàn bộ danh sách"
-                    >
-                      <Repeat size={13} />
-                      <span className="hidden sm:inline">Toàn bộ</span>
-                    </button>
+                    {/* Repeat Mode Switch */}
+                    <div className="flex items-center gap-1 bg-white dark:bg-slate-800 p-1 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold shadow-sm">
+                      <button
+                        onClick={() => setRepeatMode('all')}
+                        className={`px-2 py-1 rounded-lg transition-all flex items-center gap-1 ${
+                          repeatMode === 'all' ? 'bg-amber-500 text-white shadow-sm' : 'text-slate-400 hover:text-slate-700'
+                        }`}
+                        title="Lặp lại toàn bộ danh sách"
+                      >
+                        <Repeat size={13} />
+                        <span className="hidden sm:inline">Toàn bộ</span>
+                      </button>
 
-                    <button
-                      onClick={() => setRepeatMode('one')}
-                      className={`px-2 py-1 rounded-lg transition-all flex items-center gap-1 ${
-                        repeatMode === 'one' ? 'bg-amber-500 text-white shadow-sm' : 'text-slate-400 hover:text-slate-700'
-                      }`}
-                      title="Lặp lại 1 bài này liên tục"
-                    >
-                      <Repeat1 size={14} />
-                      <span className="hidden sm:inline">1 bài</span>
-                    </button>
+                      <button
+                        onClick={() => setRepeatMode('one')}
+                        className={`px-2 py-1 rounded-lg transition-all flex items-center gap-1 ${
+                          repeatMode === 'one' ? 'bg-amber-500 text-white shadow-sm' : 'text-slate-400 hover:text-slate-700'
+                        }`}
+                        title="Lặp lại 1 bài này liên tục"
+                      >
+                        <Repeat1 size={14} />
+                        <span className="hidden sm:inline">1 bài</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </>

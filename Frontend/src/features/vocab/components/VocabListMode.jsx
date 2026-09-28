@@ -52,7 +52,7 @@ export default function VocabListMode({ topic }) {
         </div>
 
         {/* Filter Pills */}
-        <div className="flex items-center gap-1.5 self-start sm:self-auto overflow-x-auto pb-1 sm:pb-0 w-full sm:w-auto">
+        <div className="flex items-center gap-1.5 self-start sm:self-auto overflow-x-auto whitespace-nowrap hide-scrollbar pb-0.5 sm:pb-0 w-full sm:w-auto">
           {[
             { id: 'all', label: `Tất cả (${words.length})` },
             { id: 'mastered', label: 'Đã thuộc' },
@@ -62,7 +62,7 @@ export default function VocabListMode({ topic }) {
             <button
               key={tab.id}
               onClick={() => setFilterType(tab.id)}
-              className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer ${
+              className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap shrink-0 transition-colors cursor-pointer ${
                 filterType === tab.id
                   ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-sm'
                   : 'bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50'
@@ -88,10 +88,10 @@ export default function VocabListMode({ topic }) {
             return (
               <div 
                 key={item.id || index}
-                className="p-3.5 sm:p-4 flex items-center justify-between gap-3 hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors"
+                className="p-3 sm:p-4 flex items-center justify-between gap-2.5 sm:gap-3 hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors"
               >
                 {/* Left: Word, Pos, IPA, Meaning */}
-                <div className="flex items-center gap-3 min-w-0">
+                <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
                   <button
                     onClick={() => speakWord(item.word)}
                     className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-[#0071e3] dark:text-sky-400 flex items-center justify-center shrink-0 hover:scale-105 active:scale-95 transition-all cursor-pointer"
@@ -101,7 +101,7 @@ export default function VocabListMode({ topic }) {
                   </button>
 
                   <div className="min-w-0">
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
                       <span className="font-bold text-sm sm:text-base text-slate-900 dark:text-white">
                         {item.word}
                       </span>
@@ -111,7 +111,7 @@ export default function VocabListMode({ topic }) {
                         </span>
                       )}
                       {item.ipa && (
-                        <span className="text-xs text-slate-400 font-mono hidden sm:inline">
+                        <span className="text-[11px] sm:text-xs text-slate-400 font-mono truncate">
                           {item.ipa}
                         </span>
                       )}

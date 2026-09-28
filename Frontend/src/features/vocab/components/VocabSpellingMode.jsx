@@ -168,15 +168,15 @@ export default function VocabSpellingMode({ topic, onSwitchToFlashcard }) {
   const targetChars = currentWord.word.split('');
 
   return (
-    <div className="max-w-xl mx-auto space-y-6">
+    <div className="max-w-xl mx-auto space-y-3.5 sm:space-y-6">
       
       {/* Top progress */}
-      <div className="space-y-1.5">
-        <div className="flex justify-between items-center text-xs font-semibold text-slate-500 dark:text-slate-400">
+      <div className="space-y-1 sm:space-y-1.5">
+        <div className="flex justify-between items-center text-[11px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400">
           <span>Câu {currentIndex + 1} / {testWords.length}</span>
           <span>{score} đúng</span>
         </div>
-        <div className="w-full h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+        <div className="w-full h-1.5 sm:h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
           <motion.div 
             className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"
             initial={{ width: 0 }}
@@ -187,23 +187,23 @@ export default function VocabSpellingMode({ topic, onSwitchToFlashcard }) {
       </div>
 
       {/* Main Dictation Card */}
-      <div className="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-[0_4px_25px_rgb(0,0,0,0.05)] text-center space-y-5">
+      <div className="p-5 sm:p-8 rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-[0_4px_25px_rgb(0,0,0,0.05)] text-center space-y-3.5 sm:space-y-5">
         
         <div className="flex items-center justify-center gap-3">
           <button
             onClick={() => speakWord(currentWord.word)}
-            className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-[#0071e3] to-sky-400 text-white flex items-center justify-center shadow-lg shadow-blue-500/30 hover:scale-105 active:scale-95 transition-all cursor-pointer"
+            className="w-13 h-13 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-tr from-[#0071e3] to-sky-400 text-white flex items-center justify-center shadow-lg shadow-blue-500/30 hover:scale-105 active:scale-95 transition-all cursor-pointer"
             title="Bấm để nghe lại"
           >
-            <Volume2 size={30} />
+            <Volume2 size={26} className="sm:w-[30px] sm:h-[30px]" />
           </button>
         </div>
 
         <div className="space-y-1">
-          <span className="text-xs font-bold uppercase tracking-wider text-slate-400 block">
+          <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-400 block">
             Nghĩa tiếng Việt
           </span>
-          <h3 className="text-2xl font-black text-slate-900 dark:text-white">
+          <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white leading-snug">
             {currentWord.meaning}
           </h3>
           <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
@@ -212,16 +212,16 @@ export default function VocabSpellingMode({ topic, onSwitchToFlashcard }) {
         </div>
 
         {/* Letter Slots / Hint Display */}
-        <div className="flex flex-wrap justify-center gap-1.5 pt-2">
+        <div className="flex flex-wrap justify-center gap-1 sm:gap-1.5 pt-1 sm:pt-2">
           {targetChars.map((ch, idx) => {
             if (ch === ' ') {
-              return <span key={idx} className="w-4" />;
+              return <span key={idx} className="w-3 sm:w-4" />;
             }
             const revealed = revealedChars[idx] || (isAnswered && ch);
             return (
               <span
                 key={idx}
-                className={`w-8 h-10 rounded-lg border flex items-center justify-center font-mono font-bold text-base transition-colors ${
+                className={`w-7 h-9 sm:w-8 sm:h-10 rounded-lg border flex items-center justify-center font-mono font-bold text-sm sm:text-base transition-colors ${
                   revealed 
                     ? 'bg-blue-50 dark:bg-blue-950/60 border-blue-300 text-[#0071e3] dark:text-sky-400' 
                     : 'bg-slate-100/70 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-slate-400'
@@ -234,7 +234,7 @@ export default function VocabSpellingMode({ topic, onSwitchToFlashcard }) {
         </div>
 
         {/* Input Field */}
-        <form onSubmit={handleSubmit} className="pt-2">
+        <form onSubmit={handleSubmit} className="pt-1 sm:pt-2">
           <input
             ref={inputRef}
             type="text"
@@ -242,7 +242,7 @@ export default function VocabSpellingMode({ topic, onSwitchToFlashcard }) {
             value={userInput}
             onChange={(e) => setUserInput(e.target.value)}
             placeholder="Gõ từ tiếng Anh bạn nghe được..."
-            className={`w-full py-3.5 px-5 rounded-2xl border text-center font-bold text-lg outline-none transition-all ${
+            className={`w-full py-3 sm:py-3.5 px-4 sm:px-5 rounded-2xl border text-center font-bold text-base sm:text-lg outline-none transition-all ${
               isAnswered 
                 ? isCorrect 
                   ? 'bg-emerald-50 border-emerald-500 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300' 
@@ -277,7 +277,7 @@ export default function VocabSpellingMode({ topic, onSwitchToFlashcard }) {
 
         {/* Hint button */}
         {!isAnswered && (
-          <div className="flex items-center justify-center gap-3 pt-2">
+          <div className="flex items-center justify-center gap-3 pt-1">
             <button
               type="button"
               onClick={handleRevealHint}

@@ -151,80 +151,81 @@ export default function Reflex50OverviewPage() {
     ringCircumference - (Math.max(3, overall.overallPercent) / 100) * ringCircumference;
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8 pb-14">
+    <div className="max-w-6xl mx-auto space-y-4 sm:space-y-8 pb-12 sm:pb-14">
       {/* ===================================================================== */}
       {/* 1. APPLE STUDIO HERO BANNER                                           */}
       {/* ===================================================================== */}
       <motion.section
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative overflow-hidden rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-6 sm:p-8 shadow-xs"
+        className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-4 sm:p-8 shadow-xs"
       >
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-8">
           {/* Left Content */}
-          <div className="space-y-4 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/50 border border-blue-200/70 dark:border-blue-800/70 text-[#0071e3] dark:text-sky-400 text-xs font-semibold">
-              <Sparkles size={13} />
-              <span>50 Chủ Đề Giao Tiếp Thực Chiến • 1.500 Câu Phản Xạ Nói - Viết</span>
+          <div className="space-y-2.5 sm:space-y-4 max-w-2xl">
+            <div className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/50 border border-blue-200/70 dark:border-blue-800/70 text-[#0071e3] dark:text-sky-400 text-[11px] sm:text-xs font-semibold">
+              <Sparkles size={12} className="shrink-0" />
+              <span className="truncate">50 Chủ Đề Giao Tiếp • 1.500 Câu Phản Xạ Nói - Viết</span>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900 dark:text-white leading-tight">
+            <h1 className="text-xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900 dark:text-white leading-tight">
               Phản Xạ Nói – Viết <span className="text-[#0071e3]">50 Chủ Đề</span> Tiếng Anh Thông Dụng
             </h1>
 
-            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed line-clamp-2 sm:line-clamp-none">
               Làm chủ trọn bộ <strong>1.500 câu giao tiếp từ Cơ bản đến Chuyên sâu</strong> (30 câu/chủ đề) kết hợp <strong>3.400+ cụm từ gợi ý</strong> và <strong>Collocations bản xứ</strong>. Học theo phương pháp Tư duy Cụm từ (Chunking), Phản xạ Nói 3 Giây và Làm bài Viết chấm điểm từng từ.
             </p>
 
             {/* Primary CTA Buttons */}
-            <div className="flex flex-wrap items-center gap-2.5 pt-1">
+            <div className="flex flex-wrap items-center gap-2 pt-1">
               <button
                 onClick={() => navigate(`/reflex-50/unit/${lastUnitObj.unitNumber}`)}
-                className="px-5 py-2.5 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white text-xs sm:text-sm font-semibold shadow-sm transition-all flex items-center gap-2 cursor-pointer"
+                className="w-full sm:w-auto justify-center px-4 sm:px-5 py-2.5 rounded-xl sm:rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white text-xs sm:text-sm font-semibold shadow-sm transition-all flex items-center gap-2 cursor-pointer"
               >
-                <span>
+                <span className="truncate">
                   Học tiếp Unit {lastUnitObj.unitNumber}: {lastUnitObj.titleEn}
                 </span>
-                <ArrowRight size={15} />
+                <ArrowRight size={15} className="shrink-0" />
               </button>
 
               <button
                 onClick={() => setIsMethodModalOpen(true)}
-                className="px-4 py-2.5 rounded-full bg-slate-900 text-white dark:bg-white dark:text-slate-900 hover:opacity-90 text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 cursor-pointer"
+                className="flex-1 sm:flex-initial justify-center px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl sm:rounded-full bg-slate-900 text-white dark:bg-white dark:text-slate-900 hover:opacity-90 text-xs sm:text-sm font-semibold transition-all flex items-center gap-1.5 cursor-pointer"
               >
-                <Zap size={15} className="text-amber-400 dark:text-[#0071e3]" />
-                <span>Phương Pháp Học & Làm Bài Hiệu Quả</span>
+                <Zap size={14} className="text-amber-400 dark:text-[#0071e3] shrink-0" />
+                <span className="hidden sm:inline">Phương Pháp Học & Làm Bài Hiệu Quả</span>
+                <span className="sm:hidden">Phương Pháp Học</span>
               </button>
 
               <button
                 onClick={() => setIsVoiceModalOpen(true)}
-                className="px-3.5 py-2.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200/80 dark:hover:bg-slate-700 text-xs font-medium transition-colors flex items-center gap-1.5 cursor-pointer"
+                className="px-3 sm:px-3.5 py-2 sm:py-2.5 rounded-xl sm:rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200/80 dark:hover:bg-slate-700 text-xs font-medium transition-colors flex items-center justify-center gap-1.5 cursor-pointer shrink-0"
                 title="Cài đặt giọng đọc AI Studio & tốc độ đọc"
               >
-                <Headphones size={15} className="text-[#0071e3]" />
-                <span>Giọng đọc AI</span>
+                <Headphones size={14} className="text-[#0071e3]" />
+                <span>Giọng AI</span>
               </button>
             </div>
           </div>
 
           {/* Right Stats Card */}
-          <div className="shrink-0 w-full lg:w-80 p-5 rounded-2xl bg-slate-50/90 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-800 space-y-4">
-            <div className="flex items-center justify-between gap-4">
+          <div className="shrink-0 w-full lg:w-80 p-3.5 sm:p-5 rounded-2xl bg-slate-50/90 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-800 space-y-2.5 sm:space-y-4">
+            <div className="flex items-center justify-between gap-3">
               <div>
-                <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                <div className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-slate-400">
                   Tiến độ làm chủ 1.500 câu
                 </div>
-                <div className="text-2xl font-bold text-slate-900 dark:text-white mt-0.5">
-                  {overall.totalMastered} <span className="text-sm font-normal text-slate-400">/ 1500 câu</span>
+                <div className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mt-0.5">
+                  {overall.totalMastered} <span className="text-xs sm:text-sm font-normal text-slate-400">/ 1500 câu</span>
                 </div>
-                <div className="text-xs text-[#0071e3] dark:text-sky-400 font-medium mt-0.5">
+                <div className="text-[11px] sm:text-xs text-[#0071e3] dark:text-sky-400 font-medium mt-0.5">
                   Đã hoàn thành {overall.completedUnits}/50 Unit
                 </div>
               </div>
 
               {/* SVG Progress Ring */}
-              <div className="relative w-18 h-18 flex items-center justify-center shrink-0">
-                <svg className="w-18 h-18 -rotate-90" viewBox="0 0 72 72">
+              <div className="relative w-14 h-14 sm:w-18 sm:h-18 flex items-center justify-center shrink-0">
+                <svg className="w-14 h-14 sm:w-18 sm:h-18 -rotate-90" viewBox="0 0 72 72">
                   <circle
                     cx="36"
                     cy="36"
@@ -247,41 +248,41 @@ export default function Reflex50OverviewPage() {
                     className="transition-all duration-700"
                   />
                 </svg>
-                <span className="absolute text-xs font-bold text-slate-900 dark:text-white">
+                <span className="absolute text-[11px] sm:text-xs font-bold text-slate-900 dark:text-white">
                   {overall.overallPercent}%
                 </span>
               </div>
             </div>
 
             {/* Mini breakdown */}
-            <div className="grid grid-cols-3 gap-2 pt-2 border-t border-slate-200/70 dark:border-slate-700/70 text-center">
-              <div className="p-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800">
-                <div className="text-sm font-bold text-slate-900 dark:text-white">{overall.totalWritten}</div>
-                <div className="text-[10px] text-slate-500">Đã làm viết</div>
+            <div className="grid grid-cols-3 gap-1.5 sm:gap-2 pt-2 border-t border-slate-200/70 dark:border-slate-700/70 text-center">
+              <div className="p-1.5 sm:p-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800">
+                <div className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">{overall.totalWritten}</div>
+                <div className="text-[10px] text-slate-500">Đã viết</div>
               </div>
-              <div className="p-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800">
-                <div className="text-sm font-bold text-slate-900 dark:text-white">{overall.totalSpoken}</div>
-                <div className="text-[10px] text-slate-500">Đã luyện nói</div>
+              <div className="p-1.5 sm:p-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800">
+                <div className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">{overall.totalSpoken}</div>
+                <div className="text-[10px] text-slate-500">Đã nói</div>
               </div>
-              <div className="p-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800">
-                <div className="text-sm font-bold text-amber-600 dark:text-amber-400">
+              <div className="p-1.5 sm:p-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800">
+                <div className="text-xs sm:text-sm font-bold text-amber-600 dark:text-amber-400">
                   {overall.totalStarred + overall.totalWeak}
                 </div>
-                <div className="text-[10px] text-slate-500">Cần ôn kỹ</div>
+                <div className="text-[10px] text-slate-500">Cần ôn</div>
               </div>
             </div>
 
             {/* Daily target bar */}
-            <div className="space-y-1.5">
+            <div className="space-y-1">
               <div className="flex items-center justify-between text-[11px]">
                 <span className="font-medium text-slate-600 dark:text-slate-300">
-                  Mục tiêu hôm nay (1 Unit = 30 câu)
+                  Mục tiêu hôm nay (30 câu)
                 </span>
                 <span className="font-bold text-[#0071e3] dark:text-sky-400">
                   {overall.todayCount}/{overall.dailyGoal} câu
                 </span>
               </div>
-              <div className="w-full h-2 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
+              <div className="w-full h-1.5 sm:h-2 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
                 <div
                   className="h-full rounded-full bg-[#0071e3] transition-all duration-500"
                   style={{ width: `${Math.min(100, Math.round((overall.todayCount / overall.dailyGoal) * 100))}%` }}
@@ -293,9 +294,9 @@ export default function Reflex50OverviewPage() {
       </motion.section>
 
       {/* ===================================================================== */}
-      {/* 2. STRIP PHƯƠNG PHÁP 4 BƯỚC HỌC GIAO TIẾP & LÀM BÀI HIỆU QUẢ         */}
+      {/* 2. STRIP PHƯƠNG PHÁP 4 BƯỚC HỌC (Vuốt ngang mượt trên Mobile)        */}
       {/* ===================================================================== */}
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+      <section className="flex overflow-x-auto hide-scrollbar snap-x gap-2.5 sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-3.5 pb-0.5">
         {[
           {
             step: 'Bước 1 • Tư Duy Cụm Từ',
@@ -331,18 +332,18 @@ export default function Reflex50OverviewPage() {
             <div
               key={idx}
               onClick={() => setIsMethodModalOpen(true)}
-              className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:border-[#0071e3]/50 transition-all cursor-pointer group"
+              className="w-[235px] sm:w-auto shrink-0 snap-start p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:border-[#0071e3]/50 transition-all cursor-pointer group"
             >
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 group-hover:text-[#0071e3] transition-colors">
+              <div className="flex items-center justify-between mb-1.5 sm:mb-2">
+                <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 group-hover:text-[#0071e3] transition-colors">
                   {item.step}
                 </span>
-                <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${item.accent}`}>
-                  <Icon size={16} />
+                <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-xl flex items-center justify-center ${item.accent}`}>
+                  <Icon size={15} />
                 </div>
               </div>
-              <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-1">{item.title}</h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">{item.desc}</p>
+              <h3 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white mb-1">{item.title}</h3>
+              <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-2 sm:line-clamp-none">{item.desc}</p>
             </div>
           );
         })}
@@ -351,24 +352,24 @@ export default function Reflex50OverviewPage() {
       {/* ===================================================================== */}
       {/* 3. BỘ LỌC 5 NHÓM CHỦ ĐỀ LỚN (CATEGORIES) & TÌM KIẾM                  */}
       {/* ===================================================================== */}
-      <section className="space-y-4">
-        {/* Category Cards Strip */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-2.5">
+      <section className="space-y-3 sm:space-y-4">
+        {/* Category Cards Strip - Horizontal Swipe on Mobile, 6-col Grid on Desktop */}
+        <div className="flex overflow-x-auto hide-scrollbar snap-x gap-2 sm:grid sm:grid-cols-2 lg:grid-cols-6 sm:gap-2.5 pb-0.5">
           <button
             onClick={() => setSelectedCategory('all')}
-            className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer ${
+            className={`w-[165px] sm:w-auto shrink-0 snap-start p-3 sm:p-3.5 rounded-2xl border text-left transition-all cursor-pointer ${
               selectedCategory === 'all'
                 ? 'bg-slate-900 text-white border-slate-900 dark:bg-white dark:text-slate-900 dark:border-white shadow-sm'
                 : 'bg-white dark:bg-slate-900 border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:border-slate-300'
             }`}
           >
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold">Tất cả 50 Chủ đề</span>
-              <Layers size={15} className="opacity-80" />
+              <span className="text-[11px] sm:text-xs font-bold">Tất cả 50 Chủ đề</span>
+              <Layers size={14} className="opacity-80 shrink-0" />
             </div>
-            <div className="text-lg font-bold mt-1.5">1.500 câu</div>
-            <div className="text-[11px] opacity-75 mt-0.5">
-              Đã thuộc {overall.totalMastered} câu ({overall.overallPercent}%)
+            <div className="text-base sm:text-lg font-bold mt-1">1.500 câu</div>
+            <div className="text-[10px] sm:text-[11px] opacity-75 mt-0.5 truncate">
+              Thuộc {overall.totalMastered} câu ({overall.overallPercent}%)
             </div>
           </button>
 
@@ -380,20 +381,20 @@ export default function Reflex50OverviewPage() {
               <button
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id)}
-                className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer ${
+                className={`w-[175px] sm:w-auto shrink-0 snap-start p-3 sm:p-3.5 rounded-2xl border text-left transition-all cursor-pointer ${
                   active
                     ? 'bg-[#0071e3] text-white border-[#0071e3] shadow-sm'
                     : 'bg-white dark:bg-slate-900 border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:border-[#0071e3]/40'
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-bold uppercase tracking-wider opacity-80">
+                  <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider opacity-80">
                     Nhóm {cat.order} (U{cat.unitRange[0]}–{cat.unitRange[1]})
                   </span>
-                  <Icon size={15} className={active ? 'text-white' : 'text-[#0071e3]'} />
+                  <Icon size={14} className={active ? 'text-white shrink-0' : 'text-[#0071e3] shrink-0'} />
                 </div>
                 <div className="text-xs font-bold mt-1 line-clamp-1">{cat.titleVi}</div>
-                <div className="text-[11px] opacity-80 mt-1">
+                <div className="text-[10px] sm:text-[11px] opacity-80 mt-0.5 sm:mt-1 truncate">
                   {st.masteredSentences}/300 câu • {st.completedUnits}/10 Unit
                 </div>
               </button>
@@ -402,15 +403,15 @@ export default function Reflex50OverviewPage() {
         </div>
 
         {/* Search & Status Filter Bar */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-white dark:bg-slate-900 p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-800">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-2.5 sm:gap-3 bg-white dark:bg-slate-900 p-3 sm:p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-800">
           <div className="relative flex-1">
-            <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Tìm chủ đề (VD: Interview, Restaurant, Airport) hoặc tìm bất kỳ mẫu câu tiếng Anh / tiếng Việt nào..."
-              className="w-full pl-10 pr-9 py-2 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200/70 dark:border-slate-700/70 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-[#0071e3]"
+              placeholder="Tìm chủ đề (VD: Interview, Airport) hoặc câu tiếng Anh / Việt..."
+              className="w-full pl-9 pr-9 py-2 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200/70 dark:border-slate-700/70 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-[#0071e3]"
             />
             {searchQuery && (
               <button
@@ -422,18 +423,18 @@ export default function Reflex50OverviewPage() {
             )}
           </div>
 
-          <div className="flex flex-wrap items-center gap-1.5">
+          <div className="flex items-center gap-1.5 overflow-x-auto whitespace-nowrap hide-scrollbar pb-0.5 md:pb-0">
             {[
               { id: 'all', label: 'Tất cả' },
               { id: 'in-progress', label: 'Đang học' },
-              { id: 'completed', label: 'Đã hoàn thành' },
+              { id: 'completed', label: 'Hoàn thành' },
               { id: 'unstarted', label: 'Chưa học' },
-              { id: 'starred', label: 'Có câu Lưu Sao / Sai' }
+              { id: 'starred', label: 'Lưu Sao / Sai' }
             ].map((f) => (
               <button
                 key={f.id}
                 onClick={() => setStatusFilter(f.id)}
-                className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors cursor-pointer ${
+                className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors shrink-0 cursor-pointer ${
                   statusFilter === f.id
                     ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900'
                     : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200/70'
@@ -451,7 +452,7 @@ export default function Reflex50OverviewPage() {
                     toast.success('Đã đặt lại tiến độ 50 Chủ đề');
                   }
                 }}
-                className="p-2 rounded-full text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors cursor-pointer"
+                className="p-1.5 sm:p-2 rounded-full text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors shrink-0 cursor-pointer"
                 title="Đặt lại tiến độ"
               >
                 <RotateCcw size={14} />
@@ -465,26 +466,26 @@ export default function Reflex50OverviewPage() {
       {/* 3.5 KẾT QUẢ TÌM KIẾM TRỰC TIẾP TRONG 1500 CÂU (NẾU ĐANG TÌM KIẾM)     */}
       {/* ===================================================================== */}
       {matchingSentences.length > 0 && (
-        <section className="p-5 rounded-3xl bg-blue-50/50 dark:bg-slate-900 border border-blue-200/70 dark:border-slate-800 space-y-3">
-          <div className="flex items-center justify-between">
-            <h3 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-              <Sparkles size={15} className="text-[#0071e3]" />
-              <span>
-                Tìm thấy nhanh mẫu câu khớp từ khóa "{searchQuery}" trong kho 1.500 câu:
+        <section className="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-blue-50/50 dark:bg-slate-900 border border-blue-200/70 dark:border-slate-800 space-y-3">
+          <div className="flex items-center justify-between gap-2">
+            <h3 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+              <Sparkles size={15} className="text-[#0071e3] shrink-0" />
+              <span className="truncate">
+                Mẫu câu khớp "{searchQuery}" trong 1.500 câu:
               </span>
             </h3>
-            <span className="text-xs text-slate-500">Hiển thị {matchingSentences.length} câu tiêu biểu</span>
+            <span className="text-[11px] text-slate-500 shrink-0">{matchingSentences.length} câu</span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
             {matchingSentences.map((s) => (
               <div
                 key={s.id}
-                className="p-3.5 rounded-2xl bg-white dark:bg-slate-800/80 border border-slate-200/70 dark:border-slate-700/70 flex items-start justify-between gap-3"
+                className="p-3 sm:p-3.5 rounded-2xl bg-white dark:bg-slate-800/80 border border-slate-200/70 dark:border-slate-700/70 flex items-start justify-between gap-2.5"
               >
                 <div className="space-y-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-950/60 text-[#0071e3] dark:text-sky-400 text-[10px] font-bold">
+                    <span className="px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-950/60 text-[#0071e3] dark:text-sky-400 text-[10px] font-bold shrink-0">
                       Unit {s.unitNumber} • Câu #{s.number}
                     </span>
                     <span className="text-[11px] text-slate-400 truncate">{s.unitTitleVi}</span>
@@ -525,9 +526,9 @@ export default function Reflex50OverviewPage() {
       {/* ===================================================================== */}
       {/* 4. DANH SÁCH 50 CHỦ ĐỀ (UNIT CARDS GRID)                              */}
       {/* ===================================================================== */}
-      <section className="space-y-4">
+      <section className="space-y-3 sm:space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+          <h2 className="text-sm sm:text-lg font-bold text-slate-900 dark:text-white">
             Danh Sách Chủ Đề ({filteredUnits.length} Unit • {filteredUnits.length * 30} câu)
           </h2>
           {selectedCategory !== 'all' && (
@@ -535,12 +536,12 @@ export default function Reflex50OverviewPage() {
               onClick={() => setSelectedCategory('all')}
               className="text-xs font-semibold text-[#0071e3] hover:underline cursor-pointer"
             >
-              Xem toàn bộ 50 Unit
+              Xem tất cả 50 Unit
             </button>
           )}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
           {filteredUnits.map((unit) => {
             const st = getUnitStats(unit.unitNumber);
             const sample1 = unit.sample1;
@@ -550,15 +551,15 @@ export default function Reflex50OverviewPage() {
             return (
               <div
                 key={unit.id}
-                style={{ contentVisibility: 'auto', containIntrinsicSize: '280px' }}
-                className="group rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:border-[#0071e3]/60 p-5 flex flex-col justify-between gap-4 shadow-2xs hover:shadow-md transition-all"
+                style={{ contentVisibility: 'auto', containIntrinsicSize: '260px' }}
+                className="group rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:border-[#0071e3]/60 p-4 sm:p-5 flex flex-col justify-between gap-3 sm:gap-4 shadow-2xs hover:shadow-md transition-all"
               >
-                <div className="space-y-3">
+                <div className="space-y-2.5 sm:space-y-3">
                   {/* Top Row: Unit badge + Status */}
                   <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5 sm:gap-2">
                       <span
-                        className={`px-2.5 py-1 rounded-full text-xs font-bold ${
+                        className={`px-2.5 py-0.5 sm:py-1 rounded-full text-[11px] sm:text-xs font-bold ${
                           st.isCompleted
                             ? 'bg-emerald-500 text-white'
                             : st.masteredCount > 0
@@ -568,7 +569,7 @@ export default function Reflex50OverviewPage() {
                       >
                         UNIT {unit.unitNumber < 10 ? `0${unit.unitNumber}` : unit.unitNumber}
                       </span>
-                      <span className="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-[11px] font-medium text-slate-500">
+                      <span className="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-[10px] sm:text-[11px] font-medium text-slate-500">
                         30 câu • 3 cấp độ
                       </span>
                     </div>
@@ -581,7 +582,7 @@ export default function Reflex50OverviewPage() {
                         </span>
                       )}
                       {st.isCompleted ? (
-                        <CheckCircle2 size={18} className="text-emerald-500" />
+                        <CheckCircle2 size={17} className="text-emerald-500" />
                       ) : (
                         <span className="text-xs font-bold text-[#0071e3] dark:text-sky-400">
                           {st.masteredCount}/30 câu
@@ -615,8 +616,8 @@ export default function Reflex50OverviewPage() {
                     ))}
                   </div>
 
-                  {/* Sample basic -> advanced preview */}
-                  <div className="p-3 rounded-2xl bg-slate-50/90 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-800 space-y-1.5 text-xs">
+                  {/* Sample basic -> advanced preview (1 line on mobile, 2 lines on sm+) */}
+                  <div className="p-2.5 sm:p-3 rounded-xl sm:rounded-2xl bg-slate-50/90 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-800 space-y-1.5 text-xs">
                     <div className="flex items-start justify-between gap-2">
                       <span className="text-slate-600 dark:text-slate-300 line-clamp-1">
                         <strong className="text-emerald-600 dark:text-emerald-400">#1:</strong> {sample1.en}
@@ -629,7 +630,7 @@ export default function Reflex50OverviewPage() {
                         <Volume2 size={13} />
                       </button>
                     </div>
-                    <div className="flex items-start justify-between gap-2">
+                    <div className="hidden sm:flex items-start justify-between gap-2">
                       <span className="text-slate-600 dark:text-slate-300 line-clamp-1">
                         <strong className="text-purple-600 dark:text-purple-400">#30:</strong> {sample2.en}
                       </span>

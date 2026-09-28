@@ -12,7 +12,7 @@ export default function StudentLayout() {
       <StudentNavbar />
 
       {/* Main Content Area (Full width, No sidebar, safe bottom clearance for mobile nav) */}
-      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 md:py-8 pb-24 md:pb-8">
+      <main className="flex-1 max-w-7xl mx-auto w-full px-3 sm:px-6 lg:px-8 py-3.5 sm:py-6 md:py-8 pb-24 md:pb-8">
         <Outlet />
       </main>
 
@@ -21,7 +21,7 @@ export default function StudentLayout() {
       <CelebrationEffects />
 
       {/* Simple Clean Footer */}
-      <footer className="border-t border-slate-200 dark:border-slate-800/80 py-6 text-center text-xs text-slate-400 dark:text-slate-500 bg-white/50 dark:bg-slate-900/50">
+      <footer className="hidden md:block border-t border-slate-200 dark:border-slate-800/80 py-6 text-center text-xs text-slate-400 dark:text-slate-500 bg-white/50 dark:bg-slate-900/50">
         <p>© 2026 VBaceEnglish — By Vũ Bảo Software. Nền tảng học và luyện thi tiếng Anh chuẩn quốc tế.</p>
       </footer>
 
