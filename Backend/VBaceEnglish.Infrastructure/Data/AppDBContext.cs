@@ -37,6 +37,8 @@ public class AppDBContext : IdentityDbContext<ApplicationUser, Role, int>
     public DbSet<UserSRSReview> UserSRSReviews => Set<UserSRSReview>();
     public DbSet<UserReflexProgress> UserReflexProgresses => Set<UserReflexProgress>();
     public DbSet<UserEbookProgress> UserEbookProgresses => Set<UserEbookProgress>();
+    public DbSet<UserGamification> UserGamifications => Set<UserGamification>();
+    public DbSet<XPTransaction> XPTransactions => Set<XPTransaction>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

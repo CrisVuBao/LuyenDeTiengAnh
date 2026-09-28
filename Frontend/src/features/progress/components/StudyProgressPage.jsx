@@ -14,6 +14,7 @@ import binoApi from '../../../api/binoApi';
 import { dashboardApi, invalidateStatsCache } from '../../../api/dashboardAndAiApi';
 import useReflex50Store from '../../reflex50/store/useReflex50Store';
 import reflex50Data from '../../reflex50/data/reflex50Data.json';
+import useGamificationStore from '../../gamification/store/useGamificationStore';
 import PageLoader from '../../../components/PageLoader';
 import toast from 'react-hot-toast';
 
@@ -101,6 +102,9 @@ export default function StudyProgressPage() {
           ? `Đã đánh dấu hoàn thành "${dialogue.title}"`
           : `Đã chuyển "${dialogue.title}" về chưa hoàn thành`
       );
+      if (nextState) {
+        useGamificationStore.getState().earnXP(25, 'bino_dialogue', `Hoàn thành bài hội thoại: ${dialogue.title}`);
+      }
       const fresh = await binoApi.getProgressSummary(true);
       if (fresh?.data) setBinoSummary(fresh.data);
     } catch {
@@ -1116,7 +1120,12 @@ export default function StudyProgressPage() {
                       <div className="flex items-center gap-1.5 shrink-0">
                         <button
                           onClick={() => {
-                            markUnitMastered(u.unitNumber, !st.isCompleted);
+                            const nextState = !st.isCompleted;
+                            markUnitMastered(u.unitNumber, nextState);
+                            if (nextState) {
+                              useGamificationStore.getState().earnXP(50, 'reflex_master', `Hoàn thành trọn bộ Unit ${u.unitNumber}`);
+                              toast.success(`Đã hoàn thành Unit ${u.unitNumber}! +50 XP 🎉`);
+                            }
                             setBinoSearch((prev) => prev + ''); // trigger re-render
                           }}
                           className={`px-2.5 py-1.5 rounded-xl text-xs font-semibold cursor-pointer ${

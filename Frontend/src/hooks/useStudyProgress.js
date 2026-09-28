@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import progressApi from '../api/progressApi';
 import useAuthStore from '../store/authStore';
+import useGamificationStore from '../features/gamification/store/useGamificationStore';
 
 export default function useStudyProgress(toeicTestId) {
   const [progressMap, setProgressMap] = useState({}); // key: `${partNumber}_${questionNumber}` -> { isConfident, isRevealed, selectedAnswer }
@@ -63,6 +64,9 @@ export default function useStudyProgress(toeicTestId) {
           questionNumber,
           isConfident: nextVal
         });
+        if (nextVal === true) {
+          useGamificationStore.getState().earnXP(8, 'toeic_confident', 'Tự tin 1 câu TOEIC');
+        }
       } catch (e) {
         console.error("Lỗi lưu tiến độ:", e);
       }

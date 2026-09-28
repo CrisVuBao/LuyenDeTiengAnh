@@ -86,3 +86,36 @@ public class UserEbookProgress
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 }
 
+public class UserGamification
+{
+    public int Id { get; set; }
+    public int UserId { get; set; }
+    public ApplicationUser User { get; set; } = null!;
+
+    public int TotalXP { get; set; } = 0;
+    public int CurrentLevel { get; set; } = 1;
+    public int WeeklyXP { get; set; } = 0;
+    public int CurrentStreak { get; set; } = 0;
+    public int LongestStreak { get; set; } = 0;
+    public int StreakFreezeCount { get; set; } = 0;
+    public DateTime? LastActiveDate { get; set; }
+    
+    public string DailyQuestsJson { get; set; } = "[]";
+    public int DailyQuestStreak { get; set; } = 0;
+    public string UnlockedBadgesJson { get; set; } = "[]";
+    
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+}
+
+public class XPTransaction
+{
+    public int Id { get; set; }
+    public int UserId { get; set; }
+    public ApplicationUser User { get; set; } = null!;
+
+    public int Amount { get; set; }
+    public string Source { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+}
+

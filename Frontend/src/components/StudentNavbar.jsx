@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { 
   Sparkles, BookOpen, Home, BarChart3, TrendingUp, 
-  User, LogOut, Sun, Moon, ShieldCheck, ChevronDown, Layers, Zap 
+  User, LogOut, Sun, Moon, ShieldCheck, ChevronDown, Layers, Zap, Trophy 
 } from 'lucide-react';
 import useAuthStore from '../store/authStore';
 import useThemeStore from '../store/themeStore';
@@ -10,6 +10,7 @@ import authApi from '../api/authApi';
 import binoApi from '../api/binoApi';
 import toeicApi from '../api/toeicApi';
 import toast from 'react-hot-toast';
+import XPBar from '../features/gamification/components/XPBar';
 
 // Prefetch cả JS chunk lẫn dữ liệu API ngay khi người dùng di chuột vào thanh menu
 const prefetchRoute = (route) => {
@@ -154,8 +155,13 @@ export default function StudentNavbar() {
           </nav>
         </div>
 
-        {/* Right Controls: Theme toggle & Avatar dropdown */}
+        {/* Right Controls: XPBar, Theme toggle & Avatar dropdown */}
         <div className="flex items-center gap-2.5">
+          
+          {/* Gamification XP Bar */}
+          <div className="block">
+            <XPBar />
+          </div>
           
           {/* Theme Toggle */}
           <button
@@ -219,6 +225,14 @@ export default function StudentNavbar() {
                   >
                     <Layers size={15} className="text-slate-500" />
                     <span>Bộ thẻ Flashcard (SRS)</span>
+                  </button>
+
+                  <button
+                    onClick={() => navigate('/leaderboard')}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 rounded-xl transition-colors text-left"
+                  >
+                    <Trophy size={15} className="text-amber-500" />
+                    <span>Bảng xếp hạng & Huy hiệu</span>
                   </button>
 
                   <button

@@ -18,6 +18,7 @@ import BinoLearningGuideModal from './components/BinoLearningGuideModal';
 import { getExpansionsForLine } from './data/binoSentenceExpansions';
 import speechService, { SPEECH_SPEED_PRESETS } from '../../utils/speechService';
 import useAuthStore from '../../store/authStore';
+import useGamificationStore from '../gamification/store/useGamificationStore';
 import toast from 'react-hot-toast';
 
 const getLocalFlashcardKey = () => {
@@ -350,8 +351,21 @@ export default function BinoDialogueStudyPage() {
       .finally(() => setLoading(false));
   }, [id]);
 
+  const lastListenLineRef = useRef({});
+  const recordBinoListen = (lineKey) => {
+    const now = Date.now();
+    const last = lastListenLineRef.current[lineKey] || 0;
+    if (now - last > 4000) {
+      lastListenLineRef.current[lineKey] = now;
+      try {
+        useGamificationStore.getState().earnXP(3, 'bino_listen', 'Luyện nghe câu thoại Bino');
+      } catch {}
+    }
+  };
+
   // Speech synthesis for pronunciation
   const speakText = (text, characterName = 'BINO', speed = null) => {
+    recordBinoListen(text);
     speechService.speakLine({
       text,
       characterName,
@@ -434,7 +448,10 @@ export default function BinoDialogueStudyPage() {
         timeSpentSeconds: consumeElapsedSeconds()
       });
       invalidateStatsCache();
-      if (newState) toast.success('Đã hoàn thành bài hội thoại này! 🎉');
+      if (newState) {
+        toast.success('Đã hoàn thành bài hội thoại này! 🎉');
+        useGamificationStore.getState().earnXP(25, 'bino_dialogue', 'Hoàn thành bài hội thoại Bino');
+      }
     } catch {
       toast.error('Lỗi lưu tiến độ');
     }
@@ -513,6 +530,7 @@ export default function BinoDialogueStudyPage() {
 
     const line = lines[index];
     const currentStep = ++stepTokenRef.current;
+    recordBinoListen(line.englishText);
 
     // Tải trước (pre-fetch) 3 câu tiếp theo vào RAM để chuyển câu phát tức thì 0ms
     speechService.preloadDialogueLines(lines, index + 1, 3);
@@ -1465,6 +1483,7 @@ export default function BinoDialogueStudyPage() {
                   <button
                     onClick={() => {
                       if (roleplayStep < lesson.dialogueLines.length - 1) {
+                        useGamificationStore.getState().earnXP(10, 'bino_roleplay', 'Luyện đối đáp 1 câu Bino');
                         setRoleplayStep(prev => prev + 1);
                         setUserTranscript('');
                       } else {
@@ -1474,6 +1493,7 @@ export default function BinoDialogueStudyPage() {
                           timeSpentSeconds: consumeElapsedSeconds()
                         }).then(() => invalidateStatsCache()).catch(() => {});
                         toast.success('Xuất sắc! Đã ghi nhận hoàn thành luyện đóng vai 1:1 cho bài này! 🎉');
+                        useGamificationStore.getState().earnXP(30, 'bino_roleplay', 'Hoàn thành lượt đóng vai Bino');
                       }
                     }}
                     className="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl text-xs font-bold shadow-md shadow-orange-500/20 flex items-center gap-1.5 active:scale-95"
@@ -1570,7 +1590,12 @@ export default function BinoDialogueStudyPage() {
                     dialogueLessonId: parseInt(id),
                     dictationScore: score,
                     timeSpentSeconds: consumeElapsedSeconds()
-                  }).then(() => invalidateStatsCache()).catch(() => {});
+                  }).then(() => {
+                    invalidateStatsCache();
+                    const xp = score >= 80 ? 20 : (score >= 35 ? 10 : 5);
+                    const msg = score >= 80 ? `Chép chính tả xuất sắc ${score}%` : `Luyện chép chính tả (${score}%)`;
+                    useGamificationStore.getState().earnXP(xp, 'bino_dictation', msg);
+                  }).catch(() => {});
                 }}
                 className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-md shadow-emerald-500/20 active:scale-95"
               >

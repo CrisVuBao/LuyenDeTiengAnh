@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import useAuthStore from '../../../store/authStore';
 import progressApi from '../../../api/progressApi';
+import useGamificationStore from '../../gamification/store/useGamificationStore';
 
 const TOTAL_UNITS = 50;
 const SENTENCES_PER_UNIT = 30;
@@ -308,6 +309,7 @@ export const useReflex50Store = create((set, get) => ({
   },
 
   toggleMastered: (sentenceId) => {
+    let isNewlyMastered = false;
     set((state) => {
       const nextMastered = { ...state.masteredIds };
       const nextWeak = { ...state.weakIds };
@@ -320,6 +322,7 @@ export const useReflex50Store = create((set, get) => ({
         nextMastered[sentenceId] = true;
         delete nextWeak[sentenceId];
         nextDailyLog[today] = (nextDailyLog[today] || 0) + 1;
+        isNewlyMastered = true;
       }
 
       const next = {
@@ -331,17 +334,25 @@ export const useReflex50Store = create((set, get) => ({
       saveStateToStorage(next);
       return next;
     });
+
+    if (isNewlyMastered) {
+      try {
+        useGamificationStore.getState().earnXP(10, 'reflex_master', 'Master 1 câu phản xạ');
+      } catch (e) {
+        console.error('Lỗi cộng XP câu phản xạ:', e);
+      }
+    }
   },
 
   markUnitMastered: (unitNumber, mastered = true) => {
     const ids = getUnitSentenceIds(unitNumber);
     if (ids.length === 0) return;
+    let addedCount = 0;
     set((state) => {
       const nextMastered = { ...state.masteredIds };
       const nextWeak = { ...state.weakIds };
       const today = getTodayKey();
       const nextDailyLog = { ...state.dailyLog };
-      let addedCount = 0;
 
       for (const id of ids) {
         if (mastered) {
@@ -366,6 +377,14 @@ export const useReflex50Store = create((set, get) => ({
       saveStateToStorage(next);
       return next;
     });
+
+    if (mastered && addedCount > 0) {
+      try {
+        useGamificationStore.getState().earnXP(50, 'reflex_master', `Master trọn bộ Unit ${unitNumber}`);
+      } catch (e) {
+        console.error('Lỗi cộng XP khi master Unit:', e);
+      }
+    }
   },
 
   toggleStarred: (sentenceId) => {
@@ -383,6 +402,7 @@ export const useReflex50Store = create((set, get) => ({
   },
 
   recordWritingAttempt: (sentenceId, userInput, score) => {
+    const hasAttempt = typeof userInput === 'string' && userInput.trim().length > 0;
     set((state) => {
       const prev = state.writingHistory[sentenceId] || { attempts: 0, bestScore: 0 };
       const nextWriting = {
@@ -401,7 +421,7 @@ export const useReflex50Store = create((set, get) => ({
       const today = getTodayKey();
       const nextDailyLog = { ...state.dailyLog };
 
-      if (score >= 85) {
+      if (score >= 80) {
         if (!nextMastered[sentenceId]) {
           nextDailyLog[today] = (nextDailyLog[today] || 0) + 1;
         }
@@ -421,9 +441,20 @@ export const useReflex50Store = create((set, get) => ({
       saveStateToStorage(next);
       return next;
     });
+
+    if (hasAttempt) {
+      try {
+        const xp = score >= 80 ? 20 : 10;
+        const msg = score >= 80 ? `Viết chuẩn xác ${score}%` : `Luyện viết phản xạ (${score}%)`;
+        useGamificationStore.getState().earnXP(xp, 'reflex_write', msg);
+      } catch (e) {
+        console.error('Lỗi cộng XP viết phản xạ:', e);
+      }
+    }
   },
 
   recordSpeakingAttempt: (sentenceId, transcript, score) => {
+    const hasAttempt = (typeof transcript === 'string' && transcript.trim().length > 0) || score > 0;
     set((state) => {
       const prev = state.speakingHistory[sentenceId] || { attempts: 0, bestScore: 0 };
       const nextSpeaking = {
@@ -442,7 +473,7 @@ export const useReflex50Store = create((set, get) => ({
       const today = getTodayKey();
       const nextDailyLog = { ...state.dailyLog };
 
-      if (score >= 80) {
+      if (score >= 75) {
         if (!nextMastered[sentenceId]) {
           nextDailyLog[today] = (nextDailyLog[today] || 0) + 1;
         }
@@ -462,6 +493,22 @@ export const useReflex50Store = create((set, get) => ({
       saveStateToStorage(next);
       return next;
     });
+
+    if (hasAttempt) {
+      try {
+        const xp = score >= 75 ? 25 : 10;
+        const msg = score >= 75 ? `Phản xạ nói chuẩn ${score}%` : `Luyện phản xạ nói (${score}%)`;
+        useGamificationStore.getState().earnXP(xp, 'reflex_speak', msg);
+      } catch (e) {
+        console.error('Lỗi cộng XP nói phản xạ:', e);
+      }
+    }
+  },
+
+  recordListeningAttempt: (sentenceId) => {
+    try {
+      useGamificationStore.getState().earnXP(3, 'reflex_listen', 'Luyện nghe câu phản xạ');
+    } catch (e) {}
   },
 
   resetUnitProgress: (unitNumber) => {

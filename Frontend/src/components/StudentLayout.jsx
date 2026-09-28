@@ -2,6 +2,7 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 import StudentNavbar from './StudentNavbar';
 import BinoPlaylistModal from '../features/bino/components/BinoPlaylistModal';
+import CelebrationEffects from '../features/gamification/components/CelebrationEffects';
 
 export default function StudentLayout() {
   return (
@@ -17,6 +18,7 @@ export default function StudentLayout() {
 
       {/* Trình phát âm thanh & Playlist toàn cục — Không bao giờ bị thoát khi chuyển trang */}
       <BinoPlaylistModal />
+      <CelebrationEffects />
 
       {/* Simple Clean Footer */}
       <footer className="border-t border-slate-200 dark:border-slate-800/80 py-6 text-center text-xs text-slate-400 dark:text-slate-500 bg-white/50 dark:bg-slate-900/50">

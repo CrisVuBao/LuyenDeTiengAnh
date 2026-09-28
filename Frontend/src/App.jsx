@@ -32,6 +32,9 @@ const BinoChapterBonusPage = lazy(() => import("./features/bino/BinoChapterBonus
 const Reflex50OverviewPage = lazy(() => import("./features/reflex50/Reflex50OverviewPage"));
 const Reflex50UnitStudyPage = lazy(() => import("./features/reflex50/Reflex50UnitStudyPage"));
 
+// Gamification System (Leaderboard, Achievements, Streaks, Quests)
+const GamificationHubPage = lazy(() => import("./features/gamification/GamificationHubPage"));
+
 const ProtectedRoute = ({ children }) => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   if (!isAuthenticated) return <Navigate to="/auth" replace />;
@@ -95,6 +98,10 @@ function App() {
             {/* Reflex 50 Topics (1500 Sentences) Routes */}
             <Route path="/reflex-50" element={<Reflex50OverviewPage />} />
             <Route path="/reflex-50/unit/:unitNumber" element={<Reflex50UnitStudyPage />} />
+
+            {/* Gamification Hub Routes */}
+            <Route path="/leaderboard" element={<GamificationHubPage />} />
+            <Route path="/gamification" element={<GamificationHubPage />} />
           </Route>
 
           {/* ======================================================== */}

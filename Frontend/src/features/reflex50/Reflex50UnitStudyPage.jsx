@@ -176,11 +176,22 @@ export default function Reflex50UnitStudyPage() {
     toast.success(`🎧 Đã chuyển tốc độ nghe: ${newRate}x`, { id: 'reflex50-speed' });
   };
 
+  const lastListenSentenceRef = useRef({});
+  const recordListen = (sentenceId) => {
+    const now = Date.now();
+    const last = lastListenSentenceRef.current[sentenceId] || 0;
+    if (now - last > 4000) {
+      lastListenSentenceRef.current[sentenceId] = now;
+      useReflex50Store.getState().recordListeningAttempt(sentenceId);
+    }
+  };
+
   // Phát 1 câu tiếng Anh
   const speakSentence = (sentence, customRate = null) => {
     if (isAutoPlaying) stopAutoPlay();
     const rate = customRate || playbackSpeed;
     setActivePlayingId(sentence.id);
+    recordListen(sentence.id);
     speechService.speak(sentence.en, {
       rate,
       speakerIndex: sentence.number % 2,
@@ -209,6 +220,7 @@ export default function Reflex50UnitStudyPage() {
       }
       const item = list[idx];
       setActivePlayingId(item.id);
+      recordListen(item.id);
 
       // Tải trước 3 câu tiếp theo để chuyển câu 0ms delay
       speechService.preloadReflexSentences(list, idx + 1, 3);

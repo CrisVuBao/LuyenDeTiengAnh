@@ -29,6 +29,7 @@ public static class DependencyInjection
         services.AddScoped<IUserProgressRepository, UserProgressRepository>();
         services.AddScoped<IBinoBookRepository, BinoBookRepository>();
         services.AddScoped<IBinoLearningRepository, BinoLearningRepository>();
+        services.AddScoped<IGamificationRepository, GamificationRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         // External Services

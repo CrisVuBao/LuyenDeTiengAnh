@@ -11,6 +11,7 @@ public class UnitOfWork : IUnitOfWork
     private IUserProgressRepository? _userProgresses;
     private IBinoBookRepository? _binoBooks;
     private IBinoLearningRepository? _binoLearning;
+    private IGamificationRepository? _gamification;
 
     public UnitOfWork(AppDBContext context)
     {
@@ -21,6 +22,7 @@ public class UnitOfWork : IUnitOfWork
     public IUserProgressRepository UserProgresses => _userProgresses ??= new UserProgressRepository(_context);
     public IBinoBookRepository BinoBooks => _binoBooks ??= new BinoBookRepository(_context);
     public IBinoLearningRepository BinoLearning => _binoLearning ??= new BinoLearningRepository(_context);
+    public IGamificationRepository Gamification => _gamification ??= new GamificationRepository(_context);
 
     public async Task<int> CompleteAsync() => await _context.SaveChangesAsync();
 
@@ -32,4 +34,3 @@ public class UnitOfWork : IUnitOfWork
         GC.SuppressFinalize(this);
     }
 }
-

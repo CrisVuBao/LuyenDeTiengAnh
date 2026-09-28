@@ -12,6 +12,7 @@ public static class DependencyInjection
         services.AddScoped<IUserProgressService, UserProgressService>();
         services.AddScoped<IDashboardService, DashboardService>();
         services.AddScoped<IBinoBookService, BinoBookService>();
+        services.AddScoped<IGamificationService, GamificationService>();
 
         return services;
     }

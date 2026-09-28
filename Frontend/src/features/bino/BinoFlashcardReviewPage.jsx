@@ -10,6 +10,7 @@ import PageLoader from '../../components/PageLoader';
 import VoiceSettingsModal from '../../components/VoiceSettingsModal';
 import speechService from '../../utils/speechService';
 import useAuthStore from '../../store/authStore';
+import useGamificationStore from '../gamification/store/useGamificationStore';
 import toast from 'react-hot-toast';
 
 const getLocalFlashcardKey = () => {
@@ -93,6 +94,7 @@ export default function BinoFlashcardReviewPage() {
 
     try {
       await binoApi.submitSRSReview(currentCard.vocabularyId, grade);
+      useGamificationStore.getState().earnXP(5, 'flashcard_review', 'Ôn 1 thẻ từ vựng SRS');
     } catch {
       // ignore
     }

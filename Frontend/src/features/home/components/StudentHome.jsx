@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Sparkles, BookOpen, ArrowRight, Flame, CheckCircle2, 
   TrendingUp, Play, Headphones, MessageSquare, 
-  Layers, BookMarked, ChevronRight, Volume2, RefreshCw, Zap, PenTool, Mic
+  Layers, BookMarked, ChevronRight, Volume2, RefreshCw, Zap, PenTool, Mic, Trophy
 } from 'lucide-react';
 import { dashboardApi } from '../../../api/dashboardAndAiApi';
 import binoApi from '../../../api/binoApi';
@@ -15,6 +15,8 @@ import useAuthStore from '../../../store/authStore';
 import useReflex50Store, { loadReflex50FullData } from '../../reflex50/store/useReflex50Store';
 import reflex50Meta from '../../reflex50/data/reflex50Meta.json';
 import PageLoader from '../../../components/PageLoader';
+import DailyQuestsPanel from '../../gamification/components/DailyQuestsPanel';
+import useGamificationStore from '../../gamification/store/useGamificationStore';
 
 // Apple-style Spring Variants (120FPS GPU-accelerated transform & opacity)
 const pageContainerVariants = {
@@ -237,8 +239,10 @@ export default function StudentHome() {
   const openPlaylist = useBinoPlayerStore((state) => state.openPlaylist);
   const isGlobalPlaying = useBinoPlayerStore((state) => state.isOpen);
   const navigate = useNavigate();
+  const { profile, fetchProfile } = useGamificationStore();
 
   useEffect(() => {
+    fetchProfile();
     Promise.allSettled([
       dashboardApi.getStats().then((res) => {
         if (res?.data) setStats(res.data);
@@ -247,7 +251,7 @@ export default function StudentHome() {
         if (res?.data) setBinoBook(res.data);
       })
     ]).finally(() => setLoading(false));
-  }, []);
+  }, [fetchProfile]);
 
   const recentTests = stats?.recentTests || [];
   const totalBinoLessons = binoBook?.totalLessons || 72;
@@ -288,7 +292,7 @@ export default function StudentHome() {
       {/* ===================================================================== */}
       <motion.section
         variants={sectionRevealVariants}
-        className="relative overflow-hidden rounded-[30px] bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/90 p-7 sm:p-10 lg:p-12 shadow-[0_10px_40px_rgb(0,0,0,0.035)] dark:shadow-none"
+        className="relative overflow-hidden rounded-[30px] bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/90 p-7 sm:p-10 lg:p-12 shadow-[0_10px_40px_rgb(0,0,0,0.035)] dark:shadow-none mb-8"
       >
         {/* Ambient Apple Breathing Light Orbs (100% GPU Transform Animation) */}
         <motion.div
@@ -314,25 +318,37 @@ export default function StudentHome() {
           
           {/* Left Column: Clean Typography & Solid Pill Buttons with Spring Physics */}
           <div className="max-w-2xl space-y-5">
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.08, duration: 0.4 }}
-              className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-slate-100/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-300 text-xs font-medium border border-slate-200/60 dark:border-slate-700/60"
-            >
-              <span className="inline-flex items-center gap-1.5 text-[#0071e3] dark:text-sky-400 font-semibold">
-                <motion.span
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-                  className="inline-flex"
-                >
-                  <Flame size={13} className="fill-current" />
-                </motion.span>
-                {stats?.currentStreakDays ?? 0} ngày liên tiếp
-              </span>
-              <span className="text-slate-300 dark:text-slate-600">•</span>
-              <span>Khóa học phản xạ giao tiếp Bino</span>
-            </motion.div>
+            <div className="flex flex-wrap items-center gap-2.5">
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.08, duration: 0.4 }}
+                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-300 text-xs font-medium border border-slate-200/60 dark:border-slate-700/60"
+              >
+                <span className="inline-flex items-center gap-1.5 text-orange-500 font-semibold">
+                  <motion.span
+                    animate={{ scale: [1, 1.2, 1] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                    className="inline-flex"
+                  >
+                    <Flame size={13} className="fill-current text-orange-500" />
+                  </motion.span>
+                  {profile?.currentStreak ?? stats?.currentStreakDays ?? 0} ngày liên tiếp
+                </span>
+                <span className="text-slate-300 dark:text-slate-600">•</span>
+                <span>Khóa học Bino</span>
+              </motion.div>
+
+              <button
+                onClick={() => navigate('/leaderboard')}
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-400 text-xs font-bold border border-amber-500/20 transition-all cursor-pointer hover:scale-105 active:scale-95 shadow-2xs"
+                title="Bấm để xem Bảng Xếp Hạng & Thành Tích"
+              >
+                <Trophy size={13} className="text-amber-500" />
+                <span>Cấp {profile?.currentLevel ?? 1} • {profile?.totalXP ?? 0} XP</span>
+                <ChevronRight size={12} className="opacity-70" />
+              </button>
+            </div>
 
             <div className="space-y-3">
               <h1 className="text-3xl sm:text-4xl lg:text-[42px] font-bold tracking-[-0.028em] text-slate-900 dark:text-white leading-[1.14]">
@@ -497,6 +513,11 @@ export default function StudentHome() {
           </motion.div>
 
         </div>
+      </motion.section>
+
+      {/* GAMIFICATION: DAILY QUESTS */}
+      <motion.section variants={sectionRevealVariants}>
+        <DailyQuestsPanel />
       </motion.section>
 
       {/* ===================================================================== */}

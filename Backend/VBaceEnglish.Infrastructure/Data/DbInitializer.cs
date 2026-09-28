@@ -72,6 +72,43 @@ public static class DbInitializer
                     );
                     CREATE UNIQUE INDEX [IX_UserEbookProgresses_UserId_BookSlug] ON [UserEbookProgresses] ([UserId], [BookSlug]);
                 END
+                
+                IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'UserGamifications')
+                BEGIN
+                    CREATE TABLE [UserGamifications] (
+                        [Id] int IDENTITY(1,1) NOT NULL,
+                        [UserId] int NOT NULL,
+                        [TotalXP] int NOT NULL CONSTRAINT [DF_UserGamifications_TotalXP] DEFAULT 0,
+                        [CurrentLevel] int NOT NULL CONSTRAINT [DF_UserGamifications_CurrentLevel] DEFAULT 1,
+                        [WeeklyXP] int NOT NULL CONSTRAINT [DF_UserGamifications_WeeklyXP] DEFAULT 0,
+                        [CurrentStreak] int NOT NULL CONSTRAINT [DF_UserGamifications_CurrentStreak] DEFAULT 0,
+                        [LongestStreak] int NOT NULL CONSTRAINT [DF_UserGamifications_LongestStreak] DEFAULT 0,
+                        [StreakFreezeCount] int NOT NULL CONSTRAINT [DF_UserGamifications_StreakFreezeCount] DEFAULT 0,
+                        [LastActiveDate] datetime2 NULL,
+                        [DailyQuestsJson] nvarchar(max) NOT NULL CONSTRAINT [DF_UserGamifications_DailyQuestsJson] DEFAULT '[]',
+                        [DailyQuestStreak] int NOT NULL CONSTRAINT [DF_UserGamifications_DailyQuestStreak] DEFAULT 0,
+                        [UnlockedBadgesJson] nvarchar(max) NOT NULL CONSTRAINT [DF_UserGamifications_UnlockedBadgesJson] DEFAULT '[]',
+                        [UpdatedAt] datetime2 NOT NULL CONSTRAINT [DF_UserGamifications_UpdatedAt] DEFAULT GETUTCDATE(),
+                        CONSTRAINT [PK_UserGamifications] PRIMARY KEY ([Id]),
+                        CONSTRAINT [FK_UserGamifications_AspNetUsers_UserId] FOREIGN KEY ([UserId]) REFERENCES [AspNetUsers] ([Id]) ON DELETE CASCADE
+                    );
+                    CREATE UNIQUE INDEX [IX_UserGamifications_UserId] ON [UserGamifications] ([UserId]);
+                END
+
+                IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'XPTransactions')
+                BEGIN
+                    CREATE TABLE [XPTransactions] (
+                        [Id] int IDENTITY(1,1) NOT NULL,
+                        [UserId] int NOT NULL,
+                        [Amount] int NOT NULL,
+                        [Source] nvarchar(50) NOT NULL CONSTRAINT [DF_XPTransactions_Source] DEFAULT '',
+                        [Description] nvarchar(200) NOT NULL CONSTRAINT [DF_XPTransactions_Description] DEFAULT '',
+                        [CreatedAt] datetime2 NOT NULL CONSTRAINT [DF_XPTransactions_CreatedAt] DEFAULT GETUTCDATE(),
+                        CONSTRAINT [PK_XPTransactions] PRIMARY KEY ([Id]),
+                        CONSTRAINT [FK_XPTransactions_AspNetUsers_UserId] FOREIGN KEY ([UserId]) REFERENCES [AspNetUsers] ([Id]) ON DELETE CASCADE
+                    );
+                    CREATE INDEX [IX_XPTransactions_UserId] ON [XPTransactions] ([UserId]);
+                END
             ";
             await cmd.ExecuteNonQueryAsync();
         }

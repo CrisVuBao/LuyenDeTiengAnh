@@ -92,14 +92,23 @@ public interface IBinoLearningRepository
     void RemoveSRSReview(UserSRSReview review);
 }
 
+public interface IGamificationRepository
+{
+    Task<UserGamification?> GetByUserIdAsync(int userId);
+    Task UpsertAsync(UserGamification entity);
+    Task AddXPTransactionAsync(XPTransaction transaction);
+    Task<IEnumerable<UserGamification>> GetWeeklyLeaderboardAsync(int top = 20);
+    Task<int> GetUserRankAsync(int userId);
+}
+
 public interface IUnitOfWork : IDisposable
 {
     IToeicTestRepository ToeicTests { get; }
     IUserProgressRepository UserProgresses { get; }
     IBinoBookRepository BinoBooks { get; }
     IBinoLearningRepository BinoLearning { get; }
+    IGamificationRepository Gamification { get; }
     Task<int> CompleteAsync();
     Task<IDbContextTransaction> BeginTransactionAsync();
 }
-
 
