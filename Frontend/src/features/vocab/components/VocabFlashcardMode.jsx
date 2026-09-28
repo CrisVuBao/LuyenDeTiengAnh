@@ -2,11 +2,13 @@ import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Volume2, RotateCw, CheckCircle2, XCircle, ArrowLeft, ArrowRight, 
-  Sparkles, Star, Shuffle, Play, Check, Trophy, CheckCheck, RotateCcw
+  Sparkles, Star, Shuffle, Play, Check, Trophy, CheckCheck, RotateCcw,
+  Brain, Square, Headphones, SkipBack, SkipForward
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import useVocabStore from '../store/useVocabStore';
 import useGamificationStore from '../../gamification/store/useGamificationStore';
+import { getCardFsrsMetrics, getFsrsIntervalPreviews } from '../../../utils/fsrsScheduler';
 
 export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
   const words = topic?.words || [];
@@ -14,6 +16,8 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
   const { 
     masteredWords, 
     starredWords, 
+    fsrsCards,
+    gradeWordFsrs,
     markWordMastered, 
     toggleStarred, 
     speakWord, 
@@ -189,20 +193,83 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
   const currentWord = sessionDeck[currentIndex] || sessionDeck[0];
   const isMastered = !!(currentWord && masteredWords[currentWord.id]);
   const isStarred = !!(currentWord && starredWords[currentWord.id]);
+  const currentCardFsrs = currentWord ? fsrsCards?.[currentWord.id] : null;
+  const fsrsMetrics = useMemo(() => getCardFsrsMetrics(currentCardFsrs), [currentCardFsrs]);
+  const fsrsPreviews = useMemo(() => getFsrsIntervalPreviews(currentCardFsrs, false), [currentCardFsrs]);
 
-  // Pronounce word when changing card (if autoPlayAudio is true)
+  // Continuous Auto-Play state for Flashcard mode
+  const [isAutoPlaying, setIsAutoPlaying] = useState(false);
+  const isAutoPlayingRef = useRef(false);
+  const autoPlayTimerRef = useRef(null);
+
+  const stopAutoPlay = useCallback(() => {
+    isAutoPlayingRef.current = false;
+    setIsAutoPlaying(false);
+    if (autoPlayTimerRef.current) {
+      clearTimeout(autoPlayTimerRef.current);
+      autoPlayTimerRef.current = null;
+    }
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
+  }, []);
+
   useEffect(() => {
-    if (currentWord && autoPlayAudio && !isFinished) {
+    return () => stopAutoPlay();
+  }, [topic?.id, stopAutoPlay]);
+
+  // Continuous playback loop: Speak word -> flip to meaning -> advance to next card
+  useEffect(() => {
+    if (!isAutoPlaying || isFinished || !currentWord) return;
+
+    setIsFlipped(false);
+    speakWord(currentWord.word);
+
+    const flipTimer = setTimeout(() => {
+      if (!isAutoPlayingRef.current) return;
+      setIsFlipped(true);
+    }, speechRate === 0.8 ? 1700 : 1300);
+
+    const nextTimer = setTimeout(() => {
+      if (!isAutoPlayingRef.current) return;
+      setIsFlipped(false);
+      const nextIdx = (currentIndex + 1) % sessionDeck.length;
+      setCurrentIndex(nextIdx);
+      if (topic?.id && sessionDeck[nextIdx]) {
+        setTopicLastPosition(topic.id, nextIdx, sessionDeck[nextIdx].id);
+      }
+    }, speechRate === 0.8 ? 3800 : 3000);
+
+    autoPlayTimerRef.current = nextTimer;
+    return () => {
+      clearTimeout(flipTimer);
+      clearTimeout(nextTimer);
+    };
+  }, [isAutoPlaying, currentIndex, currentWord, isFinished, sessionDeck, speechRate, speakWord, topic?.id, setTopicLastPosition]);
+
+  const toggleContinuousPlay = () => {
+    if (isAutoPlaying) {
+      stopAutoPlay();
+    } else {
+      isAutoPlayingRef.current = true;
+      setIsAutoPlaying(true);
+    }
+  };
+
+  // Pronounce word when changing card (if autoPlayAudio is true and not already in continuous loop)
+  useEffect(() => {
+    if (currentWord && autoPlayAudio && !isFinished && !isAutoPlaying) {
       const timer = setTimeout(() => {
         speakWord(currentWord.word);
       }, 150);
       return () => clearTimeout(timer);
     }
-  }, [currentIndex, currentWord, autoPlayAudio, isFinished, speakWord]);
+  }, [currentIndex, currentWord, autoPlayAudio, isFinished, isAutoPlaying, speakWord]);
 
   // Award XP and advance daily quest on session finish
   useEffect(() => {
     if (isFinished && (learnedCount > 0 || reviewCount > 0)) {
+      stopAutoPlay();
       const totalCards = learnedCount + reviewCount;
       const earnedXP = Math.max(10, (learnedCount * 3) + (reviewCount * 1));
       useGamificationStore.getState().earnXP(
@@ -211,7 +278,7 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
         `Hoàn thành phiên lật thẻ từ vựng (${totalCards} thẻ)`
       );
     }
-  }, [isFinished]);
+  }, [isFinished, learnedCount, reviewCount, stopAutoPlay]);
 
   // Snappy Flip Card
   const handleFlip = useCallback(() => {
@@ -219,21 +286,20 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
     setIsFlipped((prev) => !prev);
   }, [playEffect]);
 
-  // Next Word (Đã thuộc hoặc Chưa nhớ) - Saves both index and word ID!
-  const handleNextWord = useCallback((mastered) => {
+  // FSRS 4-Grade Review Handler (0: Again, 1: Hard, 2: Good, 3: Easy)
+  const handleFsrsGrade = useCallback((grade) => {
     if (!currentWord) return;
     hasSyncedCloudRef.current = true;
 
-    if (mastered) {
+    if (grade >= 2) {
       playEffect('correct');
-      markWordMastered(currentWord.id, true);
       setLearnedCount((c) => c + 1);
     } else {
       playEffect('wrong');
-      markWordMastered(currentWord.id, false);
       setReviewCount((c) => c + 1);
     }
 
+    gradeWordFsrs(currentWord.id, grade);
     setIsFlipped(false);
 
     const nextIndex = currentIndex + 1;
@@ -249,7 +315,12 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
         setTopicLastPosition(topic.id, 0, null);
       }
     }
-  }, [currentWord, currentIndex, sessionDeck, topic?.id, markWordMastered, setTopicLastPosition, playEffect]);
+  }, [currentWord, currentIndex, sessionDeck, topic?.id, gradeWordFsrs, setTopicLastPosition, playEffect]);
+
+  // Next Word (Đã thuộc hoặc Chưa nhớ) - Maps to FSRS Good (2) or Again (0)
+  const handleNextWord = useCallback((mastered) => {
+    handleFsrsGrade(mastered ? 2 : 0);
+  }, [handleFsrsGrade]);
 
   // Previous Card Navigation - Saves both index and word ID!
   const handlePrevCard = useCallback(() => {
@@ -271,12 +342,21 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
       if (e.code === 'Space') {
         e.preventDefault();
         handleFlip();
-      } else if (e.code === 'ArrowRight') {
+      } else if (e.code === 'Digit1') {
         e.preventDefault();
-        handleNextWord(true); // Đã thuộc
+        handleFsrsGrade(0);
+      } else if (e.code === 'Digit2') {
+        e.preventDefault();
+        handleFsrsGrade(1);
+      } else if (e.code === 'Digit3' || e.code === 'ArrowRight') {
+        e.preventDefault();
+        handleFsrsGrade(2); // Nhớ tốt
+      } else if (e.code === 'Digit4') {
+        e.preventDefault();
+        handleFsrsGrade(3); // Quá dễ
       } else if (e.code === 'ArrowLeft') {
         e.preventDefault();
-        handleNextWord(false); // Chưa nhớ
+        handleFsrsGrade(0); // Quên hẳn
       } else if (e.code === 'KeyA' || e.code === 'ArrowUp') {
         e.preventDefault();
         if (currentWord) speakWord(currentWord.word);
@@ -288,9 +368,10 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleFlip, handleNextWord, handlePrevCard, currentWord, isFinished, speakWord]);
+  }, [handleFlip, handleFsrsGrade, handlePrevCard, currentWord, isFinished, speakWord]);
 
   const handleRestart = () => {
+    stopAutoPlay();
     setCurrentIndex(0);
     const firstWord = sessionDeck[0];
     if (topic?.id) {
@@ -303,6 +384,7 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
   };
 
   const handleShuffle = () => {
+    stopAutoPlay();
     const shuffled = [...sessionDeck].sort(() => Math.random() - 0.5);
     setSessionDeck(shuffled);
     handleRestart();
@@ -515,7 +597,7 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
         </button>
       </div>
 
-      {/* 2. Top Controls: Session progress & Settings */}
+      {/* 2. Top Controls: Session progress, Continuous Play & Settings */}
       <div className="flex items-center justify-between gap-3 sm:gap-4 pt-0.5 sm:pt-1">
         <div className="flex-1">
           <div className="flex justify-between items-center text-[11px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">
@@ -542,6 +624,18 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
               <ArrowLeft size={15} />
             </button>
           )}
+          <button
+            onClick={toggleContinuousPlay}
+            title={isAutoPlaying ? 'Dừng phát liên tục' : 'Phát liên tục toàn bộ thẻ'}
+            className={`px-2.5 py-1.5 rounded-xl text-xs font-extrabold flex items-center gap-1 transition-all cursor-pointer ${
+              isAutoPlaying
+                ? 'bg-rose-600 hover:bg-rose-700 text-white shadow-sm animate-pulse'
+                : 'bg-blue-50 dark:bg-blue-950/60 hover:bg-blue-100 text-[#0071e3] dark:text-sky-400 border border-blue-200/60 dark:border-blue-800/60'
+            }`}
+          >
+            {isAutoPlaying ? <Square size={12} fill="currentColor" /> : <Play size={12} fill="currentColor" />}
+            <span>{isAutoPlaying ? 'Dừng' : 'Phát liên tục'}</span>
+          </button>
           <button
             onClick={handleShuffle}
             title="Đảo ngẫu nhiên danh sách"
@@ -572,10 +666,29 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
         </div>
       </div>
 
+      {/* FSRS DSR Memory Model Status Strip */}
+      <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 text-[11px] font-bold">
+        <div className="flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400">
+          <Brain size={13} />
+          <span>FSRS AI • {fsrsMetrics.statusLabel}</span>
+        </div>
+        <div className="flex items-center gap-2.5 text-slate-500 dark:text-slate-400">
+          <span title="Stability (S): Độ bền trí nhớ (ngày)">
+            Độ bền S: <strong className="text-slate-800 dark:text-slate-200">{fsrsMetrics.stability > 0 ? `${fsrsMetrics.stability}d` : 'Mới'}</strong>
+          </span>
+          <span title="Difficulty (D): Độ khó của từ (1-10)">
+            Độ khó D: <strong className="text-slate-800 dark:text-slate-200">{fsrsMetrics.difficulty}/10</strong>
+          </span>
+          <span title="Retrievability (R): Xác suất gợi nhớ hiện tại">
+            Nhớ R: <strong className="text-emerald-600 dark:text-emerald-400">{fsrsMetrics.retrievability}%</strong>
+          </span>
+        </div>
+      </div>
+
       {/* 3. 3D Flip Card Container (Instant, Snappy Flip - No Lag) */}
       <div 
         onClick={handleFlip}
-        className="relative h-[260px] sm:h-[380px] w-full cursor-pointer select-none perspective-[1200px]"
+        className="relative h-[260px] sm:h-[360px] w-full cursor-pointer select-none perspective-[1200px]"
       >
         <motion.div
           className="w-full h-full relative [transform-style:preserve-3d]"
@@ -668,30 +781,52 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
             </div>
 
             <div className="flex items-center justify-center pt-3 sm:pt-4 border-t border-white/10 text-[11px] sm:text-xs text-slate-400 gap-1">
-              <span>Đánh giá mức độ ghi nhớ của bạn ở bên dưới</span>
+              <span>Chọn mức độ nhớ bên dưới để FSRS lên lịch ôn tối ưu</span>
             </div>
           </div>
         </motion.div>
       </div>
 
-      {/* Decision Buttons: "Chưa nhớ" vs "Đã thuộc" */}
-      <div className="grid grid-cols-2 gap-2.5 sm:gap-4">
+      {/* 4. FSRS 4-Grade Decision Buttons with Live Next-Interval Previews */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5">
         <button
-          onClick={() => handleNextWord(false)}
-          className="py-3 sm:py-3.5 px-4 rounded-2xl bg-white dark:bg-slate-900 border border-rose-200 dark:border-rose-900/60 hover:bg-rose-50 dark:hover:bg-rose-950/30 text-rose-600 dark:text-rose-400 font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 shadow-sm hover:scale-[1.02] active:scale-95 cursor-pointer"
+          onClick={() => handleFsrsGrade(0)}
+          className="py-2.5 sm:py-3 px-3 rounded-2xl bg-red-50 hover:bg-red-100 dark:bg-red-950/40 border border-red-200 dark:border-red-900/60 text-red-700 dark:text-red-300 text-xs font-bold flex flex-col items-center gap-0.5 transition-all shadow-sm hover:scale-[1.02] active:scale-95 cursor-pointer"
         >
-          <XCircle size={17} />
-          <span>Chưa Nhớ</span>
-          <span className="hidden sm:inline text-[11px] opacity-60 font-mono ml-1">[←]</span>
+          <span className="font-black text-xs sm:text-sm">Quên hẳn</span>
+          <span className="text-[10px] px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-900/50 font-extrabold">
+            {fsrsPreviews[0]} [1/←]
+          </span>
         </button>
 
         <button
-          onClick={() => handleNextWord(true)}
-          className="py-3 sm:py-3.5 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20 hover:scale-[1.02] active:scale-95 cursor-pointer"
+          onClick={() => handleFsrsGrade(1)}
+          className="py-2.5 sm:py-3 px-3 rounded-2xl bg-orange-50 hover:bg-orange-100 dark:bg-orange-950/40 border border-orange-200 dark:border-orange-900/60 text-orange-700 dark:text-orange-300 text-xs font-bold flex flex-col items-center gap-0.5 transition-all shadow-sm hover:scale-[1.02] active:scale-95 cursor-pointer"
         >
-          <CheckCircle2 size={17} />
-          <span>Đã Thuộc</span>
-          <span className="hidden sm:inline text-[11px] opacity-75 font-mono ml-1">[→]</span>
+          <span className="font-black text-xs sm:text-sm">Thấy khó</span>
+          <span className="text-[10px] px-2 py-0.5 rounded-full bg-orange-100 dark:bg-orange-900/50 font-extrabold">
+            {fsrsPreviews[1]} [2]
+          </span>
+        </button>
+
+        <button
+          onClick={() => handleFsrsGrade(2)}
+          className="py-2.5 sm:py-3 px-3 rounded-2xl bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900/60 text-blue-700 dark:text-blue-300 text-xs font-bold flex flex-col items-center gap-0.5 transition-all shadow-sm hover:scale-[1.02] active:scale-95 cursor-pointer"
+        >
+          <span className="font-black text-xs sm:text-sm">Nhớ tốt ✓</span>
+          <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/50 font-extrabold">
+            {fsrsPreviews[2]} [3/→]
+          </span>
+        </button>
+
+        <button
+          onClick={() => handleFsrsGrade(3)}
+          className="py-2.5 sm:py-3 px-3 rounded-2xl bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/60 text-emerald-700 dark:text-emerald-300 text-xs font-bold flex flex-col items-center gap-0.5 transition-all shadow-sm hover:scale-[1.02] active:scale-95 cursor-pointer"
+        >
+          <span className="font-black text-xs sm:text-sm">Quá dễ ⚡</span>
+          <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/50 font-extrabold">
+            {fsrsPreviews[3]} [4]
+          </span>
         </button>
       </div>
 
@@ -699,10 +834,55 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
       <div className="hidden sm:flex items-center justify-center gap-4 text-[11px] text-slate-400 dark:text-slate-500 font-medium pt-1">
         <span><kbd className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border">Space</kbd> Lật thẻ</span>
         <span><kbd className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border">A / ↑</kbd> Nghe đọc</span>
-        <span><kbd className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border">←</kbd> Chưa nhớ</span>
-        <span><kbd className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border">→</kbd> Đã thuộc</span>
+        <span><kbd className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border">1-4</kbd> Mức độ FSRS</span>
         <span><kbd className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border">P / ↓</kbd> Thẻ trước</span>
       </div>
+
+      {/* FLOATING STICKY BOTTOM PLAYBACK BAR WHEN CONTINUOUS FLASHCARD PLAYBACK IS ACTIVE */}
+      {isAutoPlaying && currentWord && (
+        <div className="fixed bottom-16 md:bottom-6 left-1/2 -translate-x-1/2 z-50 w-[94%] max-w-xl px-4 py-3 rounded-2xl bg-slate-900/95 text-white border border-slate-700/80 shadow-2xl backdrop-blur-md flex items-center justify-between gap-3 animate-fade-in">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="w-9 h-9 rounded-xl bg-blue-600/20 border border-blue-500/40 text-sky-400 flex items-center justify-center shrink-0">
+              <Headphones size={18} className="animate-bounce" />
+            </div>
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-wider text-sky-400">
+                <span>Đang phát thẻ ({currentIndex + 1}/{sessionDeck.length})</span>
+                <span>•</span>
+                <span>{speechRate}x</span>
+              </div>
+              <p className="text-xs sm:text-sm font-black truncate">
+                {currentWord.word} <span className="font-normal text-slate-300">— {currentWord.meaning}</span>
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-1.5 shrink-0">
+            <button
+              onClick={handlePrevCard}
+              className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors cursor-pointer"
+              title="Thẻ trước"
+            >
+              <SkipBack size={15} />
+            </button>
+            <button
+              onClick={() => setCurrentIndex((prev) => (prev + 1) % sessionDeck.length)}
+              className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors cursor-pointer"
+              title="Thẻ tiếp theo"
+            >
+              <SkipForward size={15} />
+            </button>
+            <button
+              onClick={stopAutoPlay}
+              className="px-3.5 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-extrabold flex items-center gap-1.5 shadow-lg shadow-rose-600/30 transition-all cursor-pointer"
+              title="Dừng phát liên tục ngay lập tức"
+            >
+              <Square size={13} fill="currentColor" />
+              <span>Dừng Phát</span>
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Confirmation Modal */}
       <AnimatePresence>

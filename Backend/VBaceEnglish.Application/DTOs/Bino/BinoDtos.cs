@@ -152,6 +152,11 @@ public class SrsCardDto
     public string DialogueTitle { get; set; } = string.Empty;
     public int IntervalDays { get; set; }
     public int ConsecutiveCorrect { get; set; }
+    public int ReviewCount { get; set; }
+    public double Stability { get; set; }
+    public double Difficulty { get; set; }
+    public double Retrievability { get; set; }
+    public DateTime? LastReviewedAt { get; set; }
     public DateTime NextReviewDate { get; set; }
 }
 

@@ -242,27 +242,31 @@ public class NotificationService : INotificationService
         await _unitOfWork.AdminManagement.AddNotificationsAsync(notifications);
         await _unitOfWork.CompleteAsync();
 
-        // Push Real-time SignalR notification to recipients
+        // Push Real-time SignalR notification to each recipient with their own Notification Id
         var sample = notifications[0];
-        var realtimePayload = new NotificationItemDto
+        foreach (var n in notifications)
         {
-            Id = sample.Id,
-            BatchId = sample.BatchId,
-            TargetScope = sample.TargetScope,
-            TargetLabel = sample.TargetLabel,
-            SenderUserId = sample.SenderUserId,
-            SenderName = sample.SenderName,
-            Title = sample.Title,
-            Content = sample.Content,
-            Type = sample.Type,
-            ActionUrl = sample.ActionUrl,
-            IconEmoji = sample.IconEmoji,
-            IsRead = false,
-            CreatedAt = EnsureUtc(sample.CreatedAt),
-            ExpiresAt = EnsureUtc(sample.ExpiresAt)
-        };
-
-        await _realtime.SendToUsersAsync(targetUsers.Select(u => u.Id), realtimePayload);
+            if (!n.RecipientUserId.HasValue) continue;
+            var realtimePayload = new NotificationItemDto
+            {
+                Id = n.Id,
+                BatchId = n.BatchId,
+                TargetScope = n.TargetScope,
+                TargetLabel = n.TargetLabel,
+                RecipientUserId = n.RecipientUserId,
+                SenderUserId = n.SenderUserId,
+                SenderName = n.SenderName,
+                Title = n.Title,
+                Content = n.Content,
+                Type = n.Type,
+                ActionUrl = n.ActionUrl,
+                IconEmoji = n.IconEmoji,
+                IsRead = false,
+                CreatedAt = EnsureUtc(n.CreatedAt),
+                ExpiresAt = EnsureUtc(n.ExpiresAt)
+            };
+            await _realtime.SendToUserAsync(n.RecipientUserId.Value, realtimePayload);
+        }
 
         // Log Admin Activity
         await _activityLog.LogAsync(
@@ -462,24 +466,27 @@ public class NotificationService : INotificationService
             await _unitOfWork.AdminManagement.AddNotificationsAsync(list);
             await _unitOfWork.CompleteAsync();
 
-            var sample = list[0];
-            var payload = new NotificationItemDto
+            foreach (var n in list)
             {
-                Id = sample.Id,
-                BatchId = sample.BatchId,
-                TargetScope = sample.TargetScope,
-                TargetLabel = sample.TargetLabel,
-                SenderName = sample.SenderName,
-                Title = sample.Title,
-                Content = sample.Content,
-                Type = sample.Type,
-                ActionUrl = sample.ActionUrl,
-                IconEmoji = sample.IconEmoji,
-                IsRead = false,
-                CreatedAt = EnsureUtc(sample.CreatedAt)
-            };
-
-            await _realtime.SendToAdminsAsync(payload);
+                if (!n.RecipientUserId.HasValue) continue;
+                var payload = new NotificationItemDto
+                {
+                    Id = n.Id,
+                    BatchId = n.BatchId,
+                    TargetScope = n.TargetScope,
+                    TargetLabel = n.TargetLabel,
+                    RecipientUserId = n.RecipientUserId,
+                    SenderName = n.SenderName,
+                    Title = n.Title,
+                    Content = n.Content,
+                    Type = n.Type,
+                    ActionUrl = n.ActionUrl,
+                    IconEmoji = n.IconEmoji,
+                    IsRead = false,
+                    CreatedAt = EnsureUtc(n.CreatedAt)
+                };
+                await _realtime.SendToUserAsync(n.RecipientUserId.Value, payload);
+            }
         }
         catch
         {

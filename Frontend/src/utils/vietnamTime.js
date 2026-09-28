@@ -20,6 +20,11 @@ export function formatVietnamDateTime(dateInput) {
 
     if (isNaN(date.getTime()) || date.getFullYear() < 2000) return null;
 
+    // Nếu mốc thời gian bị lệch vượt quá hiện tại hơn 5 phút (do cộng lặp múi giờ +7h trước đó), tự động chuẩn hóa lại đúng giờ thực
+    if (date.getTime() > Date.now() + 5 * 60 * 1000) {
+      date = new Date(date.getTime() - 7 * 3600 * 1000);
+    }
+
     const vnFormatter = new Intl.DateTimeFormat('vi-VN', {
       timeZone: 'Asia/Ho_Chi_Minh',
       day: '2-digit',

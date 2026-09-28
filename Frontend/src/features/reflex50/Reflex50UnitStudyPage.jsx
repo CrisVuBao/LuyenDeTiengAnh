@@ -1793,6 +1793,41 @@ export default function Reflex50UnitStudyPage() {
         </div>
       )}
 
+      {/* FLOATING STICKY BOTTOM PLAYBACK BAR WHEN CONTINUOUS PLAYBACK IS ACTIVE */}
+      {isAutoPlaying && (() => {
+        const activeSentence = unit.sentences.find((s) => s.id === activePlayingId) || filteredSentences[0];
+        return (
+          <div className="fixed bottom-16 md:bottom-6 left-1/2 -translate-x-1/2 z-50 w-[94%] max-w-2xl px-4 py-3 rounded-2xl bg-slate-900/95 text-white border border-blue-500/40 shadow-2xl backdrop-blur-md flex items-center justify-between gap-3 animate-fade-in">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="w-9 h-9 rounded-xl bg-blue-500/20 border border-blue-400/40 text-sky-400 flex items-center justify-center shrink-0">
+                <Headphones size={18} className="animate-bounce" />
+              </div>
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-wider text-sky-400">
+                  <span>Đang phát liên tục • Câu {activeSentence?.number || 1}/30</span>
+                  <span>•</span>
+                  <span>{playbackSpeed}x</span>
+                </div>
+                <p className="text-xs sm:text-sm font-bold truncate text-slate-100">
+                  {activeSentence?.en}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                onClick={stopAutoPlay}
+                className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-extrabold flex items-center gap-1.5 shadow-lg shadow-rose-600/30 transition-all cursor-pointer active:scale-95"
+                title="Dừng phát liên tục ngay lập tức"
+              >
+                <Pause size={14} fill="currentColor" />
+                <span>Dừng Phát</span>
+              </button>
+            </div>
+          </div>
+        );
+      })()}
+
       {/* Modals */}
       <Reflex50MethodGuideModal
         isOpen={isMethodModalOpen}

@@ -3,6 +3,7 @@ import vocabData from '../../../data/vocab3000Data.json';
 import vocabApi from '../../../api/vocabApi';
 import useAuthStore from '../../../store/authStore';
 import useGamificationStore from '../../gamification/store/useGamificationStore';
+import { scheduleFsrsReview } from '../../../utils/fsrsScheduler';
 
 // Web Audio API for synthetic UI sounds (Zero network latency, 0 KB external assets)
 let audioCtx = null;
@@ -89,6 +90,7 @@ const useVocabStore = create((set, get) => ({
   // User state (Synchronously pre-populated for 0ms immediate render on F5)
   masteredWords: initialProgress.masteredWords || {},
   starredWords: initialProgress.starredWords || {},
+  fsrsCards: initialProgress.fsrsCards || {},
   topicScores: initialProgress.topicScores || {},
   topicLastIndex: initialProgress.topicLastIndex || {},
   topicLastWordId: initialProgress.topicLastWordId || {},
@@ -115,6 +117,7 @@ const useVocabStore = create((set, get) => ({
         set({
           masteredWords: parsed.masteredWords || {},
           starredWords: parsed.starredWords || {},
+          fsrsCards: parsed.fsrsCards || {},
           topicScores: parsed.topicScores || {},
           topicLastIndex: parsed.topicLastIndex || {},
           topicLastWordId: parsed.topicLastWordId || {},
@@ -136,6 +139,7 @@ const useVocabStore = create((set, get) => ({
             const remoteParsed = JSON.parse(data.progressDataJson);
             const mergedMastered = { ...get().masteredWords, ...(remoteParsed.masteredWords || {}) };
             const mergedStarred = { ...get().starredWords, ...(remoteParsed.starredWords || {}) };
+            const mergedFsrs = { ...(remoteParsed.fsrsCards || {}), ...get().fsrsCards };
             const mergedScores = { ...get().topicScores, ...(remoteParsed.topicScores || {}) };
             const mergedLastIndex = { ...get().topicLastIndex, ...(remoteParsed.topicLastIndex || {}) };
             const mergedLastWordId = { ...get().topicLastWordId, ...(remoteParsed.topicLastWordId || {}) };
@@ -145,6 +149,7 @@ const useVocabStore = create((set, get) => ({
             set({
               masteredWords: mergedMastered,
               starredWords: mergedStarred,
+              fsrsCards: mergedFsrs,
               topicScores: mergedScores,
               topicLastIndex: mergedLastIndex,
               topicLastWordId: mergedLastWordId,
@@ -158,6 +163,7 @@ const useVocabStore = create((set, get) => ({
             localStorage.setItem(localKey, JSON.stringify({
               masteredWords: mergedMastered,
               starredWords: mergedStarred,
+              fsrsCards: mergedFsrs,
               topicScores: mergedScores,
               topicLastIndex: mergedLastIndex,
               topicLastWordId: mergedLastWordId,
@@ -187,6 +193,7 @@ const useVocabStore = create((set, get) => ({
     const payload = {
       masteredWords: state.masteredWords,
       starredWords: state.starredWords,
+      fsrsCards: state.fsrsCards,
       topicScores: state.topicScores,
       topicLastIndex: state.topicLastIndex,
       topicLastWordId: state.topicLastWordId,
@@ -235,7 +242,7 @@ const useVocabStore = create((set, get) => ({
     get().saveProgress();
   },
 
-  // Remember active filter mode per topic ('unmastered', 'all', 'starred')
+  // Remember active filter mode per topic ('unmastered', 'all', 'starred', 'fsrs_due')
   setTopicFilterMode: (topicId, mode) => {
     set((state) => ({
       topicFilterMode: {
@@ -254,10 +261,12 @@ const useVocabStore = create((set, get) => ({
 
     const topicWordIds = new Set((topic.words || []).map((w) => w.id));
 
-    // Remove this topic's words from masteredWords
+    // Remove this topic's words from masteredWords & fsrsCards
     const nextMastered = { ...state.masteredWords };
+    const nextFsrs = { ...state.fsrsCards };
     topicWordIds.forEach((id) => {
       delete nextMastered[id];
+      delete nextFsrs[id];
     });
 
     // Reset topic card position to 0 and remove topicLastWordId
@@ -270,6 +279,7 @@ const useVocabStore = create((set, get) => ({
 
     set({
       masteredWords: nextMastered,
+      fsrsCards: nextFsrs,
       topicLastIndex: nextTopicLastIndex,
       topicLastWordId: nextTopicLastWordId,
       topicFilterMode: nextTopicFilterMode
@@ -289,8 +299,42 @@ const useVocabStore = create((set, get) => ({
     get().saveProgress();
   },
 
+  // FSRS 4-grade review for 3000 Vocab Flashcard (0: Again, 1: Hard, 2: Good, 3: Easy)
+  gradeWordFsrs: (wordId, grade = 2) => {
+    const prevCard = get().fsrsCards?.[wordId] || {};
+    const nextCard = scheduleFsrsReview(prevCard, grade, false);
+    const isMastered = grade >= 2; // Good or Easy marks word as mastered
+
+    set((state) => {
+      const nextMastered = { ...state.masteredWords };
+      if (isMastered) {
+        nextMastered[wordId] = true;
+      } else if (grade === 0) {
+        delete nextMastered[wordId];
+      }
+      return {
+        masteredWords: nextMastered,
+        fsrsCards: {
+          ...state.fsrsCards,
+          [wordId]: nextCard
+        }
+      };
+    });
+
+    get().saveProgress();
+    if (isMastered) {
+      try {
+        useGamificationStore.getState().earnXP(2, 'vocab_master', 'Ghi nhớ từ vựng theo FSRS');
+      } catch {}
+    }
+    return nextCard;
+  },
+
   // Toggle or mark mastered status
   markWordMastered: (wordId, isMastered = true) => {
+    const prevCard = get().fsrsCards?.[wordId] || {};
+    const nextCard = scheduleFsrsReview(prevCard, isMastered ? 2 : 0, false);
+
     set((state) => {
       const nextMastered = { ...state.masteredWords };
       if (isMastered) {
@@ -298,7 +342,13 @@ const useVocabStore = create((set, get) => ({
       } else {
         delete nextMastered[wordId];
       }
-      return { masteredWords: nextMastered };
+      return {
+        masteredWords: nextMastered,
+        fsrsCards: {
+          ...state.fsrsCards,
+          [wordId]: nextCard
+        }
+      };
     });
     get().saveProgress();
     if (isMastered) {

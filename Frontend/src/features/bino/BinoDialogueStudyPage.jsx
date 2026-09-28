@@ -1355,7 +1355,7 @@ export default function BinoDialogueStudyPage() {
 
                       {/* Line Audio Play & Speaking Practice Buttons */}
                       <div className="flex items-center gap-1.5 shrink-0">
-                        <button
+                        {/* <button
                           onClick={() => startInlineLineSpeech(line, idx)}
                           className={`px-2 sm:px-2.5 py-1.5 rounded-xl text-[10px] sm:text-[11px] font-extrabold transition-all active:scale-90 flex items-center gap-1 cursor-pointer ${
                             isListening && inlineSpeakIndex === idx
@@ -1366,7 +1366,7 @@ export default function BinoDialogueStudyPage() {
                         >
                           <Mic size={12} />
                           <span>{isListening && inlineSpeakIndex === idx ? 'Đang nghe...' : 'Nói'}</span>
-                        </button>
+                        </button> */}
 
                         <button
                           onClick={() => {
@@ -1807,6 +1807,42 @@ export default function BinoDialogueStudyPage() {
       )}
 
 
+
+      {/* FLOATING STICKY BOTTOM PLAYBACK BAR WHEN LISTENING TO FULL DIALOGUE */}
+      {isPlayingAll && lesson?.dialogueLines?.length > 0 && (() => {
+        const currentIdx = activeLineIndex !== null ? activeLineIndex : 0;
+        const activeLine = lesson.dialogueLines[currentIdx] || lesson.dialogueLines[0];
+        return (
+          <div className="fixed bottom-16 md:bottom-6 left-1/2 -translate-x-1/2 z-50 w-[94%] max-w-2xl px-4 py-3 rounded-2xl bg-slate-900/95 text-white border border-amber-500/40 shadow-2xl backdrop-blur-md flex items-center justify-between gap-3 animate-fade-in">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-400/40 text-amber-400 flex items-center justify-center shrink-0">
+                <Headphones size={18} className="animate-bounce" />
+              </div>
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-wider text-amber-400">
+                  <span>Đang nghe hội thoại • Câu {currentIdx + 1}/{lesson.dialogueLines.length}</span>
+                  <span>•</span>
+                  <span>{audioSpeed}x</span>
+                </div>
+                <p className="text-xs sm:text-sm font-bold truncate text-slate-100">
+                  <span className="text-amber-300 font-black">{activeLine?.characterName}:</span> {activeLine?.englishText}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                onClick={() => stopPlayback(true)}
+                className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-extrabold flex items-center gap-1.5 shadow-lg shadow-rose-600/30 transition-all cursor-pointer active:scale-95"
+                title="Dừng nghe hội thoại ngay lập tức mà không cần cuộn lên đầu trang"
+              >
+                <Pause size={14} fill="currentColor" />
+                <span>Dừng Nghe</span>
+              </button>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Studio Voice Settings Modal */}
       <VoiceSettingsModal

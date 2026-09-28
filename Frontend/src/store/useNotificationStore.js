@@ -5,7 +5,10 @@ import { notificationApi } from '../api/dashboardAndAiApi';
 import useAuthStore from './authStore';
 
 let hubConnection = null;
+let connectedUserId = null;
 let pollTimer = null;
+let focusListenersBound = false;
+let hasLoadedInitial = false;
 
 function playNotificationChime() {
   try {
@@ -32,6 +35,26 @@ function playNotificationChime() {
   }
 }
 
+function showNotificationToast(payload) {
+  if (!payload) return;
+  playNotificationChime();
+  toast(
+    `${payload.iconEmoji || '🔔'} ${payload.title}: ${payload.content}`,
+    {
+      id: `notif-${payload.id || payload.batchId || Date.now()}`,
+      duration: 5500,
+      style: {
+        borderRadius: '16px',
+        background: '#0f172a',
+        color: '#f8fafc',
+        border: '1px solid rgba(59, 130, 246, 0.35)',
+        fontWeight: 600,
+        fontSize: '13px'
+      }
+    }
+  );
+}
+
 const useNotificationStore = create((set, get) => ({
   notifications: [],
   unreadCount: 0,
@@ -45,9 +68,24 @@ const useNotificationStore = create((set, get) => ({
 
     try {
       if (!silent) set({ loading: true });
+      const prevList = get().notifications || [];
+      const prevIds = new Set(prevList.map((n) => n.id));
+
       const res = await notificationApi.getMyNotifications(40);
       const list = res?.data || [];
       const unread = list.filter((n) => !n.isRead).length;
+
+      // Detect newly arrived unread notifications even if picked up via background sync
+      if (hasLoadedInitial && list.length > 0) {
+        const brandNew = list.filter((n) => !n.isRead && n.id && !prevIds.has(n.id));
+        if (brandNew.length > 0) {
+          set({ bellShake: true });
+          setTimeout(() => set({ bellShake: false }), 2000);
+          showNotificationToast(brandNew[0]);
+        }
+      }
+      hasLoadedInitial = true;
+
       set({
         notifications: list,
         unreadCount: unread,
@@ -97,30 +135,59 @@ const useNotificationStore = create((set, get) => ({
   },
 
   initRealtime: async () => {
-    const { isAuthenticated, token } = useAuthStore.getState();
+    const { isAuthenticated, token, user } = useAuthStore.getState();
     if (!isAuthenticated) return;
+
+    const currentUserId = user?.id || user?.userId || null;
 
     // Fetch initial notifications immediately
     get().fetchNotifications(true);
 
-    // Setup periodic background sync every 45s as fallback
+    // Setup periodic background sync every 8s as real-time fallback
     if (!pollTimer) {
       pollTimer = setInterval(() => {
         if (useAuthStore.getState().isAuthenticated) {
           get().fetchNotifications(true);
         }
-      }, 45000);
+      }, 8000);
+    }
+
+    // Bind window focus / visibilitychange listeners once for instant sync
+    if (!focusListenersBound && typeof window !== 'undefined') {
+      focusListenersBound = true;
+      const syncOnFocus = () => {
+        if (document.visibilityState === 'visible' && useAuthStore.getState().isAuthenticated) {
+          useNotificationStore.getState().fetchNotifications(true);
+        }
+      };
+      window.addEventListener('focus', syncOnFocus);
+      document.addEventListener('visibilitychange', syncOnFocus);
+    }
+
+    // If user changed or previous connection died, clean up old hubConnection
+    if (
+      hubConnection &&
+      (connectedUserId !== currentUserId ||
+        hubConnection.state === signalR.HubConnectionState.Disconnected)
+    ) {
+      try {
+        await hubConnection.stop();
+      } catch {
+        // ignore
+      }
+      hubConnection = null;
     }
 
     if (hubConnection) return;
 
     try {
+      connectedUserId = currentUserId;
       hubConnection = new signalR.HubConnectionBuilder()
         .withUrl('/notificationHub', {
           accessTokenFactory: () => useAuthStore.getState().token || token || '',
           withCredentials: true
         })
-        .withAutomaticReconnect([0, 2000, 5000, 10000, 30000])
+        .withAutomaticReconnect([0, 1500, 3000, 5000, 10000, 20000])
         .configureLogging(signalR.LogLevel.None)
         .build();
 
@@ -137,29 +204,24 @@ const useNotificationStore = create((set, get) => ({
           });
 
           setTimeout(() => set({ bellShake: false }), 2000);
-          playNotificationChime();
-
-          toast(
-            `${payload.iconEmoji || '🔔'} ${payload.title}: ${payload.content}`,
-            {
-              duration: 5500,
-              style: {
-                borderRadius: '16px',
-                background: '#0f172a',
-                color: '#f8fafc',
-                border: '1px solid rgba(59, 130, 246, 0.35)',
-                fontWeight: 600,
-                fontSize: '13px'
-              }
-            }
-          );
+          showNotificationToast(payload);
         }
+      });
+
+      hubConnection.onreconnected(() => {
+        set({ connected: true });
+        get().fetchNotifications(true);
+      });
+
+      hubConnection.onclose(() => {
+        set({ connected: false });
       });
 
       await hubConnection.start();
       set({ connected: true });
     } catch {
       set({ connected: false });
+      hubConnection = null;
     }
   },
 
@@ -176,6 +238,8 @@ const useNotificationStore = create((set, get) => ({
       }
       hubConnection = null;
     }
+    connectedUserId = null;
+    hasLoadedInitial = false;
     set({ notifications: [], unreadCount: 0, connected: false });
   }
 }));

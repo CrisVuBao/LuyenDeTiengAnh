@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import gamificationApi from '../../../api/gamificationApi';
 import useAuthStore from '../../../store/authStore';
+import useNotificationStore from '../../../store/useNotificationStore';
 
 const filterNonToeicQuests = (quests) => {
   if (!Array.isArray(quests)) return [];
@@ -92,6 +93,9 @@ const useGamificationStore = create((set, get) => ({
             get().triggerCelebration('achievement_unlocked', { badgeIds: newlyUnlocked });
           }, 800);
         }
+
+        // Đồng bộ chuông thông báo ngay lập tức (khi có thông báo Level Up / Huy hiệu mới)
+        useNotificationStore.getState().fetchNotifications(true);
       }
       return newProfile;
     } catch (error) {

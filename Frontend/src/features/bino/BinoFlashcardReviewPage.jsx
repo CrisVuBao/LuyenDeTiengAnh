@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ArrowLeft, Volume2, RotateCcw, CheckCircle2, Sparkles, 
-  Flame, Award, Layers, ChevronRight, HelpCircle, BookOpen, Trash2
+  Flame, Award, Layers, ChevronRight, HelpCircle, BookOpen, Trash2, Brain
 } from 'lucide-react';
 import binoApi from '../../api/binoApi';
 import PageLoader from '../../components/PageLoader';
 import VoiceSettingsModal from '../../components/VoiceSettingsModal';
 import speechService from '../../utils/speechService';
+import { getCardFsrsMetrics, getFsrsIntervalPreviews } from '../../utils/fsrsScheduler';
 import useAuthStore from '../../store/authStore';
 import useGamificationStore from '../gamification/store/useGamificationStore';
 import toast from 'react-hot-toast';
@@ -77,8 +78,11 @@ export default function BinoFlashcardReviewPage() {
     }
   };
 
+  const currentCard = cards[currentIndex];
+  const fsrsMetrics = useMemo(() => getCardFsrsMetrics(currentCard), [currentCard]);
+  const fsrsPreviews = useMemo(() => getFsrsIntervalPreviews(currentCard, true), [currentCard]);
+
   const handleGrade = async (grade) => {
-    const currentCard = cards[currentIndex];
     if (!currentCard) return;
 
     setReviewedCount(prev => prev + 1);
@@ -89,20 +93,18 @@ export default function BinoFlashcardReviewPage() {
       }, 120);
     } else {
       setIsFinished(true);
-      toast.success('Chúc mừng! Bác đã hoàn thành buổi ôn tập hôm nay! 🎉');
+      toast.success('Chúc mừng! Bạn đã hoàn thành buổi ôn tập FSRS hôm nay! 🎉');
     }
 
     try {
       await binoApi.submitSRSReview(currentCard.vocabularyId, grade);
-      useGamificationStore.getState().earnXP(5, 'flashcard_review', 'Ôn 1 thẻ từ vựng SRS');
+      useGamificationStore.getState().earnXP(5, 'flashcard_review', 'Ôn 1 thẻ từ vựng FSRS');
     } catch {
       // ignore
     }
   };
 
   if (loading) return <PageLoader />;
-
-  const currentCard = cards[currentIndex];
 
   return (
     <div className="space-y-6 sm:space-y-8 max-w-2xl mx-auto pb-16 px-2 sm:px-0">
@@ -129,8 +131,11 @@ export default function BinoFlashcardReviewPage() {
             <Sparkles size={13} className="text-amber-500" />
             <span className="hidden sm:inline">Giọng Studio AI 🎙️</span>
           </motion.button>
-          <span className="px-3 py-1.5 rounded-full text-xs font-black bg-amber-100 dark:bg-amber-950 text-amber-900 dark:text-amber-300 flex items-center gap-1 shadow-sm border border-amber-200 dark:border-amber-900">
-            <Flame size={14} className="text-orange-500" /> SRS SM-2
+          <span
+            className="px-3 py-1.5 rounded-full text-xs font-black bg-indigo-50 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 flex items-center gap-1.5 shadow-sm border border-indigo-200 dark:border-indigo-800"
+            title="Thuật toán lặp lại ngắt quãng thế hệ mới FSRS (Free Spaced Repetition Scheduler)"
+          >
+            <Brain size={14} className="text-indigo-600 dark:text-indigo-400" /> FSRS AI
           </span>
         </div>
       </div>
@@ -148,12 +153,12 @@ export default function BinoFlashcardReviewPage() {
 
           <div className="space-y-2">
             <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
-              {cards.length === 0 ? 'Hiện Tại Không Có Thẻ Nào Trong Bộ Flashcard!' : 'Đã Hoàn Thành Buổi Ôn Tập! 🎉'}
+              {cards.length === 0 ? 'Hiện Tại Không Có Thẻ Nào Trong Bộ Flashcard!' : 'Đã Hoàn Thành Buổi Ôn Tập FSRS! 🎉'}
             </h2>
             <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto leading-relaxed">
               {cards.length === 0
                 ? 'Bạn chưa thêm từ nào vào bộ Flashcard. Hãy vào các bài hội thoại Giao Tiếp Thực Chiến và bấm "+ Flashcard" nhé!'
-                : `Bạn đã ôn tập xong ${reviewedCount} từ vựng theo thuật toán lặp lại ngắt quãng SM-2. Não bộ của bạn đã ghi nhớ sâu hơn rồi đấy!`}
+                : `Bạn đã ôn tập xong ${reviewedCount} từ vựng theo thuật toán trí nhớ FSRS (Free Spaced Repetition Scheduler). Chu kỳ ôn tập tiếp theo đã được tối ưu hóa riêng cho não bộ của bạn!`}
             </p>
           </div>
 
@@ -170,10 +175,10 @@ export default function BinoFlashcardReviewPage() {
         </motion.div>
       ) : (
         /* Flashcard Study Box */
-        <div className="space-y-6">
+        <div className="space-y-5">
           
-          {/* Progress Indicator */}
-          <div className="space-y-2">
+          {/* Progress Indicator + FSRS Memory Metrics Pill Bar */}
+          <div className="space-y-2.5">
             <div className="flex items-center justify-between text-xs font-bold text-slate-500">
               <span>Thẻ {currentIndex + 1} / {cards.length}</span>
               <span className="text-amber-600 dark:text-amber-400 font-black font-vietsub">
@@ -188,6 +193,25 @@ export default function BinoFlashcardReviewPage() {
                 transition={{ duration: 0.4, ease: 'easeOut' }}
                 className="bg-gradient-to-r from-amber-500 to-orange-500 h-full rounded-full"
               />
+            </div>
+
+            {/* FSRS DSR Memory Model Bar */}
+            <div className="flex flex-wrap items-center justify-between gap-2 px-3.5 py-2 rounded-2xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 text-[11px] font-bold">
+              <div className="flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400">
+                <Brain size={13} />
+                <span>{fsrsMetrics.statusLabel}</span>
+              </div>
+              <div className="flex items-center gap-3 text-slate-500 dark:text-slate-400">
+                <span title="Stability (S): Độ bền trí nhớ ước tính (ngày)">
+                  Độ bền S: <strong className="text-slate-800 dark:text-slate-200">{fsrsMetrics.stability > 0 ? `${fsrsMetrics.stability}d` : 'Mới'}</strong>
+                </span>
+                <span title="Difficulty (D): Độ khó nội tại của từ (1-10)">
+                  Độ khó D: <strong className="text-slate-800 dark:text-slate-200">{fsrsMetrics.difficulty}/10</strong>
+                </span>
+                <span title="Retrievability (R): Xác suất gợi nhớ thành công hiện tại">
+                  Nhớ R: <strong className="text-emerald-600 dark:text-emerald-400">{fsrsMetrics.retrievability}%</strong>
+                </span>
+              </div>
             </div>
           </div>
 
@@ -300,14 +324,14 @@ export default function BinoFlashcardReviewPage() {
                 </div>
 
                 <div className="text-center text-xs font-bold text-amber-700 dark:text-amber-400">
-                  ✓ Hãy chọn mức độ ghi nhớ ở các nút bên dưới:
+                  ✓ Chọn mức độ nhớ bên dưới để FSRS lên lịch ôn tối ưu:
                 </div>
               </div>
 
             </motion.div>
           </div>
 
-          {/* SM-2 4-GRADE BUTTONS (THUMB-FRIENDLY & RESPONSIVE) */}
+          {/* FSRS 4-GRADE BUTTONS WITH LIVE NEXT-INTERVAL PREVIEWS */}
           {isFlipped ? (
             <motion.div 
               initial={{ opacity: 0, y: 10 }}
@@ -318,40 +342,48 @@ export default function BinoFlashcardReviewPage() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.94 }}
                 onClick={() => handleGrade(0)}
-                className="p-3 sm:p-3.5 bg-red-50 hover:bg-red-100 dark:bg-red-950/40 text-red-700 dark:text-red-300 rounded-2xl border border-red-200 dark:border-red-900/60 text-xs font-bold flex flex-col items-center gap-1 transition-all shadow-sm"
+                className="p-3 sm:p-3.5 bg-red-50 hover:bg-red-100 dark:bg-red-950/40 text-red-700 dark:text-red-300 rounded-2xl border border-red-200 dark:border-red-900/60 text-xs font-bold flex flex-col items-center gap-1 transition-all shadow-sm cursor-pointer"
               >
                 <span className="font-black text-sm">Quên hẳn</span>
-                <span className="text-[10px] opacity-80">Ôn lại ngay (1 ngày)</span>
+                <span className="text-[11px] px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-900/50 font-extrabold">
+                  {fsrsPreviews[0]}
+                </span>
               </motion.button>
 
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.94 }}
                 onClick={() => handleGrade(1)}
-                className="p-3 sm:p-3.5 bg-orange-50 hover:bg-orange-100 dark:bg-orange-950/40 text-orange-700 dark:text-orange-300 rounded-2xl border border-orange-200 dark:border-orange-900/60 text-xs font-bold flex flex-col items-center gap-1 transition-all shadow-sm"
+                className="p-3 sm:p-3.5 bg-orange-50 hover:bg-orange-100 dark:bg-orange-950/40 text-orange-700 dark:text-orange-300 rounded-2xl border border-orange-200 dark:border-orange-900/60 text-xs font-bold flex flex-col items-center gap-1 transition-all shadow-sm cursor-pointer"
               >
                 <span className="font-black text-sm">Thấy khó</span>
-                <span className="text-[10px] opacity-80">Ôn lại sớm</span>
+                <span className="text-[11px] px-2 py-0.5 rounded-full bg-orange-100 dark:bg-orange-900/50 font-extrabold">
+                  {fsrsPreviews[1]}
+                </span>
               </motion.button>
 
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.94 }}
                 onClick={() => handleGrade(2)}
-                className="p-3 sm:p-3.5 bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 rounded-2xl border border-blue-200 dark:border-blue-900/60 text-xs font-bold flex flex-col items-center gap-1 transition-all shadow-sm"
+                className="p-3 sm:p-3.5 bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 rounded-2xl border border-blue-200 dark:border-blue-900/60 text-xs font-bold flex flex-col items-center gap-1 transition-all shadow-sm cursor-pointer"
               >
                 <span className="font-black text-sm">Nhớ tốt</span>
-                <span className="text-[10px] opacity-80">Giãn cách chuẩn</span>
+                <span className="text-[11px] px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/50 font-extrabold">
+                  {fsrsPreviews[2]}
+                </span>
               </motion.button>
 
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.94 }}
                 onClick={() => handleGrade(3)}
-                className="p-3 sm:p-3.5 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 rounded-2xl border border-emerald-200 dark:border-emerald-900/60 text-xs font-bold flex flex-col items-center gap-1 transition-all shadow-sm"
+                className="p-3 sm:p-3.5 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 rounded-2xl border border-emerald-200 dark:border-emerald-900/60 text-xs font-bold flex flex-col items-center gap-1 transition-all shadow-sm cursor-pointer"
               >
                 <span className="font-black text-sm">Quá dễ</span>
-                <span className="text-[10px] opacity-80">Giãn cách dài</span>
+                <span className="text-[11px] px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/50 font-extrabold">
+                  {fsrsPreviews[3]}
+                </span>
               </motion.button>
             </motion.div>
           ) : (

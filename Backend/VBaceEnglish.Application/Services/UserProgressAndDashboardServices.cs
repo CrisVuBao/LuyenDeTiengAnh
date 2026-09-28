@@ -556,11 +556,18 @@ public class DashboardService : IDashboardService
             .ToList();
     }
 
-    private static DateTime EnsureUtc(DateTime dt) =>
-        DateTime.SpecifyKind(dt, DateTimeKind.Utc);
+    private static DateTime EnsureUtc(DateTime dt)
+    {
+        var nowUtc = DateTime.UtcNow;
+        if (dt > nowUtc.AddMinutes(5))
+        {
+            dt = dt.AddHours(-7);
+        }
+        return DateTime.SpecifyKind(dt, DateTimeKind.Utc);
+    }
 
     private static DateTime? EnsureUtc(DateTime? dt) =>
-        dt.HasValue ? DateTime.SpecifyKind(dt.Value, DateTimeKind.Utc) : null;
+        dt.HasValue ? EnsureUtc(dt.Value) : null;
 
     public async Task<Response<AdminDashboardStatsDto>> GetAdminStatsAsync()
     {
@@ -598,14 +605,26 @@ public class DashboardService : IDashboardService
                 int totalQ = userSummaries.Sum(x => x.TotalQuestions);
                 int binoDone = userBino.Count(x => x.IsCompleted);
 
-                DateTime? lastActive = s.LastLoginAt;
+                DateTime? lastActive = EnsureUtc(s.LastLoginAt);
                 var lastSummary = userSummaries
                     .Where(x => x.LastAccessedAt != default)
                     .OrderByDescending(x => x.LastAccessedAt)
                     .FirstOrDefault();
-                if (lastSummary != null && (!lastActive.HasValue || lastSummary.LastAccessedAt > lastActive.Value))
+                if (lastSummary != null)
                 {
-                    lastActive = lastSummary.LastAccessedAt;
+                    var summaryTime = EnsureUtc(lastSummary.LastAccessedAt);
+                    if (!lastActive.HasValue || summaryTime > lastActive.Value)
+                        lastActive = summaryTime;
+                }
+                var lastBino = userBino
+                    .Where(x => x.LastAccessedAt != default)
+                    .OrderByDescending(x => x.LastAccessedAt)
+                    .FirstOrDefault();
+                if (lastBino != null)
+                {
+                    var binoTime = EnsureUtc(lastBino.LastAccessedAt);
+                    if (!lastActive.HasValue || binoTime > lastActive.Value)
+                        lastActive = binoTime;
                 }
 
                 return new AdminStudentProgressDto
@@ -616,7 +635,7 @@ public class DashboardService : IDashboardService
                     PhoneNumber = s.PhoneNumber,
                     IsApproved = s.IsApproved,
                     ApprovedAt = EnsureUtc(s.ApprovedAt),
-                    CreatedAt = DateTime.SpecifyKind(s.CreatedAt, DateTimeKind.Utc),
+                    CreatedAt = EnsureUtc(s.CreatedAt),
                     LastLoginAt = EnsureUtc(lastActive),
                     TestsEnrolled = userSummaries.Count,
                     CompletedQuestions = completed,
@@ -676,32 +695,43 @@ public class DashboardService : IDashboardService
             var vocab = await _unitOfWork.UserProgresses.GetVocabProgressAsync(s.Id);
             var gamification = await _unitOfWork.Gamification.GetByUserIdAsync(s.Id);
 
-            // Tính toán thời điểm truy cập / học tập gần nhất thực tế
-            DateTime? lastActive = s.LastLoginAt;
+            // Tính toán thời điểm truy cập / học tập gần nhất thực tế (100% chuẩn UTC, tuyệt đối không dùng gamification.LastActiveDate vì trường đó lưu giờ VN UTC+7 để tính Streak)
+            DateTime? lastActive = EnsureUtc(s.LastLoginAt);
+
             var lastSummary = userSummaries
                 .Where(x => x.LastAccessedAt != default)
                 .OrderByDescending(x => x.LastAccessedAt)
                 .FirstOrDefault();
-            if (lastSummary != null && (!lastActive.HasValue || lastSummary.LastAccessedAt > lastActive.Value))
+            if (lastSummary != null)
             {
-                lastActive = lastSummary.LastAccessedAt;
+                var summaryTime = EnsureUtc(lastSummary.LastAccessedAt);
+                if (!lastActive.HasValue || summaryTime > lastActive.Value)
+                    lastActive = summaryTime;
             }
 
-            if (vocab != null && (!lastActive.HasValue || vocab.UpdatedAt > lastActive.Value))
+            var lastBino = userBino
+                .Where(x => x.LastAccessedAt != default)
+                .OrderByDescending(x => x.LastAccessedAt)
+                .FirstOrDefault();
+            if (lastBino != null)
             {
-                lastActive = vocab.UpdatedAt;
+                var binoTime = EnsureUtc(lastBino.LastAccessedAt);
+                if (!lastActive.HasValue || binoTime > lastActive.Value)
+                    lastActive = binoTime;
             }
 
-            if (gamification != null)
+            if (vocab != null && vocab.UpdatedAt != default)
             {
-                if (gamification.LastActiveDate.HasValue && (!lastActive.HasValue || gamification.LastActiveDate.Value > lastActive.Value))
-                {
-                    lastActive = gamification.LastActiveDate.Value;
-                }
-                if (gamification.UpdatedAt > (lastActive ?? DateTime.MinValue))
-                {
-                    lastActive = gamification.UpdatedAt;
-                }
+                var vocabTime = EnsureUtc(vocab.UpdatedAt);
+                if (!lastActive.HasValue || vocabTime > lastActive.Value)
+                    lastActive = vocabTime;
+            }
+
+            if (gamification != null && gamification.UpdatedAt != default)
+            {
+                var gamifTime = EnsureUtc(gamification.UpdatedAt);
+                if (!lastActive.HasValue || gamifTime > lastActive.Value)
+                    lastActive = gamifTime;
             }
 
             result.Add(new AdminStudentProgressDto
@@ -1003,26 +1033,41 @@ public class DashboardService : IDashboardService
             catch { }
         }
 
-        DateTime? lastActive = user.LastLoginAt;
+        DateTime? lastActive = EnsureUtc(user.LastLoginAt);
         var lastToeicSummary = summaryDtos.FirstOrDefault();
-        if (lastToeicSummary != null && (!lastActive.HasValue || lastToeicSummary.LastAccessedAt > lastActive.Value))
+        if (lastToeicSummary != null && lastToeicSummary.LastAccessedAt != default)
         {
-            lastActive = lastToeicSummary.LastAccessedAt;
+            var summaryTime = EnsureUtc(lastToeicSummary.LastAccessedAt);
+            if (!lastActive.HasValue || summaryTime > lastActive.Value)
+                lastActive = summaryTime;
         }
-        if (vocab != null && (!lastActive.HasValue || vocab.UpdatedAt > lastActive.Value))
+        var lastBino = binoProgresses
+            .Where(x => x.LastAccessedAt != default)
+            .OrderByDescending(x => x.LastAccessedAt)
+            .FirstOrDefault();
+        if (lastBino != null)
         {
-            lastActive = vocab.UpdatedAt;
+            var binoTime = EnsureUtc(lastBino.LastAccessedAt);
+            if (!lastActive.HasValue || binoTime > lastActive.Value)
+                lastActive = binoTime;
         }
-        if (gamification != null)
+        if (vocab != null && vocab.UpdatedAt != default)
         {
-            if (gamification.LastActiveDate.HasValue && (!lastActive.HasValue || gamification.LastActiveDate.Value > lastActive.Value))
-            {
-                lastActive = gamification.LastActiveDate.Value;
-            }
-            if (gamification.UpdatedAt > (lastActive ?? DateTime.MinValue))
-            {
-                lastActive = gamification.UpdatedAt;
-            }
+            var vocabTime = EnsureUtc(vocab.UpdatedAt);
+            if (!lastActive.HasValue || vocabTime > lastActive.Value)
+                lastActive = vocabTime;
+        }
+        if (reflex != null && reflex.UpdatedAt != default)
+        {
+            var reflexTime = EnsureUtc(reflex.UpdatedAt);
+            if (!lastActive.HasValue || reflexTime > lastActive.Value)
+                lastActive = reflexTime;
+        }
+        if (gamification != null && gamification.UpdatedAt != default)
+        {
+            var gamifTime = EnsureUtc(gamification.UpdatedAt);
+            if (!lastActive.HasValue || gamifTime > lastActive.Value)
+                lastActive = gamifTime;
         }
 
         var detail = new StudentDetailProfileDto
@@ -1035,7 +1080,7 @@ public class DashboardService : IDashboardService
             IsApproved = user.IsApproved,
             IsLocked = isLocked,
             ApprovedAt = EnsureUtc(user.ApprovedAt),
-            CreatedAt = DateTime.SpecifyKind(user.CreatedAt, DateTimeKind.Utc),
+            CreatedAt = EnsureUtc(user.CreatedAt),
             LastLoginAt = EnsureUtc(lastActive),
 
             Level = gamificationProfile?.CurrentLevel ?? (gamification?.CurrentLevel ?? 1),
