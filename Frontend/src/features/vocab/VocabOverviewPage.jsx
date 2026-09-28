@@ -1,0 +1,324 @@
+import React, { useState, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { 
+  Sparkles, Search, BookOpen, Layers, CheckCircle2, 
+  Star, Trophy, ArrowRight, Play, Volume2, Filter, Zap,
+  Activity, Sun, Compass, Hash, ShoppingBag, Moon, HeartHandshake,
+  UtensilsCrossed, TreePine, Sofa, Cross, Laptop, Home, Store,
+  Gamepad2, Plane, MoonStar, Building2, Heart, PlaneTakeoff, HeartPulse,
+  Salad, Clock, Car, Smile, UserCheck, Coffee, Flower2, Film, Award,
+  Gift, Utensils, Music, Hotel, GraduationCap, Palette, CloudSun, Shirt,
+  Footprints, School, Users, Apple, Cat, Bug, BookMarked, Sprout,
+  Globe2, Fish, Briefcase, Flame, Navigation, BedDouble, Mail, Landmark
+} from 'lucide-react';
+import useVocabStore from './store/useVocabStore';
+
+// Map icon string to Lucide component
+const ICON_COMPONENT_MAP = {
+  BookOpen, Activity, Sun, Compass, Hash, ShoppingBag, Moon, HeartHandshake,
+  UtensilsCrossed, Sparkles, TreePine, Sofa, Cross, Laptop, Home, Store,
+  Gamepad2, Plane, MoonStar, Trophy, Building2, Heart, PlaneTakeoff, HeartPulse,
+  Salad, Clock, Car, Smile, UserCheck, Coffee, Flower2, Film, Award,
+  Gift, Utensils, Music, Hotel, GraduationCap, Palette, CloudSun, Shirt,
+  Footprints, School, Users, Apple, Cat, Bug, BookMarked, Sprout,
+  Globe2, Fish, Zap, Briefcase, Flame, Navigation, BedDouble, Mail, Landmark
+};
+
+export default function VocabOverviewPage() {
+  const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [activeFilter, setActiveFilter] = useState('all'); // 'all', 'learning', 'completed', 'starred'
+
+  const { 
+    topics, 
+    totalWords, 
+    masteredWords, 
+    starredWords, 
+    topicScores, 
+    lastStudiedTopic, 
+    fetchProgress, 
+    speakWord 
+  } = useVocabStore();
+
+  useEffect(() => {
+    fetchProgress();
+  }, [fetchProgress]);
+
+  // Overall Stats
+  const masteredCount = Object.keys(masteredWords).filter((k) => masteredWords[k]).length;
+  const starredCount = Object.keys(starredWords).filter((k) => starredWords[k]).length;
+  const totalProgressPercent = totalWords > 0 ? Math.round((masteredCount / totalWords) * 100) : 0;
+
+  // Count fully mastered topics
+  const completedTopicsCount = useMemo(() => {
+    return topics.filter((t) => {
+      const words = t.words || [];
+      return words.length > 0 && words.every((w) => masteredWords[w.id]);
+    }).length;
+  }, [topics, masteredWords]);
+
+  // Global Word Search (Searches across all 1760 words instantly)
+  const globalSearchResults = useMemo(() => {
+    if (!searchTerm.trim() || searchTerm.length < 2) return null;
+    const term = searchTerm.trim().toLowerCase();
+    const results = [];
+
+    for (const t of topics) {
+      for (const w of t.words) {
+        if (w.word.toLowerCase().includes(term) || w.meaning.toLowerCase().includes(term)) {
+          results.push({ ...w, topicId: t.id, topicTitle: t.title });
+          if (results.length >= 12) break; // Limit to 12 quick results for speed
+        }
+      }
+      if (results.length >= 12) break;
+    }
+    return results;
+  }, [searchTerm, topics]);
+
+  // Filter topics
+  const filteredTopics = useMemo(() => {
+    return topics.filter((t) => {
+      const words = t.words || [];
+      const mCount = words.filter((w) => masteredWords[w.id]).length;
+      const sCount = words.filter((w) => starredWords[w.id]).length;
+
+      if (activeFilter === 'completed') {
+        return words.length > 0 && mCount === words.length;
+      }
+      if (activeFilter === 'learning') {
+        return mCount > 0 && mCount < words.length;
+      }
+      if (activeFilter === 'starred') {
+        return sCount > 0;
+      }
+      return true;
+    });
+  }, [topics, activeFilter, masteredWords, starredWords]);
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 py-6 sm:py-10 space-y-8">
+      
+      {/* 1. Hero Banner */}
+      <div className="relative overflow-hidden rounded-[32px] bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white p-7 sm:p-10 border border-slate-800 shadow-2xl">
+        <div className="relative z-10 max-w-3xl space-y-4">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/20 text-sky-300 text-xs font-bold border border-blue-400/30 backdrop-blur-md">
+            <Sparkles size={14} />
+            <span>Oxford & Cambridge Standard • 60 Chủ Đề Giao Tiếp Cốt Lõi</span>
+          </div>
+
+          <h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-tight">
+            3000 Từ Vựng Tiếng Anh <br className="hidden sm:inline" />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-[#0071e3]">
+              Theo Chủ Đề
+            </span>
+          </h1>
+
+          <p className="text-sm sm:text-base text-slate-300 font-medium leading-relaxed max-w-2xl">
+            Nền tảng vốn từ thiết yếu giúp bạn tự tin giao tiếp, đọc hiểu và phản xạ trong mọi ngữ cảnh đời sống. Học qua Flashcard 3D, Trắc nghiệm phản xạ và Luyện gõ chính tả.
+          </p>
+
+          {/* Overall Stats Bar */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+            <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
+              <span className="text-[11px] font-semibold text-slate-400 block">Đã ghi nhớ</span>
+              <span className="text-xl sm:text-2xl font-black text-amber-300">
+                {masteredCount} <span className="text-xs font-bold text-slate-400">/ {totalWords}</span>
+              </span>
+            </div>
+            <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
+              <span className="text-[11px] font-semibold text-slate-400 block">Tiến độ toàn kho</span>
+              <span className="text-xl sm:text-2xl font-black text-sky-400">{totalProgressPercent}%</span>
+            </div>
+            <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
+              <span className="text-[11px] font-semibold text-slate-400 block">Chủ đề hoàn thành</span>
+              <span className="text-xl sm:text-2xl font-black text-emerald-400">
+                {completedTopicsCount} <span className="text-xs font-bold text-slate-400">/ 60</span>
+              </span>
+            </div>
+            <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
+              <span className="text-[11px] font-semibold text-slate-400 block">Từ vựng yêu thích</span>
+              <span className="text-xl sm:text-2xl font-black text-purple-400">{starredCount}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Decorative background glow */}
+        <div className="absolute -right-20 -top-20 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl pointer-events-none" />
+      </div>
+
+      {/* 2. Global Search & Filter Bar */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+        {/* Instant Search Bar */}
+        <div className="relative w-full sm:w-96">
+          <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Tra cứu từ tiếng Anh hoặc nghĩa tiếng Việt..."
+            className="w-full pl-11 pr-4 py-3 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 text-sm font-medium outline-none focus:border-[#0071e3] shadow-sm transition-all text-slate-900 dark:text-white"
+          />
+        </div>
+
+        {/* Filter Tabs */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 w-full sm:w-auto">
+          {[
+            { id: 'all', label: `Tất cả (60)` },
+            { id: 'learning', label: 'Đang học' },
+            { id: 'completed', label: `Đã xong (${completedTopicsCount})` },
+            { id: 'starred', label: `Đánh dấu (${starredCount})` }
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveFilter(tab.id)}
+              className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
+                activeFilter === tab.id
+                  ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-md'
+                  : 'bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* 3. Global Search Results (Instant Dropdown Grid) */}
+      {globalSearchResults && (
+        <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-blue-200/80 dark:border-blue-900/60 shadow-xl space-y-4">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-[#0071e3] uppercase tracking-wider">
+              Kết quả tra cứu nhanh ({globalSearchResults.length} từ)
+            </span>
+            <button
+              onClick={() => setSearchTerm('')}
+              className="text-xs text-slate-400 hover:underline cursor-pointer"
+            >
+              Đóng kết quả
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+            {globalSearchResults.map((item, idx) => (
+              <div 
+                key={idx}
+                className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between gap-2"
+              >
+                <div className="min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-bold text-sm text-slate-900 dark:text-white">
+                      {item.word}
+                    </span>
+                    <span className="text-[10px] px-1.5 py-0.2 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-bold uppercase">
+                      {item.pos}
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 truncate mt-0.5">
+                    {item.meaning}
+                  </p>
+                  <span className="text-[10px] text-blue-500 font-semibold block mt-1">
+                    Thuộc: {item.topicTitle}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-1 shrink-0">
+                  <button
+                    onClick={() => speakWord(item.word)}
+                    className="p-2 rounded-xl text-[#0071e3] hover:bg-blue-50 dark:hover:bg-blue-950/60 transition-colors cursor-pointer"
+                    title="Nghe đọc"
+                  >
+                    <Volume2 size={16} />
+                  </button>
+                  <button
+                    onClick={() => navigate(`/vocab/${item.topicId}`)}
+                    className="p-2 rounded-xl text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
+                    title="Vào bài học"
+                  >
+                    <ArrowRight size={16} />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* 4. Topics 60 Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        {filteredTopics.map((topic) => {
+          const words = topic.words || [];
+          const mCount = words.filter((w) => masteredWords[w.id]).length;
+          const isAllMastered = words.length > 0 && mCount === words.length;
+          const percent = words.length > 0 ? Math.round((mCount / words.length) * 100) : 0;
+          const scoreObj = topicScores[topic.id];
+          const IconComp = ICON_COMPONENT_MAP[topic.icon] || Layers;
+
+          return (
+            <motion.div
+              key={topic.id}
+              whileHover={{ y: -4 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => navigate(`/vocab/${topic.id}`)}
+              className={`p-5 rounded-3xl border transition-all cursor-pointer flex flex-col justify-between gap-4 select-none ${
+                isAllMastered
+                  ? 'bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-300 dark:border-emerald-800/60 shadow-sm'
+                  : 'bg-white dark:bg-slate-900 border-slate-200/80 dark:border-slate-800 hover:border-[#0071e3]/60 hover:shadow-lg hover:shadow-blue-500/5'
+              }`}
+            >
+              {/* Header: Icon & Topic # */}
+              <div className="flex items-start justify-between gap-3">
+                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-xl shrink-0 ${
+                  isAllMastered
+                    ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/25'
+                    : 'bg-blue-50 dark:bg-blue-950/60 text-[#0071e3] dark:text-sky-400'
+                }`}>
+                  <IconComp size={22} />
+                </div>
+
+                <div className="flex items-center gap-1.5">
+                  {scoreObj && scoreObj.bestScore > 0 && (
+                    <span className="px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 text-[10px] font-bold border border-amber-200/60 dark:border-amber-800/40">
+                      🏆 {scoreObj.bestScore}%
+                    </span>
+                  )}
+                  <span className="px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-xs font-bold">
+                    #{topic.id}
+                  </span>
+                </div>
+              </div>
+
+              {/* Title & Word count */}
+              <div className="space-y-1">
+                <h3 className="font-bold text-base sm:text-lg text-slate-900 dark:text-white line-clamp-1">
+                  {topic.title}
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                  {words.length} từ vựng giao tiếp
+                </p>
+              </div>
+
+              {/* Progress bar */}
+              <div className="space-y-1.5 pt-2 border-t border-slate-100 dark:border-slate-800/80">
+                <div className="flex justify-between items-center text-[11px] font-semibold text-slate-500">
+                  <span>{mCount}/{words.length} từ</span>
+                  <span className={isAllMastered ? 'text-emerald-600 font-bold' : ''}>
+                    {percent}%
+                  </span>
+                </div>
+                <div className="w-full h-1.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+                  <div 
+                    className={`h-full rounded-full transition-all duration-300 ${
+                      isAllMastered ? 'bg-emerald-500' : 'bg-[#0071e3]'
+                    }`}
+                    style={{ width: `${percent}%` }}
+                  />
+                </div>
+              </div>
+            </motion.div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}

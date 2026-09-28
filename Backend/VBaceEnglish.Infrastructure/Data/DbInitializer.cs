@@ -72,6 +72,22 @@ public static class DbInitializer
                     );
                     CREATE UNIQUE INDEX [IX_UserEbookProgresses_UserId_BookSlug] ON [UserEbookProgresses] ([UserId], [BookSlug]);
                 END
+
+                IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'UserVocabProgresses')
+                BEGIN
+                    CREATE TABLE [UserVocabProgresses] (
+                        [Id] int IDENTITY(1,1) NOT NULL,
+                        [UserId] int NOT NULL,
+                        [MasteredCount] int NOT NULL CONSTRAINT [DF_UserVocabProgresses_MasteredCount] DEFAULT 0,
+                        [StarredCount] int NOT NULL CONSTRAINT [DF_UserVocabProgresses_StarredCount] DEFAULT 0,
+                        [LastStudiedTopic] int NOT NULL CONSTRAINT [DF_UserVocabProgresses_LastStudiedTopic] DEFAULT 1,
+                        [ProgressDataJson] nvarchar(max) NOT NULL CONSTRAINT [DF_UserVocabProgresses_ProgressDataJson] DEFAULT '{}',
+                        [UpdatedAt] datetime2 NOT NULL CONSTRAINT [DF_UserVocabProgresses_UpdatedAt] DEFAULT GETUTCDATE(),
+                        CONSTRAINT [PK_UserVocabProgresses] PRIMARY KEY ([Id]),
+                        CONSTRAINT [FK_UserVocabProgresses_AspNetUsers_UserId] FOREIGN KEY ([UserId]) REFERENCES [AspNetUsers] ([Id]) ON DELETE CASCADE
+                    );
+                    CREATE UNIQUE INDEX [IX_UserVocabProgresses_UserId] ON [UserVocabProgresses] ([UserId]);
+                END
                 
                 IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'UserGamifications')
                 BEGIN

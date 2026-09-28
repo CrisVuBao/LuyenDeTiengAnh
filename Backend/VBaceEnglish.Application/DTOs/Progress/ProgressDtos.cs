@@ -87,3 +87,21 @@ public class UpsertEbookProgressDto
     public string BookmarksJson { get; set; } = "[]";
 }
 
+public class UserVocabProgressDto
+{
+    public int MasteredCount { get; set; }
+    public int StarredCount { get; set; }
+    public int LastStudiedTopic { get; set; } = 1;
+    public string ProgressDataJson { get; set; } = "{}";
+    public DateTime UpdatedAt { get; set; }
+}
+
+public class UpsertVocabProgressDto
+{
+    public int MasteredCount { get; set; }
+    public int StarredCount { get; set; }
+    public int LastStudiedTopic { get; set; } = 1;
+    public string ProgressDataJson { get; set; } = "{}";
+}
+
+

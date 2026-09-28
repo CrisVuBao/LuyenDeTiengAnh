@@ -38,6 +38,10 @@ public interface IUserProgressRepository
     Task<UserEbookProgress?> GetEbookProgressAsync(int userId, string bookSlug);
     Task AddEbookProgressAsync(UserEbookProgress progress);
     void UpdateEbookProgress(UserEbookProgress progress);
+
+    Task<UserVocabProgress?> GetVocabProgressAsync(int userId);
+    Task AddVocabProgressAsync(UserVocabProgress progress);
+    void UpdateVocabProgress(UserVocabProgress progress);
 }
 
 

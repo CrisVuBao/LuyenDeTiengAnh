@@ -11,8 +11,8 @@ export default function StudentLayout() {
       {/* Top Navbar Header */}
       <StudentNavbar />
 
-      {/* Main Content Area (Full width, No sidebar) */}
-      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 md:py-8">
+      {/* Main Content Area (Full width, No sidebar, safe bottom clearance for mobile nav) */}
+      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 md:py-8 pb-24 md:pb-8">
         <Outlet />
       </main>
 

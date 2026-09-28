@@ -105,6 +105,22 @@ public class UserProgressRepository : IUserProgressRepository
     {
         _context.UserEbookProgresses.Update(progress);
     }
+
+    public async Task<UserVocabProgress?> GetVocabProgressAsync(int userId)
+    {
+        return await _context.UserVocabProgresses
+            .FirstOrDefaultAsync(v => v.UserId == userId);
+    }
+
+    public async Task AddVocabProgressAsync(UserVocabProgress progress)
+    {
+        await _context.UserVocabProgresses.AddAsync(progress);
+    }
+
+    public void UpdateVocabProgress(UserVocabProgress progress)
+    {
+        _context.UserVocabProgresses.Update(progress);
+    }
 }
 
 

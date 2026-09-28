@@ -58,8 +58,17 @@ export default function CelebrationEffects() {
       return updated;
     });
 
-    // Timer riêng biệt cho từng popup, tự động tắt sau 3.5s (hoặc 5s với level up)
-    const duration = effect.type === 'level_up' ? 5000 : 3500;
+    // Timer riêng biệt cho từng popup, giữ lâu hơn (6s - 7.5s) để học viên kịp theo dõi thành tích
+    const getDuration = (type) => {
+      switch (type) {
+        case 'level_up': return 7500;
+        case 'all_quests_completed': return 7000;
+        case 'achievement_unlocked': return 6500;
+        case 'quest_completed': return 6000;
+        default: return 5500;
+      }
+    };
+    const duration = getDuration(effect.type);
     timersRef.current[id] = setTimeout(() => {
       removeEffect(id);
     }, duration);

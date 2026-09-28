@@ -19,6 +19,8 @@ public interface IUserProgressService
     Task<Response<bool>> SaveReflexProgressAsync(int userId, UpsertReflexProgressDto dto);
     Task<Response<UserEbookProgressDto>> GetEbookProgressAsync(int userId, string? bookSlug);
     Task<Response<bool>> SaveEbookProgressAsync(int userId, UpsertEbookProgressDto dto);
+    Task<Response<UserVocabProgressDto>> GetVocabProgressAsync(int userId);
+    Task<Response<bool>> SaveVocabProgressAsync(int userId, UpsertVocabProgressDto dto);
 }
 
 public class UserProgressService : IUserProgressService
@@ -390,6 +392,64 @@ public class UserProgressService : IUserProgressService
 
         await _unitOfWork.CompleteAsync();
         return Response<bool>.SuccessResult("Đồng bộ tiến độ đọc sách thành công", true);
+    }
+
+    public async Task<Response<UserVocabProgressDto>> GetVocabProgressAsync(int userId)
+    {
+        var entity = await _unitOfWork.UserProgresses.GetVocabProgressAsync(userId);
+        if (entity == null)
+        {
+            return Response<UserVocabProgressDto>.SuccessResult("Chưa có tiến độ từ vựng", new UserVocabProgressDto
+            {
+                MasteredCount = 0,
+                StarredCount = 0,
+                LastStudiedTopic = 1,
+                ProgressDataJson = "{}",
+                UpdatedAt = DateTime.UtcNow
+            });
+        }
+
+        return Response<UserVocabProgressDto>.SuccessResult("Lấy tiến độ từ vựng thành công", new UserVocabProgressDto
+        {
+            MasteredCount = entity.MasteredCount,
+            StarredCount = entity.StarredCount,
+            LastStudiedTopic = entity.LastStudiedTopic,
+            ProgressDataJson = entity.ProgressDataJson,
+            UpdatedAt = entity.UpdatedAt
+        });
+    }
+
+    public async Task<Response<bool>> SaveVocabProgressAsync(int userId, UpsertVocabProgressDto dto)
+    {
+        var existing = await _unitOfWork.UserProgresses.GetVocabProgressAsync(userId);
+        if (existing == null)
+        {
+            var newEntity = new UserVocabProgress
+            {
+                UserId = userId,
+                MasteredCount = dto.MasteredCount,
+                StarredCount = dto.StarredCount,
+                LastStudiedTopic = dto.LastStudiedTopic,
+                ProgressDataJson = string.IsNullOrWhiteSpace(dto.ProgressDataJson) ? "{}" : dto.ProgressDataJson,
+                UpdatedAt = DateTime.UtcNow
+            };
+            await _unitOfWork.UserProgresses.AddVocabProgressAsync(newEntity);
+        }
+        else
+        {
+            existing.MasteredCount = dto.MasteredCount;
+            existing.StarredCount = dto.StarredCount;
+            existing.LastStudiedTopic = dto.LastStudiedTopic;
+            if (!string.IsNullOrWhiteSpace(dto.ProgressDataJson))
+            {
+                existing.ProgressDataJson = dto.ProgressDataJson;
+            }
+            existing.UpdatedAt = DateTime.UtcNow;
+            _unitOfWork.UserProgresses.UpdateVocabProgress(existing);
+        }
+
+        await _unitOfWork.CompleteAsync();
+        return Response<bool>.SuccessResult("Đồng bộ tiến độ từ vựng thành công", true);
     }
 }
 

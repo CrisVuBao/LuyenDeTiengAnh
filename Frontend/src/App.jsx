@@ -32,6 +32,10 @@ const BinoChapterBonusPage = lazy(() => import("./features/bino/BinoChapterBonus
 const Reflex50OverviewPage = lazy(() => import("./features/reflex50/Reflex50OverviewPage"));
 const Reflex50UnitStudyPage = lazy(() => import("./features/reflex50/Reflex50UnitStudyPage"));
 
+// 3000 Essential Vocabulary Topics System
+const VocabOverviewPage = lazy(() => import("./features/vocab/VocabOverviewPage"));
+const VocabStudyPage = lazy(() => import("./features/vocab/VocabStudyPage"));
+
 // Gamification System (Leaderboard, Achievements, Streaks, Quests)
 const GamificationHubPage = lazy(() => import("./features/gamification/GamificationHubPage"));
 
@@ -98,6 +102,10 @@ function App() {
             {/* Reflex 50 Topics (1500 Sentences) Routes */}
             <Route path="/reflex-50" element={<Reflex50OverviewPage />} />
             <Route path="/reflex-50/unit/:unitNumber" element={<Reflex50UnitStudyPage />} />
+
+            {/* 3000 Essential Vocabulary System Routes */}
+            <Route path="/vocab" element={<VocabOverviewPage />} />
+            <Route path="/vocab/:topicId" element={<VocabStudyPage />} />
 
             {/* Gamification Hub Routes */}
             <Route path="/leaderboard" element={<GamificationHubPage />} />

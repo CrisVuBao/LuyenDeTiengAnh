@@ -114,5 +114,25 @@ public class UserProgressController : ControllerBase
         var result = await _progressService.SaveEbookProgressAsync(userId, model);
         return Ok(result);
     }
+
+    [HttpGet("vocab")]
+    public async Task<IActionResult> GetVocabProgress()
+    {
+        int userId = GetCurrentUserId();
+        if (userId == 0) return Unauthorized(Response<string>.Failure("Chưa xác thực"));
+
+        var result = await _progressService.GetVocabProgressAsync(userId);
+        return Ok(result);
+    }
+
+    [HttpPost("vocab")]
+    public async Task<IActionResult> SaveVocabProgress([FromBody] UpsertVocabProgressDto model)
+    {
+        int userId = GetCurrentUserId();
+        if (userId == 0) return Unauthorized(Response<string>.Failure("Chưa xác thực"));
+
+        var result = await _progressService.SaveVocabProgressAsync(userId, model);
+        return Ok(result);
+    }
 }
 

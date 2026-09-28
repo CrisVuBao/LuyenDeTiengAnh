@@ -37,6 +37,7 @@ public class AppDBContext : IdentityDbContext<ApplicationUser, Role, int>
     public DbSet<UserSRSReview> UserSRSReviews => Set<UserSRSReview>();
     public DbSet<UserReflexProgress> UserReflexProgresses => Set<UserReflexProgress>();
     public DbSet<UserEbookProgress> UserEbookProgresses => Set<UserEbookProgress>();
+    public DbSet<UserVocabProgress> UserVocabProgresses => Set<UserVocabProgress>();
     public DbSet<UserGamification> UserGamifications => Set<UserGamification>();
     public DbSet<XPTransaction> XPTransactions => Set<XPTransaction>();
 
@@ -59,6 +60,7 @@ public class AppDBContext : IdentityDbContext<ApplicationUser, Role, int>
         builder.Entity<UserTestSummary>().HasIndex(s => new { s.UserId, s.ToeicTestId }).IsUnique();
         builder.Entity<UserReflexProgress>().HasIndex(r => r.UserId).IsUnique();
         builder.Entity<UserEbookProgress>().HasIndex(e => new { e.UserId, e.BookSlug }).IsUnique();
+        builder.Entity<UserVocabProgress>().HasIndex(v => v.UserId).IsUnique();
 
         // Cascade Deletes for Test
         builder.Entity<ToeicTest>()

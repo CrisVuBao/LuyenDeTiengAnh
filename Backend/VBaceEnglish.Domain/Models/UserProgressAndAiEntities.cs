@@ -86,6 +86,27 @@ public class UserEbookProgress
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 }
 
+/// <summary>
+/// Tiến độ học 3000 Từ Vựng Theo 60 Chủ Đề được lưu vĩnh viễn trên SQL Server theo từng tài khoản
+/// </summary>
+public class UserVocabProgress
+{
+    public int Id { get; set; }
+    public int UserId { get; set; }
+    public ApplicationUser User { get; set; } = null!;
+
+    public int MasteredCount { get; set; } = 0;
+    public int StarredCount { get; set; } = 0;
+    public int LastStudiedTopic { get; set; } = 1;
+
+    /// <summary>
+    /// Lưu trữ chi tiết JSON (masteredWordIds, starredWordIds, topicScores)
+    /// </summary>
+    public string ProgressDataJson { get; set; } = "{}";
+
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+}
+
 public class UserGamification
 {
     public int Id { get; set; }
