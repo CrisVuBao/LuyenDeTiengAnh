@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  ArrowLeft, Play, Pause, Volume2, Bookmark, CheckCircle2, 
+  ArrowLeft, Play, Pause, Square, Volume2, Bookmark, CheckCircle2, 
   RotateCcw, Sparkles, Mic, Eye, EyeOff, BookOpen, MessageSquare, 
   HelpCircle, ChevronRight, Layers, Award, FileText, Check, Copy, Settings,
   Repeat, Repeat1, Infinity as InfinityIcon, ChevronDown, X, ListMusic,
@@ -380,7 +380,13 @@ export default function BinoDialogueStudyPage() {
       text,
       characterName,
       speed: speed || audioSpeedRef.current || audioSpeed,
-      forceCancel: true
+      forceCancel: true,
+      onEnd: () => {
+        if (!isPlayingRef.current) setActiveLineIndex(null);
+      },
+      onError: () => {
+        if (!isPlayingRef.current) setActiveLineIndex(null);
+      }
     });
   };
 
@@ -1324,15 +1330,20 @@ export default function BinoDialogueStudyPage() {
                         </span>
 
                         {/* Equalizer when this specific line is being spoken */}
-                        {isActive && isPlayingAll && (
-                          <div className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-100 dark:bg-amber-950/80 text-amber-900 dark:text-amber-200 text-[10px] font-black">
+                        {isActive && (
+                          <button
+                            type="button"
+                            onClick={() => stopPlayback(true)}
+                            className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-100 hover:bg-rose-100 dark:bg-amber-950/80 dark:hover:bg-rose-950/80 text-amber-900 hover:text-rose-700 dark:text-amber-200 dark:hover:text-rose-300 text-[10px] font-black transition-colors cursor-pointer"
+                            title="Đang phát câu này • Bấm để dừng ngay"
+                          >
                             <div className="flex items-end gap-0.5 h-3">
                               <span className="equalizer-bar" />
                               <span className="equalizer-bar" />
                               <span className="equalizer-bar" />
                             </div>
                             <span>Đang đọc</span>
-                          </div>
+                          </button>
                         )}
 
                         {/* Repeat counter badge */}
@@ -1355,19 +1366,6 @@ export default function BinoDialogueStudyPage() {
 
                       {/* Line Audio Play & Speaking Practice Buttons */}
                       <div className="flex items-center gap-1.5 shrink-0">
-                        {/* <button
-                          onClick={() => startInlineLineSpeech(line, idx)}
-                          className={`px-2 sm:px-2.5 py-1.5 rounded-xl text-[10px] sm:text-[11px] font-extrabold transition-all active:scale-90 flex items-center gap-1 cursor-pointer ${
-                            isListening && inlineSpeakIndex === idx
-                              ? 'bg-rose-600 text-white animate-pulse shadow-md shadow-rose-500/25'
-                              : 'text-blue-700 dark:text-sky-300 bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/60 dark:hover:bg-blue-900/60 border border-blue-200/80 dark:border-blue-800/70'
-                          }`}
-                          title="Bấm Micro để luyện đọc câu này (Hỗ trợ cả Máy tính & Điện thoại)"
-                        >
-                          <Mic size={12} />
-                          <span>{isListening && inlineSpeakIndex === idx ? 'Đang nghe...' : 'Nói'}</span>
-                        </button> */}
-
                         <button
                           onClick={() => {
                             if (isPlayingAll) stopPlayback();
@@ -1383,18 +1381,33 @@ export default function BinoDialogueStudyPage() {
 
                         <button
                           onClick={() => {
-                            if (isPlayingAll) stopPlayback();
+                            if (isActive) {
+                              stopPlayback(true);
+                              return;
+                            }
+                            if (isPlayingAll) stopPlayback(true);
                             setActiveLineIndex(idx);
                             speakText(line.englishText, line.characterName);
                           }}
-                          className={`p-2 rounded-xl transition-all shrink-0 active:scale-90 cursor-pointer ${
+                          className={`transition-all shrink-0 active:scale-90 cursor-pointer flex items-center justify-center gap-1.5 rounded-xl ${
                             isActive
-                              ? 'text-white bg-amber-500 shadow-md shadow-amber-500/25'
-                              : 'text-slate-500 bg-slate-100/80 dark:bg-slate-700/60 hover:text-amber-600 hover:bg-slate-100 dark:hover:bg-slate-700'
+                              ? 'px-2.5 sm:px-3 py-1.5 text-[11px] font-extrabold text-white bg-rose-600 hover:bg-rose-700 shadow-md shadow-rose-500/30 ring-2 ring-rose-300 dark:ring-rose-800'
+                              : 'p-2 text-slate-500 bg-slate-100/80 dark:bg-slate-700/60 hover:text-amber-600 hover:bg-slate-100 dark:hover:bg-slate-700'
                           }`}
-                          title={`Nghe riêng câu này theo giọng nhân vật (${audioSpeed}x)`}
+                          title={
+                            isActive
+                              ? 'Dừng phát ngay tại câu này'
+                              : `Nghe riêng câu này theo giọng nhân vật (${audioSpeed}x)`
+                          }
                         >
-                          <Volume2 size={16} />
+                          {isActive ? (
+                            <>
+                              <Square size={13} fill="currentColor" />
+                              <span>Dừng</span>
+                            </>
+                          ) : (
+                            <Volume2 size={16} />
+                          )}
                         </button>
                       </div>
                     </div>
@@ -1807,42 +1820,6 @@ export default function BinoDialogueStudyPage() {
       )}
 
 
-
-      {/* FLOATING STICKY BOTTOM PLAYBACK BAR WHEN LISTENING TO FULL DIALOGUE */}
-      {isPlayingAll && lesson?.dialogueLines?.length > 0 && (() => {
-        const currentIdx = activeLineIndex !== null ? activeLineIndex : 0;
-        const activeLine = lesson.dialogueLines[currentIdx] || lesson.dialogueLines[0];
-        return (
-          <div className="fixed bottom-16 md:bottom-6 left-1/2 -translate-x-1/2 z-50 w-[94%] max-w-2xl px-4 py-3 rounded-2xl bg-slate-900/95 text-white border border-amber-500/40 shadow-2xl backdrop-blur-md flex items-center justify-between gap-3 animate-fade-in">
-            <div className="flex items-center gap-2.5 min-w-0">
-              <div className="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-400/40 text-amber-400 flex items-center justify-center shrink-0">
-                <Headphones size={18} className="animate-bounce" />
-              </div>
-              <div className="min-w-0">
-                <div className="flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-wider text-amber-400">
-                  <span>Đang nghe hội thoại • Câu {currentIdx + 1}/{lesson.dialogueLines.length}</span>
-                  <span>•</span>
-                  <span>{audioSpeed}x</span>
-                </div>
-                <p className="text-xs sm:text-sm font-bold truncate text-slate-100">
-                  <span className="text-amber-300 font-black">{activeLine?.characterName}:</span> {activeLine?.englishText}
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2 shrink-0">
-              <button
-                onClick={() => stopPlayback(true)}
-                className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-extrabold flex items-center gap-1.5 shadow-lg shadow-rose-600/30 transition-all cursor-pointer active:scale-95"
-                title="Dừng nghe hội thoại ngay lập tức mà không cần cuộn lên đầu trang"
-              >
-                <Pause size={14} fill="currentColor" />
-                <span>Dừng Nghe</span>
-              </button>
-            </div>
-          </div>
-        );
-      })()}
 
       {/* Studio Voice Settings Modal */}
       <VoiceSettingsModal

@@ -3,7 +3,7 @@ import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowLeft, ArrowRight, BookOpen, PenTool, Mic, Headphones, Layers,
-  Volume2, Play, Pause, CheckCircle2, Star, Eye, EyeOff, Sparkles,
+  Volume2, Play, Pause, Square, CheckCircle2, Star, Eye, EyeOff, Sparkles,
   RotateCcw, Check, HelpCircle, FileText, Gauge, Zap, Award, ChevronLeft, ChevronRight
 } from 'lucide-react';
 import reflex50Data from './data/reflex50Data.json';
@@ -833,16 +833,31 @@ export default function Reflex50UnitStudyPage() {
                       <div className="flex lg:flex-col items-center lg:items-end justify-between gap-1.5 sm:gap-2 pt-2 lg:pt-0 border-t lg:border-t-0 border-slate-100 dark:border-slate-800/80 shrink-0">
                         <div className="flex items-center gap-1.5">
                           <button
-                            onClick={() => speakSentence(s, playbackSpeed)}
-                            className={`px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1 transition-all cursor-pointer ${
+                            onClick={() => {
+                              if (isPlayingThis) {
+                                stopAutoPlay();
+                                return;
+                              }
+                              speakSentence(s, playbackSpeed);
+                            }}
+                            className={`px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-extrabold flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 ${
                               isPlayingThis
-                                ? 'bg-[#0071e3] text-white shadow-xs'
+                                ? 'bg-rose-600 hover:bg-rose-700 text-white shadow-md shadow-rose-500/30 ring-2 ring-rose-300 dark:ring-rose-800'
                                 : 'bg-blue-50 dark:bg-slate-800 text-[#0071e3] dark:text-sky-400 hover:bg-blue-100'
                             }`}
-                            title="Nghe câu chuẩn"
+                            title={isPlayingThis ? 'Bấm để dừng phát ngay tại câu này' : 'Nghe câu chuẩn'}
                           >
-                            <Volume2 size={14} />
-                            <span>Nghe</span>
+                            {isPlayingThis ? (
+                              <>
+                                <Square size={12} fill="currentColor" />
+                                <span>Dừng</span>
+                              </>
+                            ) : (
+                              <>
+                                <Volume2 size={14} />
+                                <span>Nghe</span>
+                              </>
+                            )}
                           </button>
 
                           <button
@@ -1120,11 +1135,28 @@ export default function Reflex50UnitStudyPage() {
 
                     <div className="flex items-center gap-1 shrink-0">
                       <button
-                        onClick={() => speakSentence(s, playbackSpeed)}
-                        className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-[#0071e3] hover:bg-blue-50 cursor-pointer"
-                        title="Nghe gợi ý phát âm"
+                        onClick={() => {
+                          if (activePlayingId === s.id) {
+                            stopAutoPlay();
+                            return;
+                          }
+                          speakSentence(s, playbackSpeed);
+                        }}
+                        className={`rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1 ${
+                          activePlayingId === s.id
+                            ? 'px-2.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-extrabold shadow-md shadow-rose-500/30'
+                            : 'p-2 bg-slate-100 dark:bg-slate-800 text-[#0071e3] hover:bg-blue-50'
+                        }`}
+                        title={activePlayingId === s.id ? 'Dừng phát ngay tại câu này' : 'Nghe gợi ý phát âm'}
                       >
-                        <Volume2 size={15} />
+                        {activePlayingId === s.id ? (
+                          <>
+                            <Square size={12} fill="currentColor" />
+                            <span>Dừng</span>
+                          </>
+                        ) : (
+                          <Volume2 size={15} />
+                        )}
                       </button>
                       <button
                         onClick={() => speakSentence(s, 0.7)}
@@ -1792,41 +1824,6 @@ export default function Reflex50UnitStudyPage() {
           </div>
         </div>
       )}
-
-      {/* FLOATING STICKY BOTTOM PLAYBACK BAR WHEN CONTINUOUS PLAYBACK IS ACTIVE */}
-      {isAutoPlaying && (() => {
-        const activeSentence = unit.sentences.find((s) => s.id === activePlayingId) || filteredSentences[0];
-        return (
-          <div className="fixed bottom-16 md:bottom-6 left-1/2 -translate-x-1/2 z-50 w-[94%] max-w-2xl px-4 py-3 rounded-2xl bg-slate-900/95 text-white border border-blue-500/40 shadow-2xl backdrop-blur-md flex items-center justify-between gap-3 animate-fade-in">
-            <div className="flex items-center gap-2.5 min-w-0">
-              <div className="w-9 h-9 rounded-xl bg-blue-500/20 border border-blue-400/40 text-sky-400 flex items-center justify-center shrink-0">
-                <Headphones size={18} className="animate-bounce" />
-              </div>
-              <div className="min-w-0">
-                <div className="flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-wider text-sky-400">
-                  <span>Đang phát liên tục • Câu {activeSentence?.number || 1}/30</span>
-                  <span>•</span>
-                  <span>{playbackSpeed}x</span>
-                </div>
-                <p className="text-xs sm:text-sm font-bold truncate text-slate-100">
-                  {activeSentence?.en}
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2 shrink-0">
-              <button
-                onClick={stopAutoPlay}
-                className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-extrabold flex items-center gap-1.5 shadow-lg shadow-rose-600/30 transition-all cursor-pointer active:scale-95"
-                title="Dừng phát liên tục ngay lập tức"
-              >
-                <Pause size={14} fill="currentColor" />
-                <span>Dừng Phát</span>
-              </button>
-            </div>
-          </div>
-        );
-      })()}
 
       {/* Modals */}
       <Reflex50MethodGuideModal

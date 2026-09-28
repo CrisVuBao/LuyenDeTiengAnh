@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Volume2, RotateCw, CheckCircle2, XCircle, ArrowLeft, ArrowRight, 
   Sparkles, Star, Shuffle, Play, Check, Trophy, CheckCheck, RotateCcw,
-  Brain, Square, Headphones, SkipBack, SkipForward
+  Brain, Square
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import useVocabStore from '../store/useVocabStore';
@@ -744,12 +744,29 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
               <button
                 onClick={(e) => {
                   e.stopPropagation();
+                  if (isAutoPlaying) {
+                    stopAutoPlay();
+                    return;
+                  }
                   speakWord(currentWord.word);
                 }}
-                className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-[#0071e3] dark:text-sky-400 font-bold text-xs hover:bg-blue-100 transition-colors cursor-pointer active:scale-95"
+                className={`inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl font-extrabold text-xs transition-all cursor-pointer active:scale-95 ${
+                  isAutoPlaying
+                    ? 'bg-rose-600 hover:bg-rose-700 text-white shadow-md shadow-rose-500/30 ring-2 ring-rose-300 dark:ring-rose-800'
+                    : 'bg-blue-50 dark:bg-blue-950/60 text-[#0071e3] dark:text-sky-400 hover:bg-blue-100'
+                }`}
               >
-                <Volume2 size={15} />
-                <span>Nghe phát âm</span>
+                {isAutoPlaying ? (
+                  <>
+                    <Square size={13} fill="currentColor" />
+                    <span>Dừng phát</span>
+                  </>
+                ) : (
+                  <>
+                    <Volume2 size={15} />
+                    <span>Nghe phát âm</span>
+                  </>
+                )}
               </button>
 
               <span className="text-[11px] sm:text-xs text-slate-400 flex items-center gap-1 font-medium">
@@ -780,8 +797,35 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
               </h3>
             </div>
 
-            <div className="flex items-center justify-center pt-3 sm:pt-4 border-t border-white/10 text-[11px] sm:text-xs text-slate-400 gap-1">
-              <span>Chọn mức độ nhớ bên dưới để FSRS lên lịch ôn tối ưu</span>
+            <div className="flex items-center justify-between pt-3 sm:pt-4 border-t border-white/10 text-[11px] sm:text-xs text-slate-400 gap-2">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (isAutoPlaying) {
+                    stopAutoPlay();
+                    return;
+                  }
+                  speakWord(currentWord.word);
+                }}
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-extrabold text-xs transition-all cursor-pointer active:scale-95 ${
+                  isAutoPlaying
+                    ? 'bg-rose-600 hover:bg-rose-500 text-white shadow-md shadow-rose-600/30'
+                    : 'bg-white/10 hover:bg-white/20 text-sky-300'
+                }`}
+              >
+                {isAutoPlaying ? (
+                  <>
+                    <Square size={12} fill="currentColor" />
+                    <span>Dừng phát</span>
+                  </>
+                ) : (
+                  <>
+                    <Volume2 size={14} />
+                    <span>Nghe lại</span>
+                  </>
+                )}
+              </button>
+              <span className="truncate">Chọn mức độ nhớ bên dưới để FSRS lên lịch ôn</span>
             </div>
           </div>
         </motion.div>
@@ -837,52 +881,6 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
         <span><kbd className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border">1-4</kbd> Mức độ FSRS</span>
         <span><kbd className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border">P / ↓</kbd> Thẻ trước</span>
       </div>
-
-      {/* FLOATING STICKY BOTTOM PLAYBACK BAR WHEN CONTINUOUS FLASHCARD PLAYBACK IS ACTIVE */}
-      {isAutoPlaying && currentWord && (
-        <div className="fixed bottom-16 md:bottom-6 left-1/2 -translate-x-1/2 z-50 w-[94%] max-w-xl px-4 py-3 rounded-2xl bg-slate-900/95 text-white border border-slate-700/80 shadow-2xl backdrop-blur-md flex items-center justify-between gap-3 animate-fade-in">
-          <div className="flex items-center gap-2.5 min-w-0">
-            <div className="w-9 h-9 rounded-xl bg-blue-600/20 border border-blue-500/40 text-sky-400 flex items-center justify-center shrink-0">
-              <Headphones size={18} className="animate-bounce" />
-            </div>
-            <div className="min-w-0">
-              <div className="flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-wider text-sky-400">
-                <span>Đang phát thẻ ({currentIndex + 1}/{sessionDeck.length})</span>
-                <span>•</span>
-                <span>{speechRate}x</span>
-              </div>
-              <p className="text-xs sm:text-sm font-black truncate">
-                {currentWord.word} <span className="font-normal text-slate-300">— {currentWord.meaning}</span>
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-1.5 shrink-0">
-            <button
-              onClick={handlePrevCard}
-              className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors cursor-pointer"
-              title="Thẻ trước"
-            >
-              <SkipBack size={15} />
-            </button>
-            <button
-              onClick={() => setCurrentIndex((prev) => (prev + 1) % sessionDeck.length)}
-              className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors cursor-pointer"
-              title="Thẻ tiếp theo"
-            >
-              <SkipForward size={15} />
-            </button>
-            <button
-              onClick={stopAutoPlay}
-              className="px-3.5 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-extrabold flex items-center gap-1.5 shadow-lg shadow-rose-600/30 transition-all cursor-pointer"
-              title="Dừng phát liên tục ngay lập tức"
-            >
-              <Square size={13} fill="currentColor" />
-              <span>Dừng Phát</span>
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* Confirmation Modal */}
       <AnimatePresence>

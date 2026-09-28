@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { 
   Volume2, Star, CheckCircle2, Search, 
-  Play, Square, SkipBack, SkipForward, Headphones
+  Play, Square
 } from 'lucide-react';
 import useVocabStore from '../store/useVocabStore';
 
@@ -11,9 +11,11 @@ export default function VocabListMode({ topic }) {
   const [filterType, setFilterType] = useState('all'); // 'all', 'mastered', 'unmastered', 'starred'
   const [isAutoPlaying, setIsAutoPlaying] = useState(false);
   const [playingIndex, setPlayingIndex] = useState(0);
+  const [singleSpeakingId, setSingleSpeakingId] = useState(null);
 
   const isAutoPlayingRef = useRef(false);
   const autoPlayTimerRef = useRef(null);
+  const singleSpeakTimerRef = useRef(null);
   const rowRefs = useRef({});
 
   const { 
@@ -22,8 +24,7 @@ export default function VocabListMode({ topic }) {
     markWordMastered, 
     toggleStarred, 
     speakWord,
-    speechRate,
-    setSpeechRate
+    speechRate
   } = useVocabStore();
 
   const filteredWords = useMemo(() => {
@@ -47,9 +48,14 @@ export default function VocabListMode({ topic }) {
   const stopAutoPlay = useCallback(() => {
     isAutoPlayingRef.current = false;
     setIsAutoPlaying(false);
+    setSingleSpeakingId(null);
     if (autoPlayTimerRef.current) {
       clearTimeout(autoPlayTimerRef.current);
       autoPlayTimerRef.current = null;
+    }
+    if (singleSpeakTimerRef.current) {
+      clearTimeout(singleSpeakTimerRef.current);
+      singleSpeakTimerRef.current = null;
     }
     if (typeof window !== 'undefined' && window.speechSynthesis) {
       window.speechSynthesis.cancel();
@@ -97,6 +103,7 @@ export default function VocabListMode({ topic }) {
       stopAutoPlay();
     } else {
       if (filteredWords.length === 0) return;
+      setSingleSpeakingId(null);
       isAutoPlayingRef.current = true;
       setIsAutoPlaying(true);
       const startIdx = playingIndex < filteredWords.length ? playingIndex : 0;
@@ -104,22 +111,8 @@ export default function VocabListMode({ topic }) {
     }
   };
 
-  const handleStepWord = (delta) => {
-    if (filteredWords.length === 0) return;
-    const nextIdx = ((playingIndex + delta) % filteredWords.length + filteredWords.length) % filteredWords.length;
-    if (isAutoPlayingRef.current) {
-      playWordAtIndex(nextIdx, filteredWords);
-    } else {
-      setPlayingIndex(nextIdx);
-      const item = filteredWords[nextIdx];
-      if (item) speakWord(item.word);
-    }
-  };
-
-  const activeWord = filteredWords[playingIndex] || filteredWords[0];
-
   return (
-    <div className="space-y-4 pb-20">
+    <div className="space-y-4">
       {/* Search, Continuous Play & Filter Bar */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
         <div className="flex items-center gap-2 w-full sm:w-auto">
@@ -182,33 +175,53 @@ export default function VocabListMode({ topic }) {
           filteredWords.map((item, index) => {
             const isM = !!masteredWords[item.id];
             const isS = !!starredWords[item.id];
-            const isCurrentlyPlaying = isAutoPlaying && playingIndex === index;
+            const rowKey = item.id || index;
+            const isCurrentlyPlaying = (isAutoPlaying && playingIndex === index) || singleSpeakingId === rowKey;
 
             return (
               <div 
-                key={item.id || index}
-                ref={(el) => { rowRefs.current[item.id || index] = el; }}
+                key={rowKey}
+                ref={(el) => { rowRefs.current[rowKey] = el; }}
                 className={`p-3 sm:p-4 flex items-center justify-between gap-2.5 sm:gap-3 transition-colors ${
                   isCurrentlyPlaying
                     ? 'bg-blue-50/90 dark:bg-blue-950/50 ring-1 ring-inset ring-[#0071e3]/40'
                     : 'hover:bg-slate-50/60 dark:hover:bg-slate-800/40'
                 }`}
               >
-                {/* Left: Word, Pos, IPA, Meaning */}
+                {/* Left: Speaker/Stop Button + Word, Pos, IPA, Meaning */}
                 <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
                   <button
                     onClick={() => {
+                      if (isCurrentlyPlaying) {
+                        stopAutoPlay();
+                        return;
+                      }
+                      if (isAutoPlaying) {
+                        stopAutoPlay();
+                      }
                       setPlayingIndex(index);
+                      setSingleSpeakingId(rowKey);
                       speakWord(item.word);
+                      if (singleSpeakTimerRef.current) clearTimeout(singleSpeakTimerRef.current);
+                      singleSpeakTimerRef.current = setTimeout(() => {
+                        setSingleSpeakingId((prev) => (prev === rowKey ? null : prev));
+                      }, 1400);
                     }}
-                    className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 hover:scale-105 active:scale-95 transition-all cursor-pointer ${
+                    className={`h-9 rounded-xl flex items-center justify-center shrink-0 hover:scale-105 active:scale-95 transition-all cursor-pointer ${
                       isCurrentlyPlaying
-                        ? 'bg-[#0071e3] text-white shadow-md shadow-blue-500/30'
-                        : 'bg-blue-50 dark:bg-blue-950/60 text-[#0071e3] dark:text-sky-400'
+                        ? 'px-2.5 gap-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-extrabold shadow-md shadow-rose-500/30 ring-2 ring-rose-300 dark:ring-rose-800'
+                        : 'w-9 bg-blue-50 dark:bg-blue-950/60 text-[#0071e3] dark:text-sky-400'
                     }`}
-                    title="Nghe phát âm"
+                    title={isCurrentlyPlaying ? 'Bấm để dừng phát ngay tại từ này' : 'Nghe phát âm'}
                   >
-                    <Volume2 size={16} />
+                    {isCurrentlyPlaying ? (
+                      <>
+                        <Square size={12} fill="currentColor" />
+                        <span>Dừng</span>
+                      </>
+                    ) : (
+                      <Volume2 size={16} />
+                    )}
                   </button>
 
                   <div className="min-w-0">
@@ -265,57 +278,6 @@ export default function VocabListMode({ topic }) {
           })
         )}
       </div>
-
-      {/* FLOATING STICKY BOTTOM PLAYBACK BAR WHEN CONTINUOUS LISTENING IS ACTIVE */}
-      {isAutoPlaying && activeWord && (
-        <div className="fixed bottom-16 md:bottom-6 left-1/2 -translate-x-1/2 z-50 w-[94%] max-w-xl px-4 py-3 rounded-2xl bg-slate-900/95 dark:bg-slate-900/95 text-white border border-slate-700/80 shadow-2xl backdrop-blur-md flex items-center justify-between gap-3 animate-fade-in">
-          <div className="flex items-center gap-2.5 min-w-0">
-            <div className="w-9 h-9 rounded-xl bg-blue-600/20 border border-blue-500/40 text-sky-400 flex items-center justify-center shrink-0">
-              <Headphones size={18} className="animate-bounce" />
-            </div>
-            <div className="min-w-0">
-              <div className="flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-wider text-sky-400">
-                <span>Đang phát ({playingIndex + 1}/{filteredWords.length})</span>
-                <span>•</span>
-                <button
-                  onClick={() => setSpeechRate(speechRate === 1.0 ? 0.8 : 1.0)}
-                  className="underline hover:text-white cursor-pointer"
-                >
-                  {speechRate}x
-                </button>
-              </div>
-              <p className="text-xs sm:text-sm font-black truncate">
-                {activeWord.word} <span className="font-normal text-slate-300">— {activeWord.meaning}</span>
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-1.5 shrink-0">
-            <button
-              onClick={() => handleStepWord(-1)}
-              className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors cursor-pointer"
-              title="Từ trước"
-            >
-              <SkipBack size={15} />
-            </button>
-            <button
-              onClick={() => handleStepWord(1)}
-              className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors cursor-pointer"
-              title="Từ tiếp theo"
-            >
-              <SkipForward size={15} />
-            </button>
-            <button
-              onClick={stopAutoPlay}
-              className="px-3.5 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-extrabold flex items-center gap-1.5 shadow-lg shadow-rose-600/30 transition-all cursor-pointer"
-              title="Dừng phát liên tục ngay lập tức"
-            >
-              <Square size={13} fill="currentColor" />
-              <span>Dừng Phát</span>
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
