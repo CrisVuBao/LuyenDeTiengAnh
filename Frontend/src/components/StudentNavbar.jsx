@@ -108,8 +108,8 @@ export default function StudentNavbar() {
     {
       to: '/bino',
       prefetch: 'bino',
-      title: 'Bino Giao Tiếp',
-      shortTitle: 'Bino',
+      title: 'Giao Tiếp Thực Chiến',
+      shortTitle: 'Hội Thoại',
       desc: '12 chương hội thoại thực chiến, phản xạ 1:1 & Ebook',
       icon: Sparkles,
       color: 'from-blue-500 to-indigo-600',
@@ -205,8 +205,8 @@ export default function StudentNavbar() {
               }
             >
               <Sparkles size={14} className="shrink-0 text-amber-300" />
-              <span className="xl:hidden">Bino</span>
-              <span className="hidden xl:inline">Bino Giao Tiếp</span>
+              <span className="xl:hidden">Giao Tiếp</span>
+              <span className="hidden xl:inline">Giao Tiếp Thực Chiến</span>
             </NavLink>
 
             <NavLink
@@ -647,7 +647,7 @@ export default function StudentNavbar() {
             {({ isActive }) => (
               <>
                 <Sparkles size={19} className={`transition-transform ${isActive ? 'scale-110' : ''}`} />
-                <span className="text-[10px] mt-0.5 leading-tight">Bino</span>
+                <span className="text-[10px] mt-0.5 leading-tight">Giao tiếp</span>
                 {isActive && (
                   <motion.div layoutId="bottomNavDot" className="w-1 h-1 rounded-full bg-[#0071e3] dark:bg-sky-400 mt-0.5" />
                 )}

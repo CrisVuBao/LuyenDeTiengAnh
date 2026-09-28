@@ -443,10 +443,10 @@ export default function AdminStudents() {
       'Tổng XP',
       'Chuỗi Ngày (Streak)',
       '3000 Từ Vựng Đã Thuộc',
-      'Bino Hoàn Thành (72 Bài)',
-      'Bino Tỷ Lệ %',
-      'Bino Thẻ Lưu',
-      'Bino Thời Gian Học (Phút)',
+      'Giao Tiếp Thực Chiến Hoàn Thành',
+      'Giao Tiếp Thực Chiến Tỷ Lệ %',
+      'Giao Tiếp Thực Chiến Thẻ Lưu',
+      'Giao Tiếp Thực Chiến Thời Gian Học (Phút)',
       'TOEIC Số Đề Tham Gia',
       'TOEIC Số Câu Ghi Nhớ',
       'TOEIC Tỷ Lệ Nhớ %',
@@ -551,7 +551,7 @@ export default function AdminStudents() {
               Quản Trị Người Dùng & Học Viên
             </h1>
             <p className="text-xs sm:text-sm text-slate-300/90 mt-1 max-w-2xl leading-relaxed">
-              Hệ thống quản lý tài khoản người dùng cao cấp: Phê duyệt tức thì, hồ sơ học tập 360°, theo dõi 4 trụ cột kiến thức (TOEIC, Bino 72, 3000 Từ vựng, 50 Phản xạ) và điều phối Gamification XP.
+              Hệ thống quản lý tài khoản người dùng cao cấp: Phê duyệt tức thì, hồ sơ học tập 360°, theo dõi 4 trụ cột kiến thức (TOEIC, Giao Tiếp Thực Chiến, 3000 Từ vựng, 50 Phản xạ) và điều phối Gamification XP.
             </p>
           </div>
 
@@ -813,7 +813,7 @@ export default function AdminStudents() {
               <option value="oldest" className="dark:bg-slate-900">Cũ nhất</option>
               <option value="xp" className="dark:bg-slate-900">Điểm XP cao nhất</option>
               <option value="streak" className="dark:bg-slate-900">Streak cao nhất</option>
-              <option value="bino" className="dark:bg-slate-900">Tiến độ Bino cao nhất</option>
+              <option value="bino" className="dark:bg-slate-900">Tiến độ Giao Tiếp Thực Chiến cao nhất</option>
               <option value="vocab" className="dark:bg-slate-900">3000 Từ vựng nhiều nhất</option>
               <option value="name" className="dark:bg-slate-900">Tên A-Z</option>
             </select>
@@ -835,7 +835,7 @@ export default function AdminStudents() {
                   <th className="py-4 px-5">Học Viên & Thông Tin</th>
                   <th className="py-4 px-3 text-center">Vai Trò / Trạng Thái</th>
                   <th className="py-4 px-3 text-center">Cấp Độ & XP</th>
-                  <th className="py-4 px-3 text-center">Tiến Độ Bino (72 Bài)</th>
+                  <th className="py-4 px-3 text-center">Giao Tiếp Thực Chiến</th>
                   <th className="py-4 px-3 text-center">Từ Vựng & TOEIC</th>
                   <th className="py-4 px-4 text-center">Lần Cuối Truy Cập</th>
                   <th className="py-4 px-5 text-right">Thao Tác Quản Trị</th>
@@ -1442,14 +1442,14 @@ export default function AdminStudents() {
                               )}
                             </div>
 
-                            {/* 2. Bino Pillar */}
+                            {/* 2. Giao Tiếp Thực Chiến Pillar */}
                             <div className="p-5 rounded-3xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
                               <div className="flex items-center justify-between mb-3">
                                 <div className="flex items-center gap-2.5">
                                   <div className="w-8 h-8 rounded-xl bg-indigo-500 text-white flex items-center justify-center font-bold">
                                     🎧
                                   </div>
-                                  <h4 className="font-extrabold text-sm">Trụ Cột 2: Chém Tiếng Anh Bino 72 Bài</h4>
+                                  <h4 className="font-extrabold text-sm">Trụ Cột 2: Giao Tiếp Thực Chiến</h4>
                                 </div>
                                 <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400">
                                   {dossierDetail?.binoCompletedLessons ?? 0}/72 bài ({dossierDetail?.binoProgressPercent ?? 0}%)

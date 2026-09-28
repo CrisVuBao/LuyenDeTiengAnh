@@ -91,9 +91,9 @@ public class BinoBookService : IBinoBookService
                     Id = d.Id,
                     ChapterNumber = c.ChapterNumber,
                     DialogueNumber = d.DialogueNumber,
-                    Title = d.Title,
-                    TitleVi = d.TitleVi,
-                    SituationDescription = d.SituationDescription,
+                    Title = SanitizeBrandText(d.Title),
+                    TitleVi = SanitizeBrandText(d.TitleVi),
+                    SituationDescription = SanitizeBrandText(d.SituationDescription),
                     VideoUrl = d.VideoUrl,
                     AudioUrl = d.AudioUrl,
                     DurationSeconds = d.DurationSeconds,
@@ -111,9 +111,9 @@ public class BinoBookService : IBinoBookService
             {
                 Id = c.Id,
                 ChapterNumber = c.ChapterNumber,
-                Title = c.Title,
-                TitleVi = c.TitleVi,
-                Description = c.Description,
+                Title = SanitizeBrandText(c.Title),
+                TitleVi = SanitizeBrandText(c.TitleVi),
+                Description = SanitizeBrandText(c.Description),
                 TotalLessons = c.DialogueLessons.Count,
                 CompletedLessons = chapterCompletedCount,
                 HasBonus = c.Bonus != null,
@@ -126,10 +126,16 @@ public class BinoBookService : IBinoBookService
         var dto = new BinoBookDto
         {
             Id = book.Id,
-            Title = book.Title,
-            Author = book.Author,
+            Title = book.Title.Contains("Chém", StringComparison.OrdinalIgnoreCase)
+                ? "Giao Tiếp Thực Chiến: Phản Xạ Tiếng Anh Tức Thì"
+                : SanitizeBrandText(book.Title),
+            Author = book.Author.Equals("Bino", StringComparison.OrdinalIgnoreCase)
+                ? "Vũ Bảo Software"
+                : SanitizeBrandText(book.Author),
             Slug = book.Slug,
-            Description = book.Description,
+            Description = (book.Description != null && book.Description.Contains("Bino", StringComparison.OrdinalIgnoreCase))
+                ? "Hệ thống 12 chương, 72 bài hội thoại giao tiếp đời thực kèm luyện nói đóng vai 1:1, audio thụ động, biến hóa mẫu câu và Góc Tư Duy VBace — Độc quyền bởi Vũ Bảo Software."
+                : SanitizeBrandText(book.Description),
             CoverImageUrl = book.CoverImageUrl,
             PdfFileUrl = book.PdfFileUrl,
             EpubFileUrl = book.EpubFileUrl,
@@ -140,7 +146,23 @@ public class BinoBookService : IBinoBookService
             Chapters = chapterDtos
         };
 
-        return Response<BinoBookDto>.SuccessResult("Lấy thông tin sách thành công", dto);
+        return Response<BinoBookDto>.SuccessResult("Lấy thông tin giáo trình thành công", dto);
+    }
+
+    private static string SanitizeBrandText(string? input)
+    {
+        if (string.IsNullOrEmpty(input)) return string.Empty;
+        return input
+            .Replace("Chém Tiếng Anh không cần động não", "Giao Tiếp Thực Chiến: Phản Xạ Tiếng Anh Tức Thì", StringComparison.OrdinalIgnoreCase)
+            .Replace("BINO'S PHILOSOPHY", "VBACE'S MINDSET")
+            .Replace("Bino's Philosophy", "VBace's Mindset")
+            .Replace("Much love,<br/>\n                Bino", "Trân trọng,<br/>\n                Vũ Bảo Software (VBace)")
+            .Replace("Practise speaking with Bino (Thực hành nói cùng Bino)", "Practise speaking with Leo (Thực hành nói phản xạ cùng Leo)")
+            .Replace("trong sách TiengAnhBi", "• Giáo trình Giao Tiếp Thực Chiến VBace")
+            .Replace("TiengAnhBi.epub", "VBaceFlow.epub")
+            .Replace("Bino's", "Leo's")
+            .Replace("BINO", "LEO")
+            .Replace("Bino", "Leo");
     }
 
     public async Task<Response<ChapterDetailDto>> GetChapterDetailAsync(int userId, int chapterNumber)
@@ -160,9 +182,9 @@ public class BinoBookService : IBinoBookService
                 Id = d.Id,
                 ChapterNumber = chapter.ChapterNumber,
                 DialogueNumber = d.DialogueNumber,
-                Title = d.Title,
-                TitleVi = d.TitleVi,
-                SituationDescription = d.SituationDescription,
+                Title = SanitizeBrandText(d.Title),
+                TitleVi = SanitizeBrandText(d.TitleVi),
+                SituationDescription = SanitizeBrandText(d.SituationDescription),
                 VideoUrl = d.VideoUrl,
                 AudioUrl = d.AudioUrl,
                 DurationSeconds = d.DurationSeconds,
@@ -180,9 +202,9 @@ public class BinoBookService : IBinoBookService
         {
             Id = chapter.Id,
             ChapterNumber = chapter.ChapterNumber,
-            Title = chapter.Title,
-            TitleVi = chapter.TitleVi,
-            Description = chapter.Description,
+            Title = SanitizeBrandText(chapter.Title),
+            TitleVi = SanitizeBrandText(chapter.TitleVi),
+            Description = SanitizeBrandText(chapter.Description),
             HasBonus = chapter.Bonus != null,
             Dialogues = dialogues
         };
@@ -214,8 +236,8 @@ public class BinoBookService : IBinoBookService
             Id = bonus.Id,
             ChapterId = bonus.ChapterId,
             ChapterNumber = chapterNumber,
-            Title = bonus.Title,
-            ContentHtml = bonus.ContentHtml,
+            Title = SanitizeBrandText(bonus.Title),
+            ContentHtml = SanitizeBrandText(bonus.ContentHtml),
             AudioUrl = bonus.AudioUrl,
             SlangList = slangList
         };
@@ -263,9 +285,9 @@ public class BinoBookService : IBinoBookService
         var lineDtos = lesson.DialogueLines.Select(l => new DialogueLineDto
         {
             Id = l.Id,
-            CharacterName = l.CharacterName,
-            EnglishText = l.EnglishText,
-            VietnameseText = l.VietnameseText,
+            CharacterName = SanitizeBrandText(l.CharacterName),
+            EnglishText = SanitizeBrandText(l.EnglishText),
+            VietnameseText = SanitizeBrandText(l.VietnameseText),
             OrderIndex = l.OrderIndex,
             AudioStartTimeMs = l.AudioStartTimeMs,
             AudioEndTimeMs = l.AudioEndTimeMs,
@@ -277,12 +299,12 @@ public class BinoBookService : IBinoBookService
             Id = lesson.Id,
             ChapterId = lesson.ChapterId,
             ChapterNumber = lesson.Chapter.ChapterNumber,
-            ChapterTitle = lesson.Chapter.Title,
-            ChapterTitleVi = lesson.Chapter.TitleVi,
+            ChapterTitle = SanitizeBrandText(lesson.Chapter.Title),
+            ChapterTitleVi = SanitizeBrandText(lesson.Chapter.TitleVi),
             DialogueNumber = lesson.DialogueNumber,
-            Title = lesson.Title,
-            TitleVi = lesson.TitleVi,
-            SituationDescription = lesson.SituationDescription,
+            Title = SanitizeBrandText(lesson.Title),
+            TitleVi = SanitizeBrandText(lesson.TitleVi),
+            SituationDescription = SanitizeBrandText(lesson.SituationDescription),
             VideoUrl = lesson.VideoUrl,
             AudioUrl = lesson.AudioUrl,
             DurationSeconds = lesson.DurationSeconds,
@@ -303,7 +325,7 @@ public class BinoBookService : IBinoBookService
     {
         var book = await _unitOfWork.BinoBooks.GetBookWithChaptersAsync();
         if (book == null)
-            return Response<List<PlaylistDialogueDto>>.Failure("Không tìm thấy sách Bino.");
+            return Response<List<PlaylistDialogueDto>>.Failure("Không tìm thấy giáo trình hội thoại.");
 
         var userProgresses = (await _unitOfWork.BinoLearning.GetProgressByUserAsync(userId)).ToList();
         var completedMap = userProgresses
@@ -338,12 +360,12 @@ public class BinoBookService : IBinoBookService
                     Id = dialogue.Id,
                     ChapterId = chapter.Id,
                     ChapterNumber = chapter.ChapterNumber,
-                    ChapterTitle = chapter.Title,
-                    ChapterTitleVi = chapter.TitleVi,
+                    ChapterTitle = SanitizeBrandText(chapter.Title),
+                    ChapterTitleVi = SanitizeBrandText(chapter.TitleVi),
                     DialogueNumber = dialogue.DialogueNumber,
-                    Title = dialogue.Title,
-                    TitleVi = dialogue.TitleVi,
-                    SituationDescription = dialogue.SituationDescription,
+                    Title = SanitizeBrandText(dialogue.Title),
+                    TitleVi = SanitizeBrandText(dialogue.TitleVi),
+                    SituationDescription = SanitizeBrandText(dialogue.SituationDescription),
                     AudioUrl = dialogue.AudioUrl,
                     IsCompleted = completedMap.ContainsKey(dialogue.Id),
                     DialogueLines = dialogue.DialogueLines
@@ -351,9 +373,9 @@ public class BinoBookService : IBinoBookService
                         .Select(l => new DialogueLineDto
                         {
                             Id = l.Id,
-                            CharacterName = l.CharacterName,
-                            EnglishText = l.EnglishText,
-                            VietnameseText = l.VietnameseText,
+                            CharacterName = SanitizeBrandText(l.CharacterName),
+                            EnglishText = SanitizeBrandText(l.EnglishText),
+                            VietnameseText = SanitizeBrandText(l.VietnameseText),
                             OrderIndex = l.OrderIndex,
                             AudioStartTimeMs = l.AudioStartTimeMs,
                             AudioEndTimeMs = l.AudioEndTimeMs,
@@ -435,7 +457,7 @@ public class BinoBookService : IBinoBookService
     {
         var book = await _unitOfWork.BinoBooks.GetBookWithChaptersAsync();
         if (book == null)
-            return Response<BinoStudyProgressSummaryDto>.Failure("Không tìm thấy sách Bino.");
+            return Response<BinoStudyProgressSummaryDto>.Failure("Không tìm thấy giáo trình hội thoại.");
 
         var userProgresses = (await _unitOfWork.BinoLearning.GetProgressByUserAsync(userId)).ToList();
         var progressMap = userProgresses.ToDictionary(p => p.DialogueLessonId, p => p);
@@ -530,11 +552,11 @@ public class BinoBookService : IBinoBookService
                 {
                     DialogueLessonId = dl.Id,
                     ChapterNumber = ch.ChapterNumber,
-                    ChapterTitle = ch.Title,
-                    ChapterTitleVi = ch.TitleVi,
+                    ChapterTitle = SanitizeBrandText(ch.Title),
+                    ChapterTitleVi = SanitizeBrandText(ch.TitleVi),
                     DialogueNumber = dl.DialogueNumber,
-                    Title = dl.Title,
-                    TitleVi = dl.TitleVi,
+                    Title = SanitizeBrandText(dl.Title),
+                    TitleVi = SanitizeBrandText(dl.TitleVi),
                     VocabularyCount = vocabCount,
                     SavedVocabularyCount = savedVocab,
                     LinesCount = dl.DialogueLines.Count,
@@ -560,8 +582,8 @@ public class BinoBookService : IBinoBookService
             {
                 ChapterId = ch.Id,
                 ChapterNumber = ch.ChapterNumber,
-                Title = ch.Title,
-                TitleVi = ch.TitleVi,
+                Title = SanitizeBrandText(ch.Title),
+                TitleVi = SanitizeBrandText(ch.TitleVi),
                 TotalLessons = chTotalLessons,
                 CompletedLessons = chCompleted,
                 AudioListenedCount = chAudio,
@@ -612,7 +634,7 @@ public class BinoBookService : IBinoBookService
                 .ToList()
         };
 
-        return Response<BinoStudyProgressSummaryDto>.SuccessResult("Lấy thống kê quá trình học Bino thành công", summaryDto);
+        return Response<BinoStudyProgressSummaryDto>.SuccessResult("Lấy thống kê quá trình học Giao Tiếp 72 thành công", summaryDto);
     }
 
     public async Task<Response<bool>> ResetUserBinoProgressAsync(int userId, int? chapterNumber)
@@ -640,7 +662,7 @@ public class BinoBookService : IBinoBookService
         {
             _unitOfWork.BinoLearning.RemoveProgressRange(userProgresses);
             await _unitOfWork.CompleteAsync();
-            return Response<bool>.SuccessResult("Đã đặt lại toàn bộ tiến độ khóa học Bino về ban đầu", true);
+            return Response<bool>.SuccessResult("Đã đặt lại toàn bộ tiến độ khóa học Giao Tiếp 72 về ban đầu", true);
         }
     }
 
@@ -1144,10 +1166,10 @@ public class BinoBookService : IBinoBookService
         {
             book = new BinoBook
             {
-                Title = "Chém Tiếng Anh không cần động não",
-                Author = "Bino",
+                Title = "Giao Tiếp Thực Chiến: Phản Xạ Tiếng Anh Tức Thì",
+                Author = "Vũ Bảo Software",
                 Slug = "chem-tieng-anh-khong-can-dong-nao",
-                Description = $"Bộ sách học tiếng Anh giao tiếp đời thực đỉnh cao của Bino. Gồm {extractedChapters.Count} chương, {extractedChapters.Sum(c => c.dialogues.Count)} bài hội thoại thực chiến kèm video luyện nói 1:1, audio độc quyền, các từ lóng slang và mẹo văn hóa thú vị.",
+                Description = $"Hệ thống {extractedChapters.Count} chương, {extractedChapters.Sum(c => c.dialogues.Count)} bài hội thoại giao tiếp đời thực kèm luyện nói đóng vai 1:1, audio thụ động, biến hóa mẫu câu và Góc Tư Duy VBace — Độc quyền bởi Vũ Bảo Software.",
                 CoverImageUrl = "/images/bino/page15.jpg",
                 PdfFileUrl = "/ebooks/chem_tieng_anh_bino.pdf",
                 EpubFileUrl = "/ebooks/chem_tieng_anh_bino.epub",
@@ -1157,11 +1179,13 @@ public class BinoBookService : IBinoBookService
             };
         }
 
+        book.Title = "Giao Tiếp Thực Chiến: Phản Xạ Tiếng Anh Tức Thì";
+        book.Author = "Vũ Bảo Software";
         book.CoverImageUrl = "/images/bino/page15.jpg";
         book.PdfFileUrl = "/ebooks/chem_tieng_anh_bino.pdf";
         book.EpubFileUrl = "/ebooks/chem_tieng_anh_bino.epub";
         book.TotalChapters = extractedChapters.Count;
-        book.Description = $"Bộ sách học tiếng Anh giao tiếp đời thực đỉnh cao của Bino. Gồm {extractedChapters.Count} chương, {extractedChapters.Sum(c => c.dialogues.Count)} bài hội thoại thực chiến kèm video luyện nói 1:1, audio độc quyền, các từ lóng slang và mẹo văn hóa thú vị.";
+        book.Description = $"Hệ thống {extractedChapters.Count} chương, {extractedChapters.Sum(c => c.dialogues.Count)} bài hội thoại giao tiếp đời thực kèm luyện nói đóng vai 1:1, audio thụ động, biến hóa mẫu câu và Góc Tư Duy VBace — Độc quyền bởi Vũ Bảo Software.";
 
         // Remove any excess chapters > extractedChapters.Count
         var excessChapters = book.Chapters.Where(c => c.ChapterNumber > extractedChapters.Count).ToList();
@@ -1203,10 +1227,10 @@ public class BinoBookService : IBinoBookService
                     Chapter = chapter,
                     Title = !string.IsNullOrWhiteSpace(chModel.bonusTitle)
                         ? chModel.bonusTitle
-                        : $"Mẫu Câu Mở Rộng & Bino's Philosophy - Chương {chModel.number:D2}",
+                        : $"Mẫu Câu Mở Rộng & VBace's Mindset - Chương {chModel.number:D2}",
                     ContentHtml = !string.IsNullOrWhiteSpace(chModel.bonusContentHtml)
                         ? chModel.bonusContentHtml
-                        : $"<p>Chào mấy bác! Khi giao tiếp chủ đề <strong>{chModel.titleVi}</strong>, hãy bỏ túi ngay các từ khóa và mẫu câu tự nhiên dưới đây!</p>",
+                        : $"<p>Chào bạn! Khi giao tiếp chủ đề <strong>{chModel.titleVi}</strong>, hãy bỏ túi ngay các từ khóa và mẫu câu phản xạ tự nhiên dưới đây!</p>",
                     SlangListJson = chModel.bonusSlangs != null && chModel.bonusSlangs.Any()
                         ? JsonSerializer.Serialize(chModel.bonusSlangs)
                         : JsonSerializer.Serialize(chModel.dialogues.SelectMany(d => d.vocabularies.Take(2)).Select(v => v.word).Distinct().ToList())
@@ -1240,8 +1264,8 @@ public class BinoBookService : IBinoBookService
                 dialogue.Title = dModel.title;
                 dialogue.TitleVi = dModel.title;
                 dialogue.SituationDescription = chModel.number == 12
-                    ? $"Bài {dModel.number}: {dModel.title} (Trang {dModel.startPage} trong sách TiengAnhBi - Luyện giải nghĩa đồ vật bằng tiếng Anh & đặt câu)."
-                    : $"Hội thoại {dModel.number}: {dModel.title} (Trang {dModel.startPage} trong sách TiengAnhBi).";
+                    ? $"Bài {dModel.number}: {dModel.title} (Trang {dModel.startPage} • Giáo trình VBace - Luyện giải nghĩa đồ vật bằng tiếng Anh & đặt câu)."
+                    : $"Hội thoại {dModel.number}: {dModel.title} (Trang {dModel.startPage} • Giáo trình Giao Tiếp Thực Chiến VBace).";
                 dialogue.DurationSeconds = 180;
                 dialogue.AudioUrl = $"/audios/bino/ch{chModel.number:D2}_d{dModel.number:D2}.mp3";
                 dialogue.VideoUrl = $"/videos/bino/ch{chModel.number:D2}_d{dModel.number:D2}.mp4";
@@ -1299,7 +1323,7 @@ public class BinoBookService : IBinoBookService
             DialoguesUpdated = dCount,
             VocabulariesUpdated = vCount,
             LinesUpdated = lCount,
-            Message = $"Đồng bộ thành công {chCount} chương, {dCount} bài học, {vCount} từ vựng và {lCount} câu thoại thật từ TiengAnhBi.epub!"
+            Message = $"Đồng bộ thành công {chCount} chương, {dCount} bài học, {vCount} từ vựng và {lCount} câu thoại Giáo trình Giao Tiếp Thực Chiến VBace!"
         };
 
         return Response<SyncEpubResultDto>.SuccessResult(resultDto.Message, resultDto);

@@ -60,7 +60,7 @@ export default function AdminLayout() {
       title: 'Quản Trị Học Liệu',
       items: [
         { to: '/admin/tests', label: 'Kho Đề Thi TOEIC', icon: <BookOpen size={19} /> },
-        { to: '/admin/bino', label: 'Giáo Trình Sách Bino', icon: <Sparkles size={19} /> },
+        { to: '/admin/bino', label: 'Giao Tiếp Thực Chiến', icon: <Sparkles size={19} /> },
         { to: '/admin/content', label: '3000 Từ & Phản Xạ 50', icon: <Layers size={19} /> }
       ]
     },
@@ -79,7 +79,7 @@ export default function AdminLayout() {
     if (location.pathname.startsWith('/admin/analytics')) return 'Phân Tích Chuyên Sâu & Báo Cáo';
     if (location.pathname.startsWith('/admin/notifications')) return 'Trung Tâm Phát Sóng Thông Báo';
     if (location.pathname.startsWith('/admin/tests')) return 'Quản Lý Kho Đề Thi TOEIC';
-    if (location.pathname.startsWith('/admin/bino')) return 'Quản Lý Sách Bino & Media CMS';
+    if (location.pathname.startsWith('/admin/bino')) return 'Quản Lý Giao Tiếp Thực Chiến & Media CMS';
     if (location.pathname.startsWith('/admin/content')) return 'Giám Sát 3000 Từ Vựng & Phản Xạ 50';
     if (location.pathname.startsWith('/admin/activity-log')) return 'Nhật Ký Hoạt Động Quản Trị (Audit Log)';
     if (location.pathname.startsWith('/admin/settings')) return 'Cài Đặt & Cấu Hình Hệ Thống';

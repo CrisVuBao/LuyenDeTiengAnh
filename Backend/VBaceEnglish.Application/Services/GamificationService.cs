@@ -124,7 +124,11 @@ public class GamificationService : IGamificationService
 
         var rank = await _unitOfWork.Gamification.GetUserRankAsync(userId);
         var unlockedBadges = JsonSerializer.Deserialize<List<string>>(gamification.UnlockedBadgesJson) ?? new List<string>();
-        var dailyQuests = JsonSerializer.Deserialize<List<DailyQuestDto>>(gamification.DailyQuestsJson) ?? new List<DailyQuestDto>();
+        var sanitizedQuestsJson = (gamification.DailyQuestsJson ?? "[]")
+            .Replace("câu thoại Bino", "câu hội thoại")
+            .Replace("3 câu Bino", "3 câu hội thoại")
+            .Replace("từ vựng Bino", "thẻ từ vựng SRS");
+        var dailyQuests = JsonSerializer.Deserialize<List<DailyQuestDto>>(sanitizedQuestsJson) ?? new List<DailyQuestDto>();
 
         var dto = new GamificationProfileDto
         {
@@ -398,13 +402,17 @@ public class GamificationService : IGamificationService
             await _unitOfWork.CompleteAsync();
         }
 
-        var quests = JsonSerializer.Deserialize<List<DailyQuestDto>>(gamification.DailyQuestsJson) ?? new List<DailyQuestDto>();
+        var sanitizedQuestsJson = (gamification.DailyQuestsJson ?? "[]")
+            .Replace("câu thoại Bino", "câu hội thoại")
+            .Replace("3 câu Bino", "3 câu hội thoại")
+            .Replace("từ vựng Bino", "thẻ từ vựng SRS");
+        var quests = JsonSerializer.Deserialize<List<DailyQuestDto>>(sanitizedQuestsJson) ?? new List<DailyQuestDto>();
         var nonToeicQuests = quests.Where(q => !q.QuestId.Contains("toeic", StringComparison.OrdinalIgnoreCase) && !q.QuestType.Contains("toeic", StringComparison.OrdinalIgnoreCase)).ToList();
         return Response<List<DailyQuestDto>>.SuccessResult("Lấy nhiệm vụ thành công", nonToeicQuests);
     }
 
     /// <summary>
-    /// Tạo 4 nhiệm vụ hàng ngày: Chọn lọc cân bằng từ Bino Giao Tiếp, Phản Xạ 50 Chủ Đề và 3000 Từ Vựng Thiết Yếu.
+    /// Tạo 4 nhiệm vụ hàng ngày: Chọn lọc cân bằng từ Giao Tiếp Thực Chiến, Phản Xạ 50 Chủ Đề và 3000 Từ Vựng Thiết Yếu.
     /// Hoàn toàn loại bỏ TOEIC theo đúng yêu cầu học viên.
     /// Tập trung vào HÀNH ĐỘNG HỌC THỰC TẾ HÀNG NGÀY (Micro-learning & Habit building).
     /// </summary>
@@ -412,12 +420,12 @@ public class GamificationService : IGamificationService
     {
         var binoPool = new List<DailyQuestDto>
         {
-            new() { QuestId = "q_bino_listen_8", Title = "Luyện nghe 8 câu thoại Bino", Description = "Nghe ngấm ngữ điệu hoặc nhại giọng 8 câu thoại giao tiếp", TargetCount = 8, XPReward = 35, QuestType = "bino_listen" },
+            new() { QuestId = "q_bino_listen_8", Title = "Luyện nghe 8 câu hội thoại", Description = "Nghe ngấm ngữ điệu hoặc nhại giọng 8 câu thoại giao tiếp", TargetCount = 8, XPReward = 35, QuestType = "bino_listen" },
             new() { QuestId = "q_bino_listen_15", Title = "Tắm ngôn ngữ 15 câu thoại", Description = "Luyện nghe sâu hoặc bật vòng lặp Shadowing 15 câu thoại", TargetCount = 15, XPReward = 55, QuestType = "bino_listen" },
             new() { QuestId = "q_bino_roleplay_3", Title = "Đóng vai 3 lượt câu thoại", Description = "Thực hành đối đáp kịch bản 3 câu thoại trong bài học", TargetCount = 3, XPReward = 45, QuestType = "bino_roleplay" },
-            new() { QuestId = "q_bino_dictation_3", Title = "Chép chính tả 3 câu Bino", Description = "Nghe và gõ thử thách chép chính tả 3 câu thoại", TargetCount = 3, XPReward = 40, QuestType = "bino_dictation" },
-            new() { QuestId = "q_bino_flashcard_5", Title = "Ôn 5 thẻ từ vựng Bino", Description = "Lật thẻ và đánh giá trí nhớ Flashcard SRS lặp lại ngắt quãng", TargetCount = 5, XPReward = 30, QuestType = "flashcard_review" },
-            new() { QuestId = "q_bino_flashcard_10", Title = "Ôn tập 10 từ vựng Bino", Description = "Luyện tập trí nhớ với 10 thẻ từ vựng Flashcard", TargetCount = 10, XPReward = 50, QuestType = "flashcard_review" }
+            new() { QuestId = "q_bino_dictation_3", Title = "Chép chính tả 3 câu hội thoại", Description = "Nghe và gõ thử thách chép chính tả 3 câu thoại", TargetCount = 3, XPReward = 40, QuestType = "bino_dictation" },
+            new() { QuestId = "q_bino_flashcard_5", Title = "Ôn 5 thẻ từ vựng SRS", Description = "Lật thẻ và đánh giá trí nhớ Flashcard SRS lặp lại ngắt quãng", TargetCount = 5, XPReward = 30, QuestType = "flashcard_review" },
+            new() { QuestId = "q_bino_flashcard_10", Title = "Ôn tập 10 thẻ từ vựng SRS", Description = "Luyện tập trí nhớ với 10 thẻ từ vựng Flashcard", TargetCount = 10, XPReward = 50, QuestType = "flashcard_review" }
         };
 
         var reflexPool = new List<DailyQuestDto>
@@ -567,13 +575,13 @@ public class GamificationService : IGamificationService
             new() { BadgeId = "night_owl", Title = "Cú Đêm Chăm Chỉ", Description = "Học bài sau 22:00 đêm", Icon = "🦉" },
             new() { BadgeId = "early_bird", Title = "Chim Sớm Siêng Năng", Description = "Học bài trước 07:00 sáng", Icon = "🐦" },
 
-            // Bino
-            new() { BadgeId = "bino_starter", Title = "Bắt Đầu Chém Gió", Description = "Hoàn thành bài hội thoại Bino đầu tiên", Icon = "📖" },
+            // Giao Tiếp Thực Chiến
+            new() { BadgeId = "bino_starter", Title = "Khởi Động Giao Tiếp", Description = "Hoàn thành bài hội thoại thực chiến đầu tiên", Icon = "📖" },
             new() { BadgeId = "bino_chapter_1", Title = "Chinh Phục Chương 1", Description = "Hoàn thành tất cả bài trong Chương 1", Icon = "🎖️" },
             new() { BadgeId = "bino_roleplay_master", Title = "Diễn Viên Giọng Nói", Description = "Hoàn thành 10 bài luyện đóng vai Roleplay 1:1", Icon = "🎭" },
             new() { BadgeId = "bino_dictation_pro", Title = "Thư Ký Nhanh Tay", Description = "Đạt 90%+ điểm bài chép chính tả Dictation", Icon = "✍️" },
             new() { BadgeId = "bino_srs_collector", Title = "Nhà Sưu Tập Từ Vựng", Description = "Lưu 30 từ vựng vào bộ thẻ Flashcard SRS", Icon = "📇" },
-            new() { BadgeId = "bino_champion", Title = "Đại Sứ Chém Tiếng Anh", Description = "Hoàn thành trọn bộ 72 bài hội thoại Bino", Icon = "👑" },
+            new() { BadgeId = "bino_champion", Title = "Đại Sứ Giao Tiếp VBace", Description = "Hoàn thành trọn bộ 72 bài hội thoại thực chiến", Icon = "👑" },
 
             // Reflex 50
             new() { BadgeId = "reflex_10", Title = "Bật Tốc Phản Xạ", Description = "Master 10 câu trong 50 Chủ Đề", Icon = "⚡" },

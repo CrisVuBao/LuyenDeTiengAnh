@@ -123,7 +123,7 @@ const FONT_FAMILIES = [
 
 export default function EpubReader({ 
   initialUrl = '/ebooks/chem_tieng_anh_bino.epub',
-  bookTitle = 'Chém Tiếng Anh không cần động não',
+  bookTitle = 'Giao Tiếp Thực Chiến: Phản Xạ Tiếng Anh Tức Thì',
   onClose
 }) {
   const viewerRef = useRef(null);
@@ -618,10 +618,14 @@ export default function EpubReader({
 
           <div className="min-w-0">
             <h2 className="text-xs sm:text-sm font-black truncate">
-              {loadedFileName || metadata?.title || bookTitle}
+              {loadedFileName || bookTitle}
             </h2>
             <div className="flex items-center gap-2 text-[11px] opacity-70">
-              <span className="truncate">{metadata?.creator || 'Bino Chém Tiếng Anh'}</span>
+              <span className="truncate">
+                {metadata?.creator && !metadata.creator.toLowerCase().includes('bino')
+                  ? metadata.creator
+                  : 'Vũ Bảo Software (VBace Studio)'}
+              </span>
               {locationInfo.percentage > 0 && (
                 <>
                   <span>•</span>

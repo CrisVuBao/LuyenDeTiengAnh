@@ -121,7 +121,7 @@ export default function StudyProgressPage() {
   const handleResetBinoChapter = async (chapterNumber, chapterTitle) => {
     const label = chapterNumber
       ? `Chương ${chapterNumber < 10 ? `0${chapterNumber}` : chapterNumber}: ${chapterTitle}`
-      : 'toàn bộ 12 chương khóa học Bino';
+      : 'toàn bộ 12 chương Giao Tiếp Thực Chiến';
 
     if (!window.confirm(`Bạn có chắc chắn muốn đặt lại tiến độ của ${label} về 0?`)) {
       return;
@@ -205,7 +205,7 @@ export default function StudyProgressPage() {
     <div className="space-y-8 animate-fade-in max-w-6xl mx-auto pb-12">
       
       {/* ===================================================================== */}
-      {/* HEADER & APPLE SEGMENTED SWITCHER (BINO vs TOEIC)                     */}
+      {/* HEADER & APPLE SEGMENTED SWITCHER                                     */}
       {/* ===================================================================== */}
       <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5">
         <div>
@@ -216,7 +216,7 @@ export default function StudyProgressPage() {
             Quản Lý Quá Trình Học Tập
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Số liệu đồng bộ chính xác 100% theo từng bài hội thoại Bino, thẻ Flashcard SRS và đề thi TOEIC.
+            Số liệu đồng bộ chính xác 100% theo từng bài hội thoại Giao Tiếp Thực Chiến, thẻ Flashcard SRS và đề thi TOEIC.
           </p>
         </div>
 
@@ -231,7 +231,7 @@ export default function StudyProgressPage() {
             }`}
           >
             <Sparkles size={14} />
-            <span>Chém Tiếng Anh Bino</span>
+            <span>Giao Tiếp Thực Chiến</span>
           </button>
 
           <button
@@ -273,7 +273,7 @@ export default function StudyProgressPage() {
       </div>
 
       {/* ===================================================================== */}
-      {/* MODE 1: QUẢN LÝ QUÁ TRÌNH HỌC TẬP "CHÉM TIẾNG ANH BINO"              */}
+      {/* MODE 1: QUẢN LÝ QUÁ TRÌNH HỌC TẬP "GIAO TIẾP THỰC CHIẾN"              */}
       {/* ===================================================================== */}
       {courseMode === 'bino' && (
         <motion.div
@@ -282,7 +282,7 @@ export default function StudyProgressPage() {
           transition={{ duration: 0.3 }}
           className="space-y-8"
         >
-          {/* 4 Apple Bento KPI Cards for Bino */}
+          {/* 4 Apple Bento KPI Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             
             {/* KPI 1: Tiến độ bài hội thoại */}
@@ -383,19 +383,19 @@ export default function StudyProgressPage() {
                   </span>
                 </div>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                  Tổng thời gian luyện Bino: <strong>{formatDuration(binoSummary?.totalTimeSpentSeconds ?? 0)}</strong>
+                  Tổng thời gian luyện hội thoại: <strong>{formatDuration(binoSummary?.totalTimeSpentSeconds ?? 0)}</strong>
                 </p>
               </div>
             </div>
 
           </div>
 
-          {/* Biểu Đồ Tiến Độ 12 Chương Bino */}
+          {/* Biểu Đồ Tiến Độ 12 Chương */}
           <div className="p-6 sm:p-7 rounded-[28px] bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/90 shadow-[0_2px_14px_rgb(0,0,0,0.02)] space-y-5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
-                  Biểu Đồ Hoàn Thành 12 Chương Sách Bino
+                  Biểu Đồ Hoàn Thành 12 Chương Giao Tiếp Thực Chiến
                 </h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400">
                   Tỷ lệ phần trăm bài hội thoại đã hoàn thành ở từng chương (Chương 01 – Chương 12)
@@ -408,12 +408,12 @@ export default function StudyProgressPage() {
                   className="px-4 py-2 bg-[#0071e3] hover:bg-[#0077ED] text-white rounded-full text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
                 >
                   <Play size={13} fill="currentColor" />
-                  <span>Học tiếp Bino</span>
+                  <span>Học tiếp Giao Tiếp Thực Chiến</span>
                 </button>
                 <button
                   onClick={() => handleResetBinoChapter(null, '')}
                   className="px-3.5 py-2 bg-slate-100 hover:bg-red-50 hover:text-red-600 dark:bg-slate-800 dark:hover:bg-red-950/40 text-slate-600 dark:text-slate-300 rounded-full text-xs font-medium flex items-center gap-1 transition-colors cursor-pointer"
-                  title="Đặt lại toàn bộ tiến độ Bino"
+                  title="Đặt lại toàn bộ tiến độ Giao Tiếp Thực Chiến"
                 >
                   <RotateCcw size={13} />
                   <span>Reset toàn bộ</span>
@@ -751,10 +751,10 @@ export default function StudyProgressPage() {
                 <div className="col-span-full py-16 text-center rounded-[26px] bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-slate-400 space-y-2">
                   <Sparkles size={32} className="mx-auto text-[#0071e3] opacity-70" />
                   <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">
-                    Bạn chưa có lịch sử học bài hội thoại Bino nào.
+                    Bạn chưa có lịch sử học bài hội thoại Giao Tiếp Thực Chiến nào.
                   </p>
                   <p className="text-xs">
-                    Hãy vào mục &ldquo;Chém Tiếng Anh Bino&rdquo; để bắt đầu bài hội thoại đầu tiên nhé!
+                    Hãy vào mục &ldquo;Giao Tiếp Thực Chiến&rdquo; để bắt đầu bài hội thoại đầu tiên nhé!
                   </p>
                 </div>
               )}

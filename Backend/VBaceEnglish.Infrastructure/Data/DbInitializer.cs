@@ -382,22 +382,27 @@ public static class DbInitializer
         int totalLinesCount = book?.Chapters.SelectMany(c => c.DialogueLessons).SelectMany(d => d.DialogueLines).Count() ?? 0;
         bool hasFullBonuses = book?.Chapters.Count == 12 && book.Chapters.All(c => c.Bonus != null && !string.IsNullOrEmpty(c.Bonus.ContentHtml) && c.Bonus.ContentHtml.Length > 1000);
 
-        if (existingDialogueCount == 72 && totalLinesCount == 688 && book?.Chapters.Count == 12 && hasFullBonuses)
+        bool needsRebrand = book != null && (
+            book.Author == "Bino" ||
+            book.Title.Contains("Chém", StringComparison.OrdinalIgnoreCase) ||
+            book.Chapters.Any(c => c.Bonus != null && c.Bonus.Title.Contains("Bino", StringComparison.OrdinalIgnoreCase)));
+
+        if (existingDialogueCount == 72 && totalLinesCount == 688 && book?.Chapters.Count == 12 && hasFullBonuses && !needsRebrand)
         {
-            logger.LogInformation("Dữ liệu sách Bino đã có đầy đủ và chuẩn xác 100% ({count} bài học, {lines} câu thoại, 12 chương). Bỏ qua seed.", existingDialogueCount, totalLinesCount);
+            logger.LogInformation("Dữ liệu Giáo trình Giao Tiếp Thực Chiến VBace đã có đầy đủ và chuẩn xác 100% ({count} bài học, {lines} câu thoại, 12 chương). Bỏ qua seed.", existingDialogueCount, totalLinesCount);
             return;
         }
 
-        logger.LogInformation("Khởi tạo và đồng bộ 100% dữ liệu thật 12 chương từ sách 'Chém Tiếng Anh không cần động não' (TiengAnhBi.epub)...");
+        logger.LogInformation("Khởi tạo và đồng bộ 100% dữ liệu 12 chương Giáo trình 'Giao Tiếp Thực Chiến: Phản Xạ Tiếng Anh Tức Thì' (By Vũ Bảo Software)...");
 
         if (book == null)
         {
             book = new BinoBook
             {
-                Title = "Chém Tiếng Anh không cần động não",
-                Author = "Bino",
+                Title = "Giao Tiếp Thực Chiến: Phản Xạ Tiếng Anh Tức Thì",
+                Author = "Vũ Bảo Software",
                 Slug = "chem-tieng-anh-khong-can-dong-nao",
-                Description = "Bộ sách học tiếng Anh giao tiếp đời thực đỉnh cao của Bino. Gồm 12 chương, 72 bài học thực chiến kèm video luyện nói 1:1, audio độc quyền, mẫu câu mở rộng và triết lý học tiếng Anh của Bino.",
+                Description = "Hệ thống 12 chương, 72 bài hội thoại giao tiếp đời thực kèm luyện nói đóng vai 1:1, audio thụ động, biến hóa mẫu câu và Góc Tư Duy VBace — Độc quyền bởi Vũ Bảo Software.",
                 CoverImageUrl = "/images/bino/page15.jpg",
                 PdfFileUrl = "/ebooks/chem_tieng_anh_bino.pdf",
                 EpubFileUrl = "/ebooks/chem_tieng_anh_bino.epub",
@@ -408,11 +413,13 @@ public static class DbInitializer
             context.BinoBooks.Add(book);
         }
 
+        book.Title = "Giao Tiếp Thực Chiến: Phản Xạ Tiếng Anh Tức Thì";
+        book.Author = "Vũ Bảo Software";
         book.CoverImageUrl = "/images/bino/page15.jpg";
         book.PdfFileUrl = "/ebooks/chem_tieng_anh_bino.pdf";
         book.EpubFileUrl = "/ebooks/chem_tieng_anh_bino.epub";
         book.TotalChapters = 12;
-        book.Description = "Bộ sách học tiếng Anh giao tiếp đời thực đỉnh cao của Bino. Gồm 12 chương, 72 bài học thực chiến kèm video luyện nói 1:1, audio độc quyền, mẫu câu mở rộng và triết lý học tiếng Anh của Bino.";
+        book.Description = "Hệ thống 12 chương, 72 bài hội thoại giao tiếp đời thực kèm luyện nói đóng vai 1:1, audio thụ động, biến hóa mẫu câu và Góc Tư Duy VBace — Độc quyền bởi Vũ Bảo Software.";
 
         var chapterTitles = new[]
         {
@@ -470,8 +477,8 @@ public static class DbInitializer
                 chapter.Bonus = new ChapterBonus
                 {
                     Chapter = chapter,
-                    Title = $"Mẫu Câu Mở Rộng & Bino's Philosophy - Chương {chapterNum:D2}",
-                    ContentHtml = $"<p>Chào mấy bác! Khi giao tiếp chủ đề <strong>{titleVi}</strong>, người bản xứ rất ít khi dùng các cấu trúc sách vở cứng nhắc. Hãy bỏ túi ngay các cụm từ 'chém gió' đỉnh cao này nhé!</p>",
+                    Title = $"Mẫu Câu Mở Rộng & VBace's Mindset - Chương {chapterNum:D2}",
+                    ContentHtml = $"<p>Chào bạn! Khi giao tiếp chủ đề <strong>{titleVi}</strong>, người bản xứ rất ít khi dùng các cấu trúc sách vở cứng nhắc. Hãy bỏ túi ngay các cụm từ phản xạ tự nhiên đỉnh cao này nhé!</p>",
                     SlangListJson = "[\"No worries\",\"Make it\",\"Vibe\",\"Grab a bite\",\"Hang out\",\"Catch you later\"]"
                 };
             }
@@ -535,29 +542,26 @@ public static class DbInitializer
                             dialogue.Title = dModel.title;
                             dialogue.TitleVi = dModel.title;
                             dialogue.SituationDescription = chModel.number == 12
-                                ? $"Bài {dModel.number}: {dModel.title} (Trang {dModel.startPage} trong sách TiengAnhBi - Luyện giải nghĩa đồ vật bằng tiếng Anh & đặt câu)."
-                                : $"Hội thoại {dModel.number}: {dModel.title} (Trang {dModel.startPage} trong sách TiengAnhBi).";
+                                ? $"Bài {dModel.number}: {dModel.title} (Trang {dModel.startPage} • Giáo trình VBace - Luyện giải nghĩa đồ vật bằng tiếng Anh & đặt câu)."
+                                : $"Hội thoại {dModel.number}: {dModel.title} (Trang {dModel.startPage} • Giáo trình Giao Tiếp Thực Chiến VBace).";
                             dialogue.DurationSeconds = 180;
                             dialogue.AudioUrl = $"/audios/bino/ch{chModel.number:D2}_d{dModel.number:D2}.mp3";
                             dialogue.VideoUrl = $"/videos/bino/ch{chModel.number:D2}_d{dModel.number:D2}.mp4";
 
-                            if (dialogue.Vocabularies.Any())
+                            if (!dialogue.Vocabularies.Any())
                             {
-                                context.DialogueVocabularies.RemoveRange(dialogue.Vocabularies);
-                                dialogue.Vocabularies.Clear();
-                            }
-
-                            int vOrder = 1;
-                            foreach (var vModel in dModel.vocabularies)
-                            {
-                                dialogue.Vocabularies.Add(new DialogueVocabulary
+                                int vOrder = 1;
+                                foreach (var vModel in dModel.vocabularies)
                                 {
-                                    Word = vModel.word,
-                                    Phonetic = vModel.phonetic,
-                                    WordType = vModel.wordType,
-                                    Meaning = vModel.meaning,
-                                    OrderIndex = vOrder++
-                                });
+                                    dialogue.Vocabularies.Add(new DialogueVocabulary
+                                    {
+                                        Word = vModel.word,
+                                        Phonetic = vModel.phonetic,
+                                        WordType = vModel.wordType,
+                                        Meaning = vModel.meaning,
+                                        OrderIndex = vOrder++
+                                    });
+                                }
                             }
 
                             if (dialogue.DialogueLines.Any())
@@ -584,12 +588,12 @@ public static class DbInitializer
             }
             catch (Exception ex)
             {
-                logger.LogWarning("Không thể đọc file bino_real_data.json: {msg}", ex.Message);
+                logger.LogWarning("Không thể đọc file dữ liệu hội thoại: {msg}", ex.Message);
             }
         }
 
         await context.SaveChangesAsync();
-        logger.LogInformation("Đã khởi tạo và đồng bộ thành công 12 chương dữ liệu thật từ TiengAnhBi.epub vào cơ sở dữ liệu!");
+        logger.LogInformation("Đã khởi tạo và đồng bộ thành công 12 chương Giáo trình Giao Tiếp Thực Chiến VBace vào cơ sở dữ liệu!");
     }
 
     private class ExtractedChapterSeedDto

@@ -12,13 +12,13 @@ const DEFAULT_ACHIEVEMENTS = [
   { badgeId: 'night_owl', category: 'streak', title: 'Cú Đêm Chăm Chỉ', description: 'Hoàn thành bài học sau 22:00 đêm', icon: '🦉', xp: 80 },
   { badgeId: 'early_bird', category: 'streak', title: 'Chim Sớm Siêng Năng', description: 'Học tiếng Anh trước 7:00 sáng', icon: '🐦', xp: 80 },
 
-  // Bino
-  { badgeId: 'bino_starter', category: 'bino', title: 'Bắt Đầu Chém Gió', description: 'Hoàn thành bài hội thoại Bino đầu tiên', icon: '📖', xp: 50 },
+  // Giao Tiếp 72
+  { badgeId: 'bino_starter', category: 'bino', title: 'Khởi Động Giao Tiếp', description: 'Hoàn thành bài hội thoại thực chiến đầu tiên', icon: '📖', xp: 50 },
   { badgeId: 'bino_roleplay_master', category: 'bino', title: 'Diễn Viên Giọng Nói', description: 'Hoàn thành 10 bài luyện đóng vai Roleplay 1:1', icon: '🎭', xp: 250 },
   { badgeId: 'bino_dictation_pro', category: 'bino', title: 'Thư Ký Nhanh Tay', description: 'Đạt 90%+ điểm bài chép chính tả Dictation', icon: '✍️', xp: 150 },
   { badgeId: 'bino_chapter_1', category: 'bino', title: 'Chinh Phục Chương 1', description: 'Hoàn thành tất cả bài hội thoại trong Chương 1', icon: '🎖️', xp: 200 },
   { badgeId: 'bino_srs_collector', category: 'bino', title: 'Nhà Sưu Tập Từ Vựng', description: 'Lưu 50 từ vựng vào bộ thẻ Flashcard SRS', icon: '📇', xp: 120 },
-  { badgeId: 'bino_champion', category: 'bino', title: 'Đại Sứ Chém Tiếng Anh', description: 'Hoàn thành trọn bộ 72 bài hội thoại Bino', icon: '👑', xp: 1500 },
+  { badgeId: 'bino_champion', category: 'bino', title: 'Đại Sứ Giao Tiếp VBace', description: 'Hoàn thành trọn bộ 72 bài hội thoại thực chiến', icon: '👑', xp: 1500 },
 
   // Reflex 50
   { badgeId: 'reflex_10', category: 'reflex', title: 'Bật Tốc Phản Xạ', description: 'Master 10 câu đầu tiên trong 50 Chủ Đề', icon: '⚡', xp: 60 },
@@ -89,8 +89,8 @@ export default function AchievementGallery() {
       const isUnlocked = unlockedBadgeIds.has(item.badgeId) || (apiItem?.isUnlocked ?? false);
       return {
         ...item,
-        title: apiItem?.title || item.title,
-        description: apiItem?.description || item.description,
+        title: item.title,
+        description: item.description,
         isUnlocked
       };
     });
@@ -143,7 +143,7 @@ export default function AchievementGallery() {
           { id: 'all', label: 'Tất cả' },
           { id: 'streak', label: 'Chuỗi ngày' },
           { id: 'vocab', label: '3000 Từ Vựng' },
-          { id: 'bino', label: 'Chém Tiếng Anh' },
+          { id: 'bino', label: 'Giao Tiếp 72' },
           { id: 'reflex', label: 'Phản Xạ 50' },
           { id: 'toeic', label: 'Luyện đề TOEIC' }
         ].map(cat => (

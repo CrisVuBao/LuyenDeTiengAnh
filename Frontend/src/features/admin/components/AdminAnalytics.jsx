@@ -67,7 +67,7 @@ export default function AdminAnalytics() {
           : `👋 ${stu.fullName} ơi, VBaceEnglish nhớ bạn rồi!`,
         content: isStreakRisk
           ? `Bạn đang sở hữu chuỗi ${stu.currentStreak} ngày học liên tiếp cực ấn tượng. Hãy vào học 5 phút ngay hôm nay để giữ vững phong độ nhé!`
-          : `Đã ${stu.daysInactive} ngày bạn chưa quay lại luyện tập. Vào ôn lại 10 từ vựng hoặc 1 bài Bino để lấy lại đà bứt phá ngay nào!`,
+          : `Đã ${stu.daysInactive} ngày bạn chưa quay lại luyện tập. Vào ôn lại 10 từ vựng hoặc 1 bài Giao Tiếp Thực Chiến để lấy lại đà bứt phá ngay nào!`,
         type: 'Reminder',
         iconEmoji: isStreakRisk ? '🔥' : '⏰',
         actionUrl: '/home',
@@ -469,7 +469,7 @@ export default function AdminAnalytics() {
                 { id: 'xp', label: 'Top XP' },
                 { id: 'streak', label: 'Top Streak' },
                 { id: 'vocab', label: 'Từ Vựng' },
-                { id: 'bino', label: 'Sách Bino' }
+                { id: 'bino', label: 'Giao Tiếp Thực Chiến' }
               ].map((t) => (
                 <button
                   key={t.id}

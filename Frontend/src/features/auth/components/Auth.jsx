@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Sparkles, Mail, Lock, User, Phone, ArrowRight, Clock, CheckCircle2, ShieldAlert } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
+import { Sparkles, Mail, Lock, User, Phone, ArrowRight, ArrowLeft, Clock, CheckCircle2, ShieldAlert } from 'lucide-react';
 import authApi from '../../../api/authApi';
 import useAuthStore from '../../../store/authStore';
 import toast from 'react-hot-toast';
@@ -113,25 +113,42 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f5f5f7] dark:bg-slate-950 flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-[#f5f5f7] dark:bg-slate-950 flex flex-col items-center justify-center p-4 relative overflow-hidden">
       {/* Decorative Subtle Ambient Blur */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-400/15 dark:bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-sky-400/15 dark:bg-indigo-600/10 rounded-full blur-3xl pointer-events-none"></div>
 
+      {/* Top Back to Landing Page Link */}
+      <div className="max-w-md w-full mb-3.5 relative z-10 flex items-center justify-between">
+        <Link
+          to="/"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/85 dark:bg-slate-900/85 hover:bg-white dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800 text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-[#0071e3] dark:hover:text-sky-400 shadow-2xs transition-all group"
+        >
+          <ArrowLeft size={15} className="group-hover:-translate-x-0.5 transition-transform" />
+          <span>Quay về trang giới thiệu</span>
+        </Link>
+      </div>
+
       <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl max-w-md w-full p-8 rounded-[28px] shadow-[0_20px_60px_rgba(15,23,42,0.08)] relative z-10 border border-slate-200/80 dark:border-slate-800">
         {/* Header */}
         <div className="text-center mb-7">
-          <div className="w-12 h-12 rounded-2xl bg-[#0071e3] text-white flex items-center justify-center mx-auto mb-4 shadow-sm">
-            <Sparkles size={24} />
-          </div>
-          <h2 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white leading-none">
-            VBaceEnglish
-          </h2>
-          <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 mt-1 tracking-wide">
+          <Link
+            to="/"
+            className="inline-block group cursor-pointer"
+            title="Quay về trang giới thiệu VBaceEnglish"
+          >
+            <div className="w-12 h-12 rounded-2xl bg-[#0071e3] text-white flex items-center justify-center mx-auto mb-4 shadow-sm group-hover:scale-105 transition-transform">
+              <Sparkles size={24} />
+            </div>
+            <h2 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white leading-none group-hover:text-[#0071e3] dark:group-hover:text-sky-400 transition-colors">
+              VBaceEnglish
+            </h2>
+          </Link>
+          <p className="text-xs font-semibold text-[#0071e3] dark:text-sky-400 mt-1 tracking-wide">
             By Vũ Bảo Software
           </p>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1.5">
-            Chém Tiếng Anh Bino & Luyện Đề TOEIC Thực Chiến
+            Giao Tiếp Thực Chiến & Luyện Đề TOEIC Chuẩn ETS
           </p>
         </div>
 
@@ -343,6 +360,17 @@ export default function Auth() {
             </button>
           </form>
         )}
+
+        {/* Footer link back to Landing Page */}
+        <div className="mt-6 pt-5 border-t border-slate-100 dark:border-slate-800/80 text-center">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-[#0071e3] dark:hover:text-sky-400 transition-colors"
+          >
+            <ArrowLeft size={13} />
+            <span>Khám phá lại trang chủ giới thiệu VBaceEnglish</span>
+          </Link>
+        </div>
       </div>
     </div>
   );

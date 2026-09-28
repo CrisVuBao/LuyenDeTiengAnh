@@ -289,8 +289,11 @@ export default function BinoDialogueStudyPage() {
   const availableRoles = useMemo(() => {
     if (!lesson?.dialogueLines?.length) return ['BẠN BÈ / ĐỒNG NGHIỆP'];
     const roles = [...new Set(lesson.dialogueLines.map(l => l.characterName?.trim()).filter(Boolean))];
-    const nonBino = roles.filter(r => !r.toUpperCase().includes('BINO'));
-    return nonBino.length > 0 ? nonBino : roles;
+    const nonMain = roles.filter(r => {
+      const upper = r.toUpperCase();
+      return !upper.includes('LEO') && !upper.includes('VBACE') && !upper.includes('BINO');
+    });
+    return nonMain.length > 0 ? nonMain : roles;
   }, [lesson?.dialogueLines]);
 
   useEffect(() => {
@@ -358,13 +361,13 @@ export default function BinoDialogueStudyPage() {
     if (now - last > 4000) {
       lastListenLineRef.current[lineKey] = now;
       try {
-        useGamificationStore.getState().earnXP(3, 'bino_listen', 'Luyện nghe câu thoại Bino');
+        useGamificationStore.getState().earnXP(3, 'bino_listen', 'Luyện nghe câu thoại Giao Tiếp 72');
       } catch {}
     }
   };
 
   // Speech synthesis for pronunciation
-  const speakText = (text, characterName = 'BINO', speed = null) => {
+  const speakText = (text, characterName = 'LEO', speed = null) => {
     recordBinoListen(text);
     speechService.speakLine({
       text,
@@ -450,7 +453,7 @@ export default function BinoDialogueStudyPage() {
       invalidateStatsCache();
       if (newState) {
         toast.success('Đã hoàn thành bài hội thoại này! 🎉');
-        useGamificationStore.getState().earnXP(25, 'bino_dialogue', 'Hoàn thành bài hội thoại Bino');
+        useGamificationStore.getState().earnXP(25, 'bino_dialogue', 'Hoàn thành bài hội thoại Giao Tiếp 72');
       }
     } catch {
       toast.error('Lỗi lưu tiến độ');
@@ -542,7 +545,7 @@ export default function BinoDialogueStudyPage() {
       metadata: {
         title: `${line.characterName}: "${line.englishText}"`,
         artist: `Chương ${lesson.chapterNumber} • Bài ${lesson.dialogueNumber}: ${lesson.title}`,
-        album: 'Chém Tiếng Anh Không Cần Động Não'
+        album: 'Giao Tiếp Thực Chiến — VBaceEnglish'
       },
       onEnd: () => {
         if (!isPlayingRef.current) return;
@@ -606,8 +609,8 @@ export default function BinoDialogueStudyPage() {
     speechService.startBackgroundSession(
       {
         title: lesson.title,
-        artist: `Chương ${lesson.chapterNumber} • Bài ${lesson.dialogueNumber} (Bino)`,
-        album: 'Chém Tiếng Anh Không Cần Động Não'
+        artist: `Chương ${lesson.chapterNumber} • Bài ${lesson.dialogueNumber} (VBace)`,
+        album: 'Giao Tiếp Thực Chiến — VBaceEnglish'
       },
       {
         onPlay: () => {
@@ -766,7 +769,7 @@ export default function BinoDialogueStudyPage() {
                   ? activeLineIndex !== null
                     ? `Đang đọc câu ${activeLineIndex + 1}/${lesson?.dialogueLines?.length || 0} • ${checkIsInfinite(repeatCount) ? `Vòng ${currentLoopCycle}/∞` : `Vòng ${currentLoopCycle}/${repeatCount}`}`
                     : 'Đang đọc...'
-                  : `${lesson?.dialogueLines?.length || 0} lượt thoại • Giọng kịch tính Bino`}
+                  : `${lesson?.dialogueLines?.length || 0} lượt thoại • Giọng kịch tính Studio AI`}
               </div>
             </div>
 
@@ -1032,7 +1035,7 @@ export default function BinoDialogueStudyPage() {
               whileTap={{ scale: 0.95 }}
               onClick={() => setIsGuideModalOpen(true)}
               className="px-3 py-1.5 rounded-xl border border-amber-400/80 dark:border-amber-700 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-xs font-black flex items-center gap-1.5 transition-all shadow-md shadow-amber-500/25 active:scale-95"
-              title="Xem cẩm nang hướng dẫn phương pháp học 4 bước Bino"
+              title="Xem cẩm nang hướng dẫn phương pháp học 4 bước VBace Flow"
             >
               <Lightbulb size={13} className="text-white animate-pulse" />
               <span>Cách Học 4 Bước 💡</span>
@@ -1040,7 +1043,7 @@ export default function BinoDialogueStudyPage() {
           </div>
 
           <div className="text-[11px] text-slate-400 font-bold hidden md:block">
-            Bino Drama Mode • Giọng kịch tính & Ngắt nghỉ tự nhiên
+            VBace Drama Mode • Giọng kịch tính & Ngắt nghỉ tự nhiên
           </div>
         </div>
       </motion.div>
@@ -1093,7 +1096,7 @@ export default function BinoDialogueStudyPage() {
           className="space-y-6 sm:space-y-8"
         >
           
-          {/* 1. KEY WORDS (TỪ KHÓA GHIM NOTE PHONG CÁCH SÁCH BINO) */}
+          {/* 1. KEY WORDS (TỪ KHÓA GHIM NOTE PHONG CÁCH VBACE) */}
           {lesson?.vocabularies?.length > 0 && (
             <div className="relative p-5 sm:p-7 rounded-3xl bg-gradient-to-br from-amber-50 via-amber-50/50 to-orange-50/30 dark:from-amber-950/40 dark:via-slate-850 dark:to-slate-850 border-2 border-dashed border-amber-300 dark:border-amber-800/80 shadow-md">
               {/* Decorative Pin / Clip Icon */}
@@ -1210,7 +1213,8 @@ export default function BinoDialogueStudyPage() {
             <div className="space-y-3">
               {lesson.dialogueLines?.map((line, idx) => {
                 const isActive = activeLineIndex === idx;
-                const isBino = line.characterName.toUpperCase().includes('BINO');
+                const upperChar = (line.characterName || '').toUpperCase();
+                const isBino = upperChar.includes('LEO') || upperChar.includes('VBACE') || upperChar.includes('BINO');
 
                 return (
                   <motion.div
@@ -1319,7 +1323,7 @@ export default function BinoDialogueStudyPage() {
                       </div>
                     </div>
 
-                    {/* BINO SENTENCE PATTERN SUBSTITUTION (VẬN DỤNG THỰC TẾ) */}
+                    {/* VBACE SENTENCE PATTERN SUBSTITUTION (VẬN DỤNG THỰC TẾ) */}
                     <BinoSentenceExpansionCard
                       expansionData={getExpansionsForLine(line.englishText, idx)}
                       lineIndex={idx}
@@ -1334,7 +1338,7 @@ export default function BinoDialogueStudyPage() {
       )}
 
       {/* ========================================================================= */}
-      {/* TAB 2: LUYỆN PHẢN XẠ 1:1 (ROLEPLAY VỚI BINO) */}
+      {/* TAB 2: LUYỆN PHẢN XẠ 1:1 (ROLEPLAY VỚI LEO) */}
       {/* ========================================================================= */}
       {activeTab === 'roleplay' && (
         <motion.div 
@@ -1345,10 +1349,10 @@ export default function BinoDialogueStudyPage() {
           <div className="max-w-xl space-y-2">
             <h3 className="text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
               <Sparkles size={20} className="text-amber-500" />
-              <span>Luyện Phản Xạ Đóng Vai 1:1 Cùng Bino</span>
+              <span>Luyện Phản Xạ Đóng Vai 1:1 Cùng Leo</span>
             </h3>
             <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-normal">
-              Hệ thống sẽ đóng vai <strong>BINO</strong> và đọc thoại trước. Đến lượt thoại của bạn, hãy đọc to câu thoại bằng tiếng Anh để luyện phản xạ tự nhiên không cần động não!
+              Hệ thống sẽ đóng vai <strong>LEO</strong> và đọc thoại trước. Đến lượt thoại của bạn, hãy đọc to câu thoại bằng tiếng Anh để luyện phản xạ tự nhiên không cần dịch ngầm!
             </p>
           </div>
 
@@ -1482,7 +1486,7 @@ export default function BinoDialogueStudyPage() {
                   <button
                     onClick={() => {
                       if (roleplayStep < lesson.dialogueLines.length - 1) {
-                        useGamificationStore.getState().earnXP(10, 'bino_roleplay', 'Luyện đối đáp 1 câu Bino');
+                        useGamificationStore.getState().earnXP(10, 'bino_roleplay', 'Luyện đối đáp 1 câu Giao Tiếp 72');
                         setRoleplayStep(prev => prev + 1);
                         setUserTranscript('');
                       } else {
@@ -1492,7 +1496,7 @@ export default function BinoDialogueStudyPage() {
                           timeSpentSeconds: consumeElapsedSeconds()
                         }).then(() => invalidateStatsCache()).catch(() => {});
                         toast.success('Xuất sắc! Đã ghi nhận hoàn thành luyện đóng vai 1:1 cho bài này! 🎉');
-                        useGamificationStore.getState().earnXP(30, 'bino_roleplay', 'Hoàn thành lượt đóng vai Bino');
+                        useGamificationStore.getState().earnXP(30, 'bino_roleplay', 'Hoàn thành lượt đóng vai 1:1');
                       }
                     }}
                     className="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl text-xs font-bold shadow-md shadow-orange-500/20 flex items-center gap-1.5 active:scale-95"

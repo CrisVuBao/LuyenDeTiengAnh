@@ -76,7 +76,7 @@ export default function AdminDashboard() {
             Trung Tâm Quản Trị Hệ Thống
           </h2>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Theo dõi tổng quan học viên, phê duyệt tài khoản mới, khóa học Bino và đề thi TOEIC
+            Theo dõi tổng quan học viên, phê duyệt tài khoản mới, khóa học Giao Tiếp Thực Chiến và đề thi TOEIC
           </p>
         </div>
 
@@ -142,10 +142,10 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* Bino Course Stats */}
+        {/* Giao Tiếp Thực Chiến Stats */}
         <div className="glass-card p-6 rounded-3xl relative overflow-hidden group hover:scale-[1.01] transition-all">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Chém Tiếng Anh Bino</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Giao Tiếp Thực Chiến</span>
             <div className="w-10 h-10 rounded-2xl bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 flex items-center justify-center">
               <Headphones size={20} />
             </div>
@@ -188,7 +188,7 @@ export default function AdminDashboard() {
             <h3 className="text-3xl font-black text-slate-900 dark:text-white">
               {stats?.totalStudyInteractions || 0}
             </h3>
-            <p className="text-xs text-slate-500 mt-1">Tổng bài Bino & câu TOEIC đã luyện</p>
+            <p className="text-xs text-slate-500 mt-1">Tổng bài Giao Tiếp Thực Chiến & câu TOEIC đã luyện</p>
           </div>
         </div>
       </div>
@@ -203,7 +203,7 @@ export default function AdminDashboard() {
                 <UserCheck size={20} className="text-[#0071e3]" /> Học Viên Mới Đăng Ký
               </h3>
               <p className="text-xs text-slate-400">
-                Duyệt nhanh tài khoản mới và xem tiến độ học Bino / TOEIC
+                Duyệt nhanh tài khoản mới và xem tiến độ học Giao Tiếp Thực Chiến / TOEIC
               </p>
             </div>
             <button
@@ -220,7 +220,7 @@ export default function AdminDashboard() {
                 <tr className="border-b border-slate-100 dark:border-slate-800 text-slate-400 uppercase font-semibold">
                   <th className="py-3 px-2">Học viên</th>
                   <th className="py-3 px-2 text-center">Trạng thái</th>
-                  <th className="py-3 px-2 text-center">Bino</th>
+                  <th className="py-3 px-2 text-center">Giao Tiếp Thực Chiến</th>
                   <th className="py-3 px-2 text-center">TOEIC</th>
                   <th className="py-3 px-2 text-right">Hành động</th>
                 </tr>
@@ -387,7 +387,7 @@ export default function AdminDashboard() {
                 </div>
                 <div>
                   <h4 className="font-bold text-sm text-slate-800 dark:text-slate-200 group-hover:text-[#0071e3] transition-colors">
-                    Quản Lý Khóa Học Bino
+                    Quản Lý Giao Tiếp Thực Chiến
                   </h4>
                   <p className="text-[11px] text-slate-400">12 chương, 72 bài hội thoại & audio</p>
                 </div>

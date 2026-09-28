@@ -1,9 +1,9 @@
 /**
- * VBaceEnglish - Ngân Hàng Mẫu Câu Cốt Lõi & Biến Thể Thực Tế Chuẩn Ebook Bino
- * Sách "Chém Tiếng Anh Không Cần Động Não" - Tác giả Bino (TiengAnhBi.epub)
+ * VBaceEnglish - Ngân Hàng Mẫu Câu Cốt Lõi & Biến Thể Thực Tế Chuẩn VBace Flow
+ * Giáo trình "Giao Tiếp Thực Chiến: Phản Xạ Tiếng Anh Tức Thì" - Vũ Bảo Software (VBace Studio)
  * 
  * Toàn bộ dữ liệu mẫu câu, biến thể và tình huống thực tế được biên soạn
- * dựa trên 100% nội dung hội thoại và Section B (More expressions) từ 6 chương của Ebook.
+ * dựa trên 100% nội dung hội thoại và Section B (More expressions) từ các chương của giáo trình.
  */
 
 export const SENTENCE_EXPANSIONS_DATABASE = [
@@ -190,7 +190,7 @@ export const SENTENCE_EXPANSIONS_DATABASE = [
       "call you all week",
       "visit that new bookstore",
       "try that Vietnamese restaurant",
-      "read Bino's book"
+      "read that bestseller book"
     ],
     variations: [
       {
@@ -297,7 +297,7 @@ export const SENTENCE_EXPANSIONS_DATABASE = [
     ]
   },
   {
-    originalKey: "Hey everyone, mind if I join you? I'm Bino, the new guy in the office.",
+    originalKey: "Hey everyone, mind if I join you? I'm Leo, the new guy in the office.",
     patternKeywords: ["mind if I", "join you"],
     corePattern: "Mind if I [verb]...?",
     patternMeaningVi: "Có phiền không nếu tôi [làm gì]...?",
@@ -434,7 +434,7 @@ export const SENTENCE_EXPANSIONS_DATABASE = [
     ]
   },
   {
-    originalKey: "Good morning, Bino! It's time for school. Did you sleep well?",
+    originalKey: "Good morning, Leo! It's time for school. Did you sleep well?",
     patternKeywords: ["it's time for", "did you sleep well"],
     corePattern: "Good morning! It's time for [activity]. Did you sleep well?",
     patternMeaningVi: "Chào buổi sáng! Đến giờ [làm gì] rồi. Ngủ ngon giấc không?",
@@ -833,7 +833,7 @@ export const SENTENCE_EXPANSIONS_DATABASE = [
     patternKeywords: ["melts in your mouth", "absolutely delicious"],
     corePattern: "It's absolutely delicious, [description].",
     patternMeaningVi: "Món này ngon tuyệt đỉnh, [miêu tả độ ngon].",
-    grammarTip: "Mẫu câu Section B (trang 87) của Bino để khen ngợi thức ăn: 'It practically melts in your mouth' (thịt mềm như tan ra trong khoang miệng).",
+    grammarTip: "Mẫu câu Section B (trang 87) của giáo trình VBace để khen ngợi thức ăn: 'It practically melts in your mouth' (thịt mềm như tan ra trong khoang miệng).",
     fixedPrefix: "Wow, it's absolutely delicious, ",
     fixedSuffix: ".",
     defaultSlot: "it practically melts in your mouth",
@@ -873,7 +873,7 @@ export const SENTENCE_EXPANSIONS_DATABASE = [
     patternKeywords: ["feeling stressed out because", "tough lately"],
     corePattern: "Honestly, it's been tough lately. I'm feeling stressed out because [reason].",
     patternMeaningVi: "Thật tình dạo này hơi căng. Tôi thấy rất stress vì [lý do gì đó].",
-    grammarTip: "Mẫu câu hội thoại chân thật giữa Bino và anh thợ cắt tóc (trang 96). 'Stress out' diễn tả trạng thái áp lực tinh thần quá tải.",
+    grammarTip: "Mẫu câu hội thoại chân thật giữa Leo và anh thợ cắt tóc (trang 96). 'Stress out' diễn tả trạng thái áp lực tinh thần quá tải.",
     fixedPrefix: "Honestly, it's been tough lately. I'm feeling stressed out because ",
     fixedSuffix: ".",
     defaultSlot: "I have too many bills to pay",
@@ -989,7 +989,7 @@ export const SENTENCE_EXPANSIONS_DATABASE = [
       "step out of your comfort zone",
       "talk with native speakers",
       "apply these phrases in real life",
-      "shadow Bino's dialogues"
+      "shadow Leo's dialogues"
     ],
     variations: [
       {
@@ -1304,7 +1304,7 @@ export const SENTENCE_EXPANSIONS_DATABASE = [
  * Hàm tra cứu và trích xuất mẫu câu mở rộng thực tế cho từng dòng thoại.
  * Ưu tiên:
  * 1. Khớp từ khóa cốt lõi với ngân hàng mẫu câu chuẩn Ebook.
- * 2. Nhận diện cấu trúc ngữ pháp đúc sẵn theo phong cách Bino.
+ * 2. Nhận diện cấu trúc ngữ pháp đúc sẵn theo phong cách VBace Flow.
  * 3. Fallback thông minh có ngữ nghĩa tiếng Anh và bản dịch tiếng Việt chuẩn, không bao giờ sinh placeholder vô nghĩa.
  */
 export function getExpansionsForLine(englishText, lineIndex = 0) {
@@ -1320,7 +1320,7 @@ export function getExpansionsForLine(englishText, lineIndex = 0) {
     }
   }
 
-  // 2. Nhận diện cấu trúc ngữ pháp đúc sẵn (Lexical Frame Extractor) theo phong cách Bino
+  // 2. Nhận diện cấu trúc ngữ pháp đúc sẵn (Lexical Frame Extractor) theo phong cách VBace Flow
   
   // A. Mẫu câu yêu cầu lịch sự: Could you / Can you / Would you...
   if (lowerText.startsWith("could you ") || lowerText.startsWith("can you ") || lowerText.startsWith("would you ")) {
@@ -1488,7 +1488,7 @@ export function getExpansionsForLine(englishText, lineIndex = 0) {
     };
   }
 
-  // 3. Fallback theo ngữ cảnh chương học tự nhiên của Bino
+  // 3. Fallback theo ngữ cảnh chương học tự nhiên của VBace Flow
   const words = cleanText.split(' ');
   if (words.length >= 3) {
     const slot = words.slice(-2).join(' ').replace(/[.,!?]/g, '');
@@ -1496,8 +1496,8 @@ export function getExpansionsForLine(englishText, lineIndex = 0) {
     
     return {
       corePattern: `${prefix}[... cụm từ thay thế ...]`,
-      patternMeaningVi: "Mẫu câu thực tế: Giữ nguyên khung câu của Bino, thay đổi vị trí cuối để áp dụng vào đời thực.",
-      grammarTip: "Quy tắc phản xạ Bino: Đừng bẻ gãy ngữ pháp để dịch từng từ. Hãy giữ nguyên toàn bộ vế đầu và chỉ thay thế vế sau theo hoàn cảnh của bạn.",
+      patternMeaningVi: "Mẫu câu thực tế: Giữ nguyên khung câu của VBace Flow, thay đổi vị trí cuối để áp dụng vào đời thực.",
+      grammarTip: "Quy tắc phản xạ VBace Flow: Đừng bẻ gãy ngữ pháp để dịch từng từ. Hãy giữ nguyên toàn bộ vế đầu và chỉ thay thế vế sau theo hoàn cảnh của bạn.",
       fixedPrefix: prefix,
       fixedSuffix: ".",
       defaultSlot: slot,

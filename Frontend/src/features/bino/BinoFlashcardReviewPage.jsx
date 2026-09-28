@@ -116,7 +116,7 @@ export default function BinoFlashcardReviewPage() {
           className="p-2.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-750 text-slate-600 dark:text-slate-300 transition-all shadow-sm flex items-center gap-2 text-xs font-bold shrink-0"
         >
           <ArrowLeft size={16} />
-          <span>Về Sách Bino</span>
+          <span>Về Lộ Trình 12 Chương</span>
         </motion.button>
 
         <div className="flex items-center gap-2">
@@ -152,8 +152,8 @@ export default function BinoFlashcardReviewPage() {
             </h2>
             <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto leading-relaxed">
               {cards.length === 0
-                ? 'Bác chưa thêm từ nào vào bộ Flashcard. Hãy vào các bài hội thoại của sách Bino và bấm "+ Flashcard" nhé!'
-                : `Bác đã ôn tập xong ${reviewedCount} từ vựng theo thuật toán lặp lại ngắt quãng SM-2. Não bộ của bác đã ghi nhớ sâu hơn rồi đấy!`}
+                ? 'Bạn chưa thêm từ nào vào bộ Flashcard. Hãy vào các bài hội thoại Giao Tiếp Thực Chiến và bấm "+ Flashcard" nhé!'
+                : `Bạn đã ôn tập xong ${reviewedCount} từ vựng theo thuật toán lặp lại ngắt quãng SM-2. Não bộ của bạn đã ghi nhớ sâu hơn rồi đấy!`}
             </p>
           </div>
 
@@ -164,7 +164,7 @@ export default function BinoFlashcardReviewPage() {
               onClick={() => navigate('/bino')}
               className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 text-white font-extrabold rounded-2xl text-xs sm:text-sm shadow-lg shadow-blue-500/25 transition-all"
             >
-              Vào Học Tiếp Sách Bino
+              Vào Học Tiếp 72 Bài Hội Thoại
             </motion.button>
           </div>
         </motion.div>

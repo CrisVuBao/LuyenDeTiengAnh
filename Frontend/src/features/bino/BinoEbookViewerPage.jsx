@@ -53,7 +53,7 @@ export default function BinoEbookViewerPage() {
               </span>
             </div>
             <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
-              {book?.title || 'Chém Tiếng Anh không cần động não - Bino'}
+              {book?.title || 'Giao Tiếp Thực Chiến: Phản Xạ Tiếng Anh Tức Thì'}
             </h1>
           </div>
         </div>
@@ -132,7 +132,7 @@ export default function BinoEbookViewerPage() {
       {readerMode === 'epub' ? (
         <EpubReader 
           initialUrl={epubUrl}
-          bookTitle={book?.title || 'Chém Tiếng Anh không cần động não'}
+          bookTitle={book?.title || 'Giao Tiếp Thực Chiến: Phản Xạ Tiếng Anh Tức Thì'}
         />
       ) : (
         /* PDF and Scanned Book View */
@@ -140,7 +140,7 @@ export default function BinoEbookViewerPage() {
           <div className="p-4 rounded-2xl bg-blue-50/70 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900/50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div className="flex items-center gap-2.5 text-xs text-blue-800 dark:text-blue-300">
               <FileText size={16} className="text-blue-600 shrink-0" />
-              <span>Bản in giấy thực tế cuốn sách của Bino (Trang 15 &amp; 16 - Chương 01).</span>
+              <span>Bản trình bày giáo trình giấy thực tế (Trang 15 &amp; 16 - Chương 01).</span>
             </div>
             <div className="flex items-center gap-2">
               <button
@@ -165,8 +165,8 @@ export default function BinoEbookViewerPage() {
           <div className="space-y-6">
             <div className="border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden shadow-sm">
               <div className="p-3 bg-slate-100 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center text-xs font-bold text-slate-600 dark:text-slate-300">
-                <span>Trang 15 (Chương 01 - Hội thoại 3: At Bino's New Friend's Party)</span>
-                <span className="text-amber-600 dark:text-amber-400">Bản in gốc Bino</span>
+                <span>Trang 15 (Chương 01 - Hội thoại 3: At Leo&apos;s New Friend&apos;s Party)</span>
+                <span className="text-amber-600 dark:text-amber-400">Giáo trình VBace</span>
               </div>
               <img 
                 src="/images/bino/page15.jpg" 
@@ -178,7 +178,7 @@ export default function BinoEbookViewerPage() {
             <div className="border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden shadow-sm">
               <div className="p-3 bg-slate-100 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center text-xs font-bold text-slate-600 dark:text-slate-300">
                 <span>Trang 16 (Chương 01 - Hội thoại 4: Catching up with an Old Friend)</span>
-                <span className="text-amber-600 dark:text-amber-400">Bản in gốc Bino</span>
+                <span className="text-amber-600 dark:text-amber-400">Giáo trình VBace</span>
               </div>
               <img 
                 src="/images/bino/page16.jpg" 

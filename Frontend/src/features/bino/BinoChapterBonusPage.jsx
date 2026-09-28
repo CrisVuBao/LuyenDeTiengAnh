@@ -333,13 +333,13 @@ export default function BinoChapterBonusPage() {
 
         <div className="flex flex-wrap items-center gap-2 text-xs font-black uppercase tracking-wider text-amber-600 dark:text-amber-400">
           <Lightbulb size={16} />
-          <span>Trọn Vẹn Nội Dung Cuối Chương Sách Ebook (Section B • Section C • Bino's Philosophy)</span>
+          <span>Trọn Vẹn Nội Dung Cuối Chương Giáo Trình (Section B • Section C • VBace&apos;s Mindset)</span>
         </div>
         <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
-          {bonus?.title || `Mẫu Câu Mở Rộng & Bino's Philosophy - Chương ${currentChapNum}`}
+          {bonus?.title || `Mẫu Câu Mở Rộng & VBace's Mindset - Chương ${currentChapNum}`}
         </h1>
         <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl font-normal">
-          Toàn bộ các mẫu câu mở rộng (More expressions), bài tập thực hành nói cùng Bino (Practise speaking with Bino) và tâm sự triết lý học tiếng Anh của Bino ở cuối Chương {currentChapNum}. 💡 <strong>Mẹo:</strong> Bạn có thể bấm trực tiếp vào bất kỳ câu tiếng Anh nào bên dưới để nghe phát âm chuẩn!
+          Toàn bộ các mẫu câu mở rộng (More expressions), bài tập thực hành nói cùng Leo (Practise speaking with Leo) và góc tư duy học tiếng Anh VBace&apos;s Mindset ở cuối Chương {currentChapNum}. 💡 <strong>Mẹo:</strong> Bạn có thể bấm trực tiếp vào bất kỳ câu tiếng Anh nào bên dưới để nghe phát âm chuẩn!
         </p>
       </motion.div>
 

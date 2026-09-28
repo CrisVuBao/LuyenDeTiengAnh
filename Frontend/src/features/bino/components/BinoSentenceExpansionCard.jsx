@@ -116,7 +116,7 @@ export default function BinoSentenceExpansionCard({ expansionData, lineIndex = 0
                 {grammarTip && (
                   <div className="flex items-start gap-1.5 pt-1 text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed border-t border-slate-100 dark:border-slate-700/60">
                     <Lightbulb size={13} className="text-amber-500 shrink-0 mt-0.5" />
-                    <span><strong>Mẹo phản xạ Bino:</strong> {grammarTip}</span>
+                    <span><strong>Mẹo phản xạ VBace:</strong> {grammarTip}</span>
                   </div>
                 )}
               </div>

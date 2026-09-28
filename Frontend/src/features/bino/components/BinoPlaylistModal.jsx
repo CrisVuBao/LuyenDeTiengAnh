@@ -294,8 +294,8 @@ export default function BinoPlaylistModal() {
     speechService.startBackgroundSession(
       {
         title: `${lesson.title}`,
-        artist: `Chương ${lesson.chapterNumber} • Bài ${lesson.dialogueNumber} (Bino)`,
-        album: 'Chém Tiếng Anh Không Cần Động Não'
+        artist: `Chương ${lesson.chapterNumber} • Bài ${lesson.dialogueNumber} (VBace)`,
+        album: 'Giao Tiếp Thực Chiến — VBaceEnglish'
       },
       {
         onPlay: () => startPlayback(currentLessonIdxRef.current, currentLineIdxRef.current, playlistRef.current),
@@ -337,7 +337,7 @@ export default function BinoPlaylistModal() {
       metadata: {
         title: `${line.characterName}: "${line.englishText}"`,
         artist: `Chương ${lesson.chapterNumber} • Bài ${lesson.dialogueNumber}: ${lesson.title}`,
-        album: 'Chém Tiếng Anh Không Cần Động Não'
+        album: 'Giao Tiếp Thực Chiến — VBaceEnglish'
       },
       onEnd: () => {
         if (!isPlayingRef.current || sessionToken !== playSessionTokenRef.current) return;
@@ -589,7 +589,7 @@ export default function BinoPlaylistModal() {
             <div className="truncate">
               <div className="flex items-center gap-2">
                 <h3 className="text-sm sm:text-lg font-black text-slate-900 dark:text-white truncate">
-                  Playlist Hội Thoại Bino
+                  Playlist Hội Thoại Thực Chiến
                 </h3>
                 <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-300 shrink-0">
                   Studio AI 🎙️
@@ -863,7 +863,7 @@ export default function BinoPlaylistModal() {
                     <div className="space-y-2">
                       <div className="flex items-center gap-2">
                         <span className={`px-2.5 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider ${
-                          currentLine.characterName?.toLowerCase().includes('bino')
+                          ['leo', 'vbace', 'bino'].some(k => currentLine.characterName?.toLowerCase().includes(k))
                             ? 'bg-amber-500 text-white shadow-sm'
                             : 'bg-blue-600 text-white shadow-sm'
                         }`}>
@@ -900,7 +900,7 @@ export default function BinoPlaylistModal() {
                 <div className="flex-1 overflow-y-auto p-3.5 sm:p-4 space-y-2.5 custom-scrollbar">
                   {currentLesson?.dialogueLines?.map((line, idx) => {
                     const isActive = idx === currentLineIdx;
-                    const isBino = line.characterName?.toLowerCase().includes('bino');
+                    const isBino = ['leo', 'vbace', 'bino'].some(k => line.characterName?.toLowerCase().includes(k));
 
                     return (
                       <div

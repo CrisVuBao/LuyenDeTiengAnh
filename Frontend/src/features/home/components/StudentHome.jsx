@@ -339,7 +339,7 @@ export default function StudentHome() {
                   {profile?.currentStreak ?? stats?.currentStreakDays ?? 0} ngày liên tiếp
                 </span>
                 <span className="text-slate-300 dark:text-slate-600">•</span>
-                <span>Khóa học Bino</span>
+                <span>Giao Tiếp Thực Chiến</span>
               </motion.div>
 
               <button
@@ -362,7 +362,7 @@ export default function StudentHome() {
               </h1>
 
               <p className="text-sm sm:text-[15px] text-slate-500 dark:text-slate-400 leading-relaxed font-normal max-w-xl">
-                Trọng tâm cùng giáo trình <span className="text-slate-800 dark:text-slate-200 font-medium">&ldquo;Chém Tiếng Anh Không Cần Động Não&rdquo;</span> — nghe ngấm ngữ điệu đời thực, biến hóa mẫu câu linh hoạt và bật ra tiếng Anh không cần dịch ngầm.
+                Trọng tâm cùng giáo trình <span className="text-slate-800 dark:text-slate-200 font-medium">&ldquo;Giao Tiếp Thực Chiến: Phản Xạ Tiếng Anh Tức Thì&rdquo;</span> — nghe ngấm ngữ điệu đời thực, biến hóa mẫu câu linh hoạt và bật ra tiếng Anh không cần dịch ngầm.
               </p>
             </div>
 
@@ -377,7 +377,7 @@ export default function StudentHome() {
                 className="px-6 py-3.5 bg-[#0071e3] hover:bg-[#0077ED] text-white font-medium rounded-full shadow-[0_4px_14px_rgba(0,113,227,0.28)] flex items-center gap-2.5 transition-colors text-sm cursor-pointer"
               >
                 <Play size={15} fill="currentColor" />
-                <span>Vào luyện Chém Tiếng Anh</span>
+                <span>Vào luyện Giao Tiếp Thực Chiến</span>
               </motion.button>
 
               <motion.button
@@ -530,7 +530,7 @@ export default function StudentHome() {
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 px-1">
           <div>
             <p className="text-xs font-semibold uppercase tracking-wider text-[#0071e3] dark:text-sky-400">
-              Phương pháp phản xạ Bino
+              Phương pháp phản xạ VBace Flow
             </p>
             <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white mt-0.5">
               Trải nghiệm học tiếng Anh sống động
@@ -909,8 +909,8 @@ export default function StudentHome() {
               },
               {
                 icon: BookOpen,
-                title: 'Đọc Ebook Bino gốc',
-                desc: 'Xem sách trình bày nguyên bản',
+                title: 'Đọc Ebook Giáo Trình',
+                desc: 'Xem giáo trình trình bày nguyên bản',
                 onClick: () => navigate('/bino/reader')
               },
               {
@@ -949,7 +949,7 @@ export default function StudentHome() {
           </div>
 
           <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-            Trình nghe của Bino luôn duy trì ở góc màn hình khi chuyển trang và hỗ trợ phát nền khi khóa màn hình điện thoại.
+            Trình nghe thụ động VBace luôn duy trì ở góc màn hình khi chuyển trang và hỗ trợ phát nền khi khóa màn hình điện thoại.
           </div>
         </div>
 

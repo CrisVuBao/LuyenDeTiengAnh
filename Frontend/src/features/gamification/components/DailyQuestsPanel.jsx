@@ -52,7 +52,7 @@ export default function DailyQuestsPanel() {
         <div className="space-y-1">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 text-xs font-semibold">
             <Sparkles size={13} />
-            <span>Nhiệm vụ hôm nay • Chém Tiếng Anh & Phản Xạ 50 Chủ Đề</span>
+            <span>Nhiệm vụ hôm nay • Giao Tiếp 72 &amp; Phản Xạ 50 Chủ Đề</span>
           </div>
           <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
             Nhiệm Vụ Hàng Ngày ({completedCount}/{dailyQuests.length || 4})
@@ -82,9 +82,9 @@ export default function DailyQuestsPanel() {
           const progressPercent = Math.min(100, Math.round((currentCount / targetCount) * 100));
           const IconComponent = QUEST_ICON_MAP[quest.questType] || QUEST_ICON_MAP.default;
 
-          // Categorize quest: Bino vs Reflex 50
+          // Categorize quest: Giao Tiếp 72 vs Reflex 50
           const isBino = quest.questType.startsWith('bino') || quest.questType === 'flashcard_review';
-          const categoryLabel = isBino ? 'Chém Tiếng Anh Bino' : 'Phản Xạ 50 Chủ Đề';
+          const categoryLabel = isBino ? 'Giao Tiếp Thực Chiến' : 'Phản Xạ 50 Chủ Đề';
 
           return (
             <div 
@@ -119,10 +119,10 @@ export default function DailyQuestsPanel() {
                       </span>
                     </div>
                     <h4 className="font-semibold text-slate-900 dark:text-white text-sm truncate">
-                      {quest.title}
+                      {(quest.title || '').replace(/Bino/gi, 'Giao Tiếp 72')}
                     </h4>
                     <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5">
-                      {quest.description}
+                      {(quest.description || '').replace(/Bino/gi, 'Giao Tiếp 72')}
                     </p>
                   </div>
                 </div>
@@ -168,7 +168,7 @@ export default function DailyQuestsPanel() {
                       onClick={() => handleQuestAction(quest)}
                       className="w-full py-1.5 px-2.5 rounded-xl bg-slate-100 hover:bg-slate-200/80 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold transition-colors cursor-pointer flex items-center justify-between group/btn"
                     >
-                      <span>{isBino ? 'Vào luyện Chém Tiếng Anh' : 'Vào Luyện Phản Xạ 50'}</span>
+                      <span>{isBino ? 'Vào luyện Giao Tiếp 72' : 'Vào Luyện Phản Xạ 50'}</span>
                       <ChevronRight size={13} className="group-hover/btn:translate-x-0.5 transition-transform" />
                     </button>
                   )}

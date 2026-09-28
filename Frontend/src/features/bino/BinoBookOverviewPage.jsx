@@ -35,7 +35,7 @@ export default function BinoBookOverviewPage() {
       })
       .catch((err) => {
         console.error('Lỗi lấy thông tin sách:', err);
-        toast.error('Không thể tải thông tin sách Bino');
+        toast.error('Không thể tải thông tin giáo trình Giao Tiếp Thực Chiến');
       })
       .finally(() => setLoading(false));
   }, []);
@@ -61,7 +61,7 @@ export default function BinoBookOverviewPage() {
       {loading && <PageLoader />}
       
       {/* ========================================================================= */}
-      {/* 1. HERO BANNER SÁCH BINO - ULTRA SHARP & FULL RESPONSIVE */}
+      {/* 1. HERO BANNER GIÁO TRÌNH VBACE - ULTRA SHARP & FULL RESPONSIVE */}
       {/* ========================================================================= */}
       <div 
         className="p-5 sm:p-8 md:p-10 rounded-3xl relative overflow-hidden bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-sm"
@@ -75,23 +75,23 @@ export default function BinoBookOverviewPage() {
             {/* Tag Badges */}
             <div className="flex flex-wrap items-center gap-2">
               <span className="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-300 flex items-center gap-1.5 shadow-2xs border border-amber-300/80 dark:border-amber-800">
-                <Sparkles size={13} className="text-amber-600 dark:text-amber-400" /> Tác giả Bino
+                <Sparkles size={13} className="text-amber-600 dark:text-amber-400" /> Vũ Bảo Software
               </span>
               <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-blue-100 text-blue-900 dark:bg-blue-950 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
                 {book?.totalChapters || 12} Chương • {book?.totalLessonsCount || 72} Bài Học
               </span>
               <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 hidden sm:inline-flex">
-                Đầy Đủ 12 Chương + Mục B, C & Philosophy
+                Đầy Đủ 12 Chương + Mục B, C & Mindset
               </span>
             </div>
 
             {/* Title */}
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
-              Chém Tiếng Anh <span className="bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 bg-clip-text text-transparent">Không Cần Động Não</span>
+              Giao Tiếp Thực Chiến: <span className="bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 bg-clip-text text-transparent">Phản Xạ Tiếng Anh Tức Thì</span>
             </h1>
 
             <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
-              Phương pháp phản xạ ngôn ngữ tự nhiên: Học từ vựng theo giấy note ghim, luyện nói 1:1 nhập vai với Bino, vận dụng đổi từ Substitution Drilling, kèm đầy đủ Mẫu câu mở rộng (Section B) & Bino's Philosophy cuối mỗi chương.
+              Phương pháp phản xạ ngôn ngữ tự nhiên VBace Flow: Học từ vựng theo giấy note ghim, luyện nói 1:1 nhập vai với Leo, vận dụng đổi từ Substitution Drilling, kèm đầy đủ Mẫu câu mở rộng (Section B) & VBaceEnglish Mindset cuối mỗi chương.
             </p>
 
             {/* Quick Action Buttons - Grid 2 cols on mobile, flex on desktop */}
@@ -99,7 +99,7 @@ export default function BinoBookOverviewPage() {
               {/* Nút Nghe Toàn Bộ - Tràn rộng nổi bật */}
               <button
                 onClick={() => openPlaylistWith(null, true)}
-                className="col-span-2 sm:col-span-1 px-5 py-3 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-extrabold rounded-2xl shadow-md shadow-indigo-500/25 flex items-center justify-center gap-2 text-xs sm:text-sm transition-all duration-150 hover:-translate-y-0.5 cursor-pointer"
+                className="col-span-2 sm:col-span-1 px-5 py-3 bg-[#0071e3] hover:bg-[#0077ED] dark:bg-sky-500 dark:hover:bg-sky-400 text-white font-extrabold rounded-2xl shadow-[0_4px_14px_rgba(0,113,227,0.28)] flex items-center justify-center gap-2 text-xs sm:text-sm transition-all duration-150 hover:-translate-y-0.5 cursor-pointer"
               >
                 <ListMusic size={17} />
                 <span>Nghe Toàn Bộ ({book?.totalLessonsCount || 72} Bài)</span>
@@ -176,7 +176,7 @@ export default function BinoBookOverviewPage() {
 
             <div className="text-[11px] text-slate-600 dark:text-slate-300 flex items-center gap-1.5 pt-2 border-t border-slate-200/80 dark:border-slate-700 font-medium">
               <CheckCircle2 size={14} className="text-emerald-500 shrink-0" />
-              <span>Trọn bộ 12 Chương từ Ebook TiengAnhBi</span>
+              <span>Trọn bộ 12 Chương • 72 Bài Thực Chiến</span>
             </div>
           </div>
         </div>
@@ -322,7 +322,7 @@ export default function BinoBookOverviewPage() {
                         const chapterDialogueIds = activeChapter.dialogues?.map(d => d.id) || [];
                         openPlaylistWith(chapterDialogueIds, true);
                       }}
-                      className="px-3.5 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl font-bold text-xs shadow-md shadow-blue-500/20 flex items-center gap-1.5 transition-all duration-150 hover:-translate-y-0.5 cursor-pointer"
+                      className="px-3.5 py-2 bg-[#0071e3] hover:bg-[#0077ED] dark:bg-sky-500 dark:hover:bg-sky-400 text-white rounded-xl font-bold text-xs shadow-[0_4px_14px_rgba(0,113,227,0.25)] flex items-center gap-1.5 transition-all duration-150 hover:-translate-y-0.5 cursor-pointer"
                       title={`Phát liên tục tất cả bài học Chương ${activeChapter.chapterNumber}`}
                     >
                       <Play size={13} fill="currentColor" />
@@ -336,7 +336,7 @@ export default function BinoBookOverviewPage() {
                         className="px-3.5 py-2 bg-amber-50 dark:bg-amber-950/80 hover:bg-amber-100 dark:hover:bg-amber-900/60 text-amber-900 dark:text-amber-300 rounded-xl font-black text-xs border border-amber-300 dark:border-amber-700 flex items-center gap-1.5 transition-all duration-150 hover:-translate-y-0.5 shadow-2xs cursor-pointer"
                       >
                         <Star size={13} className="text-amber-500 fill-amber-500" />
-                        <span>Mục B, C & Philosophy</span>
+                        <span>Mục B, C & Mindset</span>
                       </button>
                     )}
                   </div>
@@ -435,14 +435,14 @@ export default function BinoBookOverviewPage() {
                         <Star size={11} className="fill-white" /> Nội Dung Cuối Chương {activeChapter.chapterNumber < 10 ? `0${activeChapter.chapterNumber}` : activeChapter.chapterNumber}
                       </span>
                       <span className="text-[11px] font-bold text-amber-800 dark:text-amber-300">
-                        Section B (More Expressions) • Section C (Practise Speaking) • Bino's Philosophy #{activeChapter.chapterNumber}
+                        Section B (More Expressions) • Section C (Practise Speaking) • VBace&apos;s Mindset #{activeChapter.chapterNumber}
                       </span>
                     </div>
                     <h4 className="text-sm sm:text-base font-black text-slate-900 dark:text-white">
-                      Tổng Hợp Mẫu Câu Mở Rộng, Luyện Nói Cùng Bino & Tâm Sự Cuối Chương {activeChapter.chapterNumber}
+                      Tổng Hợp Mẫu Câu Mở Rộng, Luyện Nói Cùng Leo &amp; Góc Tư Duy Cuối Chương {activeChapter.chapterNumber}
                     </h4>
                     <p className="text-xs text-slate-600 dark:text-slate-300 font-medium">
-                      Đầy đủ 100% nội dung cuối chương từ sách Ebook: Các cấu trúc mở rộng theo chủ đề, ví dụ song ngữ, hướng dẫn luyện nói và bài viết Bino's Philosophy #{activeChapter.chapterNumber}.
+                      Đầy đủ 100% nội dung cuối chương từ giáo trình Ebook: Các cấu trúc mở rộng theo chủ đề, ví dụ song ngữ, hướng dẫn luyện nói và bài viết VBace&apos;s Mindset #{activeChapter.chapterNumber}.
                     </p>
                   </div>
 
@@ -457,7 +457,7 @@ export default function BinoBookOverviewPage() {
         </div>
       </div>
 
-      {/* Cẩm Nang Hướng Dẫn Cách Học 4 Bước Bino */}
+      {/* Cẩm Nang Hướng Dẫn Cách Học 4 Bước VBace */}
       <BinoLearningGuideModal
         isOpen={isGuideModalOpen}
         onClose={() => setIsGuideModalOpen(false)}

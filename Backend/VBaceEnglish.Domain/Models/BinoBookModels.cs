@@ -3,10 +3,10 @@ namespace VBaceEnglish.Domain.Models;
 public class BinoBook
 {
     public int Id { get; set; }
-    public string Title { get; set; } = "Chém Tiếng Anh không cần động não";
-    public string Author { get; set; } = "Bino";
+    public string Title { get; set; } = "Giao Tiếp Thực Chiến: Phản Xạ Tiếng Anh Tức Thì";
+    public string Author { get; set; } = "Vũ Bảo Software";
     public string Slug { get; set; } = "chem-tieng-anh-khong-can-dong-nao";
-    public string? Description { get; set; } = "Học giao tiếp tiếng Anh tự nhiên, phản xạ 'không cần động não' với 12 chương và hơn 70 bài hội thoại thực tế của Bino.";
+    public string? Description { get; set; } = "Hệ thống 12 chương và 72 bài hội thoại giao tiếp đời thực giúp bật phản xạ tiếng Anh tự nhiên không cần dịch ngầm — Độc quyền bởi Vũ Bảo Software.";
     public string? CoverImageUrl { get; set; }
     public string? PdfFileUrl { get; set; }
     public string? EpubFileUrl { get; set; }

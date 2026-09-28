@@ -40,8 +40,8 @@ export default function VoiceSettingsModal({ isOpen, onClose }) {
   const handlePreviewBino = () => {
     setPreviewing('bino');
     speechService.speakLine({
-      text: "Hey mate! I'm Bino. Welcome to natural English conversation!",
-      characterName: 'BINO',
+      text: "Hey mate! I'm Leo. Welcome to VBace natural English conversation!",
+      characterName: 'LEO',
       voiceURI: binoVoiceURI,
       speed: rate,
       forceCancel: true,
@@ -126,12 +126,12 @@ export default function VoiceSettingsModal({ isOpen, onClose }) {
             </div>
           </div>
 
-          {/* 1. Giọng Bino (Nam chính) */}
+          {/* 1. Giọng Leo (Nam chính) */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                 <User size={14} className="text-[#0071e3]" />
-                <span>Giọng Đọc BINO (Nam Chính):</span>
+                <span>Giọng Đọc LEO (Nam Chính):</span>
               </label>
               <button
                 type="button"
@@ -140,7 +140,7 @@ export default function VoiceSettingsModal({ isOpen, onClose }) {
                 className="text-xs font-bold text-[#0071e3] dark:text-blue-400 hover:underline flex items-center gap-1"
               >
                 <Play size={12} />
-                <span>{previewing === 'bino' ? 'Đang phát thử...' : 'Nghe thử giọng Bino'}</span>
+                <span>{previewing === 'bino' ? 'Đang phát thử...' : 'Nghe thử giọng Leo'}</span>
               </button>
             </div>
             <select
@@ -148,7 +148,7 @@ export default function VoiceSettingsModal({ isOpen, onClose }) {
               onChange={(e) => setBinoVoiceURI(e.target.value)}
               className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-slate-900 dark:text-white font-semibold focus:ring-2 focus:ring-[#0071e3] outline-none"
             >
-              <optgroup label="Giọng Nam Studio Neural (Khuyên dùng cho Bino)">
+              <optgroup label="Giọng Nam Studio Neural (Khuyên dùng cho Nhân vật chính)">
                 {maleVoices.map((v) => (
                   <option key={v.id} value={v.id}>
                     ⭐ {v.name} 👨

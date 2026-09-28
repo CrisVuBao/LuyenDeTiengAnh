@@ -48,13 +48,13 @@ export default function BinoLearningGuideModal({ isOpen, onClose }) {
       icon: Mic,
       badge: "Bước 3",
       title: "Đọc Đuổi & Đóng Vai 1:1 (Echo Shadowing)",
-      subtitle: "Mở cơ miệng và sao chép ngữ điệu tự nhiên cùng Bino",
+      subtitle: "Mở cơ miệng và sao chép ngữ điệu tự nhiên cùng Leo",
       color: "from-purple-600 to-indigo-600",
       accentBg: "bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800",
       instruction: "Chuyển sang Tab 'Luyện Phản Xạ 1:1' ngay trong bài:",
       details: [
         "Chọn vai bạn muốn đóng (Ví dụ: Amy, New Friend, Jeremy...).",
-        "Hệ thống trong vai Bino sẽ đọc thoại trước. Đến lượt bạn, hãy **đọc to thành tiếng** câu thoại bằng tiếng Anh.",
+        "Hệ thống trong vai Leo sẽ đọc thoại trước. Đến lượt bạn, hãy **đọc to thành tiếng** câu thoại bằng tiếng Anh.",
         "Kỹ thuật Shadowing: Cố gắng nhại lại y hệt tốc độ, ngữ điệu và cảm xúc của nhân vật như một diễn viên kịch."
       ],
       tip: "Đừng sợ phát âm sai! Miệng phải mở to, nói nhiều lần thì cơ hàm mới quen với âm gió và ngữ điệu tiếng Anh."
@@ -73,7 +73,7 @@ export default function BinoLearningGuideModal({ isOpen, onClose }) {
         "Đọc to 3–5 tình huống thực tế khác nhau: Đi làm ở công sở (`office culture`), chuyển nhà (`house layout`), thời tiết (`cold winter`)...",
         "Bấm loa nghe giọng đọc từng câu biến thể, rồi tự thử tài gõ cụm từ của riêng bạn để tạo câu mới!"
       ],
-      tip: "Chỉ cần thuộc 1 mẫu câu khung, bạn có thể 'chém' được 20 câu khác nhau trong mọi tình huống đời thực!"
+      tip: "Chỉ cần thuộc 1 mẫu câu khung, bạn có thể biến hóa thành 20 câu phản xạ khác nhau trong mọi tình huống đời thực!"
     }
   ];
 
@@ -98,10 +98,10 @@ export default function BinoLearningGuideModal({ isOpen, onClose }) {
           </div>
           <div>
             <h3 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white">
-              Phương Pháp Học Phản Xạ 4 Bước Bino
+              Phương Pháp Học Phản Xạ 4 Bước VBace Flow
             </h3>
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              Bí quyết để "Chém Tiếng Anh Không Cần Động Não" sau 30 ngày
+              Bí quyết &ldquo;Bật Tiếng Anh Tự Nhiên — Không Cần Dịch Ngầm&rdquo; sau 30 ngày
             </p>
           </div>
         </div>
@@ -202,7 +202,7 @@ export default function BinoLearningGuideModal({ isOpen, onClose }) {
                 </p>
               </div>
               <div className="p-2.5 rounded-xl bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200/60 text-emerald-800 dark:text-emerald-300 space-y-1">
-                <span className="font-extrabold text-[11px] block">✅ Chuẩn Bino:</span>
+                <span className="font-extrabold text-[11px] block">✅ Chuẩn VBace Flow:</span>
                 <p className="text-[10px] leading-relaxed opacity-90">
                   Học cả cụm đúc sẵn → Bật ra ngay tức thì dưới 0.5 giây → Tự tin, trôi chảy.
                 </p>

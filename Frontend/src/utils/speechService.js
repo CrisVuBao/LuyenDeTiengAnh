@@ -391,7 +391,7 @@ class SpeechService {
   detectRoleProfile(characterName = '') {
     const name = (characterName || '').toUpperCase().trim();
 
-    if (!name || name.includes('BINO')) {
+    if (!name || name.includes('BINO') || name.includes('LEO') || name.includes('VBACE')) {
       return { role: 'bino', isChild: false, isFemale: false };
     }
 
@@ -611,8 +611,8 @@ class SpeechService {
 
     try {
       navigator.mediaSession.metadata = new window.MediaMetadata({
-        title: metadata.title || 'Chém Tiếng Anh Không Cần Động Não',
-        artist: metadata.artist || 'Bino Studio Neural AI 🎙️',
+        title: metadata.title || 'Giao Tiếp Thực Chiến — VBaceEnglish',
+        artist: metadata.artist || 'VBace Studio Neural AI 🎙️',
         album: metadata.album || 'VBaceEnglish Reflex Audio',
         artwork: [{ src: '/vite.svg', sizes: '192x192', type: 'image/svg+xml' }]
       });

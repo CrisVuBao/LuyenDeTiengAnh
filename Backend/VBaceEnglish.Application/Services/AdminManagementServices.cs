@@ -1028,7 +1028,7 @@ public class AnalyticsService : IAnalyticsService
         var pillarComp = new List<AnalyticsPillarStatDto>
         {
             new() { PillarName = "Luyện Đề TOEIC", ActiveLearners = toeicLearners, TotalCompletions = toeicTotalCompleted, AvgCompletionPercent = toeicAvgPct },
-            new() { PillarName = "Sách Bino 72 Bài", ActiveLearners = binoLearners, TotalCompletions = binoTotalDone, AvgCompletionPercent = binoAvgPct },
+            new() { PillarName = "Giao Tiếp Thực Chiến", ActiveLearners = binoLearners, TotalCompletions = binoTotalDone, AvgCompletionPercent = binoAvgPct },
             new() { PillarName = "3000 Từ Vựng Oxford", ActiveLearners = vocabLearners, TotalCompletions = vocabTotalMastered, AvgCompletionPercent = vocabAvgPct },
             new() { PillarName = "Phản Xạ 50 Chủ Đề", ActiveLearners = reflexLearners, TotalCompletions = reflexTotalMastered, AvgCompletionPercent = reflexAvgPct }
         };

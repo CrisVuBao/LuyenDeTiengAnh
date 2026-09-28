@@ -29,7 +29,7 @@ const QUICK_TEMPLATES = [
     name: '🔥 Nhắc giữ chuỗi Streak',
     title: '🔥 Đừng để mất chuỗi Streak hôm nay nhé!',
     content:
-      'Chỉ cần dành 5-10 phút ôn tập 3000 Từ Vựng hoặc làm 1 bài hội thoại Bino để giữ vững ngọn lửa Streak và nhận điểm thưởng XP ngày hôm nay!',
+      'Chỉ cần dành 5-10 phút ôn tập 3000 Từ Vựng hoặc làm 1 bài hội thoại Giao Tiếp Thực Chiến để giữ vững ngọn lửa Streak và nhận điểm thưởng XP ngày hôm nay!',
     type: 'Reminder',
     iconEmoji: '🔥',
     actionUrl: '/vocab'
@@ -86,7 +86,7 @@ const EMOJI_OPTIONS = ['📢', '🔔', '🔥', '🎁', '🏆', '📘', '⚡', '�
 const ACTION_ROUTES = [
   { label: 'Không gắn link điều hướng', value: '' },
   { label: '🏠 Trang chủ Học viên (/home)', value: '/home' },
-  { label: '📖 Giáo trình Bino 72 Bài (/bino)', value: '/bino' },
+  { label: '📖 Giao Tiếp Thực Chiến (/bino)', value: '/bino' },
   { label: '⚡ Phản Xạ 50 Chủ Đề (/reflex-50)', value: '/reflex-50' },
   { label: '📚 3000 Từ Vựng Oxford (/vocab)', value: '/vocab' },
   { label: '📝 Phòng Luyện Đề TOEIC (/toeic)', value: '/toeic' },

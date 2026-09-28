@@ -163,7 +163,7 @@ export default function AdminBinoManager() {
         { id: 0, word: '', phonetic: '', wordType: 'v', meaning: '', exampleSentence: '' }
       ],
       dialogueLines: [
-        { id: 0, characterName: 'BINO', englishText: '', vietnameseText: '', isUserRole: false },
+        { id: 0, characterName: 'LEO', englishText: '', vietnameseText: '', isUserRole: false },
         { id: 0, characterName: 'FRIEND', englishText: '', vietnameseText: '', isUserRole: true }
       ]
     });
@@ -268,7 +268,7 @@ export default function AdminBinoManager() {
       ...prev,
       dialogueLines: [
         ...prev.dialogueLines,
-        { id: 0, characterName: 'BINO', englishText: '', vietnameseText: '', isUserRole: false }
+        { id: 0, characterName: 'LEO', englishText: '', vietnameseText: '', isUserRole: false }
       ]
     }));
   };
@@ -321,7 +321,7 @@ export default function AdminBinoManager() {
 
   // Real Data EPUB Sync
   const handleSyncRealData = async () => {
-    if (!window.confirm('Hệ thống sẽ đồng bộ 100% dữ liệu thực tế từ sách TiengAnhBi.epub (16 bài hội thoại, 100 từ vựng và 174 câu thoại) vào cơ sở dữ liệu. Tiếp tục?')) {
+    if (!window.confirm('Hệ thống sẽ đồng bộ 100% dữ liệu thực tế từ giáo trình điện tử (72 bài hội thoại, từ vựng cốt lõi và câu thoại song ngữ) vào cơ sở dữ liệu. Tiếp tục?')) {
       return;
     }
 
@@ -348,14 +348,14 @@ export default function AdminBinoManager() {
         <div>
           <div className="flex items-center gap-2">
             <span className="px-2.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 text-xs font-bold">
-              Bino CMS Admin Portal
+              VBace Flow CMS Admin Portal
             </span>
             <span className="text-xs text-slate-400">•</span>
             <span className="text-xs text-slate-500 dark:text-slate-400">12 Chương &amp; 72 Bài Học</span>
           </div>
           <h1 className="text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2 mt-1">
             <BookOpen size={26} className="text-amber-500" />
-            <span>Hệ Thống Quản Trị &amp; Nhập Liệu "Chém Tiếng Anh"</span>
+            <span>Hệ Thống Quản Trị &amp; Nhập Liệu "Giao Tiếp Thực Chiến"</span>
           </h1>
         </div>
 
@@ -722,7 +722,7 @@ export default function AdminBinoManager() {
             <div className="p-4 rounded-2xl bg-emerald-50/60 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900/40">
               <span className="text-2xl font-black text-emerald-600 dark:text-emerald-400">174</span>
               <p className="text-xs font-bold text-slate-600 dark:text-slate-300 mt-1">Lượt Thoại Song Ngữ</p>
-              <p className="text-[10px] text-slate-400">Phân vai Bino và nhân vật, hỗ trợ luyện nói 1:1</p>
+              <p className="text-[10px] text-slate-400">Phân vai Leo và nhân vật, hỗ trợ luyện nói 1:1</p>
             </div>
           </div>
 
@@ -798,7 +798,7 @@ export default function AdminBinoManager() {
               </div>
 
               <div className="pt-2 border-t border-slate-100 dark:border-slate-800 space-y-2">
-                <span className="font-bold text-amber-600 dark:text-amber-400">🎁 Góc Tiếng Lóng &amp; Triết Lý Bino:</span>
+                <span className="font-bold text-amber-600 dark:text-amber-400">🎁 Góc Tiếng Lóng &amp; Tư Duy VBace (VBace's Mindset):</span>
                 <div>
                   <label className="font-bold text-slate-500">Tiêu đề mục bổ sung:</label>
                   <input
@@ -928,7 +928,7 @@ export default function AdminBinoManager() {
                       <label className="font-bold text-slate-600 dark:text-slate-400">Tiêu đề tiếng Anh:</label>
                       <input
                         type="text"
-                        placeholder="e.g. At Bino's New Friend's Party"
+                        placeholder="e.g. At Leo's New Friend's Party"
                         value={dialogueForm.title}
                         onChange={e => setDialogueForm({ ...dialogueForm, title: e.target.value })}
                         className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 mt-1 font-bold"
@@ -952,7 +952,7 @@ export default function AdminBinoManager() {
                     <label className="font-bold text-slate-600 dark:text-slate-400">Mô tả tình huống / Ngữ cảnh:</label>
                     <textarea
                       rows="2"
-                      placeholder="e.g. Bino đến dự tiệc tại nhà bạn mới và được giới thiệu làm quen với những người bạn khác..."
+                      placeholder="e.g. Leo đến dự tiệc tại nhà bạn mới và được giới thiệu làm quen với những người bạn khác..."
                       value={dialogueForm.situationDescription}
                       onChange={e => setDialogueForm({ ...dialogueForm, situationDescription: e.target.value })}
                       className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 mt-1"
@@ -1092,7 +1092,7 @@ export default function AdminBinoManager() {
                       <div
                         key={idx}
                         className={`p-3 rounded-xl border grid grid-cols-12 gap-2 items-center ${
-                          l.characterName === 'BINO'
+                          l.characterName === 'LEO' || l.characterName === 'BINO'
                             ? 'border-amber-200 dark:border-amber-900/40 bg-amber-50/30 dark:bg-amber-950/20'
                             : 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60'
                         }`}
@@ -1100,7 +1100,7 @@ export default function AdminBinoManager() {
                         <div className="col-span-2">
                           <input
                             type="text"
-                            placeholder="Nhân vật (BINO / FRIEND)"
+                            placeholder="Nhân vật (LEO / FRIEND)"
                             value={l.characterName}
                             onChange={e => handleUpdateLineRow(idx, 'characterName', e.target.value.toUpperCase())}
                             className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 font-black text-center"
