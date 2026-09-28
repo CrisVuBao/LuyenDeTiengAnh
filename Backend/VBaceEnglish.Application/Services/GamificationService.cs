@@ -42,32 +42,168 @@ public class GamificationService : IGamificationService
     private static DateTime GetVietnamTime() => DateTime.UtcNow.AddHours(7);
     private static DateTime GetVietnamToday() => GetVietnamTime().Date;
 
+    /// <summary>
+    /// Đường cong Cấp độ chuẩn RPG Cày Cuốc Thực Chất (Mở rộng tới Level 100):
+    /// Tổng XP cần để hoàn thành Level L (bước sang Level L + 1):
+    /// XP(L) = 100 * L + 25 * L * (L - 1)
+    /// - Lv.1 -> Lv.2: cần 100 XP
+    /// - Lv.2 -> Lv.3: cần 250 XP (+150 XP)
+    /// - Lv.3 -> Lv.4: cần 450 XP (+200 XP)
+    /// - Lv.4 -> Lv.5: cần 700 XP (+250 XP)
+    /// - Lv.5 -> Lv.6: cần 1,000 XP (+300 XP)
+    /// - Lv.10 -> Lv.11: cần 3,250 XP
+    /// - Lv.20 -> Lv.21: cần 11,500 XP
+    /// - Lv.30 -> Lv.31: cần 24,750 XP
+    /// - Lv.50 -> Lv.51: cần 66,250 XP
+    /// </summary>
+    private int GetXpForNextLevel(int currentLevel)
+    {
+        int lv = Math.Max(1, currentLevel);
+        return 100 * lv + 25 * lv * (lv - 1);
+    }
+
     private int CalculateLevel(int totalXp)
     {
         int level = 1;
-        while (level < 50 && totalXp >= (level * level * 20))
+        while (level < 100 && totalXp >= GetXpForNextLevel(level))
         {
             level++;
         }
         return level;
     }
 
-    private int GetXpForNextLevel(int currentLevel)
-    {
-        return currentLevel * currentLevel * 20;
-    }
-
     private string GetLevelTitle(int level)
     {
         return level switch
         {
-            <= 5 => "Tân binh",
-            <= 10 => "Chiến binh",
-            <= 20 => "Dũng sĩ",
-            <= 30 => "Cao thủ",
-            <= 40 => "Bậc thầy",
+            <= 3 => "Tân binh",
+            <= 7 => "Học việc",
+            <= 12 => "Chiến binh",
+            <= 20 => "Tinh anh",
+            <= 30 => "Dũng sĩ",
+            <= 45 => "Cao thủ",
+            <= 65 => "Bậc thầy",
             _ => "Huyền thoại"
         };
+    }
+
+    /// <summary>
+    /// Chuẩn hóa điểm XP nhận được theo từng hành động và áp dụng cơ chế Chống Cày Điểm Ảo (Anti-Farming & Daily Cap).
+    /// </summary>
+    private int NormalizeAndValidateXpReward(int userId, int requestedAmount, string source, string description, DateTime todayVn)
+    {
+        if (string.Equals(source, "AdminReward", StringComparison.OrdinalIgnoreCase))
+        {
+            return Math.Max(0, requestedAmount);
+        }
+
+        string src = (source ?? "").Trim().ToLowerInvariant();
+        string desc = (description ?? "").Trim();
+        string dateKey = todayVn.ToString("yyyyMMdd");
+
+        // 1. Chống nhận thưởng trùng lặp cho cùng 1 mục cụ thể trong ngày (Idempotency cho hoàn thành bài / câu cụ thể)
+        if (!string.IsNullOrEmpty(desc) &&
+            (src == "bino_dialogue" || src == "reflex_master" || src == "toeic_confident" || src == "bino_dictation"))
+        {
+            string uniqueItemKey = $"xp_once_{userId}_{dateKey}_{src}_{desc}";
+            if (_memoryCache.TryGetValue(uniqueItemKey, out bool _))
+            {
+                return 0;
+            }
+            _memoryCache.Set(uniqueItemKey, true, TimeSpan.FromHours(24));
+        }
+
+        // 2. Bảng quy đổi XP chuẩn theo đúng công sức cày cuốc thực tế & Trần tối đa mỗi lần
+        int baseXp;
+        int dailySourceCap = 300; // Trần mặc định
+
+        if (src == "bino_listen" || src == "reflex_listen")
+        {
+            // Nghe thụ động: 1 XP / câu, tối đa 15 XP / ngày (tránh bật tự động phát lặp để treo máy cày cấp)
+            baseXp = 1;
+            dailySourceCap = 15;
+        }
+        else if (src.StartsWith("vocab_master"))
+        {
+            baseXp = 1;
+            dailySourceCap = 25;
+        }
+        else if (src == "flashcard_review")
+        {
+            baseXp = Math.Clamp(requestedAmount, 1, 3);
+            dailySourceCap = 35;
+        }
+        else if (src.StartsWith("vocab_flashcard"))
+        {
+            baseXp = Math.Clamp(requestedAmount, 1, 12);
+            dailySourceCap = 45;
+        }
+        else if (src == "vocab_quiz")
+        {
+            baseXp = Math.Clamp(requestedAmount, 1, 15);
+            dailySourceCap = 45;
+        }
+        else if (src.StartsWith("vocab_spelling"))
+        {
+            baseXp = Math.Clamp(requestedAmount, 1, 20);
+            dailySourceCap = 50;
+        }
+        else if (src == "bino_roleplay")
+        {
+            bool isFullRoleplay = desc.Contains("Hoàn thành", StringComparison.OrdinalIgnoreCase);
+            baseXp = isFullRoleplay ? 10 : Math.Clamp(requestedAmount, 1, 5);
+            dailySourceCap = 50;
+        }
+        else if (src == "bino_dictation")
+        {
+            baseXp = Math.Clamp(requestedAmount, 1, 5);
+            dailySourceCap = 45;
+        }
+        else if (src == "bino_dialogue")
+        {
+            baseXp = 12;
+            dailySourceCap = 60;
+        }
+        else if (src == "reflex_write")
+        {
+            baseXp = Math.Clamp(requestedAmount, 1, 6);
+            dailySourceCap = 50;
+        }
+        else if (src == "reflex_speak")
+        {
+            baseXp = Math.Clamp(requestedAmount, 1, 8);
+            dailySourceCap = 65;
+        }
+        else if (src == "reflex_master")
+        {
+            bool isFullUnit = desc.Contains("Unit", StringComparison.OrdinalIgnoreCase);
+            baseXp = isFullUnit ? 10 : 1;
+            dailySourceCap = 30;
+        }
+        else if (src == "toeic_confident")
+        {
+            baseXp = 2;
+            dailySourceCap = 40;
+        }
+        else
+        {
+            baseXp = Math.Clamp(requestedAmount, 1, 10);
+            dailySourceCap = 50;
+        }
+
+        // 3. Kiểm tra giới hạn trần XP theo nhóm nguồn trong ngày
+        string capGroup = (src == "bino_listen" || src == "reflex_listen") ? "passive_listen" : src.Split(':')[0];
+        string dailyAccumKey = $"xp_daily_sum_{userId}_{dateKey}_{capGroup}";
+        int earnedToday = _memoryCache.TryGetValue(dailyAccumKey, out int currentSum) ? currentSum : 0;
+
+        if (earnedToday >= dailySourceCap)
+        {
+            return 0;
+        }
+
+        int finalXp = Math.Min(baseXp, dailySourceCap - earnedToday);
+        _memoryCache.Set(dailyAccumKey, earnedToday + finalXp, TimeSpan.FromHours(24));
+        return finalXp;
     }
 
     public async Task<Response<GamificationProfileDto>> GetProfileAsync(int userId)
@@ -82,6 +218,14 @@ public class GamificationService : IGamificationService
 
         var todayVn = GetVietnamToday();
         bool hasChanges = false;
+
+        // 0. Đồng bộ lại chính xác CurrentLevel theo đường cong RPG mới dựa trên TotalXP thực tế
+        int calculatedLevel = CalculateLevel(gamification.TotalXP);
+        if (gamification.CurrentLevel != calculatedLevel)
+        {
+            gamification.CurrentLevel = calculatedLevel;
+            hasChanges = true;
+        }
 
         // 1. Kiểm tra Reset WeeklyXP vào đầu tuần (Thứ Hai 00:00 VN)
         int diff = (7 + (todayVn.DayOfWeek - DayOfWeek.Monday)) % 7;
@@ -118,7 +262,7 @@ public class GamificationService : IGamificationService
 
         var nextLevelXp = GetXpForNextLevel(gamification.CurrentLevel);
         var prevLevelXp = gamification.CurrentLevel > 1 ? GetXpForNextLevel(gamification.CurrentLevel - 1) : 0;
-        var progress = (double)(gamification.TotalXP - prevLevelXp) / (nextLevelXp - prevLevelXp) * 100;
+        var progress = (double)(gamification.TotalXP - prevLevelXp) / Math.Max(1, nextLevelXp - prevLevelXp) * 100;
         if (progress < 0) progress = 0;
         if (progress > 100) progress = 100;
 
@@ -156,6 +300,9 @@ public class GamificationService : IGamificationService
         {
             gamification = new UserGamification { UserId = userId };
         }
+
+        // Đồng bộ lại cấp độ thực tế trước khi cộng XP mới
+        gamification.CurrentLevel = CalculateLevel(gamification.TotalXP);
 
         var nowVn = GetVietnamTime();
         var todayVn = nowVn.Date;
@@ -201,54 +348,61 @@ public class GamificationService : IGamificationService
         }
         gamification.LastActiveDate = nowVn;
 
-        // 2. Áp dụng hệ số nhân XP động từ Cài đặt Hệ thống (nếu không phải thưởng trực tiếp từ Admin)
-        if (!string.Equals(source, "AdminReward", StringComparison.OrdinalIgnoreCase))
+        // 2. Chuẩn hóa mức thưởng XP theo cơ chế Cày Cuốc Thực Chất & Chống Spam
+        int normalizedAmount = NormalizeAndValidateXpReward(userId, amount, source, description, todayVn);
+
+        // Áp dụng hệ số nhân XP động từ Cài đặt Hệ thống (nếu không phải thưởng trực tiếp từ Admin)
+        if (!string.Equals(source, "AdminReward", StringComparison.OrdinalIgnoreCase) && normalizedAmount > 0)
         {
             double multiplier = await _settingsService.GetDoubleSettingAsync("gamification.xp_multiplier", 1.0);
-            if (multiplier > 1.0 && amount > 0)
+            if (multiplier > 0 && Math.Abs(multiplier - 1.0) > 0.01)
             {
-                amount = (int)Math.Round(amount * multiplier);
+                normalizedAmount = Math.Max(1, (int)Math.Round(normalizedAmount * multiplier));
             }
         }
 
         int prevLevel = gamification.CurrentLevel;
-        gamification.TotalXP += amount;
-        gamification.WeeklyXP += amount;
+        if (normalizedAmount > 0)
+        {
+            gamification.TotalXP += normalizedAmount;
+            gamification.WeeklyXP += normalizedAmount;
 
+            // 3. Ghi log giao dịch XP chính
+            var transaction = new XPTransaction
+            {
+                UserId = userId,
+                Amount = normalizedAmount,
+                Source = source,
+                Description = description,
+                CreatedAt = DateTime.UtcNow
+            };
+            await _unitOfWork.Gamification.AddXPTransactionAsync(transaction);
+        }
+
+        // 4. TIẾN TRÌNH NHIỆM VỤ HÀNG NGÀY (Tính cả tiến trình ngay cả khi nghe thụ động chạm trần XP)
+        await AdvanceDailyQuestsProgressAsync(gamification, source);
+
+        // 5. Tính toán thăng cấp sau khi đã gộp cả XP hành động và XP thưởng Nhiệm vụ ngày
         int newLevel = CalculateLevel(gamification.TotalXP);
+        gamification.CurrentLevel = newLevel;
         if (newLevel > prevLevel)
         {
-            gamification.CurrentLevel = newLevel;
             var levelTitle = GetLevelTitle(newLevel);
             await _notificationService.TriggerUserNotificationAsync(
                 userId,
                 $"🏆 Chúc mừng thăng cấp Level {newLevel} ({levelTitle})!",
-                $"Tuyệt vời! Bạn vừa đạt mốc {gamification.TotalXP:N0} XP và chính thức bước lên Cấp độ {newLevel} — {levelTitle}!",
+                $"Tuyệt vời! Bạn vừa đạt mốc {gamification.TotalXP:N0} XP sau quá trình rèn luyện bền bỉ và chính thức bước lên Cấp độ {newLevel} — {levelTitle}!",
                 "Achievement",
                 "🏆",
                 "/leaderboard"
             );
         }
 
-        // 3. Ghi log giao dịch XP chính
-        var transaction = new XPTransaction
-        {
-            UserId = userId,
-            Amount = amount,
-            Source = source,
-            Description = description,
-            CreatedAt = DateTime.UtcNow
-        };
-        await _unitOfWork.Gamification.AddXPTransactionAsync(transaction);
-
-        // 4. TIẾN TRÌNH NHIỆM VỤ HÀNG NGÀY (CHỈ DÀNH CHO BINO & PHẢN XẠ 50 CHỦ ĐỀ)
-        await AdvanceDailyQuestsProgressAsync(gamification, source);
-
         gamification.UpdatedAt = DateTime.UtcNow;
         await _unitOfWork.Gamification.UpsertAsync(gamification);
         await _unitOfWork.CompleteAsync();
 
-        // 5. Kiểm tra và mở khóa huy hiệu thành tựu
+        // 6. Kiểm tra và mở khóa huy hiệu thành tựu
         await CheckAndUnlockAchievementsAsync(userId, gamification, source);
 
         return await GetProfileAsync(userId);
@@ -269,6 +423,13 @@ public class GamificationService : IGamificationService
 
         foreach (var q in quests)
         {
+            // Đồng bộ lại mức thưởng nhiệm vụ cũ nếu đang lưu giá trị quá cao từ phiên bản trước
+            if (q.XPReward > 30)
+            {
+                q.XPReward = Math.Clamp(q.XPReward / 2, 15, 25);
+                hasQuestUpdates = true;
+            }
+
             if (q.IsCompleted) continue;
 
             bool matches = false;
@@ -277,7 +438,7 @@ public class GamificationService : IGamificationService
             if ((source == "bino_listen" || source == "bino_dialogue") && q.QuestType == "bino_listen")
             {
                 matches = true;
-                if (source == "bino_dialogue") increment = 5;
+                if (source == "bino_dialogue") increment = 4;
             }
             else if (source == "bino_roleplay" && q.QuestType == "bino_roleplay") matches = true;
             else if (source == "bino_dictation" && q.QuestType == "bino_dictation") matches = true;
@@ -347,11 +508,12 @@ public class GamificationService : IGamificationService
             }
         }
 
-        // Kiểm tra nếu tất cả 4 nhiệm vụ đều đã xong -> Thưởng Bonus 50 XP
-        if (hasQuestUpdates && quests.Count > 0 && quests.All(q => q.IsCompleted))
+        // Kiểm tra nếu tất cả 4 nhiệm vụ đều đã xong -> Thưởng Bonus 25 XP (chỉ 1 lần/ngày)
+        string bonusKey = $"daily_quest_all_bonus_{gamification.UserId}_{todayVn:yyyyMMdd}";
+        if (hasQuestUpdates && quests.Count > 0 && quests.All(q => q.IsCompleted) && !_memoryCache.TryGetValue(bonusKey, out bool _))
         {
-            // Kiểm tra xem đã nhận bonus hôm nay chưa qua dailyQuestStreak hoặc check count
-            int bonusXP = 50;
+            _memoryCache.Set(bonusKey, true, TimeSpan.FromHours(24));
+            int bonusXP = 25;
             gamification.TotalXP += bonusXP;
             gamification.WeeklyXP += bonusXP;
             gamification.DailyQuestStreak++;
@@ -407,44 +569,47 @@ public class GamificationService : IGamificationService
             .Replace("3 câu Bino", "3 câu hội thoại")
             .Replace("từ vựng Bino", "thẻ từ vựng SRS");
         var quests = JsonSerializer.Deserialize<List<DailyQuestDto>>(sanitizedQuestsJson) ?? new List<DailyQuestDto>();
+        foreach (var q in quests)
+        {
+            if (q.XPReward > 30) q.XPReward = Math.Clamp(q.XPReward / 2, 15, 25);
+        }
         var nonToeicQuests = quests.Where(q => !q.QuestId.Contains("toeic", StringComparison.OrdinalIgnoreCase) && !q.QuestType.Contains("toeic", StringComparison.OrdinalIgnoreCase)).ToList();
         return Response<List<DailyQuestDto>>.SuccessResult("Lấy nhiệm vụ thành công", nonToeicQuests);
     }
 
     /// <summary>
     /// Tạo 4 nhiệm vụ hàng ngày: Chọn lọc cân bằng từ Giao Tiếp Thực Chiến, Phản Xạ 50 Chủ Đề và 3000 Từ Vựng Thiết Yếu.
-    /// Hoàn toàn loại bỏ TOEIC theo đúng yêu cầu học viên.
-    /// Tập trung vào HÀNH ĐỘNG HỌC THỰC TẾ HÀNG NGÀY (Micro-learning & Habit building).
+    /// Thiết kế mức thưởng cân đối (15 - 25 XP) đòi hỏi học viên thực hành thực chất mỗi ngày.
     /// </summary>
     private List<DailyQuestDto> GenerateDailyQuests(int userId, DateTime dateVn)
     {
         var binoPool = new List<DailyQuestDto>
         {
-            new() { QuestId = "q_bino_listen_8", Title = "Luyện nghe 8 câu hội thoại", Description = "Nghe ngấm ngữ điệu hoặc nhại giọng 8 câu thoại giao tiếp", TargetCount = 8, XPReward = 35, QuestType = "bino_listen" },
-            new() { QuestId = "q_bino_listen_15", Title = "Tắm ngôn ngữ 15 câu thoại", Description = "Luyện nghe sâu hoặc bật vòng lặp Shadowing 15 câu thoại", TargetCount = 15, XPReward = 55, QuestType = "bino_listen" },
-            new() { QuestId = "q_bino_roleplay_3", Title = "Đóng vai 3 lượt câu thoại", Description = "Thực hành đối đáp kịch bản 3 câu thoại trong bài học", TargetCount = 3, XPReward = 45, QuestType = "bino_roleplay" },
-            new() { QuestId = "q_bino_dictation_3", Title = "Chép chính tả 3 câu hội thoại", Description = "Nghe và gõ thử thách chép chính tả 3 câu thoại", TargetCount = 3, XPReward = 40, QuestType = "bino_dictation" },
-            new() { QuestId = "q_bino_flashcard_5", Title = "Ôn 5 thẻ từ vựng SRS", Description = "Lật thẻ và đánh giá trí nhớ Flashcard SRS lặp lại ngắt quãng", TargetCount = 5, XPReward = 30, QuestType = "flashcard_review" },
-            new() { QuestId = "q_bino_flashcard_10", Title = "Ôn tập 10 thẻ từ vựng SRS", Description = "Luyện tập trí nhớ với 10 thẻ từ vựng Flashcard", TargetCount = 10, XPReward = 50, QuestType = "flashcard_review" }
+            new() { QuestId = "q_bino_listen_8", Title = "Luyện nghe 10 câu hội thoại", Description = "Nghe ngấm ngữ điệu hoặc nhại giọng 10 câu thoại giao tiếp", TargetCount = 10, XPReward = 15, QuestType = "bino_listen" },
+            new() { QuestId = "q_bino_listen_15", Title = "Tắm ngôn ngữ 20 câu thoại", Description = "Luyện nghe sâu hoặc bật vòng lặp Shadowing 20 câu thoại", TargetCount = 20, XPReward = 22, QuestType = "bino_listen" },
+            new() { QuestId = "q_bino_roleplay_3", Title = "Đóng vai phát âm 5 câu thoại", Description = "Bật mic thực hành đối đáp kịch bản đạt chuẩn 5 câu thoại", TargetCount = 5, XPReward = 22, QuestType = "bino_roleplay" },
+            new() { QuestId = "q_bino_dictation_3", Title = "Chép chính tả chuẩn 4 câu thoại", Description = "Nghe và gõ chính tả đạt từ 70%+ cho 4 câu hội thoại", TargetCount = 4, XPReward = 20, QuestType = "bino_dictation" },
+            new() { QuestId = "q_bino_flashcard_5", Title = "Ôn 8 thẻ từ vựng FSRS", Description = "Lật thẻ và đánh giá nhớ tốt 8 thẻ Flashcard FSRS", TargetCount = 8, XPReward = 15, QuestType = "flashcard_review" },
+            new() { QuestId = "q_bino_flashcard_10", Title = "Chinh phục 15 thẻ từ vựng FSRS", Description = "Luyện tập trí nhớ với 15 thẻ từ vựng Flashcard FSRS", TargetCount = 15, XPReward = 25, QuestType = "flashcard_review" }
         };
 
         var reflexPool = new List<DailyQuestDto>
         {
-            new() { QuestId = "q_reflex_speak_5", Title = "Phản xạ nói 5 câu (3s)", Description = "Bật mic luyện nói phản xạ 5 câu trong Unit", TargetCount = 5, XPReward = 45, QuestType = "reflex_speak" },
-            new() { QuestId = "q_reflex_speak_10", Title = "Luyện nói 10 câu phản xạ", Description = "Thực hành phát âm chuẩn Microphone 10 câu phản xạ", TargetCount = 10, XPReward = 75, QuestType = "reflex_speak" },
-            new() { QuestId = "q_reflex_write_5", Title = "Luyện gõ viết 5 câu", Description = "Thực hành gõ dịch phản xạ 5 câu tiếng Anh", TargetCount = 5, XPReward = 40, QuestType = "reflex_write" },
-            new() { QuestId = "q_reflex_write_10", Title = "Thực chiến viết dịch 10 câu", Description = "Hoàn thành thử thách gõ dịch 10 câu phản xạ", TargetCount = 10, XPReward = 70, QuestType = "reflex_write" },
-            new() { QuestId = "q_reflex_listen_10", Title = "Luyện nghe 10 câu phản xạ", Description = "Nghe phát âm chuẩn bản xứ 10 câu trong Unit", TargetCount = 10, XPReward = 40, QuestType = "reflex_listen" },
-            new() { QuestId = "q_reflex_master_3", Title = "Ghi nhớ 3 câu phản xạ", Description = "Ghi nhớ và làm chủ 3 câu phản xạ giao tiếp mới", TargetCount = 3, XPReward = 50, QuestType = "reflex_master" }
+            new() { QuestId = "q_reflex_speak_5", Title = "Phản xạ nói chuẩn 6 câu", Description = "Bật mic luyện nói phản xạ đạt 75%+ cho 6 câu trong Unit", TargetCount = 6, XPReward = 20, QuestType = "reflex_speak" },
+            new() { QuestId = "q_reflex_speak_10", Title = "Luyện nói thực chiến 12 câu", Description = "Thực hành phát âm chuẩn Microphone 12 câu phản xạ", TargetCount = 12, XPReward = 28, QuestType = "reflex_speak" },
+            new() { QuestId = "q_reflex_write_5", Title = "Luyện gõ dịch chuẩn 6 câu", Description = "Thực hành gõ dịch phản xạ đạt 80%+ cho 6 câu tiếng Anh", TargetCount = 6, XPReward = 18, QuestType = "reflex_write" },
+            new() { QuestId = "q_reflex_write_10", Title = "Thực chiến viết dịch 12 câu", Description = "Hoàn thành thử thách gõ dịch chuẩn 12 câu phản xạ", TargetCount = 12, XPReward = 25, QuestType = "reflex_write" },
+            new() { QuestId = "q_reflex_listen_10", Title = "Luyện nghe 15 câu phản xạ", Description = "Nghe phát âm chuẩn bản xứ 15 câu trong Unit", TargetCount = 15, XPReward = 15, QuestType = "reflex_listen" },
+            new() { QuestId = "q_reflex_master_3", Title = "Làm chủ 5 câu phản xạ mới", Description = "Ghi nhớ và làm chủ 5 câu phản xạ giao tiếp mới", TargetCount = 5, XPReward = 20, QuestType = "reflex_master" }
         };
 
         var vocabPool = new List<DailyQuestDto>
         {
-            new() { QuestId = "q_vocab_card_10", Title = "Ôn 10 thẻ từ vựng 3000", Description = "Luyện phản xạ lật thẻ 10 từ vựng theo chủ đề", TargetCount = 10, XPReward = 35, QuestType = "vocab_flashcard" },
-            new() { QuestId = "q_vocab_card_20", Title = "Luyện 20 thẻ từ vựng", Description = "Nạp vốn từ vựng với 20 thẻ Flashcard 3D thông minh", TargetCount = 20, XPReward = 60, QuestType = "vocab_flashcard" },
-            new() { QuestId = "q_vocab_quiz_1", Title = "Thử thách trắc nghiệm từ vựng", Description = "Hoàn thành 1 bài trắc nghiệm nhanh kiểm tra vốn từ", TargetCount = 1, XPReward = 40, QuestType = "vocab_quiz" },
-            new() { QuestId = "q_vocab_spelling_5", Title = "Gõ chính tả 5 từ vựng", Description = "Luyện kỹ năng nhớ mặt chữ và gõ đúng 5 từ vựng", TargetCount = 5, XPReward = 45, QuestType = "vocab_spelling" },
-            new() { QuestId = "q_vocab_master_5", Title = "Ghi nhớ 5 từ vựng mới", Description = "Đánh dấu thuộc 5 từ vựng mới trong các chủ đề", TargetCount = 5, XPReward = 50, QuestType = "vocab_master" }
+            new() { QuestId = "q_vocab_card_10", Title = "Ôn 15 thẻ từ vựng 3000", Description = "Luyện phản xạ lật thẻ 15 từ vựng theo chủ đề", TargetCount = 15, XPReward = 15, QuestType = "vocab_flashcard" },
+            new() { QuestId = "q_vocab_card_20", Title = "Luyện 25 thẻ từ vựng 3D", Description = "Nạp vốn từ vựng với 25 thẻ Flashcard 3D FSRS", TargetCount = 25, XPReward = 25, QuestType = "vocab_flashcard" },
+            new() { QuestId = "q_vocab_quiz_1", Title = "Vượt qua bài trắc nghiệm từ vựng", Description = "Hoàn thành 1 bài trắc nghiệm từ vựng đạt từ 60% trở lên", TargetCount = 1, XPReward = 20, QuestType = "vocab_quiz" },
+            new() { QuestId = "q_vocab_spelling_5", Title = "Gõ chính tả đúng 8 từ vựng", Description = "Luyện kỹ năng nhớ mặt chữ và gõ đúng 8 từ vựng", TargetCount = 8, XPReward = 20, QuestType = "vocab_spelling" },
+            new() { QuestId = "q_vocab_master_5", Title = "Thuộc làu 10 từ vựng mới", Description = "Chinh phục và thuộc 10 từ vựng mới trong các chủ đề", TargetCount = 10, XPReward = 20, QuestType = "vocab_master" }
         };
 
         var seed = $"{userId}_{dateVn:yyyyMMdd}";
@@ -482,6 +647,8 @@ public class GamificationService : IGamificationService
 
         if (quest == null || quest.IsCompleted) return Response<bool>.Failure("Nhiệm vụ không tồn tại hoặc đã hoàn thành");
 
+        if (quest.XPReward > 30) quest.XPReward = Math.Clamp(quest.XPReward / 2, 15, 25);
+
         quest.CurrentCount = quest.TargetCount;
         quest.IsCompleted = true;
         gamification.TotalXP += quest.XPReward;
@@ -500,7 +667,7 @@ public class GamificationService : IGamificationService
         // Kiểm tra nếu tất cả nhiệm vụ đã xong
         if (quests.Count > 0 && quests.All(q => q.IsCompleted))
         {
-            int bonusXP = 50;
+            int bonusXP = 25;
             gamification.TotalXP += bonusXP;
             gamification.WeeklyXP += bonusXP;
             gamification.DailyQuestStreak++;
@@ -516,6 +683,7 @@ public class GamificationService : IGamificationService
             await _unitOfWork.Gamification.AddXPTransactionAsync(bonusTx);
         }
 
+        gamification.CurrentLevel = CalculateLevel(gamification.TotalXP);
         gamification.DailyQuestsJson = JsonSerializer.Serialize(quests);
         gamification.UpdatedAt = DateTime.UtcNow;
         await _unitOfWork.Gamification.UpsertAsync(gamification);
@@ -538,14 +706,15 @@ public class GamificationService : IGamificationService
 
         foreach (var g in top)
         {
+            int trueLevel = CalculateLevel(g.TotalXP);
             list.Add(new LeaderboardEntryDto
             {
                 UserId = g.UserId,
                 FullName = g.User?.FullName ?? "Học viên",
                 WeeklyXP = g.WeeklyXP,
                 TotalXP = g.TotalXP,
-                CurrentLevel = g.CurrentLevel,
-                LevelTitle = GetLevelTitle(g.CurrentLevel),
+                CurrentLevel = trueLevel,
+                LevelTitle = GetLevelTitle(trueLevel),
                 Rank = rank++,
                 CurrentStreak = g.CurrentStreak
             });

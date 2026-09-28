@@ -109,7 +109,7 @@ export default function StudyProgressPage() {
           : `Đã chuyển "${dialogue.title}" về chưa hoàn thành`
       );
       if (nextState) {
-        useGamificationStore.getState().earnXP(25, 'bino_dialogue', `Hoàn thành bài hội thoại: ${dialogue.title}`);
+        useGamificationStore.getState().earnXP(12, 'bino_dialogue', `Hoàn thành bài hội thoại #${dialogue.dialogueLessonId}`);
       }
       const fresh = await binoApi.getProgressSummary(true);
       if (fresh?.data) setBinoSummary(fresh.data);
@@ -1141,8 +1141,7 @@ export default function StudyProgressPage() {
                             const nextState = !st.isCompleted;
                             markUnitMastered(u.unitNumber, nextState);
                             if (nextState) {
-                              useGamificationStore.getState().earnXP(50, 'reflex_master', `Hoàn thành trọn bộ Unit ${u.unitNumber}`);
-                              toast.success(`Đã hoàn thành Unit ${u.unitNumber}! +50 XP 🎉`);
+                              toast.success(`Đã hoàn thành Unit ${u.unitNumber}! 🎉`);
                             }
                             setBinoSearch((prev) => prev + ''); // trigger re-render
                           }}

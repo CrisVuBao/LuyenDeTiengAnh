@@ -362,15 +362,24 @@ export default function BinoDialogueStudyPage() {
   }, [id]);
 
   const lastListenLineRef = useRef({});
-  const recordBinoListen = (lineKey) => {
-    const now = Date.now();
-    const last = lastListenLineRef.current[lineKey] || 0;
-    if (now - last > 4000) {
-      lastListenLineRef.current[lineKey] = now;
-      try {
-        useGamificationStore.getState().earnXP(3, 'bino_listen', 'Luyện nghe câu thoại Giao Tiếp 72');
-      } catch {}
+  const rewardedCompleteRef = useRef({});
+  const rewardedRoleplayLinesRef = useRef({});
+  const rewardedRoleplayFinishRef = useRef({});
+  const rewardedDictationLinesRef = useRef({});
+
+  useEffect(() => {
+    lastListenLineRef.current = {};
+    if (lesson?.isCompleted) {
+      rewardedCompleteRef.current[id] = true;
     }
+  }, [id, lesson?.isCompleted]);
+
+  const recordBinoListen = (lineKey) => {
+    if (!lineKey || lastListenLineRef.current[lineKey]) return;
+    lastListenLineRef.current[lineKey] = true;
+    try {
+      useGamificationStore.getState().earnXP(1, 'bino_listen', `Nghe câu thoại bài #${id}`);
+    } catch {}
   };
 
   // Speech synthesis for pronunciation
@@ -466,7 +475,10 @@ export default function BinoDialogueStudyPage() {
       invalidateStatsCache();
       if (newState) {
         toast.success('Đã hoàn thành bài hội thoại này! 🎉');
-        useGamificationStore.getState().earnXP(25, 'bino_dialogue', 'Hoàn thành bài hội thoại Giao Tiếp 72');
+        if (!rewardedCompleteRef.current[id]) {
+          rewardedCompleteRef.current[id] = true;
+          useGamificationStore.getState().earnXP(12, 'bino_dialogue', `Hoàn thành bài hội thoại #${id}`);
+        }
       }
     } catch {
       toast.error('Lỗi lưu tiến độ');
@@ -695,9 +707,23 @@ export default function BinoDialogueStudyPage() {
           const bestText = evalRes.smartTranscript || smartTranscript;
           setUserTranscript(bestText);
           setRoleplayEval(evalRes);
-          toast.success(`🎙️ Phát âm đạt ${evalRes.score}%: "${bestText}"`, {
-            id: 'bino-speech-result'
-          });
+          const lineKey = `${id}_rp_${roleplayStep}`;
+          if (evalRes.score >= 70 && !rewardedRoleplayLinesRef.current[lineKey]) {
+            rewardedRoleplayLinesRef.current[lineKey] = true;
+            const rpXp = evalRes.score >= 90 ? 5 : 3;
+            useGamificationStore.getState().earnXP(
+              rpXp,
+              'bino_roleplay',
+              `Đóng vai phát âm đạt ${evalRes.score}% (Bài #${id} câu ${roleplayStep + 1})`
+            );
+            toast.success(`🎙️ Phát âm đạt ${evalRes.score}% (+${rpXp} XP): "${bestText}"`, {
+              id: 'bino-speech-result'
+            });
+          } else {
+            toast.success(`🎙️ Phát âm đạt ${evalRes.score}%: "${bestText}"`, {
+              id: 'bino-speech-result'
+            });
+          }
         }
       },
       onError: (_code, message) => {
@@ -1664,7 +1690,6 @@ export default function BinoDialogueStudyPage() {
                   <button
                     onClick={() => {
                       if (roleplayStep < lesson.dialogueLines.length - 1) {
-                        useGamificationStore.getState().earnXP(10, 'bino_roleplay', 'Luyện đối đáp 1 câu Giao Tiếp Thực Chiến');
                         setRoleplayStep(prev => prev + 1);
                         setUserTranscript('');
                         setRoleplayEval(null);
@@ -1674,8 +1699,16 @@ export default function BinoDialogueStudyPage() {
                           roleplayCompleted: true,
                           timeSpentSeconds: consumeElapsedSeconds()
                         }).then(() => invalidateStatsCache()).catch(() => {});
-                        toast.success('Xuất sắc! Đã ghi nhận hoàn thành luyện đóng vai 1:1 cho bài này! 🎉');
-                        useGamificationStore.getState().earnXP(30, 'bino_roleplay', 'Hoàn thành lượt đóng vai 1:1');
+                        const practicedCount = Object.keys(rewardedRoleplayLinesRef.current).filter((k) =>
+                          k.startsWith(`${id}_rp_`)
+                        ).length;
+                        if (!rewardedRoleplayFinishRef.current[id] && practicedCount >= 1) {
+                          rewardedRoleplayFinishRef.current[id] = true;
+                          toast.success('Xuất sắc! Đã ghi nhận hoàn thành luyện đóng vai 1:1 (+10 XP)! 🎉');
+                          useGamificationStore.getState().earnXP(10, 'bino_roleplay', `Hoàn thành đóng vai bài #${id}`);
+                        } else {
+                          toast.success('Đã ghi nhận hoàn thành lượt đóng vai 1:1 cho bài này! 🎉');
+                        }
                       }
                     }}
                     className="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl text-xs font-bold shadow-md shadow-orange-500/20 flex items-center gap-1.5 active:scale-95 cursor-pointer"
@@ -1774,9 +1807,19 @@ export default function BinoDialogueStudyPage() {
                     timeSpentSeconds: consumeElapsedSeconds()
                   }).then(() => {
                     invalidateStatsCache();
-                    const xp = score >= 80 ? 20 : (score >= 35 ? 10 : 5);
-                    const msg = score >= 80 ? `Chép chính tả xuất sắc ${score}%` : `Luyện chép chính tả (${score}%)`;
-                    useGamificationStore.getState().earnXP(xp, 'bino_dictation', msg);
+                    const dictKey = `${id}_dict_${dictationIndex}`;
+                    if (score >= 70 && !rewardedDictationLinesRef.current[dictKey]) {
+                      rewardedDictationLinesRef.current[dictKey] = true;
+                      const xp = score >= 90 ? 5 : 3;
+                      const msg = `Chép chính tả đạt ${score}% (Bài #${id} câu ${dictationIndex + 1})`;
+                      useGamificationStore.getState().earnXP(xp, 'bino_dictation', msg);
+                      toast.success(`✍️ Đạt ${score}% chính xác (+${xp} XP)!`, { id: 'bino-dict-xp' });
+                    } else if (score < 70) {
+                      toast(`Đạt ${score}% — Hãy nghe kỹ và gõ đúng từ 70% trở lên để nhận XP nhé!`, {
+                        icon: '🎧',
+                        id: 'bino-dict-xp'
+                      });
+                    }
                   }).catch(() => {});
                 }}
                 className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-md shadow-emerald-500/20 active:scale-95"

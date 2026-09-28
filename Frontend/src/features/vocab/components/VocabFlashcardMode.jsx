@@ -271,11 +271,11 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
     if (isFinished && (learnedCount > 0 || reviewCount > 0)) {
       stopAutoPlay();
       const totalCards = learnedCount + reviewCount;
-      const earnedXP = Math.max(10, (learnedCount * 3) + (reviewCount * 1));
+      const earnedXP = Math.min(12, Math.max(2, Math.ceil(learnedCount * 0.5)));
       useGamificationStore.getState().earnXP(
         earnedXP,
         `vocab_flashcard:${totalCards}`,
-        `Hoàn thành phiên lật thẻ từ vựng (${totalCards} thẻ)`
+        `Hoàn thành phiên lật thẻ từ vựng (${learnedCount}/${totalCards} thẻ nhớ tốt)`
       );
     }
   }, [isFinished, learnedCount, reviewCount, stopAutoPlay]);

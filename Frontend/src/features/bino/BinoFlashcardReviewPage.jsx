@@ -98,7 +98,10 @@ export default function BinoFlashcardReviewPage() {
 
     try {
       await binoApi.submitSRSReview(currentCard.vocabularyId, grade);
-      useGamificationStore.getState().earnXP(5, 'flashcard_review', 'Ôn 1 thẻ từ vựng FSRS');
+      if (grade >= 1) {
+        const xp = grade >= 2 ? 2 : 1;
+        useGamificationStore.getState().earnXP(xp, 'flashcard_review', `Ôn thẻ FSRS #${currentCard.vocabularyId}`);
+      }
     } catch {
       // ignore
     }

@@ -56,17 +56,17 @@ export default function VocabSpellingMode({ topic, onSwitchToFlashcard }) {
     }
   }, [currentIndex, testWords, isFinished, speakWord]);
 
-  // Award XP and complete quest on spelling session finish
+  // Award XP and complete quest on spelling session finish (only when score > 0)
   useEffect(() => {
-    if (isFinished && testWords.length > 0) {
-      const earnedXP = Math.max(10, score * 4);
+    if (isFinished && testWords.length > 0 && score > 0) {
+      const earnedXP = Math.min(20, score * 2);
       useGamificationStore.getState().earnXP(
         earnedXP,
         `vocab_spelling:${score}`,
         `Luyện chính tả từ vựng: đúng ${score}/${testWords.length} từ`
       );
     }
-  }, [isFinished]);
+  }, [isFinished, score, testWords.length]);
 
   const normalize = (str) => str.trim().toLowerCase().replace(/[^a-z0-9 ]/g, '');
 
@@ -136,10 +136,12 @@ export default function VocabSpellingMode({ topic, onSwitchToFlashcard }) {
           <h3 className="text-3xl font-black text-slate-900 dark:text-white">
             Đúng {score}/{testWords.length} Từ ({accuracy}%)
           </h3>
-          <div className="mt-2.5 inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-200/60 dark:border-indigo-900/60 text-indigo-600 dark:text-indigo-400 font-bold text-xs">
-            <Sparkles size={13} />
-            <span>+{Math.max(10, score * 4)} XP Thưởng Hoàn Thành</span>
-          </div>
+          {score > 0 && (
+            <div className="mt-2.5 inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-200/60 dark:border-indigo-900/60 text-indigo-600 dark:text-indigo-400 font-bold text-xs">
+              <Sparkles size={13} />
+              <span>+{Math.min(20, score * 2)} XP Thưởng Chính Tả</span>
+            </div>
+          )}
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3 pt-2">

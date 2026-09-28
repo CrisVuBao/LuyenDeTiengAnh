@@ -80,7 +80,7 @@ const useGamificationStore = create((set, get) => ({
           const allCompletedNow = quests.every((q) => q.isCompleted);
           if (!allCompletedBefore && allCompletedNow) {
             setTimeout(() => {
-              get().triggerCelebration('all_quests_completed', { bonusXP: 50 });
+              get().triggerCelebration('all_quests_completed', { bonusXP: 25 });
             }, (newlyCompletedQuests.length + 1) * 400);
           }
         }

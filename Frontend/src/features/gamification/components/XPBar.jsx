@@ -52,11 +52,16 @@ export default function XPBar() {
   const currentLevel = profile.currentLevel ?? profile.level ?? 1;
   const levelTitle = profile.levelTitle || 'Tân binh';
   const totalXP = profile.totalXP ?? profile.currentXP ?? 0;
-  const nextLevelXP = profile.xpForNextLevel ?? profile.nextLevelXP ?? 100;
+  const getThreshold = (lv) => 100 * lv + 25 * lv * (lv - 1);
+  const prevLevelXP = currentLevel > 1 ? getThreshold(currentLevel - 1) : 0;
+  const nextLevelXP = profile.xpForNextLevel ?? profile.nextLevelXP ?? getThreshold(currentLevel);
+  const levelSpanXP = Math.max(1, nextLevelXP - prevLevelXP);
+  const earnedInLevelXP = Math.max(0, totalXP - prevLevelXP);
+  const remainingToNextXP = Math.max(0, nextLevelXP - totalXP);
   const currentStreak = profile.currentStreak ?? profile.streakDays ?? 0;
   const progressPercent = profile.xpProgressPercentage !== undefined 
     ? Math.min(100, Math.max(0, profile.xpProgressPercentage))
-    : Math.min(100, Math.max(0, (totalXP / nextLevelXP) * 100));
+    : Math.min(100, Math.max(0, (earnedInLevelXP / levelSpanXP) * 100));
 
   return (
     <div className="relative shrink-0" ref={containerRef}>
@@ -103,7 +108,7 @@ export default function XPBar() {
                       Cấp {currentLevel} • {levelTitle}
                     </h3>
                     <p className="text-[11px] text-slate-400">
-                      Tích lũy XP để thăng hạng
+                      Còn <strong className="text-[#0071e3] dark:text-sky-400">{remainingToNextXP} XP</strong> để lên Cấp {currentLevel + 1}
                     </p>
                   </div>
                 </div>
@@ -122,9 +127,9 @@ export default function XPBar() {
                     transition={{ duration: 0.6 }}
                   />
                 </div>
-                <div className="flex justify-between text-[11px] text-slate-400 font-medium">
-                  <span>{totalXP} XP hiện tại</span>
-                  <span>Mốc kế: {nextLevelXP} XP</span>
+                <div className="flex justify-between text-[11px] text-slate-500 dark:text-slate-400 font-semibold">
+                  <span>Cấp này: {earnedInLevelXP}/{levelSpanXP} XP</span>
+                  <span>Tổng: {totalXP} / {nextLevelXP} XP</span>
                 </div>
               </div>
               

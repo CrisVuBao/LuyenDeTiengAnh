@@ -301,6 +301,7 @@ const useVocabStore = create((set, get) => ({
 
   // FSRS 4-grade review for 3000 Vocab Flashcard (0: Again, 1: Hard, 2: Good, 3: Easy)
   gradeWordFsrs: (wordId, grade = 2) => {
+    const wasAlreadyMastered = !!get().masteredWords?.[wordId];
     const prevCard = get().fsrsCards?.[wordId] || {};
     const nextCard = scheduleFsrsReview(prevCard, grade, false);
     const isMastered = grade >= 2; // Good or Easy marks word as mastered
@@ -322,9 +323,9 @@ const useVocabStore = create((set, get) => ({
     });
 
     get().saveProgress();
-    if (isMastered) {
+    if (isMastered && !wasAlreadyMastered) {
       try {
-        useGamificationStore.getState().earnXP(2, 'vocab_master', 'Ghi nhớ từ vựng theo FSRS');
+        useGamificationStore.getState().earnXP(1, 'vocab_master', `Ghi nhớ từ vựng #${wordId}`);
       } catch {}
     }
     return nextCard;
@@ -332,6 +333,7 @@ const useVocabStore = create((set, get) => ({
 
   // Toggle or mark mastered status
   markWordMastered: (wordId, isMastered = true) => {
+    const wasAlreadyMastered = !!get().masteredWords?.[wordId];
     const prevCard = get().fsrsCards?.[wordId] || {};
     const nextCard = scheduleFsrsReview(prevCard, isMastered ? 2 : 0, false);
 
@@ -351,9 +353,9 @@ const useVocabStore = create((set, get) => ({
       };
     });
     get().saveProgress();
-    if (isMastered) {
+    if (isMastered && !wasAlreadyMastered) {
       try {
-        useGamificationStore.getState().earnXP(2, 'vocab_master', 'Ghi nhớ từ vựng mới');
+        useGamificationStore.getState().earnXP(1, 'vocab_master', `Ghi nhớ từ vựng mới #${wordId}`);
       } catch {}
     }
   },
@@ -380,7 +382,7 @@ const useVocabStore = create((set, get) => ({
   setSpeechRate: (rate) => set({ speechRate: rate }),
   toggleAutoPlayAudio: () => set((s) => ({ autoPlayAudio: !s.autoPlayAudio })),
 
-  // Record Quiz Result & award XP
+  // Record Quiz Result & award XP (Only when accuracy >= 60%)
   recordQuizResult: (topicId, correctCount, totalCount) => {
     const accuracy = Math.round((correctCount / totalCount) * 100);
     set((state) => {
@@ -398,11 +400,18 @@ const useVocabStore = create((set, get) => ({
     });
     get().saveProgress();
 
-    // Reward XP through gamification store quietly
-    try {
-      const xpAmount = Math.max(5, Math.round(correctCount * 3));
-      useGamificationStore.getState().earnXP(xpAmount, 'vocab_quiz', `Luyện tập từ vựng chủ đề ${topicId} (${accuracy}%)`);
-    } catch {}
+    // Chỉ thưởng XP khi đạt độ chính xác từ 60% trở lên (1 XP / câu đúng + 4 XP nếu đạt 100%)
+    if (accuracy >= 60 && correctCount > 0) {
+      try {
+        const bonusPerfect = accuracy === 100 ? 4 : 0;
+        const xpAmount = Math.min(15, correctCount + bonusPerfect);
+        useGamificationStore.getState().earnXP(
+          xpAmount,
+          'vocab_quiz',
+          `Hoàn thành trắc nghiệm từ vựng chủ đề ${topicId} (${accuracy}%)`
+        );
+      } catch {}
+    }
   },
 
   // Web Speech API: Crystal clear, instant US English pronunciation

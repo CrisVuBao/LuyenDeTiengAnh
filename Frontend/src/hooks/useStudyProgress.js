@@ -64,8 +64,8 @@ export default function useStudyProgress(toeicTestId) {
           questionNumber,
           isConfident: nextVal
         });
-        if (nextVal === true) {
-          useGamificationStore.getState().earnXP(8, 'toeic_confident', 'Tự tin 1 câu TOEIC');
+        if (nextVal === true && current.isConfident !== true) {
+          useGamificationStore.getState().earnXP(2, 'toeic_confident', `Tự tin câu TOEIC #${toeicTestId}_${partNumber}_${questionNumber}`);
         }
       } catch (e) {
         console.error("Lỗi lưu tiến độ:", e);
