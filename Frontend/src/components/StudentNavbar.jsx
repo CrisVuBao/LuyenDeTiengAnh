@@ -165,10 +165,10 @@ export default function StudentNavbar() {
                 <Sparkles size={17} />
               </div>
               <div className="flex flex-col leading-none">
-                <span className="font-extrabold text-base tracking-tight text-slate-900 dark:text-white">
+                <span className="font-extrabold text-sm sm:text-base tracking-tight text-slate-900 dark:text-white leading-tight">
                   VBaceEnglish
                 </span>
-                <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 tracking-tight mt-0.5 hidden sm:inline">
+                <span className="text-[8.5px] sm:text-[10px] font-bold text-slate-400 dark:text-slate-500 tracking-tight leading-none mt-0.5 block">
                   By Vũ Bảo Software
                 </span>
               </div>
@@ -585,6 +585,12 @@ export default function StudentNavbar() {
                   <LogOut size={15} />
                   <span>Đăng xuất tài khoản</span>
                 </button>
+
+                <div className="text-center pt-1">
+                  <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500">
+                    VBaceEnglish • By Vũ Bảo Software
+                  </p>
+                </div>
               </div>
             </motion.div>
           </div>

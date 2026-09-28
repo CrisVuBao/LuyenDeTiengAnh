@@ -31,7 +31,17 @@ export const dashboardApi = {
   approveAllPendingStudents: () =>
     axiosClient.post('/dashboard/admin-students/approve-all'),
   deleteStudent: (userId) =>
-    axiosClient.delete(`/dashboard/admin-students/${userId}`)
+    axiosClient.delete(`/dashboard/admin-students/${userId}`),
+  createStudent: (data) =>
+    axiosClient.post('/dashboard/admin-students/create', data),
+  updateStudent: (userId, data) =>
+    axiosClient.put(`/dashboard/admin-students/${userId}`, data),
+  resetPassword: (userId, newPassword) =>
+    axiosClient.post(`/dashboard/admin-students/${userId}/reset-password`, { newPassword }),
+  getStudentDetail: (userId) =>
+    axiosClient.get(`/dashboard/admin-students/${userId}/detail`),
+  adjustGamification: (userId, data) =>
+    axiosClient.post(`/dashboard/admin-students/${userId}/adjust-gamification`, data)
 };
 
 export const aiApi = {

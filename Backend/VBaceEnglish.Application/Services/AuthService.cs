@@ -131,6 +131,13 @@ public class AuthService : IAuthService
         if (!isAdmin && !user.IsApproved)
             return Response<UserDto>.Failure("Tài khoản chưa được phê duyệt hoặc đã bị tạm khóa");
 
+        // Cập nhật mốc thời gian hoạt động gần nhất nếu cách nhau hơn 2 phút
+        if (!user.LastLoginAt.HasValue || (DateTime.UtcNow - user.LastLoginAt.Value).TotalMinutes > 2)
+        {
+            user.LastLoginAt = DateTime.UtcNow;
+            await _userManager.UpdateAsync(user);
+        }
+
         var userDto = new UserDto
         {
             Id = user.Id,

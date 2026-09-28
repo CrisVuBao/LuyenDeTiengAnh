@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ShieldCheck, BookOpen, Users, Sparkles, 
-  User, Sun, Moon, LogOut, ArrowLeft 
+  User, Sun, Moon, LogOut, ArrowLeft, Menu, X 
 } from 'lucide-react';
 import useAuthStore from '../store/authStore';
 import useThemeStore from '../store/themeStore';
@@ -12,6 +13,7 @@ import toast from 'react-hot-toast';
 export default function AdminLayout() {
   const { user, logout } = useAuthStore();
   const { mode, toggleTheme } = useThemeStore();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -125,9 +127,33 @@ export default function AdminLayout() {
       <div className="flex-1 flex flex-col min-w-0 min-h-screen">
         
         {/* Top Header */}
-        <header className="sticky top-0 z-20 bg-white/75 dark:bg-slate-900/75 backdrop-blur-md border-b border-slate-200 dark:border-slate-800/80 px-4 md:px-8 py-3.5 flex items-center justify-between">
+        <header className="sticky top-0 z-20 bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800/80 px-4 md:px-8 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <h2 className="text-base font-bold text-slate-700 dark:text-slate-300">
+            {/* Mobile Menu Hamburger */}
+            <button
+              onClick={() => setMobileMenuOpen(true)}
+              className="md:hidden p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 transition-colors"
+              title="Mở menu quản trị"
+            >
+              <Menu size={18} />
+            </button>
+
+            {/* Mobile Brand */}
+            <div className="md:hidden flex items-center gap-2">
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center shadow-sm">
+                <Sparkles size={16} />
+              </div>
+              <div className="flex flex-col leading-none">
+                <span className="font-black text-sm tracking-tight text-slate-900 dark:text-white">
+                  VBaceEnglish
+                </span>
+                <span className="text-[9px] font-bold text-slate-400 dark:text-slate-500 tracking-tight mt-0.5">
+                  By Vũ Bảo Software
+                </span>
+              </div>
+            </div>
+
+            <h2 className="hidden md:block text-base font-bold text-slate-700 dark:text-slate-300">
               {getPageTitle()}
             </h2>
             <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300">
@@ -138,17 +164,19 @@ export default function AdminLayout() {
           <div className="flex items-center gap-2 md:gap-3">
             <button
               onClick={toggleTheme}
-              className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all shadow-sm active:scale-95"
+              className="p-2 md:p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all shadow-sm active:scale-95"
               title={mode === 'light' ? 'Bật Chế độ Tối' : 'Bật Chế độ Sáng'}
             >
-              {mode === 'light' ? <Moon size={18} /> : <Sun size={18} className="text-amber-400" />}
+              {mode === 'light' ? <Moon size={16} /> : <Sun size={16} className="text-amber-400" />}
             </button>
 
             <button
               onClick={() => navigate('/home')}
-              className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 transition-colors flex items-center gap-1.5"
+              className="px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 transition-colors flex items-center gap-1.5"
             >
-              <ArrowLeft size={14} /> Giao diện Học viên
+              <ArrowLeft size={14} /> 
+              <span className="hidden sm:inline">Giao diện Học viên</span>
+              <span className="sm:hidden">Học viên</span>
             </button>
           </div>
         </header>
@@ -158,6 +186,115 @@ export default function AdminLayout() {
           <Outlet />
         </main>
       </div>
+
+      {/* Mobile Drawer */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <div className="fixed inset-0 z-50 md:hidden flex">
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setMobileMenuOpen(false)}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm"
+            />
+
+            {/* Sidebar content */}
+            <motion.div
+              initial={{ x: '-100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '-100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 280 }}
+              className="relative w-72 max-w-[85vw] bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 p-6 flex flex-col justify-between z-10 shadow-2xl"
+            >
+              <div>
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center shadow-md">
+                      <Sparkles size={18} />
+                    </div>
+                    <div>
+                      <h3 className="font-black text-base text-slate-900 dark:text-white leading-tight">
+                        VBaceEnglish
+                      </h3>
+                      <p className="text-[10px] font-bold text-slate-400 mt-0.5">
+                        By Vũ Bảo Software
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
+
+                <nav className="space-y-1.5">
+                  {navItems.map((item) => (
+                    <NavLink
+                      key={item.to}
+                      to={item.to}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={({ isActive }) =>
+                        `flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all ${
+                          isActive
+                            ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25'
+                            : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-white'
+                        }`
+                      }
+                    >
+                      {item.icon}
+                      <span>{item.label}</span>
+                    </NavLink>
+                  ))}
+
+                  <div className="pt-3 mt-3 border-t border-slate-100 dark:border-slate-800">
+                    <button
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        navigate('/home');
+                      }}
+                      className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors"
+                    >
+                      <ArrowLeft size={16} className="text-emerald-500" />
+                      <span>Về Giao Diện Học Viên</span>
+                    </button>
+                  </div>
+                </nav>
+              </div>
+
+              {/* User Footer */}
+              <div className="pt-4 border-t border-slate-200 dark:border-slate-800">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300 font-bold flex items-center justify-center text-xs shrink-0">
+                      {user?.fullName?.charAt(0) || 'A'}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="font-bold text-xs truncate text-slate-800 dark:text-slate-200">
+                        {user?.fullName || 'Quản trị viên'}
+                      </p>
+                      <span className="text-[9px] text-blue-600 font-bold uppercase">Admin VIP</span>
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleLogout}
+                    className="p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition-colors"
+                    title="Đăng xuất"
+                  >
+                    <LogOut size={16} />
+                  </button>
+                </div>
+                <p className="text-[9px] font-bold text-slate-400 text-center">
+                  VBaceEnglish • By Vũ Bảo Software
+                </p>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
     </div>
   );

@@ -1,4 +1,6 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using VBaceEnglish.Application.Contracts.Persistence;
 using VBaceEnglish.Application.DTOs.Dashboard;
 using VBaceEnglish.Application.DTOs.Progress;
@@ -458,6 +460,11 @@ public interface IDashboardService
     Task<Response<DashboardStatsDto>> GetStatsAsync(int userId);
     Task<Response<AdminDashboardStatsDto>> GetAdminStatsAsync();
     Task<Response<List<AdminStudentProgressDto>>> GetAdminStudentsAsync();
+    Task<Response<AdminStudentProgressDto>> CreateStudentAsync(CreateStudentRequestDto dto);
+    Task<Response<bool>> UpdateStudentAsync(int userId, UpdateStudentRequestDto dto);
+    Task<Response<bool>> ResetStudentPasswordAsync(int userId, string newPassword);
+    Task<Response<StudentDetailProfileDto>> GetStudentDetailProfileAsync(int userId);
+    Task<Response<bool>> AdjustStudentGamificationAsync(int userId, AdminAdjustGamificationDto dto);
     Task<Response<bool>> ApproveStudentAsync(int userId, bool isApproved);
     Task<Response<int>> ApproveAllPendingStudentsAsync();
     Task<Response<bool>> DeleteStudentAsync(int userId);
@@ -467,11 +474,16 @@ public class DashboardService : IDashboardService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IGamificationService _gamificationService;
 
-    public DashboardService(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager)
+    public DashboardService(
+        IUnitOfWork unitOfWork, 
+        UserManager<ApplicationUser> userManager,
+        IGamificationService gamificationService)
     {
         _unitOfWork = unitOfWork;
         _userManager = userManager;
+        _gamificationService = gamificationService;
     }
 
     public async Task<Response<DashboardStatsDto>> GetStatsAsync(int userId)
@@ -518,7 +530,7 @@ public class DashboardService : IDashboardService
                 ConfidentQuestions = s.ConfidentQuestions,
                 TotalQuestions = s.TotalQuestions,
                 PercentCompleted = s.PercentCompleted,
-                LastAccessedAt = s.LastAccessedAt
+                LastAccessedAt = EnsureUtc(s.LastAccessedAt)
             }).OrderByDescending(s => s.LastAccessedAt).ToList()
         };
 
@@ -533,6 +545,12 @@ public class DashboardService : IDashboardService
             .Where(u => !adminIds.Contains(u.Id))
             .ToList();
     }
+
+    private static DateTime EnsureUtc(DateTime dt) =>
+        DateTime.SpecifyKind(dt, DateTimeKind.Utc);
+
+    private static DateTime? EnsureUtc(DateTime? dt) =>
+        dt.HasValue ? DateTime.SpecifyKind(dt.Value, DateTimeKind.Utc) : null;
 
     public async Task<Response<AdminDashboardStatsDto>> GetAdminStatsAsync()
     {
@@ -570,6 +588,16 @@ public class DashboardService : IDashboardService
                 int totalQ = userSummaries.Sum(x => x.TotalQuestions);
                 int binoDone = userBino.Count(x => x.IsCompleted);
 
+                DateTime? lastActive = s.LastLoginAt;
+                var lastSummary = userSummaries
+                    .Where(x => x.LastAccessedAt != default)
+                    .OrderByDescending(x => x.LastAccessedAt)
+                    .FirstOrDefault();
+                if (lastSummary != null && (!lastActive.HasValue || lastSummary.LastAccessedAt > lastActive.Value))
+                {
+                    lastActive = lastSummary.LastAccessedAt;
+                }
+
                 return new AdminStudentProgressDto
                 {
                     UserId = s.Id,
@@ -577,9 +605,9 @@ public class DashboardService : IDashboardService
                     Email = s.Email ?? "",
                     PhoneNumber = s.PhoneNumber,
                     IsApproved = s.IsApproved,
-                    ApprovedAt = s.ApprovedAt,
-                    CreatedAt = s.CreatedAt,
-                    LastLoginAt = s.LastLoginAt,
+                    ApprovedAt = EnsureUtc(s.ApprovedAt),
+                    CreatedAt = DateTime.SpecifyKind(s.CreatedAt, DateTimeKind.Utc),
+                    LastLoginAt = EnsureUtc(lastActive),
                     TestsEnrolled = userSummaries.Count,
                     CompletedQuestions = completed,
                     ConfidentQuestions = confident,
@@ -609,7 +637,7 @@ public class DashboardService : IDashboardService
 
     public async Task<Response<List<AdminStudentProgressDto>>> GetAdminStudentsAsync()
     {
-        var students = await GetNonAdminUsersAsync();
+        var users = await _userManager.Users.OrderByDescending(u => u.CreatedAt).ToListAsync();
         var allSummaries = (await _unitOfWork.UserProgresses.GetAllSummariesAsync()).ToList();
         var allBinoProgresses = (await _unitOfWork.BinoLearning.GetAllProgressesAsync()).ToList();
         var allBinoSrs = (await _unitOfWork.BinoLearning.GetAllSRSReviewsAsync()).ToList();
@@ -618,8 +646,14 @@ public class DashboardService : IDashboardService
         var binoByUser = allBinoProgresses.ToLookup(x => x.UserId);
         var srsByUser = allBinoSrs.ToLookup(x => x.UserId);
 
-        var result = students.Select(s =>
+        var result = new List<AdminStudentProgressDto>();
+
+        foreach (var s in users)
         {
+            var roles = await _userManager.GetRolesAsync(s);
+            var role = roles.FirstOrDefault() ?? "Student";
+            bool isLocked = s.LockoutEnd.HasValue && s.LockoutEnd.Value > DateTimeOffset.UtcNow;
+
             var userSummaries = summariesByUser[s.Id].ToList();
             var userBino = binoByUser[s.Id].ToList();
             var userSrsCount = srsByUser[s.Id].Count();
@@ -629,16 +663,49 @@ public class DashboardService : IDashboardService
             int totalQ = userSummaries.Sum(x => x.TotalQuestions);
             int binoDone = userBino.Count(x => x.IsCompleted);
 
-            return new AdminStudentProgressDto
+            var vocab = await _unitOfWork.UserProgresses.GetVocabProgressAsync(s.Id);
+            var gamification = await _unitOfWork.Gamification.GetByUserIdAsync(s.Id);
+
+            // Tính toán thời điểm truy cập / học tập gần nhất thực tế
+            DateTime? lastActive = s.LastLoginAt;
+            var lastSummary = userSummaries
+                .Where(x => x.LastAccessedAt != default)
+                .OrderByDescending(x => x.LastAccessedAt)
+                .FirstOrDefault();
+            if (lastSummary != null && (!lastActive.HasValue || lastSummary.LastAccessedAt > lastActive.Value))
+            {
+                lastActive = lastSummary.LastAccessedAt;
+            }
+
+            if (vocab != null && (!lastActive.HasValue || vocab.UpdatedAt > lastActive.Value))
+            {
+                lastActive = vocab.UpdatedAt;
+            }
+
+            if (gamification != null)
+            {
+                if (gamification.LastActiveDate.HasValue && (!lastActive.HasValue || gamification.LastActiveDate.Value > lastActive.Value))
+                {
+                    lastActive = gamification.LastActiveDate.Value;
+                }
+                if (gamification.UpdatedAt > (lastActive ?? DateTime.MinValue))
+                {
+                    lastActive = gamification.UpdatedAt;
+                }
+            }
+
+            result.Add(new AdminStudentProgressDto
             {
                 UserId = s.Id,
                 FullName = s.FullName,
                 Email = s.Email ?? "",
                 PhoneNumber = s.PhoneNumber,
+                Role = role,
                 IsApproved = s.IsApproved,
-                ApprovedAt = s.ApprovedAt,
-                CreatedAt = s.CreatedAt,
-                LastLoginAt = s.LastLoginAt,
+                IsLocked = isLocked,
+                ApprovedAt = EnsureUtc(s.ApprovedAt),
+                CreatedAt = DateTime.SpecifyKind(s.CreatedAt, DateTimeKind.Utc),
+                LastLoginAt = EnsureUtc(lastActive),
                 TestsEnrolled = userSummaries.Count,
                 CompletedQuestions = completed,
                 ConfidentQuestions = confident,
@@ -647,14 +714,304 @@ public class DashboardService : IDashboardService
                 BinoTotalLessons = 72,
                 BinoProgressPercent = Math.Round((double)binoDone / 72.0 * 100, 1),
                 BinoSavedFlashcards = userSrsCount,
-                BinoTimeSpentMinutes = (int)Math.Ceiling(userBino.Sum(x => x.TimeSpentSeconds) / 60.0)
-            };
-        })
-        .OrderBy(s => s.IsApproved) // Tài khoản chờ duyệt lên trên cùng
-        .ThenByDescending(s => s.CreatedAt)
-        .ToList();
+                BinoTimeSpentMinutes = (int)Math.Ceiling(userBino.Sum(x => x.TimeSpentSeconds) / 60.0),
+                VocabMasteredWords = vocab?.MasteredCount ?? 0,
+                TotalXp = gamification?.TotalXP ?? 0,
+                Level = gamification?.CurrentLevel ?? 1,
+                StreakDays = gamification?.CurrentStreak ?? 0
+            });
+        }
+
+        result = result
+            .OrderBy(s => s.IsApproved) // Tài khoản chờ duyệt lên trên cùng
+            .ThenByDescending(s => s.CreatedAt)
+            .ToList();
 
         return Response<List<AdminStudentProgressDto>>.SuccessResult("Lấy danh sách học viên thành công", result);
+    }
+
+    public async Task<Response<AdminStudentProgressDto>> CreateStudentAsync(CreateStudentRequestDto dto)
+    {
+        if (string.IsNullOrWhiteSpace(dto.Email) || string.IsNullOrWhiteSpace(dto.FullName) || string.IsNullOrWhiteSpace(dto.Password))
+            return Response<AdminStudentProgressDto>.Failure("Vui lòng điền đầy đủ Họ tên, Email và Mật khẩu.");
+
+        var existingUser = await _userManager.FindByEmailAsync(dto.Email);
+        if (existingUser != null)
+            return Response<AdminStudentProgressDto>.Failure("Email này đã được sử dụng bởi một tài khoản khác.");
+
+        var user = new ApplicationUser
+        {
+            UserName = dto.Email,
+            Email = dto.Email,
+            FullName = dto.FullName.Trim(),
+            PhoneNumber = dto.PhoneNumber?.Trim(),
+            IsApproved = dto.IsApproved,
+            EmailConfirmed = dto.IsApproved,
+            ApprovedAt = dto.IsApproved ? DateTime.UtcNow : null,
+            CreatedAt = DateTime.UtcNow
+        };
+
+        var createResult = await _userManager.CreateAsync(user, dto.Password);
+        if (!createResult.Succeeded)
+        {
+            var errors = string.Join("; ", createResult.Errors.Select(e => e.Description));
+            return Response<AdminStudentProgressDto>.Failure($"Không thể tạo tài khoản: {errors}");
+        }
+
+        var roleToAssign = string.Equals(dto.Role, "Admin", StringComparison.OrdinalIgnoreCase) ? "Admin" : "Student";
+        await _userManager.AddToRoleAsync(user, roleToAssign);
+
+        var studentDto = new AdminStudentProgressDto
+        {
+            UserId = user.Id,
+            FullName = user.FullName,
+            Email = user.Email ?? "",
+            PhoneNumber = user.PhoneNumber,
+            Role = roleToAssign,
+            IsApproved = user.IsApproved,
+            IsLocked = false,
+            ApprovedAt = user.ApprovedAt,
+            CreatedAt = user.CreatedAt,
+            LastLoginAt = null,
+            TestsEnrolled = 0,
+            CompletedQuestions = 0,
+            ConfidentQuestions = 0,
+            MasteryRate = 0,
+            BinoCompletedLessons = 0,
+            BinoTotalLessons = 72,
+            BinoProgressPercent = 0,
+            BinoSavedFlashcards = 0,
+            BinoTimeSpentMinutes = 0,
+            VocabMasteredWords = 0,
+            TotalXp = 0,
+            Level = 1,
+            StreakDays = 0
+        };
+
+        return Response<AdminStudentProgressDto>.SuccessResult($"Đã tạo tài khoản {roleToAssign} thành công cho \"{user.FullName}\"!", studentDto);
+    }
+
+    public async Task<Response<bool>> UpdateStudentAsync(int userId, UpdateStudentRequestDto dto)
+    {
+        var user = await _userManager.FindByIdAsync(userId.ToString());
+        if (user == null)
+            return Response<bool>.Failure("Không tìm thấy tài khoản.");
+
+        user.FullName = dto.FullName.Trim();
+        user.PhoneNumber = dto.PhoneNumber?.Trim();
+
+        if (!string.Equals(user.Email, dto.Email, StringComparison.OrdinalIgnoreCase))
+        {
+            var existingEmail = await _userManager.FindByEmailAsync(dto.Email);
+            if (existingEmail != null && existingEmail.Id != userId)
+                return Response<bool>.Failure("Email đã được sử dụng bởi tài khoản khác.");
+            user.Email = dto.Email.Trim();
+            user.UserName = dto.Email.Trim();
+        }
+
+        user.IsApproved = dto.IsApproved;
+        if (dto.IsApproved && user.ApprovedAt == null)
+        {
+            user.ApprovedAt = DateTime.UtcNow;
+            user.EmailConfirmed = true;
+        }
+
+        if (dto.IsLocked)
+        {
+            user.LockoutEnd = DateTimeOffset.UtcNow.AddYears(100);
+        }
+        else
+        {
+            user.LockoutEnd = null;
+        }
+
+        var updateResult = await _userManager.UpdateAsync(user);
+        if (!updateResult.Succeeded)
+            return Response<bool>.Failure("Không thể cập nhật thông tin tài khoản.");
+
+        var currentRoles = await _userManager.GetRolesAsync(user);
+        var desiredRole = string.Equals(dto.Role, "Admin", StringComparison.OrdinalIgnoreCase) ? "Admin" : "Student";
+        if (!currentRoles.Contains(desiredRole))
+        {
+            await _userManager.RemoveFromRolesAsync(user, currentRoles);
+            await _userManager.AddToRoleAsync(user, desiredRole);
+        }
+
+        return Response<bool>.SuccessResult("Cập nhật thông tin tài khoản thành công!", true);
+    }
+
+    public async Task<Response<bool>> ResetStudentPasswordAsync(int userId, string newPassword)
+    {
+        if (string.IsNullOrWhiteSpace(newPassword) || newPassword.Length < 6)
+            return Response<bool>.Failure("Mật khẩu mới phải có ít nhất 6 ký tự.");
+
+        var user = await _userManager.FindByIdAsync(userId.ToString());
+        if (user == null)
+            return Response<bool>.Failure("Không tìm thấy tài khoản.");
+
+        await _userManager.RemovePasswordAsync(user);
+        var addResult = await _userManager.AddPasswordAsync(user, newPassword);
+        if (!addResult.Succeeded)
+        {
+            var errors = string.Join("; ", addResult.Errors.Select(e => e.Description));
+            return Response<bool>.Failure($"Không thể đặt lại mật khẩu: {errors}");
+        }
+
+        return Response<bool>.SuccessResult($"Đã đặt lại mật khẩu mới cho tài khoản \"{user.FullName}\" ({user.Email})!", true);
+    }
+
+    public async Task<Response<StudentDetailProfileDto>> GetStudentDetailProfileAsync(int userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId.ToString());
+        if (user == null)
+            return Response<StudentDetailProfileDto>.Failure("Không tìm thấy tài khoản.");
+
+        var roles = await _userManager.GetRolesAsync(user);
+        var role = roles.FirstOrDefault() ?? "Student";
+        bool isLocked = user.LockoutEnd.HasValue && user.LockoutEnd.Value > DateTimeOffset.UtcNow;
+
+        // Gamification
+        var gamification = await _unitOfWork.Gamification.GetByUserIdAsync(userId);
+        var gamificationProfile = (await _gamificationService.GetProfileAsync(userId))?.Data;
+        var achievements = (await _gamificationService.GetAchievementsAsync(userId))?.Data ?? new();
+        var unlockedBadges = achievements.Where(a => a.IsUnlocked).Select(a => a.Title).ToList();
+
+        // TOEIC
+        var toeicSummaries = (await _unitOfWork.UserProgresses.GetSummariesByUserAsync(userId)).ToList();
+        var summaryDtos = toeicSummaries.Select(s => new TestSummaryDto
+        {
+            ToeicTestId = s.ToeicTestId,
+            TestId = s.ToeicTest?.TestId ?? "TEST",
+            Title = s.ToeicTest?.Title ?? "Đề thi",
+            CompletedQuestions = s.CompletedQuestions,
+            ConfidentQuestions = s.ConfidentQuestions,
+            TotalQuestions = s.TotalQuestions,
+            PercentCompleted = s.PercentCompleted,
+            LastAccessedAt = EnsureUtc(s.LastAccessedAt)
+        }).OrderByDescending(s => s.LastAccessedAt).ToList();
+
+        int toeicCompleted = summaryDtos.Sum(s => s.CompletedQuestions);
+        int toeicConfident = summaryDtos.Sum(s => s.ConfidentQuestions);
+        int toeicTotal = summaryDtos.Sum(s => s.TotalQuestions);
+        double toeicMastery = toeicTotal > 0 ? Math.Round((double)toeicConfident / toeicTotal * 100, 1) : 0;
+
+        // Bino
+        var binoProgresses = (await _unitOfWork.BinoLearning.GetProgressByUserAsync(userId)).ToList();
+        var binoSrs = (await _unitOfWork.BinoLearning.GetAllSRSReviewsByUserAsync(userId)).ToList();
+        int binoDone = binoProgresses.Count(x => x.IsCompleted);
+
+        // Vocab
+        var vocab = await _unitOfWork.UserProgresses.GetVocabProgressAsync(userId);
+
+        // Reflex
+        var reflex = await _unitOfWork.UserProgresses.GetReflexProgressAsync(userId);
+        int reflexUnits = 0;
+        if (reflex != null && !string.IsNullOrWhiteSpace(reflex.ProgressDataJson))
+        {
+            try
+            {
+                using var doc = JsonDocument.Parse(reflex.ProgressDataJson);
+                if (doc.RootElement.TryGetProperty("completedUnits", out var unitsElem) && unitsElem.ValueKind == JsonValueKind.Array)
+                {
+                    reflexUnits = unitsElem.GetArrayLength();
+                }
+            }
+            catch { }
+        }
+
+        DateTime? lastActive = user.LastLoginAt;
+        var lastToeicSummary = summaryDtos.FirstOrDefault();
+        if (lastToeicSummary != null && (!lastActive.HasValue || lastToeicSummary.LastAccessedAt > lastActive.Value))
+        {
+            lastActive = lastToeicSummary.LastAccessedAt;
+        }
+        if (vocab != null && (!lastActive.HasValue || vocab.UpdatedAt > lastActive.Value))
+        {
+            lastActive = vocab.UpdatedAt;
+        }
+        if (gamification != null)
+        {
+            if (gamification.LastActiveDate.HasValue && (!lastActive.HasValue || gamification.LastActiveDate.Value > lastActive.Value))
+            {
+                lastActive = gamification.LastActiveDate.Value;
+            }
+            if (gamification.UpdatedAt > (lastActive ?? DateTime.MinValue))
+            {
+                lastActive = gamification.UpdatedAt;
+            }
+        }
+
+        var detail = new StudentDetailProfileDto
+        {
+            UserId = user.Id,
+            FullName = user.FullName,
+            Email = user.Email ?? "",
+            PhoneNumber = user.PhoneNumber,
+            Role = role,
+            IsApproved = user.IsApproved,
+            IsLocked = isLocked,
+            ApprovedAt = EnsureUtc(user.ApprovedAt),
+            CreatedAt = DateTime.SpecifyKind(user.CreatedAt, DateTimeKind.Utc),
+            LastLoginAt = EnsureUtc(lastActive),
+
+            Level = gamificationProfile?.CurrentLevel ?? (gamification?.CurrentLevel ?? 1),
+            LevelTitle = gamificationProfile?.LevelTitle ?? "Tân binh",
+            TotalXp = gamificationProfile?.TotalXP ?? (gamification?.TotalXP ?? 0),
+            CurrentStreak = gamificationProfile?.CurrentStreak ?? (gamification?.CurrentStreak ?? 0),
+            LongestStreak = gamificationProfile?.LongestStreak ?? (gamification?.LongestStreak ?? 0),
+            TotalDaysStudied = gamification?.DailyQuestStreak ?? 0,
+            Badges = unlockedBadges,
+
+            ToeicTestsCount = summaryDtos.Count,
+            ToeicCompletedQuestions = toeicCompleted,
+            ToeicConfidentQuestions = toeicConfident,
+            ToeicMasteryRate = toeicMastery,
+            ToeicSummaries = summaryDtos,
+
+            BinoCompletedLessons = binoDone,
+            BinoTotalLessons = 72,
+            BinoProgressPercent = Math.Round((double)binoDone / 72.0 * 100, 1),
+            BinoSavedFlashcards = binoSrs.Count,
+            BinoTimeSpentMinutes = (int)Math.Ceiling(binoProgresses.Sum(x => x.TimeSpentSeconds) / 60.0),
+
+            VocabMasteredWords = vocab?.MasteredCount ?? 0,
+            VocabStarredWords = vocab?.StarredCount ?? 0,
+            VocabLastStudiedTopic = vocab?.LastStudiedTopic ?? 1,
+
+            ReflexUnitsDone = reflexUnits
+        };
+
+        return Response<StudentDetailProfileDto>.SuccessResult("Lấy hồ sơ chi tiết học viên thành công", detail);
+    }
+
+    public async Task<Response<bool>> AdjustStudentGamificationAsync(int userId, AdminAdjustGamificationDto dto)
+    {
+        var user = await _userManager.FindByIdAsync(userId.ToString());
+        if (user == null)
+            return Response<bool>.Failure("Không tìm thấy tài khoản.");
+
+        if (dto.BonusXp > 0)
+        {
+            await _gamificationService.AddXPAsync(userId, dto.BonusXp, "AdminReward", dto.Reason ?? "Thưởng điểm từ Quản trị viên");
+        }
+
+        if (dto.RestoreStreakDays.HasValue && dto.RestoreStreakDays.Value > 0)
+        {
+            var gamification = await _unitOfWork.Gamification.GetByUserIdAsync(userId);
+            if (gamification != null)
+            {
+                gamification.CurrentStreak = dto.RestoreStreakDays.Value;
+                if (gamification.CurrentStreak > gamification.LongestStreak)
+                {
+                    gamification.LongestStreak = gamification.CurrentStreak;
+                }
+                gamification.LastActiveDate = DateTime.UtcNow;
+                await _unitOfWork.Gamification.UpsertAsync(gamification);
+                await _unitOfWork.CompleteAsync();
+            }
+        }
+
+        return Response<bool>.SuccessResult($"Đã điều chỉnh thành tích thành công cho học viên \"{user.FullName}\"!", true);
     }
 
     public async Task<Response<bool>> ApproveStudentAsync(int userId, bool isApproved)

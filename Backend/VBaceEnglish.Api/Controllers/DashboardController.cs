@@ -64,6 +64,51 @@ public class DashboardController : ControllerBase
         return Ok(result);
     }
 
+    [HttpPost("admin-students/create")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> CreateStudent([FromBody] CreateStudentRequestDto dto)
+    {
+        var result = await _dashboardService.CreateStudentAsync(dto);
+        if (!result.Success) return BadRequest(result);
+        return Ok(result);
+    }
+
+    [HttpPut("admin-students/{userId}")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> UpdateStudent(int userId, [FromBody] UpdateStudentRequestDto dto)
+    {
+        var result = await _dashboardService.UpdateStudentAsync(userId, dto);
+        if (!result.Success) return BadRequest(result);
+        return Ok(result);
+    }
+
+    [HttpPost("admin-students/{userId}/reset-password")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> ResetPassword(int userId, [FromBody] AdminResetPasswordDto dto)
+    {
+        var result = await _dashboardService.ResetStudentPasswordAsync(userId, dto.NewPassword);
+        if (!result.Success) return BadRequest(result);
+        return Ok(result);
+    }
+
+    [HttpGet("admin-students/{userId}/detail")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> GetStudentDetail(int userId)
+    {
+        var result = await _dashboardService.GetStudentDetailProfileAsync(userId);
+        if (!result.Success) return BadRequest(result);
+        return Ok(result);
+    }
+
+    [HttpPost("admin-students/{userId}/adjust-gamification")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> AdjustGamification(int userId, [FromBody] AdminAdjustGamificationDto dto)
+    {
+        var result = await _dashboardService.AdjustStudentGamificationAsync(userId, dto);
+        if (!result.Success) return BadRequest(result);
+        return Ok(result);
+    }
+
     [HttpDelete("admin-students/{userId}")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteStudent(int userId)
