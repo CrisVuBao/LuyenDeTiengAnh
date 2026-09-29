@@ -1,0 +1,43 @@
+{
+  "nav": {
+    "home": "首页",
+    "communication": "口语交流",
+    "reflex": "反射50主题",
+    "vocab": "3000核心词汇",
+    "toeic": "托业刷题",
+    "progress": "学习进度",
+    "leaderboard": "XP排行榜",
+    "dashboard": "统计面板",
+    "profile": "个人中心",
+    "logout": "退出登录",
+    "login": "登录",
+    "admin": "管理员",
+    "themeLight": "浅色模式",
+    "themeDark": "深色模式",
+    "modules": "课程模块"
+  },
+  "modules": {
+    "title": "多语言课程体系",
+    "subtitle": "标准化分级课程：高中英语、日常口语、托业、雅思与HSK汉语课程",
+    "all": "全部",
+    "english": "英语",
+    "chinese": "中文",
+    "highSchool": "高中 10-12",
+    "international": "国际认证",
+    "lessons": "课时",
+    "start": "开始学习",
+    "continue": "继续学习",
+    "comingSoon": "即将上线",
+    "completed": "已完成",
+    "progress": "进度"
+  },
+  "common": {
+    "level": "等级",
+    "minutes": "分钟",
+    "search": "搜索...",
+    "language": "语言",
+    "vietnamese": "越南语",
+    "english": "英语",
+    "chinese": "中文"
+  }
+}

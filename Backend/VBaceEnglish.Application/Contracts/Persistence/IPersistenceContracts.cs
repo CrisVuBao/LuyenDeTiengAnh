@@ -138,6 +138,20 @@ public interface IAdminManagementRepository
     Task<List<UserGamification>> GetAllGamificationsAsync();
 }
 
+public interface IContentModuleRepository
+{
+    Task<List<ContentModule>> GetActiveModulesAsync();
+    Task<List<ContentModule>> GetAllModulesAsync();
+    Task<ContentModule?> GetByIdAsync(int id);
+    Task<ContentModule?> GetByCodeWithLessonsAsync(string code);
+    Task<ContentModule?> GetByCodeAsync(string code);
+    Task<List<UserModuleProgress>> GetUserProgressesAsync(int userId);
+    Task<UserModuleProgress?> GetUserProgressAsync(int userId, int moduleId);
+    Task AddUserProgressAsync(UserModuleProgress progress);
+    void UpdateUserProgress(UserModuleProgress progress);
+    void UpdateModule(ContentModule module);
+}
+
 public interface IUnitOfWork : IDisposable
 {
     IToeicTestRepository ToeicTests { get; }
@@ -146,6 +160,7 @@ public interface IUnitOfWork : IDisposable
     IBinoLearningRepository BinoLearning { get; }
     IGamificationRepository Gamification { get; }
     IAdminManagementRepository AdminManagement { get; }
+    IContentModuleRepository ContentModules { get; }
     Task<int> CompleteAsync();
     Task<IDbContextTransaction> BeginTransactionAsync();
 }

@@ -20,6 +20,7 @@ import DailyQuestsPanel from '../../gamification/components/DailyQuestsPanel';
 import useGamificationStore from '../../gamification/store/useGamificationStore';
 import VocabShowcaseSection from './VocabShowcaseSection';
 import SeoMeta from '../../../components/SeoMeta';
+import ContentModuleExplorer from '../../../components/ContentModuleExplorer';
 
 // Apple-style Spring Variants (120FPS GPU-accelerated transform & opacity)
 const pageContainerVariants = {
@@ -527,6 +528,11 @@ export default function StudentHome() {
       {/* GAMIFICATION: DAILY QUESTS */}
       <motion.section variants={sectionRevealVariants}>
         <DailyQuestsPanel />
+      </motion.section>
+
+      {/* MULTILINGUAL CONTENT MODULES SYSTEM (M4) */}
+      <motion.section variants={sectionRevealVariants}>
+        <ContentModuleExplorer />
       </motion.section>
 
       {/* ===================================================================== */}

@@ -2,12 +2,14 @@ using System.IO.Compression;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 using VBaceEnglish.Api.Hubs;
 using VBaceEnglish.Api.Services;
 using VBaceEnglish.Application;
@@ -17,6 +19,14 @@ using VBaceEnglish.Infrastructure;
 using VBaceEnglish.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Phase 3 M.3: Serilog Structured Logging
+builder.Host.UseSerilog((ctx, lc) => lc
+    .ReadFrom.Configuration(ctx.Configuration)
+    .Enrich.FromLogContext()
+    .Enrich.WithProperty("Application", "VBaceEnglish")
+    .WriteTo.Console()
+    .WriteTo.File("logs/vbace-.log", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 14));
 
 // 1. Response Compression (Brotli + Gzip) (A.4)
 builder.Services.AddResponseCompression(options => {
@@ -173,6 +183,23 @@ builder.Services.AddCors(options => {
 // 8. SignalR
 builder.Services.AddSignalR();
 
+// Phase 3 M.2: API Versioning (Default 1.0, UrlSegment + QueryString + Header)
+builder.Services.AddApiVersioning(options =>
+{
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ReportApiVersions = true;
+    options.ApiVersionReader = ApiVersionReader.Combine(
+        new UrlSegmentApiVersionReader(),
+        new QueryStringApiVersionReader("api-version"),
+        new HeaderApiVersionReader("X-Api-Version")
+    );
+}).AddMvc().AddApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'VVV";
+    options.SubstituteApiVersionInUrl = true;
+});
+
 // Swagger Documentation
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -181,6 +208,7 @@ var app = builder.Build();
 
 // Pipeline Order (THỨ TỰ QUAN TRỌNG theo A.4)
 app.UseExceptionHandler();
+app.UseSerilogRequestLogging(); // Phase 3 M.3: Serilog HTTP Request Logging
 app.UseCors("AllowFrontend");
 app.UseResponseCompression();
 app.UseOutputCache();

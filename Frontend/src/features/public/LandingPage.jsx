@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Sparkles, ArrowRight, Sun, Moon } from 'lucide-react';
 import SeoMeta from '../../components/SeoMeta';
+import LanguageSelector from '../../components/LanguageSelector';
 import useAuthStore from '../../store/authStore';
 import useThemeStore from '../../store/themeStore';
 import LandingHeroStudio from './components/LandingHeroStudio';
@@ -33,6 +34,32 @@ export default function LandingPage() {
         title="Nền Tảng Học Tiếng Anh Giao Tiếp & Luyện Thi Đỉnh Cao"
         description="Luyện phản xạ giao tiếp 1500 câu thực chiến, 3000 từ vựng Oxford với thuật toán lặp lại ngắt quãng FSRS, Shadowing và AI giải thích chuyên sâu."
         canonicalUrl="https://vbaceenglish.com/"
+        structuredData={{
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "WebApplication",
+              "@id": "https://vbaceenglish.com/#webapp",
+              "name": "VBaceEnglish",
+              "url": "https://vbaceenglish.com",
+              "applicationCategory": "EducationalApplication",
+              "operatingSystem": "All",
+              "description": "Nền tảng học tiếng Anh giao tiếp & luyện thi TOEIC, THPT, IELTS và tiếng Trung thông minh với công nghệ phản xạ và FSRS.",
+              "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "VND"
+              }
+            },
+            {
+              "@type": "EducationalOrganization",
+              "@id": "https://vbaceenglish.com/#organization",
+              "name": "VBaceEnglish by Vũ Bảo Software",
+              "url": "https://vbaceenglish.com",
+              "logo": "https://vbaceenglish.com/favicon.svg"
+            }
+          ]
+        }}
       />
 
       {/* GPU-ACCELERATED AMBIENT BACKDROP */}
@@ -88,6 +115,8 @@ export default function LandingPage() {
           </nav>
 
           <div className="flex items-center gap-2.5 shrink-0">
+            <LanguageSelector compact={true} />
+
             <button
               onClick={toggleTheme}
               aria-label="Chuyển đổi giao diện Sáng/Tối"

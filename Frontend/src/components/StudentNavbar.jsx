@@ -14,6 +14,7 @@ import toeicApi from '../api/toeicApi';
 import toast from 'react-hot-toast';
 import XPBar from '../features/gamification/components/XPBar';
 import NotificationBell from './NotificationBell';
+import LanguageSelector from './LanguageSelector';
 
 // Prefetch JS chunks & API data on hover
 const prefetchRoute = (route) => {
@@ -266,6 +267,9 @@ export default function StudentNavbar() {
 
             {/* Realtime Notification Bell */}
             <NotificationBell />
+
+            {/* Multilingual Selector */}
+            {/* <LanguageSelector compact={false} /> */}
             
             {/* Theme Toggle (Light / Dark) */}
             <button
@@ -570,6 +574,13 @@ export default function StudentNavbar() {
 
               {/* Drawer Footer (Theme & Logout) */}
               <div className="p-4 border-t border-slate-100 dark:border-slate-800/80 bg-slate-50/60 dark:bg-slate-800/40 space-y-2">
+                {/* <div className="flex items-center justify-between px-2 py-1">
+                  <span className="text-xs font-semibold text-slate-600 dark:text-slate-300">
+                    Ngôn ngữ
+                  </span>
+                  <LanguageSelector compact={false} />
+                </div> */}
+
                 <div className="flex items-center justify-between px-2 py-1">
                   <span className="text-xs font-semibold text-slate-600 dark:text-slate-300">
                     Giao diện: {mode === 'light' ? 'Chế độ sáng' : 'Chế độ tối'}

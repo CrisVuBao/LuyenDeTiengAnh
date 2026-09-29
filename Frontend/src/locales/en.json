@@ -1,0 +1,43 @@
+{
+  "nav": {
+    "home": "Home",
+    "communication": "Communication",
+    "reflex": "Reflex 50",
+    "vocab": "3000 Vocab",
+    "toeic": "TOEIC Tests",
+    "progress": "Progress",
+    "leaderboard": "XP Arena",
+    "dashboard": "Dashboard",
+    "profile": "Profile",
+    "logout": "Log out",
+    "login": "Sign in",
+    "admin": "Admin",
+    "themeLight": "Light mode",
+    "themeDark": "Dark mode",
+    "modules": "Course Modules"
+  },
+  "modules": {
+    "title": "Multilingual Course Modules",
+    "subtitle": "Standardized learning tracks from foundation to advanced: High School, Speaking, TOEIC, IELTS, and HSK Chinese",
+    "all": "All",
+    "english": "English",
+    "chinese": "Chinese",
+    "highSchool": "Grades 10-12",
+    "international": "Certifications",
+    "lessons": "lessons",
+    "start": "Start now",
+    "continue": "Continue",
+    "comingSoon": "Coming soon",
+    "completed": "Completed",
+    "progress": "Progress"
+  },
+  "common": {
+    "level": "Level",
+    "minutes": "mins",
+    "search": "Search...",
+    "language": "Language",
+    "vietnamese": "Vietnamese",
+    "english": "English",
+    "chinese": "Chinese"
+  }
+}

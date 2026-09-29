@@ -46,6 +46,11 @@ public class AppDBContext : IdentityDbContext<ApplicationUser, Role, int>
     public DbSet<SystemSetting> SystemSettings => Set<SystemSetting>();
     public DbSet<AdminActivityLog> AdminActivityLogs => Set<AdminActivityLog>();
 
+    // Phase 3 "Mở Rộng" - Content Module System (M.4)
+    public DbSet<ContentModule> ContentModules => Set<ContentModule>();
+    public DbSet<ContentLesson> ContentLessons => Set<ContentLesson>();
+    public DbSet<UserModuleProgress> UserModuleProgresses => Set<UserModuleProgress>();
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -227,6 +232,36 @@ public class AppDBContext : IdentityDbContext<ApplicationUser, Role, int>
         builder.Entity<ApplicationUser>().HasIndex(u => u.PhoneNumber);
         builder.Entity<ApplicationUser>().HasIndex(u => u.IsApproved);
         builder.Entity<ApplicationUser>().HasIndex(u => u.CreatedAt);
+
+        // ==========================================
+        // Phase 3 "Mở Rộng" - Content Module System Configurations (M.4)
+        // ==========================================
+        builder.Entity<ContentModule>().HasIndex(m => m.Code).IsUnique();
+        builder.Entity<ContentModule>().HasIndex(m => m.Language);
+        builder.Entity<ContentModule>().HasIndex(m => m.Category);
+        builder.Entity<ContentModule>().HasIndex(m => m.IsActive);
+        builder.Entity<ContentModule>().HasIndex(m => m.OrderIndex);
+
+        builder.Entity<ContentLesson>().HasIndex(l => new { l.ContentModuleId, l.OrderIndex });
+        builder.Entity<ContentLesson>().HasIndex(l => l.Type);
+        builder.Entity<ContentLesson>()
+            .HasOne(l => l.ContentModule)
+            .WithMany(m => m.Lessons)
+            .HasForeignKey(l => l.ContentModuleId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<UserModuleProgress>().HasIndex(p => new { p.UserId, p.ContentModuleId }).IsUnique();
+        builder.Entity<UserModuleProgress>().HasIndex(p => p.LastStudiedAt);
+        builder.Entity<UserModuleProgress>()
+            .HasOne(p => p.ContentModule)
+            .WithMany(m => m.UserProgresses)
+            .HasForeignKey(p => p.ContentModuleId)
+            .OnDelete(DeleteBehavior.Cascade);
+        builder.Entity<UserModuleProgress>()
+            .HasOne(p => p.User)
+            .WithMany()
+            .HasForeignKey(p => p.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
 

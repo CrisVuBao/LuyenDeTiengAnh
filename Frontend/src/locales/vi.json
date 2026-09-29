@@ -1,0 +1,43 @@
+{
+  "nav": {
+    "home": "Trang chủ",
+    "communication": "Giao tiếp",
+    "reflex": "Phản xạ 50",
+    "vocab": "3000 Từ vựng",
+    "toeic": "Luyện đề TOEIC",
+    "progress": "Tiến độ",
+    "leaderboard": "Đấu trường XP",
+    "dashboard": "Thống kê",
+    "profile": "Tài khoản",
+    "logout": "Đăng xuất",
+    "login": "Đăng nhập",
+    "admin": "Quản trị viên",
+    "themeLight": "Chế độ sáng",
+    "themeDark": "Chế độ tối",
+    "modules": "Hệ thống khóa học"
+  },
+  "modules": {
+    "title": "Hệ Thống Khóa Học Đa Ngôn Ngữ",
+    "subtitle": "Lộ trình học tập chuẩn hóa từ cơ bản đến nâng cao: Tiếng Anh THPT, Giao tiếp, TOEIC, IELTS và Tiếng Trung HSK",
+    "all": "Tất cả",
+    "english": "Tiếng Anh",
+    "chinese": "Tiếng Trung",
+    "highSchool": "THPT 10-12",
+    "international": "Chứng chỉ",
+    "lessons": "bài học",
+    "start": "Học ngay",
+    "continue": "Tiếp tục học",
+    "comingSoon": "Sắp ra mắt",
+    "completed": "Đã hoàn thành",
+    "progress": "Tiến độ"
+  },
+  "common": {
+    "level": "Cấp độ",
+    "minutes": "phút",
+    "search": "Tìm kiếm...",
+    "language": "Ngôn ngữ",
+    "vietnamese": "Tiếng Việt",
+    "english": "Tiếng Anh",
+    "chinese": "Tiếng Trung"
+  }
+}

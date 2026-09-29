@@ -20,6 +20,9 @@ public static class DependencyInjection
         services.AddScoped<INotificationService, NotificationService>();
         services.AddScoped<IAnalyticsService, AnalyticsService>();
 
+        // Phase 3 Multi-Content Modules (M.4)
+        services.AddScoped<IContentModuleService, ContentModuleService>();
+
         return services;
     }
 }

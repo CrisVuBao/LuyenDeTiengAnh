@@ -196,11 +196,6 @@ public static class DbInitializer
                     CREATE INDEX [IX_XPTransactions_UserId_CreatedAt] ON [XPTransactions] ([UserId], [CreatedAt]);
                 END
 
-                IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_AspNetUsers_PhoneNumber' AND object_id = OBJECT_ID('AspNetUsers'))
-                BEGIN
-                    CREATE INDEX [IX_AspNetUsers_PhoneNumber] ON [AspNetUsers] ([PhoneNumber]);
-                END
-
                 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_UserGamifications_CurrentLevel' AND object_id = OBJECT_ID('UserGamifications'))
                 BEGIN
                     CREATE INDEX [IX_UserGamifications_CurrentLevel] ON [UserGamifications] ([CurrentLevel]);
@@ -214,6 +209,72 @@ public static class DbInitializer
                 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_AiChatHistories_UserId_CreatedAt' AND object_id = OBJECT_ID('AiChatHistories'))
                 BEGIN
                     CREATE INDEX [IX_AiChatHistories_UserId_CreatedAt] ON [AiChatHistories] ([UserId], [CreatedAt]);
+                END
+
+                -- Phase 3 Content Module System Tables (M.4)
+                IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'ContentModules')
+                BEGIN
+                    CREATE TABLE [ContentModules] (
+                        [Id] int IDENTITY(1,1) NOT NULL,
+                        [Code] nvarchar(100) NOT NULL,
+                        [Language] nvarchar(20) NOT NULL CONSTRAINT [DF_ContentModules_Language] DEFAULT 'en',
+                        [Title] nvarchar(250) NOT NULL,
+                        [TitleVi] nvarchar(250) NOT NULL,
+                        [Description] nvarchar(max) NOT NULL CONSTRAINT [DF_ContentModules_Description] DEFAULT '',
+                        [Category] nvarchar(100) NOT NULL CONSTRAINT [DF_ContentModules_Category] DEFAULT 'General',
+                        [TargetAudience] nvarchar(200) NOT NULL CONSTRAINT [DF_ContentModules_TargetAudience] DEFAULT '',
+                        [Icon] nvarchar(50) NOT NULL CONSTRAINT [DF_ContentModules_Icon] DEFAULT 'BookOpen',
+                        [ColorGradient] nvarchar(100) NOT NULL CONSTRAINT [DF_ContentModules_ColorGradient] DEFAULT 'from-blue-600 to-indigo-600',
+                        [DifficultyLevel] nvarchar(50) NOT NULL CONSTRAINT [DF_ContentModules_DifficultyLevel] DEFAULT 'A1-B2',
+                        [EstimatedLessons] int NOT NULL CONSTRAINT [DF_ContentModules_EstimatedLessons] DEFAULT 30,
+                        [OrderIndex] int NOT NULL CONSTRAINT [DF_ContentModules_OrderIndex] DEFAULT 0,
+                        [IsActive] bit NOT NULL CONSTRAINT [DF_ContentModules_IsActive] DEFAULT 1,
+                        [IsComingSoon] bit NOT NULL CONSTRAINT [DF_ContentModules_IsComingSoon] DEFAULT 0,
+                        [RoutePath] nvarchar(200) NULL,
+                        [CreatedAt] datetime2 NOT NULL CONSTRAINT [DF_ContentModules_CreatedAt] DEFAULT GETUTCDATE(),
+                        [UpdatedAt] datetime2 NOT NULL CONSTRAINT [DF_ContentModules_UpdatedAt] DEFAULT GETUTCDATE(),
+                        CONSTRAINT [PK_ContentModules] PRIMARY KEY ([Id])
+                    );
+                    CREATE UNIQUE INDEX [IX_ContentModules_Code] ON [ContentModules] ([Code]);
+                END
+
+                IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'ContentLessons')
+                BEGIN
+                    CREATE TABLE [ContentLessons] (
+                        [Id] int IDENTITY(1,1) NOT NULL,
+                        [ContentModuleId] int NOT NULL,
+                        [Title] nvarchar(250) NOT NULL,
+                        [TitleVi] nvarchar(250) NOT NULL,
+                        [Type] nvarchar(50) NOT NULL CONSTRAINT [DF_ContentLessons_Type] DEFAULT 'lesson',
+                        [OrderIndex] int NOT NULL CONSTRAINT [DF_ContentLessons_OrderIndex] DEFAULT 1,
+                        [Difficulty] nvarchar(20) NOT NULL CONSTRAINT [DF_ContentLessons_Difficulty] DEFAULT 'B1',
+                        [Description] nvarchar(max) NULL,
+                        [EstimatedMinutes] int NOT NULL CONSTRAINT [DF_ContentLessons_EstimatedMinutes] DEFAULT 15,
+                        [IsFree] bit NOT NULL CONSTRAINT [DF_ContentLessons_IsFree] DEFAULT 1,
+                        [MetaJson] nvarchar(max) NULL,
+                        [CreatedAt] datetime2 NOT NULL CONSTRAINT [DF_ContentLessons_CreatedAt] DEFAULT GETUTCDATE(),
+                        CONSTRAINT [PK_ContentLessons] PRIMARY KEY ([Id]),
+                        CONSTRAINT [FK_ContentLessons_ContentModules_ContentModuleId] FOREIGN KEY ([ContentModuleId]) REFERENCES [ContentModules] ([Id]) ON DELETE CASCADE
+                    );
+                    CREATE INDEX [IX_ContentLessons_ContentModuleId_OrderIndex] ON [ContentLessons] ([ContentModuleId], [OrderIndex]);
+                END
+
+                IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'UserModuleProgresses')
+                BEGIN
+                    CREATE TABLE [UserModuleProgresses] (
+                        [Id] int IDENTITY(1,1) NOT NULL,
+                        [UserId] int NOT NULL,
+                        [ContentModuleId] int NOT NULL,
+                        [CompletedLessonsCount] int NOT NULL CONSTRAINT [DF_UserModuleProgresses_CompletedLessonsCount] DEFAULT 0,
+                        [TotalTimeSpentSeconds] int NOT NULL CONSTRAINT [DF_UserModuleProgresses_TotalTimeSpentSeconds] DEFAULT 0,
+                        [CompletionPercentage] float NOT NULL CONSTRAINT [DF_UserModuleProgresses_CompletionPercentage] DEFAULT 0.0,
+                        [LastStudiedAt] datetime2 NOT NULL CONSTRAINT [DF_UserModuleProgresses_LastStudiedAt] DEFAULT GETUTCDATE(),
+                        [ProgressDataJson] nvarchar(max) NULL,
+                        CONSTRAINT [PK_UserModuleProgresses] PRIMARY KEY ([Id]),
+                        CONSTRAINT [FK_UserModuleProgresses_AspNetUsers_UserId] FOREIGN KEY ([UserId]) REFERENCES [AspNetUsers] ([Id]) ON DELETE CASCADE,
+                        CONSTRAINT [FK_UserModuleProgresses_ContentModules_ContentModuleId] FOREIGN KEY ([ContentModuleId]) REFERENCES [ContentModules] ([Id]) ON DELETE CASCADE
+                    );
+                    CREATE UNIQUE INDEX [IX_UserModuleProgresses_UserId_ContentModuleId] ON [UserModuleProgresses] ([UserId], [ContentModuleId]);
                 END
             ";
             await cmd.ExecuteNonQueryAsync();
@@ -315,6 +376,9 @@ public static class DbInitializer
 
         // 6. Seed Default System Settings if empty
         await SeedSystemSettingsAsync(context, logger);
+
+        // 7. Seed Multi-Content Modules (Phase 3 M.4)
+        await SeedContentModulesAsync(context, logger);
     }
 
     public static List<SystemSetting> GetDefaultSystemSettings() =>
@@ -657,6 +721,246 @@ public static class DbInitializer
         public string englishText { get; set; } = string.Empty;
         public string vietnameseText { get; set; } = string.Empty;
         public bool isUserRole { get; set; }
+    }
+
+    private static async Task SeedContentModulesAsync(AppDBContext context, ILogger logger)
+    {
+        try
+        {
+            var conn = context.Database.GetDbConnection();
+            if (conn.State != System.Data.ConnectionState.Open)
+            {
+                await conn.OpenAsync();
+            }
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = @"
+                    IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'ContentModules')
+                    BEGIN
+                        CREATE TABLE [ContentModules] (
+                            [Id] int IDENTITY(1,1) NOT NULL,
+                            [Code] nvarchar(100) NOT NULL,
+                            [Language] nvarchar(20) NOT NULL CONSTRAINT [DF_ContentModules_Language] DEFAULT 'en',
+                            [Title] nvarchar(250) NOT NULL,
+                            [TitleVi] nvarchar(250) NOT NULL,
+                            [Description] nvarchar(max) NOT NULL CONSTRAINT [DF_ContentModules_Description] DEFAULT '',
+                            [Category] nvarchar(100) NOT NULL CONSTRAINT [DF_ContentModules_Category] DEFAULT 'General',
+                            [TargetAudience] nvarchar(200) NOT NULL CONSTRAINT [DF_ContentModules_TargetAudience] DEFAULT '',
+                            [Icon] nvarchar(50) NOT NULL CONSTRAINT [DF_ContentModules_Icon] DEFAULT 'BookOpen',
+                            [ColorGradient] nvarchar(100) NOT NULL CONSTRAINT [DF_ContentModules_ColorGradient] DEFAULT 'from-blue-600 to-indigo-600',
+                            [DifficultyLevel] nvarchar(50) NOT NULL CONSTRAINT [DF_ContentModules_DifficultyLevel] DEFAULT 'A1-B2',
+                            [EstimatedLessons] int NOT NULL CONSTRAINT [DF_ContentModules_EstimatedLessons] DEFAULT 30,
+                            [OrderIndex] int NOT NULL CONSTRAINT [DF_ContentModules_OrderIndex] DEFAULT 0,
+                            [IsActive] bit NOT NULL CONSTRAINT [DF_ContentModules_IsActive] DEFAULT 1,
+                            [IsComingSoon] bit NOT NULL CONSTRAINT [DF_ContentModules_IsComingSoon] DEFAULT 0,
+                            [RoutePath] nvarchar(200) NULL,
+                            [CreatedAt] datetime2 NOT NULL CONSTRAINT [DF_ContentModules_CreatedAt] DEFAULT GETUTCDATE(),
+                            [UpdatedAt] datetime2 NOT NULL CONSTRAINT [DF_ContentModules_UpdatedAt] DEFAULT GETUTCDATE(),
+                            CONSTRAINT [PK_ContentModules] PRIMARY KEY ([Id])
+                        );
+                        CREATE UNIQUE INDEX [IX_ContentModules_Code] ON [ContentModules] ([Code]);
+                    END
+
+                    IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'ContentLessons')
+                    BEGIN
+                        CREATE TABLE [ContentLessons] (
+                            [Id] int IDENTITY(1,1) NOT NULL,
+                            [ContentModuleId] int NOT NULL,
+                            [Title] nvarchar(250) NOT NULL,
+                            [TitleVi] nvarchar(250) NOT NULL,
+                            [Type] nvarchar(50) NOT NULL CONSTRAINT [DF_ContentLessons_Type] DEFAULT 'lesson',
+                            [OrderIndex] int NOT NULL CONSTRAINT [DF_ContentLessons_OrderIndex] DEFAULT 1,
+                            [Difficulty] nvarchar(20) NOT NULL CONSTRAINT [DF_ContentLessons_Difficulty] DEFAULT 'B1',
+                            [Description] nvarchar(max) NULL,
+                            [EstimatedMinutes] int NOT NULL CONSTRAINT [DF_ContentLessons_EstimatedMinutes] DEFAULT 15,
+                            [IsFree] bit NOT NULL CONSTRAINT [DF_ContentLessons_IsFree] DEFAULT 1,
+                            [MetaJson] nvarchar(max) NULL,
+                            [CreatedAt] datetime2 NOT NULL CONSTRAINT [DF_ContentLessons_CreatedAt] DEFAULT GETUTCDATE(),
+                            CONSTRAINT [PK_ContentLessons] PRIMARY KEY ([Id]),
+                            CONSTRAINT [FK_ContentLessons_ContentModules_ContentModuleId] FOREIGN KEY ([ContentModuleId]) REFERENCES [ContentModules] ([Id]) ON DELETE CASCADE
+                        );
+                        CREATE INDEX [IX_ContentLessons_ContentModuleId_OrderIndex] ON [ContentLessons] ([ContentModuleId], [OrderIndex]);
+                    END
+
+                    IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'UserModuleProgresses')
+                    BEGIN
+                        CREATE TABLE [UserModuleProgresses] (
+                            [Id] int IDENTITY(1,1) NOT NULL,
+                            [UserId] int NOT NULL,
+                            [ContentModuleId] int NOT NULL,
+                            [CompletedLessonsCount] int NOT NULL CONSTRAINT [DF_UserModuleProgresses_CompletedLessonsCount] DEFAULT 0,
+                            [TotalTimeSpentSeconds] int NOT NULL CONSTRAINT [DF_UserModuleProgresses_TotalTimeSpentSeconds] DEFAULT 0,
+                            [CompletionPercentage] float NOT NULL CONSTRAINT [DF_UserModuleProgresses_CompletionPercentage] DEFAULT 0.0,
+                            [LastStudiedAt] datetime2 NOT NULL CONSTRAINT [DF_UserModuleProgresses_LastStudiedAt] DEFAULT GETUTCDATE(),
+                            [ProgressDataJson] nvarchar(max) NULL,
+                            CONSTRAINT [PK_UserModuleProgresses] PRIMARY KEY ([Id]),
+                            CONSTRAINT [FK_UserModuleProgresses_AspNetUsers_UserId] FOREIGN KEY ([UserId]) REFERENCES [AspNetUsers] ([Id]) ON DELETE CASCADE,
+                            CONSTRAINT [FK_UserModuleProgresses_ContentModules_ContentModuleId] FOREIGN KEY ([ContentModuleId]) REFERENCES [ContentModules] ([Id]) ON DELETE CASCADE
+                        );
+                        CREATE UNIQUE INDEX [IX_UserModuleProgresses_UserId_ContentModuleId] ON [UserModuleProgresses] ([UserId], [ContentModuleId]);
+                    END
+                ";
+                await cmd.ExecuteNonQueryAsync();
+            }
+
+            if (await context.ContentModules.AnyAsync()) return;
+
+            var defaultModules = new List<ContentModule>
+            {
+                new()
+                {
+                    Code = "english-communication",
+                    Language = "en",
+                    Title = "Tiếng Anh Giao Tiếp Thực Chiến",
+                    TitleVi = "Giáo Trình Giao Tiếp Bản Xứ 72 Bài",
+                    Description = "Luyện nói phản xạ theo ngữ cảnh thực tế, kỹ thuật Shadowing và nhận diện giọng nói AI theo kịch bản hội thoại.",
+                    Category = "Giao Tiếp & Phản Xạ",
+                    TargetAudience = "Người đi làm & Sinh viên",
+                    Icon = "MessageSquare",
+                    ColorGradient = "from-amber-500 to-orange-500",
+                    DifficultyLevel = "A2 - B2",
+                    EstimatedLessons = 72,
+                    OrderIndex = 1,
+                    IsActive = true,
+                    IsComingSoon = false,
+                    RoutePath = "/communication"
+                },
+                new()
+                {
+                    Code = "english-reflex50",
+                    Language = "en",
+                    Title = "50 Chủ Đề Phản Xạ 3 Giây",
+                    TitleVi = "3 Tầng Phản Xạ & 1,500 Mẫu Câu Cốt Lõi",
+                    Description = "Đột phá tư duy dịch ngầm sang phản xạ bật câu tiếng Anh trong 3 giây với 50 chủ đề giao tiếp đa dạng.",
+                    Category = "Giao Tiếp & Phản Xạ",
+                    TargetAudience = "Mọi đối tượng muốn nói trôi chảy không ngắc ngứ",
+                    Icon = "Zap",
+                    ColorGradient = "from-blue-600 to-cyan-500",
+                    DifficultyLevel = "A1 - C1",
+                    EstimatedLessons = 50,
+                    OrderIndex = 2,
+                    IsActive = true,
+                    IsComingSoon = false,
+                    RoutePath = "/reflex-50"
+                },
+                new()
+                {
+                    Code = "english-toeic",
+                    Language = "en",
+                    Title = "Luyện Thi TOEIC Cấp Tốc (Part 1 - 7)",
+                    TitleVi = "Bộ Đề Chuẩn ETS Mới Nhất Kèm Phân Tích Bẫy",
+                    Description = "Hệ thống làm bài thi TOEIC full format ETS kèm giải thích chi tiết, bẫy từ vựng và Paraphrase Map độc quyền.",
+                    Category = "Chứng Chỉ Quốc Tế",
+                    TargetAudience = "Sinh viên tốt nghiệp & Người đi làm",
+                    Icon = "Award",
+                    ColorGradient = "from-emerald-600 to-teal-500",
+                    DifficultyLevel = "450 - 990+",
+                    EstimatedLessons = 120,
+                    OrderIndex = 3,
+                    IsActive = true,
+                    IsComingSoon = false,
+                    RoutePath = "/tests"
+                },
+                new()
+                {
+                    Code = "english-ielts",
+                    Language = "en",
+                    Title = "Luyện Thi IELTS Toàn Diện",
+                    TitleVi = "IELTS Academic & General Training",
+                    Description = "Luyện 4 kỹ năng Nghe - Nói - Đọc - Viết với kho đề Cambridge IELTS cập nhật, bài mẫu Band 8.0+ và chấm điểm phát âm AI.",
+                    Category = "Chứng Chỉ Quốc Tế",
+                    TargetAudience = "Học sinh du học, xét tuyển Đại học & Định cư",
+                    Icon = "Sparkles",
+                    ColorGradient = "from-purple-600 to-pink-500",
+                    DifficultyLevel = "Band 5.0 - 8.5",
+                    EstimatedLessons = 80,
+                    OrderIndex = 4,
+                    IsActive = true,
+                    IsComingSoon = true,
+                    RoutePath = "/modules/ielts"
+                },
+                new()
+                {
+                    Code = "english-grade10",
+                    Language = "en",
+                    Title = "Tiếng Anh THPT Lớp 10",
+                    TitleVi = "Bám Sát Chương Trình GDPT 2018 (Global Success / Friends Global)",
+                    Description = "Hệ thống từ vựng, ngữ pháp cốt lõi và bài tập trắc nghiệm bám sát 100% sách giáo khoa Lớp 10 chương trình mới.",
+                    Category = "Chương Trình THPT",
+                    TargetAudience = "Học sinh Lớp 10 chuẩn bị thi học kỳ & ĐGNL",
+                    Icon = "BookOpen",
+                    ColorGradient = "from-indigo-600 to-blue-500",
+                    DifficultyLevel = "B1",
+                    EstimatedLessons = 30,
+                    OrderIndex = 5,
+                    IsActive = true,
+                    IsComingSoon = true,
+                    RoutePath = "/modules/grade10"
+                },
+                new()
+                {
+                    Code = "english-grade11",
+                    Language = "en",
+                    Title = "Tiếng Anh THPT Lớp 11",
+                    TitleVi = "Bám Sát Chương Trình GDPT 2018 Toàn Diện",
+                    Description = "Củng cố kiến thức ngữ pháp nâng cao, đọc hiểu chuyên sâu và luyện tập phản xạ theo chủ đề GDPT Lớp 11.",
+                    Category = "Chương Trình THPT",
+                    TargetAudience = "Học sinh Lớp 11",
+                    Icon = "BookOpen",
+                    ColorGradient = "from-sky-600 to-indigo-500",
+                    DifficultyLevel = "B1+",
+                    EstimatedLessons = 30,
+                    OrderIndex = 6,
+                    IsActive = true,
+                    IsComingSoon = true,
+                    RoutePath = "/modules/grade11"
+                },
+                new()
+                {
+                    Code = "english-grade12",
+                    Language = "en",
+                    Title = "Tiếng Anh Lớp 12 & Luyện Thi Tốt Nghiệp THPT",
+                    TitleVi = "Chinh Phục 9+ Điểm Thi Tốt Nghiệp & Đại Học",
+                    Description = "Kho đề ôn thi THPT Quốc gia bám sát cấu trúc mới của Bộ GD&ĐT, mẹo giải nhanh và tổng ôn trọng điểm ngữ pháp.",
+                    Category = "Chương Trình THPT",
+                    TargetAudience = "Sĩ tử Lớp 12 chuẩn bị thi Tốt nghiệp THPT & ĐH",
+                    Icon = "GraduationCap",
+                    ColorGradient = "from-rose-600 to-red-500",
+                    DifficultyLevel = "B2",
+                    EstimatedLessons = 45,
+                    OrderIndex = 7,
+                    IsActive = true,
+                    IsComingSoon = true,
+                    RoutePath = "/modules/grade12"
+                },
+                new()
+                {
+                    Code = "chinese-hsk",
+                    Language = "zh",
+                    Title = "Tiếng Trung Giao Tiếp & HSK 1 - 4",
+                    TitleVi = "Học Phát Âm Pinyin, Hán Tự & Phản Xạ HSK",
+                    Description = "Nền tảng học tiếng Trung toàn diện từ Pinyin cơ bản đến hội thoại thực chiến và bộ đề ôn thi HSK 1-4 chuẩn quốc tế.",
+                    Category = "Ngoại Ngữ Thứ Hai",
+                    TargetAudience = "Người mới bắt đầu học tiếng Trung hoặc cần chứng chỉ HSK",
+                    Icon = "Languages",
+                    ColorGradient = "from-amber-600 to-rose-500",
+                    DifficultyLevel = "HSK 1 - 4",
+                    EstimatedLessons = 60,
+                    OrderIndex = 8,
+                    IsActive = true,
+                    IsComingSoon = true,
+                    RoutePath = "/modules/hsk"
+                }
+            };
+
+            context.ContentModules.AddRange(defaultModules);
+            await context.SaveChangesAsync();
+            logger.LogInformation("Đã khởi tạo thành công 8 Content Modules đa khóa học (TOEIC, Giao tiếp, IELTS, Lớp 10-12, Tiếng Trung HSK)!");
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Lỗi xảy ra trong quá trình khởi tạo ContentModules");
+        }
     }
 }
 
