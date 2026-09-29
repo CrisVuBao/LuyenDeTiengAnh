@@ -1,0 +1,19 @@
+{
+  "name": "VBaceEnglish — Nền Tảng Học Tiếng Anh Giao Tiếp & Luyện Thi Đỉnh Cao",
+  "short_name": "VBaceEnglish",
+  "description": "Nền tảng học tiếng Anh giao tiếp phản xạ thực chiến, 3000 từ vựng Oxford FSRS và luyện đề chuẩn hóa.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#3b82f6",
+  "lang": "vi",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
