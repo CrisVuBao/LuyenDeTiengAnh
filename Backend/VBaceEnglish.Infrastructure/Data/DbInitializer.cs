@@ -189,6 +189,32 @@ public static class DbInitializer
                     CREATE INDEX [IX_AdminActivityLogs_Action] ON [AdminActivityLogs] ([Action]);
                     CREATE INDEX [IX_AdminActivityLogs_EntityType] ON [AdminActivityLogs] ([EntityType]);
                 END
+
+                -- Phase 1 Performance Indexes (H.4)
+                IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_XPTransactions_UserId_CreatedAt' AND object_id = OBJECT_ID('XPTransactions'))
+                BEGIN
+                    CREATE INDEX [IX_XPTransactions_UserId_CreatedAt] ON [XPTransactions] ([UserId], [CreatedAt]);
+                END
+
+                IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_AspNetUsers_PhoneNumber' AND object_id = OBJECT_ID('AspNetUsers'))
+                BEGIN
+                    CREATE INDEX [IX_AspNetUsers_PhoneNumber] ON [AspNetUsers] ([PhoneNumber]);
+                END
+
+                IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_UserGamifications_CurrentLevel' AND object_id = OBJECT_ID('UserGamifications'))
+                BEGIN
+                    CREATE INDEX [IX_UserGamifications_CurrentLevel] ON [UserGamifications] ([CurrentLevel]);
+                END
+
+                IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_UserGamifications_WeeklyXP' AND object_id = OBJECT_ID('UserGamifications'))
+                BEGIN
+                    CREATE INDEX [IX_UserGamifications_WeeklyXP] ON [UserGamifications] ([WeeklyXP]);
+                END
+
+                IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_AiChatHistories_UserId_CreatedAt' AND object_id = OBJECT_ID('AiChatHistories'))
+                BEGIN
+                    CREATE INDEX [IX_AiChatHistories_UserId_CreatedAt] ON [AiChatHistories] ([UserId], [CreatedAt]);
+                END
             ";
             await cmd.ExecuteNonQueryAsync();
         }

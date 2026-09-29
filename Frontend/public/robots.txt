@@ -1,0 +1,17 @@
+# robots.txt for VBaceEnglish
+User-agent: *
+Allow: /
+Allow: /home
+Allow: /vocab
+Allow: /reflex-50
+Allow: /communication
+Allow: /toeic
+Allow: /leaderboard
+Allow: /gamification
+
+# Disallow internal API and admin control center
+Disallow: /admin/
+Disallow: /profile
+Disallow: /api/
+
+Sitemap: /sitemap.xml

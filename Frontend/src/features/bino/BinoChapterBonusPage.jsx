@@ -8,6 +8,7 @@ import {
 import binoApi from '../../api/binoApi';
 import PageLoader from '../../components/PageLoader';
 import speechService from '../../utils/speechService';
+import SeoMeta from '../../components/SeoMeta';
 import toast from 'react-hot-toast';
 
 export default function BinoChapterBonusPage() {
@@ -284,11 +285,15 @@ export default function BinoChapterBonusPage() {
       `}</style>
       
       {/* Header Navigation */}
+      <SeoMeta
+        title={`Mục Mở Rộng & Mindset Chương ${currentChapNum}`}
+        description="Nội dung nâng cao, cụm từ mở rộng và phương pháp tư duy giao tiếp."
+      />
       <div className="flex flex-wrap items-center justify-between gap-2">
         <motion.button
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.96 }}
-          onClick={() => navigate('/bino')}
+          onClick={() => navigate('/communication')}
           className="p-2.5 px-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-200 transition-all shadow-sm flex items-center gap-2 text-xs font-bold"
         >
           <ArrowLeft size={16} />
@@ -298,7 +303,7 @@ export default function BinoChapterBonusPage() {
         <div className="flex items-center gap-2">
           <button
             disabled={currentChapNum <= 1}
-            onClick={() => navigate(`/bino/chapter/${currentChapNum - 1}/bonus`)}
+            onClick={() => navigate(`/communication/chapter/${currentChapNum - 1}/bonus`)}
             className="p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 disabled:opacity-40 hover:border-amber-400 transition-all text-xs font-bold flex items-center gap-1"
             title="Chương trước"
           >
@@ -313,7 +318,7 @@ export default function BinoChapterBonusPage() {
 
           <button
             disabled={currentChapNum >= 12}
-            onClick={() => navigate(`/bino/chapter/${currentChapNum + 1}/bonus`)}
+            onClick={() => navigate(`/communication/chapter/${currentChapNum + 1}/bonus`)}
             className="p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 disabled:opacity-40 hover:border-amber-400 transition-all text-xs font-bold flex items-center gap-1"
             title="Chương tiếp theo"
           >
@@ -411,7 +416,7 @@ export default function BinoChapterBonusPage() {
           <motion.button
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
-            onClick={() => navigate('/bino')}
+            onClick={() => navigate('/communication')}
             className="px-5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl shadow-sm transition-all flex items-center gap-1.5"
           >
             <ArrowLeft size={14} />
@@ -422,7 +427,7 @@ export default function BinoChapterBonusPage() {
             <motion.button
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
-              onClick={() => navigate(`/bino/chapter/${currentChapNum + 1}/bonus`)}
+              onClick={() => navigate(`/communication/chapter/${currentChapNum + 1}/bonus`)}
               className="px-6 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-xs font-black rounded-xl shadow-md transition-all flex items-center gap-1.5"
             >
               <span>Xem Tiếp Cuối Chương {currentChapNum + 1}</span>

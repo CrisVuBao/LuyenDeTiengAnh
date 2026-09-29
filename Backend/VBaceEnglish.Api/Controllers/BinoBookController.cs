@@ -10,6 +10,7 @@ namespace VBaceEnglish.Api.Controllers;
 
 [ApiController]
 [Route("api/bino")]
+[Route("api/communication")]
 [Authorize]
 public class BinoBookController : ControllerBase
 {

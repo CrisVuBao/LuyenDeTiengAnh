@@ -19,6 +19,7 @@ import PageLoader from '../../../components/PageLoader';
 import DailyQuestsPanel from '../../gamification/components/DailyQuestsPanel';
 import useGamificationStore from '../../gamification/store/useGamificationStore';
 import VocabShowcaseSection from './VocabShowcaseSection';
+import SeoMeta from '../../../components/SeoMeta';
 
 // Apple-style Spring Variants (120FPS GPU-accelerated transform & opacity)
 const pageContainerVariants = {
@@ -288,6 +289,11 @@ export default function StudentHome() {
       animate="visible"
       className="space-y-12 max-w-6xl mx-auto pb-10"
     >
+      <SeoMeta
+        title="Trang Chủ Học Tập"
+        description="Luyện phản xạ giao tiếp tiếng Anh thực chiến, 3000 từ vựng Oxford FSRS và rèn luyện kỹ năng nói tiếng Anh tự nhiên mỗi ngày cùng VBaceEnglish."
+      />
+
       {loading && <PageLoader />}
       
       {/* ===================================================================== */}
@@ -373,7 +379,7 @@ export default function StudentHome() {
                 whileTap={{ scale: 0.96 }}
                 transition={{ type: 'spring', stiffness: 400, damping: 22 }}
                 onMouseEnter={() => binoApi.prefetchBookOverview()}
-                onClick={() => navigate('/bino')}
+                onClick={() => navigate('/communication')}
                 className="px-6 py-3.5 bg-[#0071e3] hover:bg-[#0077ED] text-white font-medium rounded-full shadow-[0_4px_14px_rgba(0,113,227,0.28)] flex items-center gap-2.5 transition-colors text-sm cursor-pointer"
               >
                 <Play size={15} fill="currentColor" />
@@ -403,7 +409,7 @@ export default function StudentHome() {
                 whileHover={{ scale: 1.025, y: -1 }}
                 whileTap={{ scale: 0.96 }}
                 transition={{ type: 'spring', stiffness: 400, damping: 22 }}
-                onClick={() => navigate('/bino/flashcards')}
+                onClick={() => navigate('/communication/flashcards')}
                 className="px-5 py-3.5 bg-slate-100 hover:bg-slate-200/80 dark:bg-slate-800 dark:hover:bg-slate-700/80 text-slate-700 dark:text-slate-200 font-medium rounded-full flex items-center gap-2 transition-colors text-sm cursor-pointer"
               >
                 <Layers size={15} className="text-slate-500 dark:text-slate-400" />
@@ -419,9 +425,9 @@ export default function StudentHome() {
             transition={{ type: 'spring', stiffness: 300, damping: 24 }}
             onClick={() => {
               if (nextDialogue?.id) {
-                navigate(`/bino/dialogue/${nextDialogue.id}`);
+                navigate(`/communication/dialogue/${nextDialogue.id}`);
               } else {
-                navigate('/bino');
+                navigate('/communication');
               }
             }}
             className="w-full lg:w-[360px] p-6 rounded-[26px] bg-slate-50/90 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/70 hover:border-[#0071e3]/40 dark:hover:border-sky-400/40 shadow-[0_4px_20px_rgb(0,0,0,0.025)] cursor-pointer shrink-0 space-y-5 group"
@@ -538,7 +544,7 @@ export default function StudentHome() {
           </div>
 
           <button
-            onClick={() => navigate('/bino')}
+            onClick={() => navigate('/communication')}
             className="inline-flex items-center gap-1 text-sm font-medium text-[#0071e3] dark:text-sky-400 hover:underline self-start sm:self-auto cursor-pointer group"
           >
             <span>Khám phá trọn bộ 12 chương</span>
@@ -547,7 +553,7 @@ export default function StudentHome() {
         </div>
 
         {/* Live Interactive Substitution Drilling Showcase Bar (Auto-animating & Clickable) */}
-        <LiveSubstitutionDrillShowcase onNavigateBino={() => navigate('/bino')} />
+        <LiveSubstitutionDrillShowcase onNavigateBino={() => navigate('/communication')} />
 
         {/* 4 Apple Bento Cards with Staggered Spring & Hover Lift */}
         <motion.div
@@ -560,14 +566,14 @@ export default function StudentHome() {
               meta: '12 chương • 72 bài',
               title: 'Hội thoại đời thực',
               desc: 'Tình huống giao tiếp tự nhiên khi du học, đi làm và sinh hoạt hàng ngày.',
-              onClick: () => navigate('/bino')
+              onClick: () => navigate('/communication')
             },
             {
               icon: Sparkles,
               meta: 'Substitution Drilling',
               title: 'Vận dụng mẫu câu',
               desc: 'Thay thế cụm từ linh hoạt ngay sau mỗi câu thoại để nói theo ý mình.',
-              onClick: () => navigate('/bino')
+              onClick: () => navigate('/communication')
             },
             {
               icon: Headphones,
@@ -581,7 +587,7 @@ export default function StudentHome() {
               meta: '427 từ khóa • Ebook',
               title: 'Flashcard & Sách gốc',
               desc: 'Lưu nhanh từ vựng một chạm và đọc trọn vẹn mục mở rộng cuối chương.',
-              onClick: () => navigate('/bino/reader')
+              onClick: () => navigate('/communication/reader')
             }
           ].map((item, idx) => {
             const Icon = item.icon;
@@ -645,7 +651,7 @@ export default function StudentHome() {
             </div>
 
             <button
-              onClick={() => navigate('/bino')}
+              onClick={() => navigate('/communication')}
               className="inline-flex items-center gap-1 text-sm font-medium text-[#0071e3] dark:text-sky-400 hover:underline cursor-pointer group"
             >
               <span>Tất cả 12 chương</span>
@@ -675,9 +681,9 @@ export default function StudentHome() {
                   }}
                   onClick={() => {
                     if (firstDialogueId) {
-                      navigate(`/bino/dialogue/${firstDialogueId}`);
+                      navigate(`/communication/dialogue/${firstDialogueId}`);
                     } else {
-                      navigate('/bino');
+                      navigate('/communication');
                     }
                   }}
                   className="p-5 rounded-[24px] bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/90 hover:border-[#0071e3]/40 dark:hover:border-sky-400/40 cursor-pointer shadow-[0_2px_12px_rgb(0,0,0,0.02)] hover:shadow-[0_12px_28px_rgb(0,113,227,0.06)] flex flex-col justify-between gap-4 group"
@@ -905,13 +911,13 @@ export default function StudentHome() {
                 icon: Layers,
                 title: 'Ôn tập Flashcard SRS',
                 desc: 'Ôn các từ đã bấm + Flashcard',
-                onClick: () => navigate('/bino/flashcards')
+                onClick: () => navigate('/communication/flashcards')
               },
               {
                 icon: BookOpen,
                 title: 'Đọc Ebook Giáo Trình',
                 desc: 'Xem giáo trình trình bày nguyên bản',
-                onClick: () => navigate('/bino/reader')
+                onClick: () => navigate('/communication/reader')
               },
               {
                 icon: TrendingUp,

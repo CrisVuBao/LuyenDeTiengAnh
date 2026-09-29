@@ -481,7 +481,7 @@ export default function BinoPlaylistModal() {
             <div 
               onClick={() => {
                 if (currentLesson?.id) {
-                  navigate(`/bino/dialogue/${currentLesson.id}`);
+                  navigate(`/communication/dialogue/${currentLesson.id}`);
                 }
               }}
               className="flex items-center gap-2 truncate cursor-pointer group"

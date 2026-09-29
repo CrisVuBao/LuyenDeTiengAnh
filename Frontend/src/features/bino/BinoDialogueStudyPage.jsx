@@ -21,6 +21,7 @@ import { startSmartSpeechSession } from '../../utils/smartSpeechRecognition';
 import { evaluateSentenceAttempt } from '../reflex50/store/useReflex50Store';
 import useAuthStore from '../../store/authStore';
 import useGamificationStore from '../gamification/store/useGamificationStore';
+import SeoMeta from '../../components/SeoMeta';
 import toast from 'react-hot-toast';
 
 const getLocalFlashcardKey = () => {
@@ -790,6 +791,10 @@ export default function BinoDialogueStudyPage() {
 
   return (
     <div className="space-y-3.5 sm:space-y-6 max-w-5xl mx-auto pb-12 sm:pb-16">
+      <SeoMeta
+        title={`${lesson.title || 'Bài Học Hội Thoại'} — Giao Tiếp`}
+        description={lesson.situationDescription || lesson.titleVi || 'Luyện nói tiếng Anh giao tiếp thực tế với phương pháp Shadowing và nhận diện giọng nói.'}
+      />
       
       {/* ========================================================================= */}
       {/* 1. TOP BREADCRUMB & COMPLETION TOGGLE */}
@@ -803,7 +808,7 @@ export default function BinoDialogueStudyPage() {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => navigate('/bino')}
+            onClick={() => navigate('/communication')}
             className="p-2 sm:p-2.5 rounded-xl sm:rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-750 text-slate-600 dark:text-slate-300 transition-all shadow-sm shrink-0 mt-0.5 sm:mt-0 cursor-pointer"
             title="Quay về danh sách chương"
           >

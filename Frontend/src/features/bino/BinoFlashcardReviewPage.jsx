@@ -12,6 +12,7 @@ import speechService from '../../utils/speechService';
 import { getCardFsrsMetrics, getFsrsIntervalPreviews } from '../../utils/fsrsScheduler';
 import useAuthStore from '../../store/authStore';
 import useGamificationStore from '../gamification/store/useGamificationStore';
+import SeoMeta from '../../components/SeoMeta';
 import toast from 'react-hot-toast';
 
 const getLocalFlashcardKey = () => {
@@ -111,13 +112,17 @@ export default function BinoFlashcardReviewPage() {
 
   return (
     <div className="space-y-6 sm:space-y-8 max-w-2xl mx-auto pb-16 px-2 sm:px-0">
+      <SeoMeta
+        title="Ôn Tập Từ Vựng FSRS — Giao Tiếp"
+        description="Ôn tập từ vựng giao tiếp với thuật toán lặp lại ngắt quãng FSRS chuẩn xác."
+      />
       
       {/* Top Header Bar */}
       <div className="flex items-center justify-between gap-2">
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          onClick={() => navigate('/bino')}
+          onClick={() => navigate('/communication')}
           className="p-2.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-750 text-slate-600 dark:text-slate-300 transition-all shadow-sm flex items-center gap-2 text-xs font-bold shrink-0"
         >
           <ArrowLeft size={16} />
@@ -169,7 +174,7 @@ export default function BinoFlashcardReviewPage() {
             <motion.button
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
-              onClick={() => navigate('/bino')}
+              onClick={() => navigate('/communication')}
               className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 text-white font-extrabold rounded-2xl text-xs sm:text-sm shadow-lg shadow-blue-500/25 transition-all"
             >
               Vào Học Tiếp 72 Bài Hội Thoại

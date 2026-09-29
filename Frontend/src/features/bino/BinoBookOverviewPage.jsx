@@ -11,6 +11,7 @@ import binoApi from '../../api/binoApi';
 import PageLoader from '../../components/PageLoader';
 import { useBinoPlayerStore } from './components/BinoPlaylistModal';
 import BinoLearningGuideModal from './components/BinoLearningGuideModal';
+import SeoMeta from '../../components/SeoMeta';
 import toast from 'react-hot-toast';
 
 export default function BinoBookOverviewPage() {
@@ -58,6 +59,11 @@ export default function BinoBookOverviewPage() {
 
   return (
     <div className="space-y-4 sm:space-y-8 max-w-6xl mx-auto pb-12 sm:pb-16">
+      <SeoMeta
+        title="Giao Tiếp Thực Chiến"
+        description="Chinh phục 12 chương, 72 bài hội thoại tiếng Anh đời thực với phương pháp phản xạ tương tác 1:1, Substitution Drilling và Flashcard FSRS."
+      />
+
       {loading && <PageLoader />}
       
       {/* ========================================================================= */}
@@ -116,23 +122,15 @@ export default function BinoBookOverviewPage() {
 
                 {/* Desktop inline buttons (hidden on mobile where they sit in the swipe bar below) */}
                 <button
-                  onClick={() => navigate('/bino/dialogue/3')}
+                  onClick={() => navigate('/communication/dialogue/3')}
                   className="hidden sm:flex px-4 py-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold rounded-2xl border border-slate-300 dark:border-slate-700 items-center justify-center gap-1.5 text-sm shadow-xs transition-all duration-150 hover:-translate-y-0.5 cursor-pointer"
                 >
                   <Play size={14} fill="currentColor" className="text-amber-500" />
                   <span>Bài Mẫu (Hội thoại 3)</span>
                 </button>
 
-                {/* <button
-                  onClick={() => navigate('/bino/reader')}
-                  className="hidden sm:flex px-4 py-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold rounded-2xl border border-slate-300 dark:border-slate-700 items-center justify-center gap-1.5 text-sm shadow-xs transition-all duration-150 hover:-translate-y-0.5 cursor-pointer"
-                >
-                  <BookMarked size={15} className="text-blue-500" />
-                  <span>Mở Ebook</span>
-                </button> */}
-
                 <button
-                  onClick={() => navigate('/bino/flashcards')}
+                  onClick={() => navigate('/communication/flashcards')}
                   className="hidden sm:flex px-4 py-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold rounded-2xl border border-slate-300 dark:border-slate-700 items-center justify-center gap-1.5 text-sm shadow-xs transition-all duration-150 hover:-translate-y-0.5 cursor-pointer"
                 >
                   <Layers size={15} className="text-emerald-500" />
@@ -158,21 +156,14 @@ export default function BinoBookOverviewPage() {
                   <span>Cách Học 4 Bước 💡</span>
                 </button>
                 <button
-                  onClick={() => navigate('/bino/flashcards')}
+                  onClick={() => navigate('/communication/flashcards')}
                   className="px-3 py-2 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold rounded-xl border border-slate-200 dark:border-slate-700 flex items-center gap-1.5 text-xs shrink-0 cursor-pointer"
                 >
                   <Layers size={13} className="text-emerald-500" />
                   <span>Ôn Từ Vựng SRS</span>
                 </button>
-                {/* <button
-                  onClick={() => navigate('/bino/reader')}
-                  className="px-3 py-2 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold rounded-xl border border-slate-200 dark:border-slate-700 flex items-center gap-1.5 text-xs shrink-0 cursor-pointer"
-                >
-                  <BookMarked size={13} className="text-blue-500" />
-                  <span>Mở Ebook</span>
-                </button> */}
                 <button
-                  onClick={() => navigate('/bino/dialogue/3')}
+                  onClick={() => navigate('/communication/dialogue/3')}
                   className="px-3 py-2 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold rounded-xl border border-slate-200 dark:border-slate-700 flex items-center gap-1.5 text-xs shrink-0 cursor-pointer"
                 >
                   <Play size={12} fill="currentColor" className="text-amber-500" />
@@ -367,7 +358,7 @@ export default function BinoBookOverviewPage() {
                     {activeChapter.hasBonus && (
                       <button
                         onMouseEnter={() => binoApi.prefetchBonus(activeChapter.chapterNumber)}
-                        onClick={() => navigate(`/bino/chapter/${activeChapter.chapterNumber}/bonus`)}
+                        onClick={() => navigate(`/communication/chapter/${activeChapter.chapterNumber}/bonus`)}
                         className="flex-1 sm:flex-initial justify-center px-3 sm:px-3.5 py-2 bg-amber-50 dark:bg-amber-950/80 hover:bg-amber-100 dark:hover:bg-amber-900/60 text-amber-900 dark:text-amber-300 rounded-xl font-black text-xs border border-amber-300 dark:border-amber-700 flex items-center gap-1.5 transition-all duration-150 hover:-translate-y-0.5 shadow-2xs cursor-pointer"
                       >
                         <Star size={13} className="text-amber-500 fill-amber-500 shrink-0" />
@@ -409,7 +400,7 @@ export default function BinoBookOverviewPage() {
                     <div
                       key={d.id}
                       onMouseEnter={() => binoApi.prefetchDialogue(d.id)}
-                      onClick={() => navigate(`/bino/dialogue/${d.id}`)}
+                      onClick={() => navigate(`/communication/dialogue/${d.id}`)}
                       className="bg-white dark:bg-slate-900 p-4 sm:p-4.5 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-amber-500 dark:hover:border-amber-400 cursor-pointer group transition-all duration-200 shadow-2xs hover:shadow-md hover:-translate-y-0.5 relative overflow-hidden flex flex-col justify-between space-y-3"
                     >
                       <div className="space-y-2">
@@ -461,7 +452,7 @@ export default function BinoBookOverviewPage() {
               {activeChapter.hasBonus && (
                 <div
                   onMouseEnter={() => binoApi.prefetchBonus(activeChapter.chapterNumber)}
-                  onClick={() => navigate(`/bino/chapter/${activeChapter.chapterNumber}/bonus`)}
+                  onClick={() => navigate(`/communication/chapter/${activeChapter.chapterNumber}/bonus`)}
                   className="p-5 sm:p-6 rounded-3xl bg-white dark:bg-slate-900 border-2 border-amber-300/80 dark:border-amber-700/60 cursor-pointer shadow-2xs hover:shadow-md hover:-translate-y-0.5 transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
                 >
                   <div className="space-y-1.5">

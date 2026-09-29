@@ -11,6 +11,7 @@ import useReflex50Store, { loadReflex50FullData, peekReflex50FullData } from './
 import Reflex50MethodGuideModal from './components/Reflex50MethodGuideModal';
 import VoiceSettingsModal from '../../components/VoiceSettingsModal';
 import speechService from '../../utils/speechService';
+import SeoMeta from '../../components/SeoMeta';
 import toast from 'react-hot-toast';
 
 const CATEGORY_ICON_MAP = {
@@ -152,6 +153,10 @@ export default function Reflex50OverviewPage() {
 
   return (
     <div className="max-w-6xl mx-auto space-y-4 sm:space-y-8 pb-12 sm:pb-14">
+      <SeoMeta
+        title="Phản Xạ 50 Chủ Đề — 1500 Câu Nói Viết"
+        description="Luyện phản xạ 1500 câu tiếng Anh theo 50 chủ đề thông dụng, kỹ thuật Chunking và Collocations bản xứ."
+      />
       {/* ===================================================================== */}
       {/* 1. APPLE STUDIO HERO BANNER                                           */}
       {/* ===================================================================== */}

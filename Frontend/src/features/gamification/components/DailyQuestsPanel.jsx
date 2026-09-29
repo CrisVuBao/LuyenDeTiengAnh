@@ -34,9 +34,9 @@ export default function DailyQuestsPanel() {
   const handleQuestAction = (quest) => {
     const type = quest.questType;
     if (type === 'flashcard_review') {
-      navigate('/bino/flashcards');
+      navigate('/communication/flashcards');
     } else if (type.startsWith('bino')) {
-      navigate('/bino');
+      navigate('/communication');
     } else if (type.startsWith('reflex')) {
       navigate('/reflex-50');
     } else {

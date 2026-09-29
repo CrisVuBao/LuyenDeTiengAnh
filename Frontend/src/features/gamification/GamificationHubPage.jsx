@@ -7,6 +7,7 @@ import AchievementGallery from './components/AchievementGallery';
 import StreakCalendar from './components/StreakCalendar';
 import DailyQuestsPanel from './components/DailyQuestsPanel';
 import useGamificationStore from './store/useGamificationStore';
+import SeoMeta from '../../components/SeoMeta';
 
 export default function GamificationHubPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -34,7 +35,10 @@ export default function GamificationHubPage() {
 
   return (
     <div className="max-w-5xl mx-auto space-y-6 pb-12 animate-fade-in">
-      
+      <SeoMeta
+        title="Bảng Xếp Hạng & Đấu Trường Danh Vọng"
+        description="Theo dõi thứ hạng tuần, huy hiệu thành tích và chuỗi ngày học tập tại VBaceEnglish."
+      />
       {/* Top Navigation Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <button

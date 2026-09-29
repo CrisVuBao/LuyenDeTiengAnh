@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Homepage & Landing -->
+  <url>
+    <loc>https://vbaceenglish.com/</loc>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://vbaceenglish.com/home</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- 3000 Essential Oxford Vocabulary (FSRS) -->
+  <url>
+    <loc>https://vbaceenglish.com/vocab</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Reflex 50 Topics (1500 Sentences) -->
+  <url>
+    <loc>https://vbaceenglish.com/reflex-50</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Real-World Communication (Giao Tiếp Thực Chiến) -->
+  <url>
+    <loc>https://vbaceenglish.com/communication</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- TOEIC Examination & Practice -->
+  <url>
+    <loc>https://vbaceenglish.com/toeic</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Gamification, Leaderboard & Quests -->
+  <url>
+    <loc>https://vbaceenglish.com/leaderboard</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://vbaceenglish.com/gamification</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+</urlset>

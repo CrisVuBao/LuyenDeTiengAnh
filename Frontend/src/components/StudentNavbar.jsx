@@ -22,7 +22,7 @@ const prefetchRoute = (route) => {
   } else if (route === 'toeic') {
     import('../features/toeic/ToeicStudyPage');
     toeicApi.prefetchAllTests();
-  } else if (route === 'bino') {
+  } else if (route === 'communication' || route === 'bino') {
     import('../features/bino/BinoBookOverviewPage');
     import('../features/bino/BinoDialogueStudyPage');
     binoApi.prefetchBookOverview();
@@ -106,8 +106,8 @@ export default function StudentNavbar() {
   // 4 Primary Learning Programs
   const learningPrograms = [
     {
-      to: '/bino',
-      prefetch: 'bino',
+      to: '/communication',
+      prefetch: 'communication',
       title: 'Giao Tiếp Thực Chiến',
       shortTitle: 'Hội Thoại',
       desc: '12 chương hội thoại thực chiến, phản xạ 1:1 & Ebook',
@@ -194,8 +194,8 @@ export default function StudentNavbar() {
             </NavLink>
 
             <NavLink
-              to="/bino"
-              onMouseEnter={() => prefetchRoute('bino')}
+              to="/communication"
+              onMouseEnter={() => prefetchRoute('communication')}
               className={({ isActive }) =>
                 `flex items-center gap-1.5 px-2.5 xl:px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
                   isActive
@@ -634,8 +634,8 @@ export default function StudentNavbar() {
           </NavLink>
 
           <NavLink
-            to="/bino"
-            onMouseEnter={() => prefetchRoute('bino')}
+            to="/communication"
+            onMouseEnter={() => prefetchRoute('communication')}
             className={({ isActive }) =>
               `flex-1 flex flex-col items-center justify-center py-1 transition-colors ${
                 isActive 

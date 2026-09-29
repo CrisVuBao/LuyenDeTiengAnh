@@ -86,7 +86,7 @@ const EMOJI_OPTIONS = ['📢', '🔔', '🔥', '🎁', '🏆', '📘', '⚡', '�
 const ACTION_ROUTES = [
   { label: 'Không gắn link điều hướng', value: '' },
   { label: '🏠 Trang chủ Học viên (/home)', value: '/home' },
-  { label: '📖 Giao Tiếp Thực Chiến (/bino)', value: '/bino' },
+  { label: '📖 Giao Tiếp Thực Chiến (/communication)', value: '/communication' },
   { label: '⚡ Phản Xạ 50 Chủ Đề (/reflex-50)', value: '/reflex-50' },
   { label: '📚 3000 Từ Vựng Oxford (/vocab)', value: '/vocab' },
   { label: '📝 Phòng Luyện Đề TOEIC (/toeic)', value: '/toeic' },

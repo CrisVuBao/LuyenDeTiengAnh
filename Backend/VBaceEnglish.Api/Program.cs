@@ -1,8 +1,10 @@
 using System.IO.Compression;
 using System.Text;
 using System.Text.Json.Serialization;
+using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.IdentityModel.Tokens;
@@ -41,6 +43,65 @@ builder.Services.AddOutputCache(options => {
     // Chỉ cache những endpoint công khai tĩnh hoặc được gắn policy cụ thể
     options.AddPolicy("Dashboard", b => b.Expire(TimeSpan.FromSeconds(60)).SetVaryByQuery("period").Tag("dashboard"));
 });
+
+// 2b. Rate Limiter (Phase 1 C.4) - Bảo vệ API, chống Brute-Force & Spam
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+    {
+        var path = httpContext.Request.Path.Value ?? string.Empty;
+        if (path.StartsWith("/assets/", StringComparison.OrdinalIgnoreCase) ||
+            path.StartsWith("/images/", StringComparison.OrdinalIgnoreCase) ||
+            path.StartsWith("/audios/", StringComparison.OrdinalIgnoreCase) ||
+            path.StartsWith("/ebooks/", StringComparison.OrdinalIgnoreCase) ||
+            path.StartsWith("/swagger", StringComparison.OrdinalIgnoreCase) ||
+            path.StartsWith("/health", StringComparison.OrdinalIgnoreCase) ||
+            path == "/" ||
+            path.EndsWith(".html", StringComparison.OrdinalIgnoreCase) ||
+            path.EndsWith(".ico", StringComparison.OrdinalIgnoreCase) ||
+            path.EndsWith(".svg", StringComparison.OrdinalIgnoreCase))
+        {
+            return RateLimitPartition.GetNoLimiter("static");
+        }
+
+        var clientKey = httpContext.User?.Identity?.Name
+                        ?? httpContext.Connection.RemoteIpAddress?.ToString()
+                        ?? "anonymous";
+
+        return RateLimitPartition.GetTokenBucketLimiter(clientKey, _ => new TokenBucketRateLimiterOptions
+        {
+            TokenLimit = 150,
+            QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+            QueueLimit = 15,
+            ReplenishmentPeriod = TimeSpan.FromSeconds(1),
+            TokensPerPeriod = 35,
+            AutoReplenishment = true
+        });
+    });
+
+    options.OnRejected = async (context, token) =>
+    {
+        context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+        context.HttpContext.Response.ContentType = "application/json; charset=utf-8";
+        await context.HttpContext.Response.WriteAsync(
+            "{\"success\":false,\"message\":\"Hệ thống đang tiếp nhận quá nhiều yêu cầu từ bạn. Vui lòng chờ 2-3 giây rồi thử lại.\",\"status\":429}", token);
+    };
+});
+
+// 2c. Health Checks (Phase 1 C.5)
+builder.Services.AddHealthChecks()
+    .AddAsyncCheck("database", async () =>
+    {
+        try
+        {
+            return Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckResult.Healthy("Database connection active");
+        }
+        catch (Exception ex)
+        {
+            return Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckResult.Unhealthy(ex.Message);
+        }
+    });
 
 // 3. Controllers + JSON config (A.4)
 builder.Services.AddControllers().AddJsonOptions(options => {
@@ -166,8 +227,10 @@ app.UseSwaggerUI(c => {
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRateLimiter(); // Phase 1 C.4
 
 app.MapControllers();
+app.MapHealthChecks("/health"); // Phase 1 C.5
 app.MapHub<NotificationHub>("/notificationHub");
 
 // Auto migrate database and seed data (roles, admin, data.json)

@@ -8,6 +8,7 @@ namespace VBaceEnglish.Api.Controllers;
 
 [ApiController]
 [Route("api/admin/bino")]
+[Route("api/admin/communication")]
 [Authorize(Roles = "Admin")]
 public class AdminBinoController : ControllerBase
 {

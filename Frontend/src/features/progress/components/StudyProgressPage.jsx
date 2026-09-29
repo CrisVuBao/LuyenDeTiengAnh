@@ -17,6 +17,7 @@ import reflex50Meta from '../../reflex50/data/reflex50Meta.json';
 import useVocabStore from '../../vocab/store/useVocabStore';
 import useGamificationStore from '../../gamification/store/useGamificationStore';
 import PageLoader from '../../../components/PageLoader';
+import SeoMeta from '../../../components/SeoMeta';
 import toast from 'react-hot-toast';
 
 export default function StudyProgressPage() {
@@ -203,6 +204,10 @@ export default function StudyProgressPage() {
 
   return (
     <div className="space-y-8 animate-fade-in max-w-6xl mx-auto pb-12">
+      <SeoMeta
+        title="Thống Kê Tiến Độ Học Tập"
+        description="Theo dõi chi tiết tiến độ học giao tiếp, 3000 từ vựng Oxford FSRS và phản xạ 50 chủ đề trên VBaceEnglish."
+      />
       
       {/* ===================================================================== */}
       {/* HEADER & APPLE SEGMENTED SWITCHER                                     */}
@@ -337,7 +342,7 @@ export default function StudyProgressPage() {
 
             {/* KPI 3: Từ vựng Flashcard SRS */}
             <div
-              onClick={() => navigate('/bino/flashcards')}
+              onClick={() => navigate('/communication/flashcards')}
               className="p-6 rounded-[26px] bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/90 hover:border-[#0071e3]/40 cursor-pointer shadow-[0_2px_14px_rgb(0,0,0,0.02)] flex flex-col justify-between space-y-4 transition-colors"
             >
               <div className="flex items-center justify-between">
@@ -404,7 +409,7 @@ export default function StudyProgressPage() {
 
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => navigate('/bino')}
+                  onClick={() => navigate('/communication')}
                   className="px-4 py-2 bg-[#0071e3] hover:bg-[#0077ED] text-white rounded-full text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
                 >
                   <Play size={13} fill="currentColor" />
@@ -631,7 +636,7 @@ export default function StudyProgressPage() {
                                       Bài {dl.dialogueNumber}
                                     </span>
                                     <h4
-                                      onClick={() => navigate(`/bino/dialogue/${dl.dialogueLessonId}`)}
+                                      onClick={() => navigate(`/communication/dialogue/${dl.dialogueLessonId}`)}
                                       className="text-sm font-semibold text-slate-900 dark:text-white hover:text-[#0071e3] dark:hover:text-sky-400 cursor-pointer truncate"
                                     >
                                       {dl.title}
@@ -695,7 +700,7 @@ export default function StudyProgressPage() {
                                   </span>
                                 )}
                                 <button
-                                  onClick={() => navigate(`/bino/dialogue/${dl.dialogueLessonId}`)}
+                                  onClick={() => navigate(`/communication/dialogue/${dl.dialogueLessonId}`)}
                                   className="px-3.5 py-1.5 rounded-full bg-[#0071e3]/10 hover:bg-[#0071e3] text-[#0071e3] hover:text-white dark:bg-sky-500/15 dark:text-sky-400 dark:hover:bg-[#0071e3] dark:hover:text-white text-xs font-medium flex items-center gap-1 transition-colors cursor-pointer"
                                 >
                                   <span>{dl.isCompleted ? 'Ôn lại' : 'Vào học'}</span>
@@ -719,7 +724,7 @@ export default function StudyProgressPage() {
               {recentBinoDialogues.map((dl) => (
                 <div
                   key={dl.dialogueLessonId}
-                  onClick={() => navigate(`/bino/dialogue/${dl.dialogueLessonId}`)}
+                  onClick={() => navigate(`/communication/dialogue/${dl.dialogueLessonId}`)}
                   className="p-5 rounded-[24px] bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:border-[#0071e3]/40 cursor-pointer transition-all flex items-center justify-between gap-4 group"
                 >
                   <div className="space-y-1.5 min-w-0">

@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import EpubReader from './components/EpubReader';
 import { binoApi } from '../../api/binoApi';
+import SeoMeta from '../../components/SeoMeta';
 
 export default function BinoEbookViewerPage() {
   const navigate = useNavigate();
@@ -36,11 +37,15 @@ export default function BinoEbookViewerPage() {
 
   return (
     <div className="space-y-6 animate-fade-in max-w-6xl mx-auto pb-12">
+      <SeoMeta
+        title="Trình Đọc Ebook Giáo Trình Giao Tiếp"
+        description="Đọc ebook giáo trình giao tiếp thực tế với trình đọc ePub chuyên nghiệp."
+      />
       {/* Header Controls */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <button
-            onClick={() => navigate('/bino')}
+            onClick={() => navigate('/communication')}
             className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-all active:scale-95 shadow-sm"
           >
             <ArrowLeft size={18} />
@@ -144,7 +149,7 @@ export default function BinoEbookViewerPage() {
             </div>
             <div className="flex items-center gap-2">
               <button
-                onClick={() => navigate('/bino/dialogue/3')}
+                onClick={() => navigate('/communication/dialogue/3')}
                 className="px-3 py-1.5 rounded-xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 flex items-center gap-1.5 shadow-sm active:scale-95 transition-all"
               >
                 <span>Học tương tác bài 3</span>

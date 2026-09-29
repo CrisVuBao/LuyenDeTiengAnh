@@ -23,6 +23,7 @@ import authApi, { normalizeVietnamPhone, validateVietnamPhone } from '../api/aut
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import StreakCalendar from '../features/gamification/components/StreakCalendar';
+import SeoMeta from '../components/SeoMeta';
 import useGamificationStore from '../features/gamification/store/useGamificationStore';
 
 export default function Profile() {
@@ -161,6 +162,10 @@ export default function Profile() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6 animate-fade-in pb-12">
+      <SeoMeta
+        title="Hồ Sơ Học Viên"
+        description="Quản lý tài khoản, thông tin cá nhân và cài đặt học tập trên VBaceEnglish."
+      />
       {/* Profile & Gamification Top Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Profile Card */}

@@ -475,7 +475,7 @@ class SpeechService {
     const cleanText = (text || '').trim();
     const safeVoice = voiceId || defaultPreferences.binoVoiceURI;
     const baseUrl = import.meta.env.VITE_API_URL || '/api';
-    return `${baseUrl}/bino/tts?text=${encodeURIComponent(cleanText)}&voice=${encodeURIComponent(safeVoice)}&rate=${encodeURIComponent(rateParam)}`;
+    return `${baseUrl}/communication/tts?text=${encodeURIComponent(cleanText)}&voice=${encodeURIComponent(safeVoice)}&rate=${encodeURIComponent(rateParam)}`;
   }
 
   /**

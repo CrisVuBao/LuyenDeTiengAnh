@@ -378,7 +378,7 @@ export default function AdminDashboard() {
             </button>
 
             <button
-              onClick={() => navigate('/admin/bino')}
+              onClick={() => navigate('/admin/communication')}
               className="w-full p-4 rounded-2xl bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 hover:border-[#0071e3] dark:hover:border-blue-500 flex items-center justify-between text-left group transition-all"
             >
               <div className="flex items-center gap-3">

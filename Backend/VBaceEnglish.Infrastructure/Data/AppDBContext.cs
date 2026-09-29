@@ -210,6 +210,23 @@ public class AppDBContext : IdentityDbContext<ApplicationUser, Role, int>
         builder.Entity<AdminActivityLog>().HasIndex(l => l.CreatedAt);
         builder.Entity<AdminActivityLog>().HasIndex(l => l.Action);
         builder.Entity<AdminActivityLog>().HasIndex(l => l.EntityType);
+
+        // ==========================================
+        // Phase 1 "Vững Nền" - Gamification, AI & User Performance Indexes (H.4)
+        // ==========================================
+        builder.Entity<UserGamification>().HasIndex(g => g.UserId).IsUnique();
+        builder.Entity<UserGamification>().HasIndex(g => g.CurrentLevel);
+        builder.Entity<UserGamification>().HasIndex(g => g.WeeklyXP);
+        builder.Entity<UserGamification>().HasIndex(g => g.CurrentStreak);
+
+        builder.Entity<XPTransaction>().HasIndex(x => new { x.UserId, x.CreatedAt });
+        builder.Entity<XPTransaction>().HasIndex(x => x.Source);
+
+        builder.Entity<AiChatHistory>().HasIndex(a => new { a.UserId, a.CreatedAt });
+
+        builder.Entity<ApplicationUser>().HasIndex(u => u.PhoneNumber);
+        builder.Entity<ApplicationUser>().HasIndex(u => u.IsApproved);
+        builder.Entity<ApplicationUser>().HasIndex(u => u.CreatedAt);
     }
 }
 

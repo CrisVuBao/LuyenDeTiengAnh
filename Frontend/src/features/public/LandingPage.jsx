@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import SeoMeta from '../../components/SeoMeta';
 import {
   Sparkles,
   ArrowRight,
@@ -410,6 +411,11 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-[#f8fafc] dark:bg-[#060913] text-slate-900 dark:text-slate-100 flex flex-col relative overflow-x-hidden selection:bg-[#0071e3]/20 selection:text-[#0071e3] dark:selection:text-sky-400">
+      <SeoMeta
+        title="Nền Tảng Học Tiếng Anh Giao Tiếp & Luyện Thi Đỉnh Cao"
+        description="Luyện phản xạ giao tiếp 1500 câu thực chiến, 3000 từ vựng Oxford với thuật toán lặp lại ngắt quãng FSRS, Shadowing và AI giải thích chuyên sâu."
+        canonicalUrl="https://vbaceenglish.com/"
+      />
       {/* =====================================================================
           GPU-ACCELERATED ARCHITECTURAL AMBIENT BACKDROP
          ===================================================================== */}

@@ -7,6 +7,7 @@ namespace VBaceEnglish.Api.Controllers;
 
 [ApiController]
 [Route("api/admin/bino/media")]
+[Route("api/admin/communication/media")]
 [Authorize(Roles = "Admin")]
 public class MediaUploadController : ControllerBase
 {

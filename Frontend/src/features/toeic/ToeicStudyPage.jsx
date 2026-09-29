@@ -13,6 +13,7 @@ import Part34View from './components/Part34View';
 import Part5View from './components/Part5View';
 import Part6View from './components/Part6View';
 import Part7View from './components/Part7View';
+import SeoMeta from '../../components/SeoMeta';
 
 export default function ToeicStudyPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -83,7 +84,10 @@ export default function ToeicStudyPage() {
 
   return (
     <div className="space-y-6 animate-fade-in">
-      
+      <SeoMeta
+        title={`Luyện Thi Đề ${activeTestDetail?.title || activeTestCode} — TOEIC`}
+        description="Luyện giải đề thi TOEIC đầy đủ các phần với lời giải chi tiết, giải thích cấu trúc câu và từ vựng mở rộng."
+      />
       {/* Top Bar: Test Selector & Real-Time Mastery Progress */}
       <div className="glass-panel p-4 md:p-5 rounded-3xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         

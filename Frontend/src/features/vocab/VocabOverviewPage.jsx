@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import useVocabStore from './store/useVocabStore';
+import SeoMeta from '../../components/SeoMeta';
 
 // Map icon string to Lucide component
 const ICON_COMPONENT_MAP = {
@@ -101,6 +102,10 @@ export default function VocabOverviewPage() {
 
   return (
     <div className="max-w-7xl mx-auto space-y-4 sm:space-y-8">
+      <SeoMeta
+        title="3000 Từ Vựng Tiếng Anh Cốt Lõi"
+        description="Học 3000 từ vựng Oxford thông dụng nhất theo 60 chủ đề cốt lõi với flashcard tương tác và phát âm chuẩn."
+      />
       
       {/* 1. Hero Banner */}
       <div className="relative overflow-hidden rounded-2xl sm:rounded-[32px] bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white p-4 sm:p-10 border border-slate-800 shadow-2xl">

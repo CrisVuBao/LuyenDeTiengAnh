@@ -91,21 +91,21 @@ export const binoApi = {
   // Prefetch khi di chuột (Hover Prefetching)
   prefetchBookOverview: (slug = 'chem-tieng-anh-khong-can-dong-nao') => {
     fetchWithCache(`book:${slug}`, () =>
-      axiosClient.get(`/bino/book?slug=${encodeURIComponent(slug)}`)
+      axiosClient.get(`/communication/book?slug=${encodeURIComponent(slug)}`)
     ).catch(() => {});
   },
 
   prefetchDialogue: (id) => {
     if (!id) return;
     fetchWithCache(`dialogue:${id}`, () =>
-      axiosClient.get(`/bino/dialogue/${id}`)
+      axiosClient.get(`/communication/dialogue/${id}`)
     ).catch(() => {});
   },
 
   prefetchBonus: (chapterNumber) => {
     if (!chapterNumber) return;
     fetchWithCache(`bonus:${chapterNumber}`, () =>
-      axiosClient.get(`/bino/chapter/${chapterNumber}/bonus`)
+      axiosClient.get(`/communication/chapter/${chapterNumber}/bonus`)
     ).catch(() => {});
   },
 
@@ -113,40 +113,40 @@ export const binoApi = {
   getBookOverview: (slug = 'chem-tieng-anh-khong-can-dong-nao', forceRefresh = false) =>
     fetchWithCache(
       `book:${slug}`,
-      () => axiosClient.get(`/bino/book?slug=${encodeURIComponent(slug)}`),
+      () => axiosClient.get(`/communication/book?slug=${encodeURIComponent(slug)}`),
       forceRefresh
     ),
 
   getChapterDetail: (chapterNumber) =>
     fetchWithCache(`chapter:${chapterNumber}`, () =>
-      axiosClient.get(`/bino/chapter/${chapterNumber}`)
+      axiosClient.get(`/communication/chapter/${chapterNumber}`)
     ),
 
   getChapterBonus: (chapterNumber) =>
     fetchWithCache(`bonus:${chapterNumber}`, () =>
-      axiosClient.get(`/bino/chapter/${chapterNumber}/bonus`)
+      axiosClient.get(`/communication/chapter/${chapterNumber}/bonus`)
     ),
 
   getDialogueDetail: (id, forceRefresh = false) =>
     fetchWithCache(
       `dialogue:${id}`,
-      () => axiosClient.get(`/bino/dialogue/${id}`),
+      () => axiosClient.get(`/communication/dialogue/${id}`),
       forceRefresh
     ),
 
   getDialogueByNumber: (chapterNumber, dialogueNumber) =>
     fetchWithCache(`dialogue_num:${chapterNumber}:${dialogueNumber}`, () =>
-      axiosClient.get(`/bino/chapter/${chapterNumber}/dialogue/${dialogueNumber}`)
+      axiosClient.get(`/communication/chapter/${chapterNumber}/dialogue/${dialogueNumber}`)
     ),
 
   getPlaylistDialogues: (ids = null) =>
     fetchWithCache(`playlist:${ids || 'all'}`, () =>
-      axiosClient.get('/bino/playlist', { params: ids ? { ids } : {} })
+      axiosClient.get('/communication/playlist', { params: ids ? { ids } : {} })
     ),
 
   // Tiến độ học tập (Tự động làm mới cache tiến độ sách & bài học)
   markProgress: (data) =>
-    axiosClient.post('/bino/progress/mark', data).then((res) => {
+    axiosClient.post('/communication/progress/mark', data).then((res) => {
       invalidateBinoCache('book:');
       invalidateBinoCache('progress:');
       if (data?.dialogueLessonId) {
@@ -158,12 +158,12 @@ export const binoApi = {
   getProgressSummary: (forceRefresh = false) =>
     fetchWithCache(
       'progress:summary',
-      () => axiosClient.get('/bino/progress/summary'),
+      () => axiosClient.get('/communication/progress/summary'),
       forceRefresh
     ),
 
   resetProgress: (chapterNumber = null) =>
-    axiosClient.post('/bino/progress/reset', { chapterNumber }).then((res) => {
+    axiosClient.post('/communication/progress/reset', { chapterNumber }).then((res) => {
       invalidateBinoCache();
       return res;
     }),
@@ -179,7 +179,7 @@ export const binoApi = {
       }
     }
     invalidateBinoCache('progress:');
-    return axiosClient.post('/bino/srs/add-word', { vocabularyId });
+    return axiosClient.post('/communication/srs/add-word', { vocabularyId });
   },
 
   removeWordFromSRS: (vocabularyId) => {
@@ -191,80 +191,80 @@ export const binoApi = {
       }
     }
     invalidateBinoCache('progress:');
-    return axiosClient.post('/bino/srs/remove-word', { vocabularyId });
+    return axiosClient.post('/communication/srs/remove-word', { vocabularyId });
   },
 
   getDueSRSCards: () =>
-    axiosClient.get('/bino/srs/due-words'),
+    axiosClient.get('/communication/srs/due-words'),
 
   submitSRSReview: (vocabularyId, grade) =>
-    axiosClient.post('/bino/srs/review', { vocabularyId, grade }).then((res) => {
+    axiosClient.post('/communication/srs/review', { vocabularyId, grade }).then((res) => {
       invalidateBinoCache('progress:');
       return res;
     }),
 
   // ================= ADMIN CMS API =================
   adminGetChapters: () =>
-    axiosClient.get('/admin/bino/chapters'),
+    axiosClient.get('/admin/communication/chapters'),
 
   adminGetChapter: (id) =>
-    axiosClient.get(`/admin/bino/chapter/${id}`),
+    axiosClient.get(`/admin/communication/chapter/${id}`),
 
   adminCreateChapter: (data) =>
-    axiosClient.post('/admin/bino/chapter', data).then((res) => {
+    axiosClient.post('/admin/communication/chapter', data).then((res) => {
       invalidateBinoCache();
       return res;
     }),
 
   adminUpdateChapter: (id, data) =>
-    axiosClient.put(`/admin/bino/chapter/${id}`, data).then((res) => {
+    axiosClient.put(`/admin/communication/chapter/${id}`, data).then((res) => {
       invalidateBinoCache();
       return res;
     }),
 
   adminDeleteChapter: (id) =>
-    axiosClient.delete(`/admin/bino/chapter/${id}`).then((res) => {
+    axiosClient.delete(`/admin/communication/chapter/${id}`).then((res) => {
       invalidateBinoCache();
       return res;
     }),
 
   // Quản lý Bài Hội Thoại (Admin)
   adminGetDialogue: (id) =>
-    axiosClient.get(`/admin/bino/dialogue/${id}`),
+    axiosClient.get(`/admin/communication/dialogue/${id}`),
 
   adminCreateDialogue: (data) =>
-    axiosClient.post('/admin/bino/dialogue', data).then((res) => {
+    axiosClient.post('/admin/communication/dialogue', data).then((res) => {
       invalidateBinoCache();
       return res;
     }),
 
   adminUpdateDialogue: (id, data) =>
-    axiosClient.put(`/admin/bino/dialogue/${id}`, data).then((res) => {
+    axiosClient.put(`/admin/communication/dialogue/${id}`, data).then((res) => {
       invalidateBinoCache();
       return res;
     }),
 
   adminDeleteDialogue: (id) =>
-    axiosClient.delete(`/admin/bino/dialogue/${id}`).then((res) => {
+    axiosClient.delete(`/admin/communication/dialogue/${id}`).then((res) => {
       invalidateBinoCache();
       return res;
     }),
 
   // Đồng bộ dữ liệu thật từ TiengAnhBi.epub
   adminSyncRealData: () =>
-    axiosClient.post('/admin/bino/sync-real-data').then((res) => {
+    axiosClient.post('/admin/communication/sync-real-data').then((res) => {
       invalidateBinoCache();
       return res;
     }),
 
   // Quản lý Media (Admin)
   uploadMedia: (formData, folder = 'audios') =>
-    axiosClient.post(`/admin/bino/media/upload?folder=${encodeURIComponent(folder)}`, formData, {
+    axiosClient.post(`/admin/communication/media/upload?folder=${encodeURIComponent(folder)}`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     }),
 
   deleteMedia: (fileUrl) =>
-    axiosClient.delete(`/admin/bino/media`, { params: { fileUrl } }),
+    axiosClient.delete(`/admin/communication/media`, { params: { fileUrl } }),
 };
 
 export default binoApi;
