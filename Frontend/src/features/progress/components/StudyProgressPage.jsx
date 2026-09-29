@@ -46,6 +46,9 @@ export default function StudyProgressPage() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  // Reactive subscription for Reflex 50
+  const reflexMasteredIds = useReflex50Store((s) => s.masteredIds);
+
   const loadData = async () => {
     setLoading(true);
     try {
@@ -54,7 +57,8 @@ export default function StudyProgressPage() {
         dashboardApi.getStats(true),
         progressApi.getAllSummaries(),
         progressApi.getUnsureQuestions(),
-        useVocabStore.getState().fetchProgress()
+        useVocabStore.getState().fetchProgress(),
+        useReflex50Store.getState().fetchProgress()
       ]);
 
       if (binoRes.status === 'fulfilled' && binoRes.value?.data) {

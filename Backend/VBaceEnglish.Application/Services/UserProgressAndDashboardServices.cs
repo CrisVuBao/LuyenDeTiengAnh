@@ -1052,7 +1052,20 @@ public class DashboardService : IDashboardService
             try
             {
                 using var doc = JsonDocument.Parse(reflex.ProgressDataJson);
-                if (doc.RootElement.TryGetProperty("completedUnits", out var unitsElem) && unitsElem.ValueKind == JsonValueKind.Array)
+                if (doc.RootElement.TryGetProperty("masteredIds", out var masteredElem) && masteredElem.ValueKind == JsonValueKind.Object)
+                {
+                    var unitSentenceCounts = new Dictionary<int, int>();
+                    foreach (var prop in masteredElem.EnumerateObject())
+                    {
+                        var parts = prop.Name.Split('-');
+                        if (parts.Length == 2 && parts[0].StartsWith("u") && int.TryParse(parts[0].Substring(1), out int uNum))
+                        {
+                            unitSentenceCounts[uNum] = unitSentenceCounts.GetValueOrDefault(uNum) + 1;
+                        }
+                    }
+                    reflexUnits = unitSentenceCounts.Values.Count(count => count >= 30);
+                }
+                else if (doc.RootElement.TryGetProperty("completedUnits", out var unitsElem) && unitsElem.ValueKind == JsonValueKind.Array)
                 {
                     reflexUnits = unitsElem.GetArrayLength();
                 }

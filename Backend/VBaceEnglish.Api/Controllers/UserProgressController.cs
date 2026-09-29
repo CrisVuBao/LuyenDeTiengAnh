@@ -8,6 +8,7 @@ using VBaceEnglish.Application.Services;
 namespace VBaceEnglish.Api.Controllers;
 
 [Route("api/[controller]")]
+[Route("api/v1/[controller]")]
 [ApiController]
 [Authorize]
 public class UserProgressController : ControllerBase

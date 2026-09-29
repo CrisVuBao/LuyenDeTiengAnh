@@ -157,7 +157,31 @@ const useGamificationStore = create((set, get) => ({
   },
 
   triggerCelebration: (type, data) => set({ lastCelebration: { type, data, timestamp: Date.now() } }),
-  clearCelebration: () => set({ lastCelebration: null })
+  clearCelebration: () => set({ lastCelebration: null }),
+
+  reset: () => {
+    set({
+      profile: null,
+      dailyQuests: [],
+      leaderboard: [],
+      achievements: [],
+      isLoading: false,
+      lastCelebration: null
+    });
+  }
 }));
+
+if (typeof window !== 'undefined') {
+  useAuthStore.subscribe((state, prevState) => {
+    const newUid = state.user?.id || null;
+    const oldUid = prevState?.user?.id || null;
+    if (newUid !== oldUid || state.isAuthenticated !== prevState?.isAuthenticated) {
+      useGamificationStore.getState().reset();
+      if (newUid && state.isAuthenticated) {
+        useGamificationStore.getState().fetchProfile();
+      }
+    }
+  });
+}
 
 export default useGamificationStore;

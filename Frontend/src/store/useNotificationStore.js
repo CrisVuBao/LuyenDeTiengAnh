@@ -241,7 +241,24 @@ const useNotificationStore = create((set, get) => ({
     connectedUserId = null;
     hasLoadedInitial = false;
     set({ notifications: [], unreadCount: 0, connected: false });
+  },
+
+  reset: () => {
+    get().disconnectRealtime();
   }
 }));
+
+if (typeof window !== 'undefined') {
+  useAuthStore.subscribe((state, prevState) => {
+    const newUid = state.user?.id || null;
+    const oldUid = prevState?.user?.id || null;
+    if (newUid !== oldUid || state.isAuthenticated !== prevState?.isAuthenticated) {
+      useNotificationStore.getState().reset();
+      if (newUid && state.isAuthenticated) {
+        useNotificationStore.getState().fetchNotifications();
+      }
+    }
+  });
+}
 
 export default useNotificationStore;

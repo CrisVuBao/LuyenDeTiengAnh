@@ -53,84 +53,160 @@ const loadInitialState = (customUserId) => {
   }
 };
 
-let pendingSaveTimer = null;
 let pendingCloudSyncTimer = null;
 let latestPendingState = null;
 let latestPendingUserId = null;
 
 const flushStateToStorage = (state, customUserId) => {
   if (!state) return;
+  const targetUid = customUserId ?? useAuthStore.getState().user?.id ?? 'guest';
   try {
     const payload = {
-      masteredIds: state.masteredIds,
-      starredIds: state.starredIds,
-      weakIds: state.weakIds,
-      writingHistory: state.writingHistory,
-      speakingHistory: state.speakingHistory,
-      lastStudiedUnit: state.lastStudiedUnit,
-      dailyGoal: state.dailyGoal,
-      dailyLog: state.dailyLog
+      masteredIds: state.masteredIds || {},
+      starredIds: state.starredIds || {},
+      weakIds: state.weakIds || {},
+      writingHistory: state.writingHistory || {},
+      speakingHistory: state.speakingHistory || {},
+      lastStudiedUnit: state.lastStudiedUnit || 1,
+      dailyGoal: state.dailyGoal || 30,
+      dailyLog: state.dailyLog || {}
     };
-    localStorage.setItem(getUserStorageKey(customUserId), JSON.stringify(payload));
+    localStorage.setItem(getUserStorageKey(targetUid), JSON.stringify(payload));
   } catch {
     // ignore storage quota errors
   }
 };
 
-// Đồng bộ vĩnh viễn lên cơ sở dữ liệu SQL Server theo từng tài khoản học viên
-const syncStateToCloud = (state, customUserId) => {
+const buildCloudPayload = (state) => {
+  const s = state || useReflex50Store.getState();
+  const masteredKeys = Object.keys(s.masteredIds || {});
+  const starredKeys = Object.keys(s.starredIds || {});
+  const weakKeys = Object.keys(s.weakIds || {});
+  return {
+    masteredCount: masteredKeys.length,
+    starredCount: starredKeys.length,
+    weakCount: weakKeys.length,
+    lastStudiedUnit: s.lastStudiedUnit || 1,
+    dailyGoal: s.dailyGoal || 30,
+    progressDataJson: JSON.stringify({
+      masteredIds: s.masteredIds || {},
+      starredIds: s.starredIds || {},
+      weakIds: s.weakIds || {},
+      writingHistory: s.writingHistory || {},
+      speakingHistory: s.speakingHistory || {},
+      dailyLog: s.dailyLog || {}
+    })
+  };
+};
+
+// Đồng bộ trực tiếp lên SQL Server theo từng tài khoản (Chặn đứng rò rỉ chéo)
+const syncStateToCloudImmediate = async (state, customUserId) => {
   const uid = customUserId ?? useAuthStore.getState().user?.id;
   if (!uid || uid === 'guest') return;
+  // Chặn tuyệt đối nếu state thuộc về tài khoản khác
+  if (state?.currentUserId && state.currentUserId !== uid) return;
+  try {
+    const payload = buildCloudPayload(state);
+    await progressApi.saveReflexProgress(payload);
+  } catch (err) {
+    console.warn('Reflex 50 Cloud Sync warning:', err?.message || err);
+  }
+};
+
+// Debounce đồng bộ lên Cloud Database (250ms)
+const syncStateToCloudDebounced = (state, customUserId) => {
+  const uid = customUserId ?? useAuthStore.getState().user?.id;
+  if (!uid || uid === 'guest') return;
+  if (state?.currentUserId && state.currentUserId !== uid) return;
+
+  latestPendingState = state;
+  latestPendingUserId = uid;
 
   if (pendingCloudSyncTimer) clearTimeout(pendingCloudSyncTimer);
   pendingCloudSyncTimer = setTimeout(async () => {
     pendingCloudSyncTimer = null;
-    try {
-      const masteredKeys = Object.keys(state.masteredIds || {});
-      const starredKeys = Object.keys(state.starredIds || {});
-      const weakKeys = Object.keys(state.weakIds || {});
-      const payload = {
-        masteredCount: masteredKeys.length,
-        starredCount: starredKeys.length,
-        weakCount: weakKeys.length,
-        lastStudiedUnit: state.lastStudiedUnit || 1,
-        dailyGoal: state.dailyGoal || 30,
-        progressDataJson: JSON.stringify({
-          masteredIds: state.masteredIds || {},
-          starredIds: state.starredIds || {},
-          weakIds: state.weakIds || {},
-          writingHistory: state.writingHistory || {},
-          speakingHistory: state.speakingHistory || {},
-          dailyLog: state.dailyLog || {}
-        })
-      };
-      await progressApi.saveReflexProgress(payload);
-    } catch (err) {
-      console.warn('Reflex 50 Cloud Sync warning:', err?.message || err);
+    const activeUid = useAuthStore.getState().user?.id;
+    if (activeUid && activeUid === latestPendingUserId && latestPendingState) {
+      await syncStateToCloudImmediate(latestPendingState, latestPendingUserId);
     }
-  }, 400);
+  }, 250);
 };
 
-// Ghi xuống bộ nhớ đệm và đồng bộ thẳng vào Database SQL Server
+// Ghi tức thì xuống LocalStorage (0ms) và đồng bộ lên Database SQL Server
 const saveStateToStorage = (state) => {
+  const uid = useAuthStore.getState().user?.id;
+  if (!uid || uid === 'guest') {
+    flushStateToStorage(state, 'guest');
+    return;
+  }
+  // Chặn tuyệt đối: Không bao giờ lưu state nếu store đang giữ dữ liệu của user khác
+  if (state.currentUserId && state.currentUserId !== uid) {
+    return;
+  }
   latestPendingState = state;
-  latestPendingUserId = useAuthStore.getState().user?.id;
-  if (pendingSaveTimer) clearTimeout(pendingSaveTimer);
-  pendingSaveTimer = setTimeout(() => {
-    pendingSaveTimer = null;
-    flushStateToStorage(latestPendingState, latestPendingUserId);
-    syncStateToCloud(latestPendingState, latestPendingUserId);
-  }, 120);
-};
+  latestPendingUserId = uid;
 
+  // 1. Lưu ngay lập tức vào LocalStorage (0ms synchronous)
+  flushStateToStorage(state, uid);
+
+  // 2. Debounce đồng bộ lên Cloud Database (250ms)
+  syncStateToCloudDebounced(state, uid);
+};
 
 if (typeof window !== 'undefined') {
   window.addEventListener('beforeunload', () => {
-    if (pendingSaveTimer && latestPendingState) {
-      clearTimeout(pendingSaveTimer);
+    const currentActiveUid = useAuthStore.getState().user?.id;
+    if (
+      latestPendingState &&
+      latestPendingUserId &&
+      latestPendingUserId !== 'guest' &&
+      latestPendingUserId === currentActiveUid
+    ) {
+      if (pendingCloudSyncTimer) {
+        clearTimeout(pendingCloudSyncTimer);
+        pendingCloudSyncTimer = null;
+      }
       flushStateToStorage(latestPendingState, latestPendingUserId);
+      try {
+        const payload = JSON.stringify(buildCloudPayload(latestPendingState));
+        const blob = new Blob([payload], { type: 'application/json' });
+        navigator.sendBeacon('/api/userprogress/reflex', blob);
+      } catch {
+        syncStateToCloudImmediate(latestPendingState, latestPendingUserId);
+      }
     }
   });
+
+  // Hỗ trợ tự động đồng bộ khi chuyển qua lại giữa các tab hoặc các trình duyệt
+  if (typeof document !== 'undefined') {
+    document.addEventListener('visibilitychange', () => {
+      const activeUid = useAuthStore.getState().user?.id;
+      if (document.visibilityState === 'visible') {
+        if (activeUid && activeUid !== 'guest') {
+          useReflex50Store.getState().fetchProgress(activeUid);
+        }
+      } else if (document.visibilityState === 'hidden') {
+        if (
+          pendingCloudSyncTimer &&
+          latestPendingState &&
+          latestPendingUserId === activeUid &&
+          activeUid &&
+          activeUid !== 'guest'
+        ) {
+          clearTimeout(pendingCloudSyncTimer);
+          pendingCloudSyncTimer = null;
+          syncStateToCloudImmediate(latestPendingState, latestPendingUserId);
+        }
+      }
+    });
+
+    window.addEventListener('focus', () => {
+      const activeUid = useAuthStore.getState().user?.id;
+      if (activeUid && activeUid !== 'guest') {
+        useReflex50Store.getState().fetchProgress(activeUid);
+      }
+    });
+  }
 }
 
 // Chuẩn hóa tiếng Anh khi chấm điểm viết & nói (chấp nhận viết tắt phổ biến)
@@ -318,17 +394,81 @@ export function evaluateSentenceAttempt(userText = '', targetText = '', options 
   };
 }
 
-const saved = loadInitialState();
+export const getCleanReflexState = (unitNum = 1) => ({
+  masteredIds: {},
+  starredIds: {},
+  weakIds: {},
+  writingHistory: {},
+  speakingHistory: {},
+  lastStudiedUnit: Number(unitNum) || 1,
+  dailyGoal: 30,
+  dailyLog: {},
+  isProgressLoaded: false,
+  currentUserId: null
+});
+
+function getInitialLoadedReflexState() {
+  if (typeof window === 'undefined') return getCleanReflexState(1);
+  const authUser = useAuthStore.getState()?.user;
+  if (!authUser?.id) {
+    const guestData = loadInitialState('guest');
+    return {
+      ...getCleanReflexState(guestData?.lastStudiedUnit || 1),
+      ...(guestData || {}),
+      currentUserId: 'guest',
+      isProgressLoaded: !!guestData
+    };
+  }
+  const userData = loadInitialState(authUser.id);
+  return {
+    ...getCleanReflexState(userData?.lastStudiedUnit || 1),
+    ...(userData || {}),
+    currentUserId: authUser.id,
+    isProgressLoaded: !!userData
+  };
+}
+
+const initialSaved = getInitialLoadedReflexState();
 
 export const useReflex50Store = create((set, get) => ({
-  masteredIds: saved?.masteredIds || {},
-  starredIds: saved?.starredIds || {},
-  weakIds: saved?.weakIds || {},
-  writingHistory: saved?.writingHistory || {},
-  speakingHistory: saved?.speakingHistory || {},
-  lastStudiedUnit: saved?.lastStudiedUnit || 1,
-  dailyGoal: saved?.dailyGoal || 30,
-  dailyLog: saved?.dailyLog || {},
+  masteredIds: initialSaved.masteredIds,
+  starredIds: initialSaved.starredIds,
+  weakIds: initialSaved.weakIds,
+  writingHistory: initialSaved.writingHistory,
+  speakingHistory: initialSaved.speakingHistory,
+  lastStudiedUnit: initialSaved.lastStudiedUnit,
+  dailyGoal: initialSaved.dailyGoal,
+  dailyLog: initialSaved.dailyLog,
+  isProgressLoaded: initialSaved.isProgressLoaded,
+  currentUserId: initialSaved.currentUserId,
+
+  resetForUser: (targetUid) => {
+    if (pendingCloudSyncTimer) {
+      clearTimeout(pendingCloudSyncTimer);
+      pendingCloudSyncTimer = null;
+    }
+    latestPendingState = null;
+    latestPendingUserId = null;
+
+    if (!targetUid || targetUid === 'guest') {
+      const guestSaved = loadInitialState('guest');
+      set({
+        ...getCleanReflexState(guestSaved?.lastStudiedUnit || 1),
+        ...(guestSaved || {}),
+        currentUserId: 'guest',
+        isProgressLoaded: true
+      });
+      return;
+    }
+
+    const userSaved = loadInitialState(targetUid);
+    set({
+      ...getCleanReflexState(userSaved?.lastStudiedUnit || 1),
+      ...(userSaved || {}),
+      currentUserId: targetUid,
+      isProgressLoaded: !!userSaved
+    });
+  },
 
   setLastStudiedUnit: (unitNumber) => {
     set((state) => {
@@ -595,15 +735,11 @@ export const useReflex50Store = create((set, get) => ({
   },
 
   resetAllProgress: () => {
+    const activeUid = get().currentUserId || useAuthStore.getState().user?.id || 'guest';
     const empty = {
-      masteredIds: {},
-      starredIds: {},
-      weakIds: {},
-      writingHistory: {},
-      speakingHistory: {},
-      lastStudiedUnit: 1,
-      dailyGoal: 30,
-      dailyLog: {}
+      ...getCleanReflexState(1),
+      currentUserId: activeUid,
+      isProgressLoaded: true
     };
     saveStateToStorage(empty);
     set(empty);
@@ -689,70 +825,155 @@ export const useReflex50Store = create((set, get) => ({
     };
   },
 
-  // Tải lại toàn bộ tiến độ Reflex 50 từ SQL Server và bộ nhớ đệm khi đăng nhập hoặc mở web
-  loadForUser: async (userId) => {
-    const uid = userId ?? useAuthStore.getState().user?.id;
-    const userSaved = loadInitialState(uid);
-    // Cập nhật ngay lập tức từ bộ nhớ đệm cục bộ (0ms UI display)
-    set({
-      masteredIds: userSaved?.masteredIds || {},
-      starredIds: userSaved?.starredIds || {},
-      weakIds: userSaved?.weakIds || {},
-      writingHistory: userSaved?.writingHistory || {},
-      speakingHistory: userSaved?.speakingHistory || {},
-      lastStudiedUnit: userSaved?.lastStudiedUnit || 1,
-      dailyGoal: userSaved?.dailyGoal || 30,
-      dailyLog: userSaved?.dailyLog || {}
-    });
+  // Tải lại toàn bộ tiến độ Reflex 50 từ SQL Server và bộ nhớ đệm
+  fetchProgress: async (customUserId) => {
+    const authState = useAuthStore.getState();
+    const uid = customUserId ?? authState.user?.id;
+    if (!uid || uid === 'guest') {
+      get().resetForUser('guest');
+      return;
+    }
 
-    if (!uid || uid === 'guest') return;
+    // Nếu store đang giữ state của user khác -> Reset ngay tức thì về user này
+    if (get().currentUserId !== uid) {
+      get().resetForUser(uid);
+    }
 
-    // Nạp trực tiếp từ SQL Server Database để bảo toàn dữ liệu vĩnh viễn (dù bị xóa cache trình duyệt)
+    // Nạp cục bộ CỦA ĐÚNG USER NÀY (nếu chưa có thì là sạch 100%)
+    const local = loadInitialState(uid) || getCleanReflexState(1);
+
     try {
       const res = await progressApi.getReflexProgress();
-      if (res?.data?.isSuccess && res.data.data) {
-        const cloud = res.data.data;
+
+      // Đảm bảo không bị race condition khi chuyển tài khoản trong lúc fetch
+      const activeUid = useAuthStore.getState().user?.id;
+      if (activeUid !== uid) {
+        return;
+      }
+
+      let cloud = null;
+      if (res && typeof res === 'object') {
+        if (res.data && typeof res.data === 'object' && ('progressDataJson' in res.data || 'masteredCount' in res.data)) {
+          cloud = res.data;
+        } else if ('progressDataJson' in res || 'masteredCount' in res) {
+          cloud = res;
+        } else if (res.data?.data && typeof res.data.data === 'object') {
+          cloud = res.data.data;
+        }
+      }
+
+      if (cloud) {
         let details = {};
-        try {
-          details = JSON.parse(cloud.progressDataJson || '{}');
-        } catch {
-          details = {};
+        if (cloud.progressDataJson) {
+          try {
+            details = typeof cloud.progressDataJson === 'string'
+              ? JSON.parse(cloud.progressDataJson)
+              : (cloud.progressDataJson || {});
+          } catch (e) {
+            details = {};
+          }
         }
 
-        const currentLocal = loadInitialState(uid);
-        // Hợp nhất dữ liệu SQL Server và dữ liệu cục bộ an toàn
+        // Hợp nhất writingHistory (giữ điểm cao nhất và số lần thử)
+        const mergedWriting = { ...(details.writingHistory || {}) };
+        for (const [sId, lItem] of Object.entries(local.writingHistory || {})) {
+          const rItem = mergedWriting[sId];
+          if (!rItem) {
+            mergedWriting[sId] = lItem;
+          } else {
+            mergedWriting[sId] = {
+              lastInput: (lItem.updatedAt || '') >= (rItem.updatedAt || '') ? lItem.lastInput : rItem.lastInput,
+              score: (lItem.updatedAt || '') >= (rItem.updatedAt || '') ? lItem.score : rItem.score,
+              bestScore: Math.max(rItem.bestScore || 0, lItem.bestScore || 0),
+              attempts: Math.max(rItem.attempts || 0, lItem.attempts || 0),
+              updatedAt: (lItem.updatedAt || '') >= (rItem.updatedAt || '') ? lItem.updatedAt : rItem.updatedAt
+            };
+          }
+        }
+
+        // Hợp nhất speakingHistory (giữ điểm cao nhất và số lần thử)
+        const mergedSpeaking = { ...(details.speakingHistory || {}) };
+        for (const [sId, lItem] of Object.entries(local.speakingHistory || {})) {
+          const rItem = mergedSpeaking[sId];
+          if (!rItem) {
+            mergedSpeaking[sId] = lItem;
+          } else {
+            mergedSpeaking[sId] = {
+              transcript: (lItem.updatedAt || '') >= (rItem.updatedAt || '') ? lItem.transcript : rItem.transcript,
+              score: (lItem.updatedAt || '') >= (rItem.updatedAt || '') ? lItem.score : rItem.score,
+              bestScore: Math.max(rItem.bestScore || 0, lItem.bestScore || 0),
+              attempts: Math.max(rItem.attempts || 0, lItem.attempts || 0),
+              updatedAt: (lItem.updatedAt || '') >= (rItem.updatedAt || '') ? lItem.updatedAt : rItem.updatedAt
+            };
+          }
+        }
+
+        // Hợp nhất dailyLog theo ngày
+        const mergedDailyLog = { ...(details.dailyLog || {}) };
+        for (const [day, count] of Object.entries(local.dailyLog || {})) {
+          mergedDailyLog[day] = Math.max(mergedDailyLog[day] || 0, count || 0);
+        }
+
+        const mergedMastered = { ...(details.masteredIds || {}), ...(local.masteredIds || {}) };
+        const mergedStarred = { ...(details.starredIds || {}), ...(local.starredIds || {}) };
+        const mergedWeak = { ...(details.weakIds || {}), ...(local.weakIds || {}) };
+
         const merged = {
-          masteredIds: { ...(details.masteredIds || {}), ...(currentLocal?.masteredIds || {}) },
-          starredIds: { ...(details.starredIds || {}), ...(currentLocal?.starredIds || {}) },
-          weakIds: { ...(details.weakIds || {}), ...(currentLocal?.weakIds || {}) },
-          writingHistory: { ...(details.writingHistory || {}), ...(currentLocal?.writingHistory || {}) },
-          speakingHistory: { ...(details.speakingHistory || {}), ...(currentLocal?.speakingHistory || {}) },
-          lastStudiedUnit: cloud.lastStudiedUnit || currentLocal?.lastStudiedUnit || 1,
-          dailyGoal: cloud.dailyGoal || currentLocal?.dailyGoal || 30,
-          dailyLog: { ...(details.dailyLog || {}), ...(currentLocal?.dailyLog || {}) }
+          masteredIds: mergedMastered,
+          starredIds: mergedStarred,
+          weakIds: mergedWeak,
+          writingHistory: mergedWriting,
+          speakingHistory: mergedSpeaking,
+          lastStudiedUnit: cloud.lastStudiedUnit || local.lastStudiedUnit || 1,
+          dailyGoal: cloud.dailyGoal || local.dailyGoal || 30,
+          dailyLog: mergedDailyLog,
+          isProgressLoaded: true,
+          currentUserId: uid
         };
 
         set(merged);
         flushStateToStorage(merged, uid);
+
+        // Chỉ đồng bộ lên cloud nếu local của chính UID có dữ liệu mới hơn server
+        const localMasteredLen = Object.keys(local.masteredIds || {}).length;
+        const cloudMasteredLen = Object.keys(details.masteredIds || {}).length;
+        if (localMasteredLen > cloudMasteredLen && localMasteredLen > 0) {
+          syncStateToCloudImmediate(merged, uid);
+        }
+      } else {
+        set({ ...local, currentUserId: uid, isProgressLoaded: true });
       }
     } catch (err) {
-      console.warn('Không thể nạp tiến độ từ SQL Server:', err?.message || err);
+      console.warn('Không thể nạp tiến độ Reflex 50 từ máy chủ:', err?.message || err);
+      set({ isProgressLoaded: true });
     }
-  }
+  },
+
+  // Alias tương thích ngược
+  loadForUser: (userId) => get().fetchProgress(userId)
 }));
 
 // Tự động đồng bộ và tải dữ liệu riêng biệt mỗi khi học viên đăng nhập/đăng xuất
 if (typeof window !== 'undefined') {
   useAuthStore.subscribe((state, prevState) => {
-    const newUid = state.user?.id;
-    const oldUid = prevState?.user?.id;
+    const newUid = state.user?.id || null;
+    const oldUid = prevState?.user?.id || null;
     if (newUid !== oldUid) {
-      if (pendingSaveTimer && latestPendingState) {
-        clearTimeout(pendingSaveTimer);
+      if (oldUid && latestPendingState && latestPendingUserId === oldUid) {
         flushStateToStorage(latestPendingState, oldUid);
-        pendingSaveTimer = null;
+        syncStateToCloudImmediate(latestPendingState, oldUid);
       }
-      useReflex50Store.getState().loadForUser(newUid);
+      if (pendingCloudSyncTimer) {
+        clearTimeout(pendingCloudSyncTimer);
+        pendingCloudSyncTimer = null;
+      }
+      latestPendingState = null;
+      latestPendingUserId = null;
+
+      useReflex50Store.getState().resetForUser(newUid);
+      if (newUid) {
+        useReflex50Store.getState().fetchProgress(newUid);
+      }
     }
   });
 
@@ -760,7 +981,7 @@ if (typeof window !== 'undefined') {
   const currentInitialUid = useAuthStore.getState().user?.id;
   if (currentInitialUid && currentInitialUid !== 'guest') {
     setTimeout(() => {
-      useReflex50Store.getState().loadForUser(currentInitialUid);
+      useReflex50Store.getState().fetchProgress(currentInitialUid);
     }, 50);
   }
 }

@@ -84,8 +84,14 @@ export default function Reflex50UnitStudyPage() {
   const recordWritingAttempt = useReflex50Store((s) => s.recordWritingAttempt);
   const recordSpeakingAttempt = useReflex50Store((s) => s.recordSpeakingAttempt);
   const getUnitStats = useReflex50Store((s) => s.getUnitStats);
+  const fetchProgress = useReflex50Store((s) => s.fetchProgress);
 
-  const unitStats = getUnitStats(uNum);
+  // Nạp tiến độ mới nhất từ SQL Server
+  useEffect(() => {
+    fetchProgress();
+  }, [fetchProgress]);
+
+  const unitStats = useMemo(() => getUnitStats(uNum), [getUnitStats, uNum, masteredIds, writingHistory]);
 
   // Ghi nhận Unit đang học gần nhất
   useEffect(() => {

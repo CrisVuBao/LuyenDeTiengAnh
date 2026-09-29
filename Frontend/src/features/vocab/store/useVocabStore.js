@@ -67,18 +67,52 @@ const playSoundEffect = (type) => {
 
 let syncTimer = null;
 
+export const getCleanVocabState = () => ({
+  masteredWords: {},
+  starredWords: {},
+  fsrsCards: {},
+  topicScores: {},
+  topicLastIndex: {},
+  topicLastWordId: {},
+  topicFilterMode: {},
+  lastStudiedTopic: 1,
+  isProgressLoaded: false,
+  currentUserId: null
+});
+
+const loadUserVocabCache = (userId) => {
+  if (typeof window === 'undefined' || !userId) return null;
+  try {
+    const raw = localStorage.getItem(`vbace_vocab_progress_${userId}`);
+    if (raw) return JSON.parse(raw);
+  } catch {}
+  return null;
+};
+
 // Synchronously load progress from localStorage at module import so 1st frame on F5 has real data!
 const getInitialVocabProgress = () => {
-  if (typeof window === 'undefined') return {};
+  if (typeof window === 'undefined') return getCleanVocabState();
   try {
     const authState = useAuthStore.getState();
-    const userId = authState?.user?.id || 'guest';
-    const localCached = localStorage.getItem(`vbace_vocab_progress_${userId}`) || localStorage.getItem('vbace_vocab_progress_guest');
-    if (localCached) {
-      return JSON.parse(localCached);
+    const userId = authState?.user?.id;
+    if (!userId) {
+      const guestData = loadUserVocabCache('guest');
+      return {
+        ...getCleanVocabState(),
+        ...(guestData || {}),
+        currentUserId: 'guest',
+        isProgressLoaded: !!guestData
+      };
     }
+    const userData = loadUserVocabCache(userId);
+    return {
+      ...getCleanVocabState(),
+      ...(userData || {}),
+      currentUserId: userId,
+      isProgressLoaded: !!userData
+    };
   } catch {}
-  return {};
+  return getCleanVocabState();
 };
 
 const initialProgress = getInitialVocabProgress();
@@ -96,90 +130,113 @@ const useVocabStore = create((set, get) => ({
   topicLastWordId: initialProgress.topicLastWordId || {},
   topicFilterMode: initialProgress.topicFilterMode || {},
   lastStudiedTopic: initialProgress.lastStudiedTopic || 1,
-  isProgressLoaded: !!initialProgress.masteredWords,
+  isProgressLoaded: initialProgress.isProgressLoaded,
+  currentUserId: initialProgress.currentUserId,
 
   // Preferences
   speechRate: 1.0,     // 0.8 or 1.0
   autoPlayAudio: true,
   isLoading: false,
 
+  resetForUser: (targetUserId) => {
+    if (syncTimer) {
+      clearTimeout(syncTimer);
+      syncTimer = null;
+    }
+    const clean = getCleanVocabState();
+    if (!targetUserId || targetUserId === 'guest') {
+      const guestData = loadUserVocabCache('guest');
+      set({
+        ...clean,
+        ...(guestData || {}),
+        currentUserId: 'guest',
+        isProgressLoaded: true
+      });
+      return;
+    }
+    const userData = loadUserVocabCache(targetUserId);
+    set({
+      ...clean,
+      ...(userData || {}),
+      currentUserId: targetUserId,
+      isProgressLoaded: !!userData
+    });
+  },
+
   // Load progress for current authenticated user
-  fetchProgress: async () => {
+  fetchProgress: async (customUserId) => {
     const authState = useAuthStore.getState();
-    const userId = authState.user?.id || 'guest';
-    const localKey = `vbace_vocab_progress_${userId}`;
+    const userId = customUserId ?? authState.user?.id;
+    if (!userId || !authState.isAuthenticated) {
+      get().resetForUser('guest');
+      return;
+    }
 
-    // 1. First load from localStorage for 0ms immediate render
+    if (get().currentUserId !== userId) {
+      get().resetForUser(userId);
+    }
+
+    const local = loadUserVocabCache(userId) || getCleanVocabState();
+
     try {
-      const localCached = localStorage.getItem(localKey);
-      if (localCached) {
-        const parsed = JSON.parse(localCached);
-        set({
-          masteredWords: parsed.masteredWords || {},
-          starredWords: parsed.starredWords || {},
-          fsrsCards: parsed.fsrsCards || {},
-          topicScores: parsed.topicScores || {},
-          topicLastIndex: parsed.topicLastIndex || {},
-          topicLastWordId: parsed.topicLastWordId || {},
-          topicFilterMode: parsed.topicFilterMode || {},
-          lastStudiedTopic: parsed.lastStudiedTopic || 1,
-          isProgressLoaded: true
-        });
+      set({ isLoading: true });
+      const res = await vocabApi.getProgress();
+
+      const currentActiveUid = useAuthStore.getState().user?.id;
+      if (currentActiveUid !== userId) {
+        return; // Hủy nếu user đã thay đổi trong lúc chờ API
       }
-    } catch {}
 
-    // 2. Fetch from Backend Database if authenticated
-    if (authState.isAuthenticated) {
-      try {
-        set({ isLoading: true });
-        const res = await vocabApi.getProgress();
-        const data = res?.data || res;
-        if (data && data.progressDataJson) {
-          try {
-            const remoteParsed = JSON.parse(data.progressDataJson);
-            const mergedMastered = { ...get().masteredWords, ...(remoteParsed.masteredWords || {}) };
-            const mergedStarred = { ...get().starredWords, ...(remoteParsed.starredWords || {}) };
-            const mergedFsrs = { ...(remoteParsed.fsrsCards || {}), ...get().fsrsCards };
-            const mergedScores = { ...get().topicScores, ...(remoteParsed.topicScores || {}) };
-            const mergedLastIndex = { ...get().topicLastIndex, ...(remoteParsed.topicLastIndex || {}) };
-            const mergedLastWordId = { ...get().topicLastWordId, ...(remoteParsed.topicLastWordId || {}) };
-            const mergedFilterMode = { ...get().topicFilterMode, ...(remoteParsed.topicFilterMode || {}) };
-            const lastTopic = data.lastStudiedTopic || remoteParsed.lastStudiedTopic || get().lastStudiedTopic || 1;
+      const data = res?.data || res;
+      if (data && data.progressDataJson) {
+        try {
+          const remoteParsed = typeof data.progressDataJson === 'string'
+            ? JSON.parse(data.progressDataJson)
+            : (data.progressDataJson || {});
 
-            set({
-              masteredWords: mergedMastered,
-              starredWords: mergedStarred,
-              fsrsCards: mergedFsrs,
-              topicScores: mergedScores,
-              topicLastIndex: mergedLastIndex,
-              topicLastWordId: mergedLastWordId,
-              topicFilterMode: mergedFilterMode,
-              lastStudiedTopic: lastTopic,
-              isProgressLoaded: true,
-              isLoading: false
-            });
+          const mergedMastered = { ...(remoteParsed.masteredWords || {}), ...(local.masteredWords || {}) };
+          const mergedStarred = { ...(remoteParsed.starredWords || {}), ...(local.starredWords || {}) };
+          const mergedFsrs = { ...(remoteParsed.fsrsCards || {}), ...(local.fsrsCards || {}) };
+          const mergedScores = { ...(remoteParsed.topicScores || {}), ...(local.topicScores || {}) };
+          const mergedLastIndex = { ...(remoteParsed.topicLastIndex || {}), ...(local.topicLastIndex || {}) };
+          const mergedLastWordId = { ...(remoteParsed.topicLastWordId || {}), ...(local.topicLastWordId || {}) };
+          const mergedFilterMode = { ...(remoteParsed.topicFilterMode || {}), ...(local.topicFilterMode || {}) };
+          const lastTopic = data.lastStudiedTopic || remoteParsed.lastStudiedTopic || local.lastStudiedTopic || 1;
 
-            // Cache merged state to localStorage
-            localStorage.setItem(localKey, JSON.stringify({
-              masteredWords: mergedMastered,
-              starredWords: mergedStarred,
-              fsrsCards: mergedFsrs,
-              topicScores: mergedScores,
-              topicLastIndex: mergedLastIndex,
-              topicLastWordId: mergedLastWordId,
-              topicFilterMode: mergedFilterMode,
-              lastStudiedTopic: lastTopic
-            }));
-          } catch {
-            set({ isLoading: false });
-          }
-        } else {
+          const merged = {
+            masteredWords: mergedMastered,
+            starredWords: mergedStarred,
+            fsrsCards: mergedFsrs,
+            topicScores: mergedScores,
+            topicLastIndex: mergedLastIndex,
+            topicLastWordId: mergedLastWordId,
+            topicFilterMode: mergedFilterMode,
+            lastStudiedTopic: lastTopic,
+            isProgressLoaded: true,
+            isLoading: false,
+            currentUserId: userId
+          };
+
+          set(merged);
+          localStorage.setItem(`vbace_vocab_progress_${userId}`, JSON.stringify({
+            masteredWords: mergedMastered,
+            starredWords: mergedStarred,
+            fsrsCards: mergedFsrs,
+            topicScores: mergedScores,
+            topicLastIndex: mergedLastIndex,
+            topicLastWordId: mergedLastWordId,
+            topicFilterMode: mergedFilterMode,
+            lastStudiedTopic: lastTopic
+          }));
+        } catch {
           set({ isLoading: false });
         }
-      } catch (err) {
-        console.error('Lỗi khi tải tiến độ từ vựng:', err);
-        set({ isLoading: false });
+      } else {
+        set({ ...local, currentUserId: userId, isProgressLoaded: true, isLoading: false });
       }
+    } catch (err) {
+      console.error('Lỗi khi tải tiến độ từ vựng:', err);
+      set({ isLoading: false, isProgressLoaded: true });
     }
   },
 
@@ -188,8 +245,13 @@ const useVocabStore = create((set, get) => ({
     const state = get();
     const authState = useAuthStore.getState();
     const userId = authState.user?.id || 'guest';
-    const localKey = `vbace_vocab_progress_${userId}`;
 
+    // Bảo vệ tuyệt đối: Không bao giờ lưu nếu state này thuộc về tài khoản khác
+    if (state.currentUserId && state.currentUserId !== userId) {
+      return;
+    }
+
+    const localKey = `vbace_vocab_progress_${userId}`;
     const payload = {
       masteredWords: state.masteredWords,
       starredWords: state.starredWords,
@@ -207,10 +269,13 @@ const useVocabStore = create((set, get) => ({
     } catch {}
 
     // Sync to backend
-    if (!authState.isAuthenticated) return;
+    if (!authState.isAuthenticated || !authState.user?.id) return;
 
     if (syncTimer) clearTimeout(syncTimer);
     syncTimer = setTimeout(async () => {
+      const activeUid = useAuthStore.getState().user?.id;
+      if (activeUid !== userId) return; // Hủy nếu người dùng đã đổi tài khoản
+
       try {
         const masteredCount = Object.keys(state.masteredWords).filter(k => state.masteredWords[k]).length;
         const starredCount = Object.keys(state.starredWords).filter(k => state.starredWords[k]).length;
@@ -441,8 +506,17 @@ const useVocabStore = create((set, get) => ({
 // Auto-fetch vocab progress whenever user authentication status changes
 if (typeof window !== 'undefined') {
   useAuthStore.subscribe((state, prevState) => {
-    if (state.user?.id !== prevState?.user?.id || state.isAuthenticated !== prevState?.isAuthenticated) {
-      useVocabStore.getState().fetchProgress();
+    const newUid = state.user?.id || null;
+    const oldUid = prevState?.user?.id || null;
+    if (newUid !== oldUid || state.isAuthenticated !== prevState?.isAuthenticated) {
+      if (syncTimer) {
+        clearTimeout(syncTimer);
+        syncTimer = null;
+      }
+      useVocabStore.getState().resetForUser(newUid);
+      if (newUid && state.isAuthenticated) {
+        useVocabStore.getState().fetchProgress(newUid);
+      }
     }
   });
 }

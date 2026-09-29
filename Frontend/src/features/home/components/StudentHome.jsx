@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -247,9 +247,16 @@ export default function StudentHome() {
   const navigate = useNavigate();
   const { profile, fetchProfile } = useGamificationStore();
 
+  // Reactive subscription to Reflex 50 store so progress updates immediately across browsers
+  const reflexMasteredIds = useReflex50Store((s) => s.masteredIds);
+  const reflexLastStudiedUnit = useReflex50Store((s) => s.lastStudiedUnit);
+  const getOverallReflex = useReflex50Store((s) => s.getOverallStats);
+  const reflexStats = useMemo(() => getOverallReflex(), [getOverallReflex, reflexMasteredIds]);
+
   useEffect(() => {
     fetchProfile();
     useVocabStore.getState().fetchProgress();
+    useReflex50Store.getState().fetchProgress();
     Promise.allSettled([
       dashboardApi.getStats().then((res) => {
         if (res?.data) setStats(res.data);
@@ -797,11 +804,8 @@ export default function StudentHome() {
       {/* 3.5. PHẢN XẠ NÓI - VIẾT 50 CHỦ ĐỀ (1.500 CÂU THÔNG DỤNG THỰC CHIẾN)   */}
       {/* ===================================================================== */}
       {(() => {
-        const getOverallReflex = useReflex50Store.getState().getOverallStats;
-        const lastReflexUnit = useReflex50Store.getState().lastStudiedUnit || 1;
-        const reflexStats = getOverallReflex();
         const activeUnitObj =
-          reflex50Meta.units.find((u) => u.unitNumber === lastReflexUnit) || reflex50Meta.units[0];
+          reflex50Meta.units.find((u) => u.unitNumber === reflexLastStudiedUnit) || reflex50Meta.units[0];
 
         return (
           <motion.section

@@ -49,8 +49,14 @@ export default function Reflex50OverviewPage() {
   const getOverallStats = useReflex50Store((s) => s.getOverallStats);
   const getUnitStats = useReflex50Store((s) => s.getUnitStats);
   const resetAllProgress = useReflex50Store((s) => s.resetAllProgress);
+  const fetchProgress = useReflex50Store((s) => s.fetchProgress);
 
-  const overall = getOverallStats();
+  // Luôn nạp tiến độ mới nhất từ máy chủ SQL Server
+  useEffect(() => {
+    fetchProgress();
+  }, [fetchProgress]);
+
+  const overall = useMemo(() => getOverallStats(), [getOverallStats, masteredIds]);
   const lastUnitObj =
     reflex50Meta.units.find((u) => u.unitNumber === lastStudiedUnit) || reflex50Meta.units[0];
 
