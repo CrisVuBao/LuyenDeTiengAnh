@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Sparkles, BookOpen, ArrowRight, Flame, CheckCircle2, 
   TrendingUp, Play, Headphones, MessageSquare, 
-  Layers, BookMarked, ChevronRight, Volume2, RefreshCw, Zap, PenTool, Mic, Trophy
+  Layers, BookMarked, ChevronRight, Volume2, RefreshCw, Zap, PenTool, Mic, Trophy, Lightbulb
 } from 'lucide-react';
 import { dashboardApi } from '../../../api/dashboardAndAiApi';
 import binoApi from '../../../api/binoApi';
@@ -21,6 +21,7 @@ import useGamificationStore from '../../gamification/store/useGamificationStore'
 import VocabShowcaseSection from './VocabShowcaseSection';
 import SeoMeta from '../../../components/SeoMeta';
 import ContentModuleExplorer from '../../../components/ContentModuleExplorer';
+import MasterLearningGuideModal from '../../../components/MasterLearningGuideModal';
 
 // Apple-style Spring Variants (120FPS GPU-accelerated transform & opacity)
 const pageContainerVariants = {
@@ -238,6 +239,7 @@ export default function StudentHome() {
   const [stats, setStats] = useState(cachedStats);
   const [binoBook, setBinoBook] = useState(cachedBook);
   const [loading, setLoading] = useState(!cachedStats && !cachedBook);
+  const [isLearningGuideOpen, setIsLearningGuideOpen] = useState(false);
 
   const user = useAuthStore((state) => state.user);
   const openPlaylist = useBinoPlayerStore((state) => state.openPlaylist);
@@ -416,6 +418,17 @@ export default function StudentHome() {
                 <Layers size={15} className="text-slate-500 dark:text-slate-400" />
                 <span>Ôn Flashcard</span>
               </motion.button>
+
+              <motion.button
+                whileHover={{ scale: 1.025, y: -1 }}
+                whileTap={{ scale: 0.96 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 22 }}
+                onClick={() => setIsLearningGuideOpen(true)}
+                className="px-5 py-3.5 bg-amber-500/10 hover:bg-amber-500/20 dark:bg-amber-500/15 dark:hover:bg-amber-500/25 text-amber-700 dark:text-amber-300 border border-amber-500/25 font-semibold rounded-full flex items-center gap-2 transition-all text-sm cursor-pointer shadow-2xs"
+              >
+                <Lightbulb size={15} className="text-amber-500 shrink-0" />
+                <span>Hướng dẫn học hiệu quả 💡</span>
+              </motion.button>
             </div>
           </div>
 
@@ -528,6 +541,46 @@ export default function StudentHome() {
       {/* GAMIFICATION: DAILY QUESTS */}
       <motion.section variants={sectionRevealVariants}>
         <DailyQuestsPanel />
+      </motion.section>
+
+      {/* ===================================================================== */}
+      {/* 1.5. LỘ TRÌNH KẾT HỢP 3 CHƯƠNG TRÌNH: TAM GIÁC VÀNG PHẢN XẠ           */}
+      {/* ===================================================================== */}
+      <motion.section variants={sectionRevealVariants}>
+        <div className="relative overflow-hidden rounded-[26px] bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white p-6 sm:p-8 border border-blue-500/20 shadow-xl shadow-blue-950/20">
+          {/* Subtle glow orb */}
+          <div className="pointer-events-none absolute -top-20 -right-20 w-64 h-64 bg-[#0071e3]/20 rounded-full blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-20 -left-20 w-64 h-64 bg-amber-500/15 rounded-full blur-3xl" />
+
+          <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+            <div className="space-y-3 max-w-2xl">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 text-sky-300 text-xs font-bold border border-blue-400/30">
+                <Sparkles size={13} className="text-amber-300" />
+                <span>Phương Pháp Chuẩn Sư Phạm 45–60 Phút/Ngày</span>
+              </div>
+
+              <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white leading-snug">
+                Bị rối giữa Từ Vựng, Phản Xạ 50 & Giao Tiếp? Hãy học theo <span className="bg-gradient-to-r from-amber-300 via-orange-300 to-amber-200 bg-clip-text text-transparent">Tam Giác Vàng Phản Xạ</span>!
+              </h2>
+
+              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal">
+                Đừng học rời rạc từng phần! Hãy phối hợp theo mô hình 3 Tầng tuần hoàn: <strong>15&apos; Nạp từ vựng Oxford (FSRS)</strong> → <strong>20&apos; Rèn phản xạ câu 3 giây (Reflex 50)</strong> → <strong>25&apos; Nhập vai thực tế & đổi ruột câu (Giao Tiếp 72 Bài)</strong> để giao tiếp tự nhiên không cần dịch ngầm.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-3 shrink-0 w-full sm:w-auto">
+              <motion.button
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => setIsLearningGuideOpen(true)}
+                className="px-6 py-3.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-xs sm:text-sm shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2 transition-all cursor-pointer w-full sm:w-auto"
+              >
+                <Lightbulb size={16} className="text-slate-950 fill-current" />
+                <span>Xem Hướng Dẫn & Lộ Trình Học 💡</span>
+              </motion.button>
+            </div>
+          </div>
+        </div>
       </motion.section>
 
       {/* MULTILINGUAL CONTENT MODULES SYSTEM (M4) */}
@@ -966,6 +1019,12 @@ export default function StudentHome() {
         </div>
 
       </motion.section>
+
+      {/* Master Learning Guide Modal */}
+      <MasterLearningGuideModal
+        isOpen={isLearningGuideOpen}
+        onClose={() => setIsLearningGuideOpen(false)}
+      />
 
     </motion.div>
   );

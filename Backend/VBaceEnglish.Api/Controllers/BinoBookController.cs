@@ -137,6 +137,14 @@ public class BinoBookController : ControllerBase
         return Ok(result);
     }
 
+    [HttpGet("srs/all-words")]
+    public async Task<ActionResult<Response<IEnumerable<SrsCardDto>>>> GetAllSRSCards()
+    {
+        var userId = _currentUser.UserId ?? 0;
+        var result = await _binoService.GetAllSRSCardsAsync(userId);
+        return Ok(result);
+    }
+
     [HttpPost("srs/review")]
     public async Task<ActionResult<Response<bool>>> SubmitSRSReview([FromBody] SubmitSrsReviewDto dto)
     {

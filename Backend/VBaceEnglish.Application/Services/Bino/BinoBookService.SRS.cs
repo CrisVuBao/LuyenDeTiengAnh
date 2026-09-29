@@ -62,35 +62,43 @@ public partial class BinoBookService
     public async Task<Response<IEnumerable<SrsCardDto>>> GetDueSRSCardsAsync(int userId)
     {
         var reviews = await _unitOfWork.BinoLearning.GetDueSRSReviewsAsync(userId);
-        var dtos = reviews.Select(r =>
-        {
-            double stability = r.ReviewCount == 0 ? 0.0 : Math.Max(0.5, r.IntervalDays);
-            double difficulty = ExtractFsrsDifficulty(r.EaseFactor, r.ReviewCount);
-            double retrievability = r.ReviewCount == 0 ? 100.0 : CalculateFsrsRetrievability(stability, r.LastReviewedAt);
-
-            return new SrsCardDto
-            {
-                Id = r.Id,
-                VocabularyId = r.VocabularyId,
-                Word = r.Vocabulary.Word,
-                Phonetic = r.Vocabulary.Phonetic,
-                WordType = r.Vocabulary.WordType,
-                Meaning = r.Vocabulary.Meaning,
-                ExampleSentence = r.Vocabulary.ExampleSentence,
-                ChapterTitle = r.Vocabulary.DialogueLesson?.Chapter?.Title ?? "",
-                DialogueTitle = r.Vocabulary.DialogueLesson?.Title ?? "",
-                IntervalDays = r.IntervalDays,
-                ConsecutiveCorrect = r.ConsecutiveCorrect,
-                ReviewCount = r.ReviewCount,
-                Stability = stability,
-                Difficulty = difficulty,
-                Retrievability = retrievability,
-                LastReviewedAt = r.LastReviewedAt,
-                NextReviewDate = r.NextReviewDate
-            };
-        });
-
+        var dtos = reviews.Select(MapToSrsCardDto).ToList();
         return Response<IEnumerable<SrsCardDto>>.SuccessResult("Lấy danh sách thẻ cần ôn (FSRS)", dtos);
+    }
+
+    public async Task<Response<IEnumerable<SrsCardDto>>> GetAllSRSCardsAsync(int userId)
+    {
+        var reviews = await _unitOfWork.BinoLearning.GetAllSRSReviewsByUserAsync(userId);
+        var dtos = reviews.Select(MapToSrsCardDto).ToList();
+        return Response<IEnumerable<SrsCardDto>>.SuccessResult("Lấy toàn bộ thẻ Flashcard đã lưu", dtos);
+    }
+
+    private static SrsCardDto MapToSrsCardDto(UserSRSReview r)
+    {
+        double stability = r.ReviewCount == 0 ? 0.0 : Math.Max(0.5, r.IntervalDays);
+        double difficulty = ExtractFsrsDifficulty(r.EaseFactor, r.ReviewCount);
+        double retrievability = r.ReviewCount == 0 ? 100.0 : CalculateFsrsRetrievability(stability, r.LastReviewedAt);
+
+        return new SrsCardDto
+        {
+            Id = r.Id,
+            VocabularyId = r.VocabularyId,
+            Word = r.Vocabulary?.Word ?? string.Empty,
+            Phonetic = r.Vocabulary?.Phonetic,
+            WordType = r.Vocabulary?.WordType,
+            Meaning = r.Vocabulary?.Meaning ?? string.Empty,
+            ExampleSentence = r.Vocabulary?.ExampleSentence,
+            ChapterTitle = r.Vocabulary?.DialogueLesson?.Chapter?.Title ?? string.Empty,
+            DialogueTitle = r.Vocabulary?.DialogueLesson?.Title ?? string.Empty,
+            IntervalDays = r.IntervalDays,
+            ConsecutiveCorrect = r.ConsecutiveCorrect,
+            ReviewCount = r.ReviewCount,
+            Stability = stability,
+            Difficulty = difficulty,
+            Retrievability = retrievability,
+            LastReviewedAt = r.LastReviewedAt,
+            NextReviewDate = r.NextReviewDate
+        };
     }
 
     public async Task<Response<bool>> SubmitSRSReviewAsync(int userId, SubmitSrsReviewDto dto)
@@ -156,10 +164,12 @@ public partial class BinoBookService
             }
         }
 
-        if (rating == 1)
+        if (rating == 1) // Again (Quên)
         {
             review.ConsecutiveCorrect = 0;
             review.IntervalDays = 1;
+            // Trong FSRS, thẻ quên được đưa vào diện cần ôn lại sau 10 phút
+            review.NextReviewDate = DateTime.UtcNow.AddMinutes(10);
         }
         else
         {
@@ -167,33 +177,29 @@ public partial class BinoBookService
             int prevInterval = Math.Max(1, review.IntervalDays);
             int targetInterval = (int)Math.Round(newStability);
 
-            if (rating == 2) // Hard
+            if (rating == 2) // Hard (Khó)
             {
-                review.IntervalDays = review.ReviewCount == 0
-                    ? 2
-                    : Math.Max(prevInterval + 1, Math.Min(targetInterval, (int)Math.Ceiling(prevInterval * 1.4)));
+                int days = review.ReviewCount == 0 ? 1 : Math.Max(prevInterval + 1, Math.Min(targetInterval, (int)Math.Ceiling(prevInterval * 1.3)));
+                review.IntervalDays = Math.Clamp(days, 1, 365);
             }
-            else if (rating == 3) // Good
+            else if (rating == 3) // Good (Nhớ tốt)
             {
-                review.IntervalDays = review.ReviewCount == 0
-                    ? 4
-                    : Math.Max(prevInterval + 2, targetInterval);
+                int days = review.ReviewCount == 0 ? 3 : Math.Max(prevInterval + 2, targetInterval);
+                review.IntervalDays = Math.Clamp(days, 2, 365);
             }
-            else // Easy
+            else // Easy (Quá dễ)
             {
-                review.IntervalDays = review.ReviewCount == 0
-                    ? 8
-                    : Math.Max(prevInterval + 4, targetInterval);
+                int days = review.ReviewCount == 0 ? 7 : Math.Max(prevInterval + 4, (int)Math.Round(targetInterval * 1.3));
+                review.IntervalDays = Math.Clamp(days, 4, 365);
             }
 
-            review.IntervalDays = Math.Clamp(review.IntervalDays, 1, 365);
+            review.NextReviewDate = DateTime.UtcNow.AddDays(review.IntervalDays);
         }
 
         // Lưu FSRS Difficulty D ∈ [1.0, 10.0] vào trường EaseFactor
         review.EaseFactor = Math.Round(newDifficulty, 2);
         review.ReviewCount++;
         review.LastReviewedAt = DateTime.UtcNow;
-        review.NextReviewDate = DateTime.UtcNow.AddDays(review.IntervalDays);
 
         _unitOfWork.BinoLearning.UpdateSRSReview(review);
         await _unitOfWork.CompleteAsync();

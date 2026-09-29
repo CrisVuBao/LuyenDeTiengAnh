@@ -60,25 +60,12 @@ public class BinoLearningRepository : IBinoLearningRepository
     public async Task<IEnumerable<UserSRSReview>> GetDueSRSReviewsAsync(int userId)
     {
         var now = DateTime.UtcNow;
-        var dueList = await _context.UserSRSReviews
-            .AsNoTracking()
-            .Include(r => r.Vocabulary)
-                .ThenInclude(v => v.DialogueLesson)
-                    .ThenInclude(d => d.Chapter)
-            .Where(r => r.UserId == userId && r.NextReviewDate <= now)
-            .OrderBy(r => r.NextReviewDate)
-            .ToListAsync();
-
-        if (dueList.Count > 0)
-            return dueList;
-
-        // Nếu người dùng đã lưu thẻ vào Flashcard và muốn ôn tập thêm dù chưa tới ngày hẹn tiếp theo
         return await _context.UserSRSReviews
             .AsNoTracking()
             .Include(r => r.Vocabulary)
                 .ThenInclude(v => v.DialogueLesson)
                     .ThenInclude(d => d.Chapter)
-            .Where(r => r.UserId == userId)
+            .Where(r => r.UserId == userId && r.NextReviewDate <= now)
             .OrderBy(r => r.NextReviewDate)
             .ToListAsync();
     }

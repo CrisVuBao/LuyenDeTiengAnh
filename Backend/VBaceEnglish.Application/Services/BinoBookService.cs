@@ -19,6 +19,7 @@ public interface IBinoBookService
     Task<Response<bool>> AddWordToSRSAsync(int userId, int vocabularyId);
     Task<Response<bool>> RemoveWordFromSRSAsync(int userId, int vocabularyId);
     Task<Response<IEnumerable<SrsCardDto>>> GetDueSRSCardsAsync(int userId);
+    Task<Response<IEnumerable<SrsCardDto>>> GetAllSRSCardsAsync(int userId);
     Task<Response<bool>> SubmitSRSReviewAsync(int userId, SubmitSrsReviewDto dto);
     Task<Response<List<PlaylistDialogueDto>>> GetPlaylistDialoguesAsync(int userId, string? ids = null);
 

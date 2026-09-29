@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Sparkles, BookOpen, Home, BarChart3, TrendingUp, 
   User, LogOut, Sun, Moon, ShieldCheck, ChevronDown, 
-  Layers, Zap, Trophy, Menu, X, ChevronRight, GraduationCap
+  Layers, Zap, Trophy, Menu, X, ChevronRight, GraduationCap, Lightbulb
 } from 'lucide-react';
 import useAuthStore from '../store/authStore';
 import useThemeStore from '../store/themeStore';
@@ -15,6 +15,7 @@ import toast from 'react-hot-toast';
 import XPBar from '../features/gamification/components/XPBar';
 import NotificationBell from './NotificationBell';
 import LanguageSelector from './LanguageSelector';
+import MasterLearningGuideModal from './MasterLearningGuideModal';
 
 // Prefetch JS chunks & API data on hover
 const prefetchRoute = (route) => {
@@ -43,6 +44,7 @@ const prefetchRoute = (route) => {
 export default function StudentNavbar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [guideModalOpen, setGuideModalOpen] = useState(false);
   const dropdownRef = useRef(null);
   const { user, logout } = useAuthStore();
   const { mode, toggleTheme } = useThemeStore();
@@ -257,6 +259,16 @@ export default function StudentNavbar() {
               <span className="xl:hidden">TOEIC</span>
               <span className="hidden xl:inline">Luyện Đề TOEIC</span>
             </NavLink>
+
+            {/* <button
+              onClick={() => setGuideModalOpen(true)}
+              className="flex items-center gap-1.5 px-2.5 xl:px-3 py-1.5 rounded-full text-xs font-bold text-amber-700 dark:text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/25 transition-all cursor-pointer hover:scale-105 active:scale-95"
+              title="Xem Lộ Trình & Hướng Dẫn Học Hiệu Quả"
+            >
+              <Lightbulb size={13} className="text-amber-500 shrink-0" />
+              <span className="hidden xl:inline">Hướng dẫn học</span>
+              <span className="xl:hidden">Hướng dẫn</span>
+            </button> */}
           </nav>
 
           {/* Zone 3: Right Controls (XP, Theme, User Dropdown / Hamburger) */}
@@ -324,6 +336,17 @@ export default function StudentNavbar() {
 
                     {/* Navigation Options */}
                     <div className="py-1 px-1.5 space-y-0.5">
+                      <button
+                        onClick={() => {
+                          setDropdownOpen(false);
+                          setGuideModalOpen(true);
+                        }}
+                        className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/40 rounded-xl transition-colors text-left cursor-pointer"
+                      >
+                        <Lightbulb size={15} className="text-amber-500" />
+                        <span>Lộ trình & Hướng dẫn học 💡</span>
+                      </button>
+
                       <button
                         onClick={() => navigate('/leaderboard')}
                         className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 rounded-xl transition-colors text-left"
@@ -447,6 +470,26 @@ export default function StudentNavbar() {
               {/* Drawer Scrollable Content */}
               <div className="flex-1 overflow-y-auto p-5 space-y-6">
                 
+                {/* Master Learning Guide Trigger */}
+                <button
+                  onClick={() => {
+                    setDrawerOpen(false);
+                    setGuideModalOpen(true);
+                  }}
+                  className="w-full p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/15 via-orange-500/15 to-amber-500/10 border border-amber-500/30 text-amber-900 dark:text-amber-200 flex items-center justify-between text-left cursor-pointer transition-all hover:scale-[1.01]"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-xs">
+                      <Lightbulb size={16} />
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold">Hướng Dẫn Học Hiệu Quả 💡</p>
+                      <p className="text-[10px] text-amber-700/80 dark:text-amber-300/80">Tam giác vàng 45–60 phút/ngày</p>
+                    </div>
+                  </div>
+                  <ChevronRight size={15} className="text-amber-600 dark:text-amber-400" />
+                </button>
+
                 {/* 4 Main Learning Programs */}
                 <div>
                   <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 block mb-2.5">
@@ -734,6 +777,12 @@ export default function StudentNavbar() {
 
         </div>
       </nav>
+
+      {/* Master Learning Methodology & Synergy Guide Modal */}
+      <MasterLearningGuideModal 
+        isOpen={guideModalOpen} 
+        onClose={() => setGuideModalOpen(false)} 
+      />
     </>
   );
 }

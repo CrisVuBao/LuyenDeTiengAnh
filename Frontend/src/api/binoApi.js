@@ -197,6 +197,9 @@ export const binoApi = {
   getDueSRSCards: () =>
     axiosClient.get('/communication/srs/due-words'),
 
+  getAllSRSCards: () =>
+    axiosClient.get('/communication/srs/all-words'),
+
   submitSRSReview: (vocabularyId, grade) =>
     axiosClient.post('/communication/srs/review', { vocabularyId, grade }).then((res) => {
       invalidateBinoCache('progress:');
