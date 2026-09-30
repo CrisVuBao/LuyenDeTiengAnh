@@ -302,9 +302,9 @@ export default function Auth() {
           >
             <BrandLogo size="lg" />
           </Link>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 max-w-xs">
+          {/* <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 max-w-xs">
             {branding.slogan || 'Giao Tiếp Thực Chiến & Luyện Đề TOEIC Chuẩn ETS'}
-          </p>
+          </p> */}
         </div>
 
         {/* Pending Approval Notice Banner */}

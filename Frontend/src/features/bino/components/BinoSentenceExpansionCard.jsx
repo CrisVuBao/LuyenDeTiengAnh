@@ -59,11 +59,11 @@ export default function BinoSentenceExpansionCard({ expansionData, lineIndex = 0
         onClick={() => setIsOpen(!isOpen)}
         className={`inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold transition-all cursor-pointer ${
           isOpen
-            ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md shadow-amber-500/20 ring-2 ring-amber-400/30'
-            : 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/50 border border-amber-200/80 dark:border-amber-800/60'
+            ? 'bg-gradient-to-r from-[#0071e3] to-sky-500 text-white shadow-md shadow-blue-500/25 ring-2 ring-blue-400/30'
+            : 'bg-blue-50 dark:bg-blue-950/40 text-[#0071e3] dark:text-sky-300 hover:bg-blue-100 dark:hover:bg-blue-900/50 border border-blue-200/80 dark:border-blue-800/60'
         }`}
       >
-        <Sparkles size={13} className={isOpen ? 'text-white' : 'text-amber-500 animate-pulse'} />
+        <Sparkles size={13} className={isOpen ? 'text-white' : 'text-[#0071e3] animate-pulse'} />
         <span>🎯 Vận dụng thực tế ({variations.length} tình huống)</span>
         {isOpen ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
       </button>
@@ -78,15 +78,15 @@ export default function BinoSentenceExpansionCard({ expansionData, lineIndex = 0
             transition={{ duration: 0.25, ease: 'easeInOut' }}
             className="overflow-hidden mt-2.5"
           >
-            <div className="p-3 sm:p-5 rounded-2xl bg-gradient-to-br from-amber-50/70 via-orange-50/40 to-slate-50 dark:from-slate-850 dark:via-slate-900 dark:to-slate-950 border border-amber-200/80 dark:border-amber-900/40 space-y-3.5 shadow-sm">
+            <div className="p-3 sm:p-5 rounded-2xl bg-gradient-to-br from-blue-50/50 via-sky-50/30 to-slate-50 dark:from-slate-850 dark:via-slate-900 dark:to-slate-950 border border-blue-200/60 dark:border-blue-900/40 space-y-3.5 shadow-sm">
               
               {/* 1. MẪU CÂU CỐT LÕI (CORE PATTERN FORMULA) */}
-              <div className="p-3 sm:p-3.5 rounded-xl bg-white dark:bg-slate-800/90 border border-amber-100 dark:border-slate-700/80 shadow-xs space-y-2">
+              <div className="p-3 sm:p-3.5 rounded-xl bg-white dark:bg-slate-800/90 border border-blue-100 dark:border-slate-700/80 shadow-xs space-y-2">
                 <div className="flex items-center gap-2">
-                  <span className="p-1 rounded-lg bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300">
+                  <span className="p-1 rounded-lg bg-blue-100 dark:bg-blue-950 text-[#0071e3] dark:text-sky-300">
                     <Compass size={13} />
                   </span>
-                  <span className="text-[11px] font-black uppercase tracking-wider text-amber-800 dark:text-amber-300">
+                  <span className="text-[11px] font-black uppercase tracking-wider text-[#0071e3] dark:text-sky-300">
                     Mẫu Câu Cốt Lõi (Core Pattern)
                   </span>
                 </div>
@@ -97,7 +97,7 @@ export default function BinoSentenceExpansionCard({ expansionData, lineIndex = 0
                       {fixedPrefix}
                     </span>
                   )}
-                  <span className="px-2 py-1 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-lg shadow-xs flex items-center gap-1">
+                  <span className="px-2 py-1 bg-gradient-to-r from-[#0071e3] to-sky-500 text-white rounded-lg shadow-xs flex items-center gap-1">
                     <span>🎯 [{defaultSlot || 'Vị trí thay thế'}]</span>
                   </span>
                   {fixedSuffix && (
@@ -109,13 +109,13 @@ export default function BinoSentenceExpansionCard({ expansionData, lineIndex = 0
 
                 {patternMeaningVi && (
                   <p className="text-xs text-slate-600 dark:text-slate-300 font-semibold">
-                    👉 Ý nghĩa: <span className="text-amber-700 dark:text-amber-300 font-bold">{patternMeaningVi}</span>
+                    👉 Ý nghĩa: <span className="text-[#0071e3] dark:text-sky-300 font-bold">{patternMeaningVi}</span>
                   </p>
                 )}
 
                 {grammarTip && (
                   <div className="flex items-start gap-1.5 pt-1 text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed border-t border-slate-100 dark:border-slate-700/60">
-                    <Lightbulb size={13} className="text-amber-500 shrink-0 mt-0.5" />
+                    <Lightbulb size={13} className="text-[#0071e3] shrink-0 mt-0.5" />
                     <span><strong>Mẹo phản xạ VBace:</strong> {grammarTip}</span>
                   </div>
                 )}
@@ -125,7 +125,7 @@ export default function BinoSentenceExpansionCard({ expansionData, lineIndex = 0
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-[11px] sm:text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-                    <Layers size={13} className="text-amber-500" />
+                    <Layers size={13} className="text-[#0071e3]" />
                     <span>Hoàn Cảnh Đời Thực:</span>
                   </span>
                   <span className="text-[10px] sm:text-[11px] text-slate-400 font-medium">Bấm loa để nghe</span>
@@ -139,17 +139,17 @@ export default function BinoSentenceExpansionCard({ expansionData, lineIndex = 0
                     return (
                       <div
                         key={idx}
-                        className="p-2.5 sm:p-3.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 hover:border-amber-300 dark:hover:border-amber-700/60 transition-all shadow-xs space-y-1.5 group"
+                        className="p-2.5 sm:p-3.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-700/60 transition-all shadow-xs space-y-1.5 group"
                       >
                         {/* Top row: Context Tag + Actions inline so English sentence gets 100% width on mobile */}
                         <div className="flex items-center justify-between gap-2">
                           <div className="flex items-center gap-2 min-w-0">
-                            <span className="px-2 py-0.5 rounded-md bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 font-extrabold text-[10px] truncate">
+                            <span className="px-2 py-0.5 rounded-md bg-blue-100 dark:bg-blue-950/60 text-[#0071e3] dark:text-sky-300 font-extrabold text-[10px] truncate">
                               {item.context}
                             </span>
                             {item.slotReplaced && (
                               <span className="text-[10px] text-slate-400 font-mono hidden sm:inline truncate">
-                                Thay thế: <strong className="text-orange-600 dark:text-orange-400">"{item.slotReplaced}"</strong>
+                                Thay thế: <strong className="text-[#0071e3] dark:text-sky-400">"{item.slotReplaced}"</strong>
                               </span>
                             )}
                           </div>
@@ -175,8 +175,8 @@ export default function BinoSentenceExpansionCard({ expansionData, lineIndex = 0
                               onClick={() => handlePlayAudio(item.englishText, `var-${idx}`)}
                               className={`p-1.5 rounded-lg transition-all cursor-pointer ${
                                 isItemPlaying
-                                  ? 'bg-amber-500 text-white shadow-md shadow-amber-500/30'
-                                  : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-amber-100 hover:text-amber-700 dark:hover:bg-slate-600'
+                                  ? 'bg-[#0071e3] text-white shadow-md shadow-blue-500/30'
+                                  : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-blue-100 hover:text-[#0071e3] dark:hover:bg-slate-600'
                               }`}
                               title="Nghe câu này"
                             >
@@ -202,7 +202,7 @@ export default function BinoSentenceExpansionCard({ expansionData, lineIndex = 0
                                 <React.Fragment key={pIdx}>
                                   {part}
                                   {pIdx < arr.length - 1 && (
-                                    <span className="bg-amber-100 dark:bg-amber-900/50 text-amber-900 dark:text-amber-200 px-1 py-0.5 rounded font-black underline decoration-amber-500 decoration-2">
+                                    <span className="bg-blue-100 dark:bg-blue-900/50 text-blue-900 dark:text-blue-200 px-1 py-0.5 rounded font-black underline decoration-[#0071e3] decoration-2">
                                       {item.slotReplaced}
                                     </span>
                                   )}
@@ -230,7 +230,7 @@ export default function BinoSentenceExpansionCard({ expansionData, lineIndex = 0
               <div className="p-3.5 rounded-xl bg-white/90 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 space-y-2.5">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-                    <Sparkles size={14} className="text-purple-500" />
+                    <Sparkles size={14} className="text-[#0071e3]" />
                     <span>Tự Chế Câu Theo Hoàn Cảnh Của Bạn:</span>
                   </span>
                   <span className="text-[10px] text-slate-400">Gõ cụm từ bạn muốn lắp vào</span>
@@ -243,7 +243,7 @@ export default function BinoSentenceExpansionCard({ expansionData, lineIndex = 0
                     value={customSlotInput}
                     onChange={(e) => setCustomSlotInput(e.target.value)}
                     placeholder={`Ví dụ: ${defaultSlot || 'my new job, the cold weather...'}`}
-                    className="flex-1 px-3 py-2 rounded-xl text-xs font-bold bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    className="flex-1 px-3 py-2 rounded-xl text-xs font-bold bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-[#0071e3]/40"
                   />
                   {customSlotInput && (
                     <button
@@ -267,8 +267,8 @@ export default function BinoSentenceExpansionCard({ expansionData, lineIndex = 0
                         onClick={() => setCustomSlotInput(sug)}
                         className={`text-[10px] font-bold px-2 py-0.5 rounded-lg border transition-all ${
                           customSlotInput === sug
-                            ? 'bg-amber-500 text-white border-amber-500'
-                            : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-600 hover:border-amber-400'
+                            ? 'bg-[#0071e3] text-white border-[#0071e3]'
+                            : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-600 hover:border-blue-400'
                         }`}
                       >
                         +{sug}
@@ -278,10 +278,10 @@ export default function BinoSentenceExpansionCard({ expansionData, lineIndex = 0
                 )}
 
                 {/* Output & Play button */}
-                <div className="p-2.5 rounded-xl bg-gradient-to-r from-amber-50/80 to-purple-50/80 dark:from-slate-900 dark:to-slate-850 border border-amber-200/60 dark:border-slate-700 flex flex-wrap items-center justify-between gap-2.5">
+                <div className="p-2.5 rounded-xl bg-gradient-to-r from-blue-50/70 to-sky-50/70 dark:from-slate-900 dark:to-slate-850 border border-blue-200/60 dark:border-slate-700 flex flex-wrap items-center justify-between gap-2.5">
                   <div className="text-xs font-black text-slate-800 dark:text-slate-100 overflow-hidden text-ellipsis">
                     "{fixedPrefix}
-                    <span className="text-amber-600 dark:text-amber-400 underline font-black">
+                    <span className="text-[#0071e3] dark:text-sky-400 underline font-black">
                       {activeCustomSlot}
                     </span>
                     {fixedSuffix}"
@@ -299,7 +299,7 @@ export default function BinoSentenceExpansionCard({ expansionData, lineIndex = 0
                     <button
                       type="button"
                       onClick={() => handlePlayAudio(customConstructedSentence, 'custom')}
-                      className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-black text-xs shadow-sm flex items-center gap-1.5 shrink-0 active:scale-95 transition"
+                      className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#0071e3] to-sky-500 hover:from-[#0077ed] hover:to-sky-400 text-white font-black text-xs shadow-sm shadow-blue-500/25 flex items-center gap-1.5 shrink-0 active:scale-95 transition cursor-pointer"
                     >
                       <Volume2 size={14} className={playingSentence === 'custom' ? 'animate-pulse' : ''} />
                       <span>Nghe câu của bạn</span>

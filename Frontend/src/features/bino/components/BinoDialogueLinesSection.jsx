@@ -62,26 +62,24 @@ export default function BinoDialogueLinesSection({
               ref={(el) => { if (el && lineRefs?.current) lineRefs.current[idx] = el; }}
               layout
               transition={{ duration: 0.2 }}
-              className={`p-3.5 sm:p-5 rounded-2xl transition-all duration-300 border relative overflow-hidden ${
+              className={`p-4 sm:p-5 rounded-[22px] transition-all duration-200 border relative overflow-hidden ${
                 isActive
-                  ? 'bg-gradient-to-r from-amber-50/95 via-white to-amber-50/70 dark:from-amber-950/60 dark:via-slate-800 dark:to-slate-800 border-amber-400 dark:border-amber-600 shadow-xl ring-2 ring-amber-400/40 animate-pulse-glow'
-                  : isBino
-                  ? 'bg-orange-50/30 dark:bg-slate-800/80 border-orange-200/50 dark:border-slate-700/80 hover:border-orange-300 shadow-sm'
-                  : 'bg-white dark:bg-slate-800/60 border-slate-200/80 dark:border-slate-700/60 hover:border-slate-300 shadow-sm'
+                  ? 'bg-blue-500/[0.05] dark:bg-blue-500/[0.08] border-[#0071e3]/50 dark:border-sky-400/40 shadow-[0_4px_24px_rgba(0,113,227,0.12)] ring-1 ring-[#0071e3]/30'
+                  : 'bg-white/95 dark:bg-[#0c101a]/95 border-slate-200/80 dark:border-white/[0.07] hover:border-slate-300 dark:hover:border-white/15 shadow-2xs'
               }`}
             >
               {/* Active Left Indicator Bar */}
               {isActive && (
-                <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-amber-500 to-orange-500" />
+                <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-[#0071e3] rounded-r-full" />
               )}
 
               {/* Top Row: Character Badge + Live Status + Audio Buttons */}
               <div className="flex items-center justify-between gap-2 mb-2">
                 <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap min-w-0">
-                  <span className={`text-[10px] sm:text-[11px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-lg ${
+                  <span className={`text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full ${
                     isBino
-                      ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm'
-                      : 'bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800'
+                      ? 'bg-[#0071e3] text-white shadow-xs'
+                      : 'bg-slate-100 dark:bg-white/[0.08] text-slate-700 dark:text-slate-300'
                   }`}>
                     {line.characterName}
                   </span>
@@ -91,7 +89,7 @@ export default function BinoDialogueLinesSection({
                     <button
                       type="button"
                       onClick={() => stopPlayback(true)}
-                      className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-100 hover:bg-rose-100 dark:bg-amber-950/80 dark:hover:bg-rose-950/80 text-amber-900 hover:text-rose-700 dark:text-amber-200 dark:hover:text-rose-300 text-[10px] font-black transition-colors cursor-pointer"
+                      className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-blue-100 hover:bg-rose-100 dark:bg-blue-950/80 dark:hover:bg-rose-950/80 text-[#0071e3] hover:text-rose-700 dark:text-sky-300 dark:hover:text-rose-300 text-[10px] font-black transition-colors cursor-pointer"
                       title="Đang phát câu này • Bấm để dừng ngay"
                     >
                       <div className="flex items-end gap-0.5 h-3">
@@ -105,7 +103,7 @@ export default function BinoDialogueLinesSection({
 
                   {/* Repeat counter badge */}
                   {isActive && isPlayingAll && (checkIsInfinite(repeatCount) || repeatCount !== 1) && (
-                    <span className="text-[10px] font-black px-2 py-0.5 rounded-md bg-amber-500 text-white shadow-sm flex items-center gap-1">
+                    <span className="text-[10px] font-black px-2 py-0.5 rounded-md bg-[#0071e3] text-white shadow-sm flex items-center gap-1">
                       {repeatScope === 'all' ? (
                         <>
                           <RotateCcw size={10} />
@@ -149,7 +147,7 @@ export default function BinoDialogueLinesSection({
                     className={`transition-all shrink-0 active:scale-90 cursor-pointer flex items-center justify-center gap-1.5 rounded-xl ${
                       isActive
                         ? 'px-2.5 sm:px-3 py-1.5 text-[11px] font-extrabold text-white bg-rose-600 hover:bg-rose-700 shadow-md shadow-rose-500/30 ring-2 ring-rose-300 dark:ring-rose-800'
-                        : 'p-2 text-slate-500 bg-slate-100/80 dark:bg-slate-700/60 hover:text-amber-600 hover:bg-slate-100 dark:hover:bg-slate-700'
+                        : 'p-2 text-slate-500 bg-slate-100/80 dark:bg-slate-700/60 hover:text-[#0071e3] hover:bg-slate-100 dark:hover:bg-slate-700'
                     }`}
                     title={
                       isActive
@@ -209,7 +207,7 @@ export default function BinoDialogueLinesSection({
                       <div className="flex flex-wrap items-center justify-between gap-1">
                         <span
                           className={`text-xs font-extrabold ${
-                            inlineSpeakEval.isPass ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'
+                            inlineSpeakEval.isPass ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'
                           }`}
                         >
                           Điểm phát âm: {inlineSpeakEval.score}% — {inlineSpeakEval.feedback}

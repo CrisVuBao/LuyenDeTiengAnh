@@ -264,7 +264,7 @@ export default function FsrsShieldRecoveryModal({
                 >
                   <div className="flex items-center justify-between text-xs text-slate-400">
                     <span className="font-semibold uppercase tracking-wider">
-                      {currentWord.topicTitle || '3000 Từ Vựng Oxford'}
+                      {currentWord.topicTitle || 'Học Từ Vựng Oxford'}
                     </span>
                     <span className="flex items-center gap-1 text-[11px] text-slate-400 group-hover:text-[#0071e3] transition-colors">
                       <RotateCw size={12} />

@@ -330,7 +330,7 @@ export default function FsrsMemoryShieldCard({
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.97 }}
                 onClick={() => handleStartReview(shield.fadingWords, shield.healthPercentage)}
-                className="flex-1 sm:flex-none px-6 py-3.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-slate-950 font-bold text-xs sm:text-sm shadow-md shadow-amber-500/25 flex items-center justify-center gap-2 cursor-pointer transition-all"
+                className="flex-1 sm:flex-none px-6 py-3.5 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white font-bold text-xs sm:text-sm shadow-md shadow-blue-500/25 flex items-center justify-center gap-2 cursor-pointer transition-all"
               >
                 <Zap size={16} />
                 <span>Củng Cố Lá Chắn — Ôn {shield.fadingCount} từ mờ nhạt</span>

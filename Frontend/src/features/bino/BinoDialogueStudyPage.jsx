@@ -702,25 +702,25 @@ export default function BinoDialogueStudyPage() {
       <motion.div 
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex items-start sm:items-center justify-between gap-2.5 sm:gap-3.5"
+        className="flex items-start sm:items-center justify-between gap-3"
       >
-        <div className="flex items-start sm:items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
+        <div className="flex items-start sm:items-center gap-3 min-w-0 flex-1">
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => navigate('/communication')}
-            className="p-2 sm:p-2.5 rounded-xl sm:rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-750 text-slate-600 dark:text-slate-300 transition-all shadow-sm shrink-0 mt-0.5 sm:mt-0 cursor-pointer"
+            className="p-2.5 rounded-full border border-slate-200/80 dark:border-white/10 bg-white/90 dark:bg-white/[0.06] hover:bg-slate-100 dark:hover:bg-white/[0.1] text-slate-700 dark:text-slate-200 transition-all shadow-2xs shrink-0 cursor-pointer"
             title="Quay về danh sách chương"
           >
-            <ArrowLeft size={17} />
+            <ArrowLeft size={16} />
           </motion.button>
           <div className="min-w-0">
-            <div className="flex items-center gap-1.5 text-[11px] sm:text-xs font-bold text-amber-600 dark:text-amber-400 truncate">
+            <div className="flex items-center gap-1.5 text-[11px] sm:text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider truncate">
               <span className="truncate">Chương {lesson.chapterNumber < 10 ? `0${lesson.chapterNumber}` : lesson.chapterNumber}: {lesson.chapterTitle}</span>
               <span>•</span>
-              <span className="shrink-0">Bài {lesson.dialogueNumber}</span>
+              <span className="shrink-0 text-[#0071e3] dark:text-sky-400 font-bold">Bài {lesson.dialogueNumber}</span>
             </div>
-            <h1 className="text-base sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight leading-snug line-clamp-2 sm:line-clamp-none">
+            <h1 className="text-lg sm:text-2xl font-black text-slate-950 dark:text-white tracking-[-0.025em] leading-snug line-clamp-2 sm:line-clamp-none">
               {lesson.title}
             </h1>
           </div>
@@ -730,13 +730,13 @@ export default function BinoDialogueStudyPage() {
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.96 }}
           onClick={handleToggleComplete}
-          className={`shrink-0 px-2.5 sm:px-4 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl font-extrabold text-[11px] sm:text-xs flex items-center justify-center gap-1.5 sm:gap-2 transition-all shadow-sm cursor-pointer ${
+          className={`shrink-0 px-4 py-2 rounded-full font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-2xs cursor-pointer ${
             isCompleted
-              ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800'
-              : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-emerald-500'
+              ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30'
+              : 'bg-white/90 dark:bg-white/[0.06] border border-slate-200/80 dark:border-white/10 text-slate-700 dark:text-slate-200 hover:border-slate-300'
           }`}
         >
-          <CheckCircle2 size={15} className={isCompleted ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'} />
+          <CheckCircle2 size={14} className={isCompleted ? 'text-emerald-500' : 'text-slate-400'} />
           <span className="hidden sm:inline">{isCompleted ? 'Đã Hoàn Thành ✓' : 'Đánh Dấu Hoàn Thành'}</span>
           <span className="sm:hidden">{isCompleted ? 'Đã Xong ✓' : 'Hoàn thành'}</span>
         </motion.button>
@@ -764,8 +764,8 @@ export default function BinoDialogueStudyPage() {
         setIsGuideModalOpen={setIsGuideModalOpen}
       />
 
-      {/* 3. SEGMENTED INTERACTIVE STUDY TABS */}
-      <div className="relative p-1 bg-slate-100/80 dark:bg-slate-800/80 rounded-2xl grid grid-cols-3 gap-1 border border-slate-200/60 dark:border-slate-700/60">
+      {/* 3. SEGMENTED INTERACTIVE STUDY TABS (Apple Segmented Capsule) */}
+      <div className="relative p-1.5 bg-slate-100/90 dark:bg-white/[0.05] rounded-full grid grid-cols-3 gap-1.5 border border-slate-200/80 dark:border-white/[0.08]">
         {[
           { id: 'lesson', label: 'Bài Học & Từ Khóa', shortLabel: 'Bài Học', icon: BookOpen },
           { id: 'roleplay', label: 'Luyện Phản Xạ 1:1', shortLabel: 'Phản Xạ 1:1', icon: MessageSquare },
@@ -777,16 +777,16 @@ export default function BinoDialogueStudyPage() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`relative flex items-center justify-center gap-1.5 px-2 sm:px-3.5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+              className={`relative flex items-center justify-center gap-1.5 px-3 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
                 isActive
-                  ? 'text-white'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  ? 'text-white font-bold'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
               }`}
             >
               {isActive && (
                 <motion.div
                   layoutId="activeBinoTab"
-                  className="absolute inset-0 bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl shadow-md shadow-orange-500/25"
+                  className="absolute inset-0 bg-[#0071e3] rounded-full shadow-[0_4px_16px_rgba(0,113,227,0.35)]"
                   transition={{ type: 'spring', stiffness: 450, damping: 35 }}
                 />
               )}

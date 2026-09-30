@@ -94,32 +94,32 @@ export default function BinoAudioControlBar({
     <motion.div 
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`glass-card p-3 sm:p-4 rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-lg space-y-2.5 bg-gradient-to-br from-amber-500/10 via-white to-blue-500/10 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900 relative ${
+      className={`p-3.5 sm:p-5 rounded-[28px] border border-slate-200/80 dark:border-white/[0.08] shadow-[0_8px_30px_rgb(0,0,0,0.03)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.4)] space-y-3 bg-white/95 dark:bg-[#0c101a]/95 backdrop-blur-2xl relative ${
         isRepeatMenuOpen ? 'z-40' : 'z-20'
       }`}
     >
       {/* TẦNG 1: NÚT PLAY/PAUSE CHÍNH & LIVE SOUNDWAVE */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 sm:gap-3">
-        {/* Main Big Play/Pause Button with Pulse Glow */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-3">
+        {/* Main Big Play/Pause Button - Apple Sapphire Blue #0071e3 */}
         <motion.button
           whileHover={{ scale: 1.01 }}
           whileTap={{ scale: 0.98 }}
           onClick={playAllLines}
-          className={`w-full sm:w-auto px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2.5 sm:gap-3 transition-all shadow-md cursor-pointer ${
+          className={`w-full sm:w-auto px-5 py-3 rounded-full font-bold text-xs sm:text-sm flex items-center justify-center gap-3 transition-all cursor-pointer ${
             isPlayingAll
-              ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-amber-500/30 animate-pulse-glow'
-              : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-blue-500/25'
+              ? 'bg-sky-500 hover:bg-sky-400 text-white shadow-[0_4px_20px_rgba(14,165,233,0.35)]'
+              : 'bg-[#0071e3] hover:bg-[#0077ed] text-white shadow-[0_4px_20px_rgba(0,113,227,0.3)]'
           }`}
         >
-          <div className="w-7 h-7 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
-            {isPlayingAll ? <Pause size={15} /> : <Play size={15} fill="currentColor" />}
+          <div className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 bg-white/20 text-white">
+            {isPlayingAll ? <Pause size={14} /> : <Play size={14} fill="currentColor" />}
           </div>
 
           <div className="text-left flex-1 sm:flex-none min-w-0">
             <div className="text-xs font-black tracking-wide truncate">
               {isPlayingAll ? 'TẠM DỪNG BÀI HỘI THOẠI' : 'NGHE TOÀN BỘ HỘI THOẠI'}
             </div>
-            <div className="text-[10px] sm:text-[11px] font-semibold opacity-90 truncate">
+            <div className="text-[10px] sm:text-[11px] font-medium opacity-90 truncate">
               {isPlayingAll
                 ? activeLineIndex !== null
                   ? `Đang đọc câu ${activeLineIndex + 1}/${lesson?.dialogueLines?.length || 0} • ${checkIsInfinite(repeatCount) ? `Vòng ${currentLoopCycle}/∞` : `Vòng ${currentLoopCycle}/${repeatCount}`}`
@@ -143,14 +143,14 @@ export default function BinoAudioControlBar({
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={() => setShowVietsub(prev => !prev)}
-            className={`px-3 py-2 rounded-xl sm:rounded-2xl border text-xs font-bold flex items-center justify-center gap-1.5 transition-all shadow-2xs cursor-pointer ${
+            className={`px-3.5 py-2.5 rounded-full border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all shadow-2xs cursor-pointer ${
               showVietsub 
-                ? 'bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-900/60'
-                : 'bg-white dark:bg-slate-800 text-slate-500 border-slate-200 dark:border-slate-700'
+                ? 'bg-blue-500/10 text-[#0071e3] dark:text-sky-400 border-blue-500/30'
+                : 'bg-white/60 dark:bg-white/[0.03] text-slate-400 border-slate-200 dark:border-white/10'
             }`}
             title={showVietsub ? 'Tắt dịch tiếng Việt' : 'Bật dịch tiếng Việt'}
           >
-            {showVietsub ? <Eye size={14} className="text-rose-500 shrink-0" /> : <EyeOff size={14} className="shrink-0" />}
+            {showVietsub ? <Eye size={13} className="text-[#0071e3] dark:text-sky-400 shrink-0" /> : <EyeOff size={13} className="shrink-0" />}
             <span className="font-vietsub truncate">{showVietsub ? 'Vietsub: Bật' : 'Vietsub: Tắt'}</span>
           </motion.button>
 
@@ -165,21 +165,21 @@ export default function BinoAudioControlBar({
                 book
               });
             }}
-            className="px-3 py-2 rounded-xl sm:rounded-2xl border border-blue-200 dark:border-blue-800 bg-blue-50/80 hover:bg-blue-100 dark:bg-blue-950/50 text-blue-800 dark:text-blue-300 text-xs font-bold flex items-center justify-center gap-1.5 transition-all shadow-2xs cursor-pointer"
+            className="px-3.5 py-2.5 rounded-full border border-slate-200/80 dark:border-white/10 bg-slate-100/80 dark:bg-white/[0.06] hover:bg-slate-200/60 dark:hover:bg-white/[0.1] text-slate-800 dark:text-slate-200 text-xs font-semibold flex items-center justify-center gap-1.5 transition-all shadow-2xs cursor-pointer"
             title="Mở trình phát liên tục tất cả các bài"
           >
-            <ListMusic size={14} className="text-blue-600 dark:text-blue-400 shrink-0" />
+            <ListMusic size={13} className="text-[#0071e3] dark:text-sky-400 shrink-0" />
             <span className="truncate">Phát Nhiều Bài 🎧</span>
           </motion.button>
         </div>
       </div>
 
       {/* TẦNG 2: THANH ACTION CHUYÊN NGHIỆP */}
-      <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center justify-between gap-2 pt-2 border-t border-slate-100 dark:border-slate-800/80">
+      <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center justify-between gap-2.5 pt-2.5 border-t border-slate-100 dark:border-white/[0.06]">
         <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-2">
           {/* Speed selector */}
-          <div className="flex items-center overflow-x-auto whitespace-nowrap hide-scrollbar rounded-xl bg-slate-100 dark:bg-slate-800 p-1 text-[11px] font-bold border border-slate-200/60 dark:border-slate-700 gap-0.5">
-            <span className="text-[10px] text-slate-400 px-1.5 font-extrabold uppercase shrink-0 flex items-center gap-1">
+          <div className="flex items-center overflow-x-auto whitespace-nowrap hide-scrollbar rounded-full bg-slate-100/90 dark:bg-white/[0.05] p-1 text-[11px] font-semibold border border-slate-200/60 dark:border-white/[0.08] gap-0.5">
+            <span className="text-[10px] text-slate-400 px-2 font-bold uppercase shrink-0 flex items-center gap-1">
               Tốc độ:
             </span>
             {SPEECH_SPEED_PRESETS.map((preset) => {
@@ -190,18 +190,16 @@ export default function BinoAudioControlBar({
                   type="button"
                   onClick={() => handleChangeSpeed(preset.value)}
                   title={preset.desc}
-                  className={`px-2 py-1 rounded-lg transition-all flex items-center gap-1 shrink-0 cursor-pointer ${
+                  className={`px-2.5 py-1 rounded-full transition-all flex items-center gap-1 shrink-0 cursor-pointer ${
                     isSelected
-                      ? preset.isSlow
-                        ? 'bg-emerald-600 text-white shadow-sm font-black'
-                        : 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm font-black'
+                      ? 'bg-[#0071e3] text-white font-bold shadow-xs'
                       : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
                   }`}
                 >
-                  {preset.isSlow && <Headphones size={11} className={isSelected ? 'text-white' : 'text-emerald-600 dark:text-emerald-400'} />}
+                  {preset.isSlow && <Headphones size={11} className={isSelected ? 'text-white' : 'text-slate-400'} />}
                   <span>{preset.label}</span>
                   {isSelected && (
-                    <span className="text-[10px] hidden md:inline opacity-90">
+                    <span className="text-[10px] hidden md:inline opacity-80">
                       ({preset.shortTag})
                     </span>
                   )}
@@ -216,18 +214,18 @@ export default function BinoAudioControlBar({
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setIsRepeatMenuOpen(prev => !prev)}
-                className={`px-2.5 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold flex items-center gap-1 transition-all shadow-2xs border cursor-pointer ${
+                className={`px-3 py-1.5 rounded-full text-[11px] sm:text-xs font-semibold flex items-center gap-1.5 transition-all shadow-2xs border cursor-pointer ${
                   checkIsInfinite(repeatCount)
-                    ? 'bg-purple-100 dark:bg-purple-950/70 text-purple-900 dark:text-purple-200 border-purple-300 dark:border-purple-700'
+                    ? 'bg-blue-500/10 text-[#0071e3] dark:text-sky-300 border-blue-500/30'
                     : repeatCount !== 1
-                    ? 'bg-amber-100 dark:bg-amber-950/70 text-amber-900 dark:text-amber-200 border-amber-300 dark:border-amber-700'
-                    : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50'
+                    ? 'bg-blue-500/10 text-[#0071e3] dark:text-sky-300 border-blue-500/30'
+                    : 'bg-white/90 dark:bg-white/[0.06] text-slate-700 dark:text-slate-300 border-slate-200/80 dark:border-white/10 hover:border-slate-300'
                 }`}
               >
                 {checkIsInfinite(repeatCount) ? (
-                  <InfinityIcon size={14} className="text-purple-600 dark:text-purple-400 animate-pulse shrink-0" />
+                  <InfinityIcon size={13} className="text-[#0071e3] animate-pulse shrink-0" />
                 ) : (
-                  <Repeat size={12} className={repeatCount !== 1 ? 'text-amber-600 dark:text-amber-400 shrink-0' : 'text-slate-400 shrink-0'} />
+                  <Repeat size={12} className={repeatCount !== 1 ? 'text-[#0071e3] shrink-0' : 'text-slate-400 shrink-0'} />
                 )}
                 <span className="whitespace-nowrap">
                   {checkIsInfinite(repeatCount)
@@ -235,7 +233,7 @@ export default function BinoAudioControlBar({
                     : `Lặp: ${repeatCount}x`}
                 </span>
                 {(checkIsInfinite(repeatCount) || repeatCount !== 1) && (
-                  <span className="hidden sm:inline text-[10px] px-1.5 py-0.2 rounded font-black bg-amber-200/90 dark:bg-amber-900/80 text-amber-950 dark:text-amber-200">
+                  <span className="hidden sm:inline text-[10px] px-1.5 py-0.2 rounded-full font-bold bg-[#0071e3] text-white">
                     {repeatScope === 'all' ? 'Toàn bài' : 'Từng câu'}
                   </span>
                 )}
@@ -246,7 +244,7 @@ export default function BinoAudioControlBar({
                 <div className="absolute top-full left-0 mt-2 z-50 w-80 max-w-[calc(100vw-2rem)] p-4 bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 space-y-4 animate-fade-in ring-1 ring-black/10 dark:ring-white/10">
                   <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
                     <div className="flex items-center gap-2">
-                      <Repeat size={16} className="text-amber-500" />
+                      <Repeat size={16} className="text-[#0071e3]" />
                       <span className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">
                         Cài Đặt Lặp Lại Hội Thoại
                       </span>
@@ -266,7 +264,7 @@ export default function BinoAudioControlBar({
                         onClick={() => handleSelectRepeatScope('all')}
                         className={`py-1.5 px-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
                           repeatScope === 'all'
-                            ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-300 shadow-sm'
+                            ? 'bg-white dark:bg-slate-700 text-[#0071e3] dark:text-sky-300 shadow-sm'
                             : 'text-slate-500 hover:text-slate-800'
                         }`}
                       >
@@ -277,7 +275,7 @@ export default function BinoAudioControlBar({
                         onClick={() => handleSelectRepeatScope('line')}
                         className={`py-1.5 px-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
                           repeatScope === 'line'
-                            ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-300 shadow-sm'
+                            ? 'bg-white dark:bg-slate-700 text-[#0071e3] dark:text-sky-300 shadow-sm'
                             : 'text-slate-500 hover:text-slate-800'
                         }`}
                       >
@@ -309,9 +307,9 @@ export default function BinoAudioControlBar({
                             className={`py-2 px-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 border ${
                               isSelected
                                 ? opt.isSpecial
-                                  ? 'bg-purple-600 text-white border-purple-600 shadow-md ring-2 ring-purple-400/40'
-                                  : 'bg-amber-500 text-white border-amber-500 shadow-md ring-2 ring-amber-400/40'
-                                : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-amber-400'
+                                  ? 'bg-indigo-600 text-white border-indigo-600 shadow-md ring-2 ring-indigo-400/40'
+                                  : 'bg-[#0071e3] text-white border-[#0071e3] shadow-md ring-2 ring-blue-400/40'
+                                : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-blue-400'
                             }`}
                           >
                             {isSelected && <Check size={11} strokeWidth={3} />}
@@ -333,12 +331,12 @@ export default function BinoAudioControlBar({
                         onKeyDown={(e) => {
                           if (e.key === 'Enter') handleApplyCustomRepeat();
                         }}
-                        className="flex-1 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                        className="flex-1 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#0071e3]/40"
                       />
                       <button
                         type="button"
                         onClick={handleApplyCustomRepeat}
-                        className="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-bold transition-all shadow-sm active:scale-95"
+                        className="px-3.5 py-1.5 bg-[#0071e3] hover:bg-[#0077ed] text-white rounded-xl text-xs font-bold transition-all shadow-sm shadow-blue-500/20 active:scale-95 cursor-pointer"
                       >
                         Áp Dụng
                       </button>
@@ -355,7 +353,7 @@ export default function BinoAudioControlBar({
                         toast.success(`Đã lưu: Lặp ${repeatCount} lần!`);
                       }
                     }}
-                    className="w-full py-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold rounded-xl text-xs transition-all shadow-md active:scale-95 flex items-center justify-center gap-1.5"
+                    className="w-full py-2 bg-gradient-to-r from-[#0071e3] to-sky-500 text-white font-bold rounded-xl text-xs transition-all shadow-md shadow-blue-500/25 active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer"
                   >
                     <Check size={14} />
                     <span>Xong & Đóng Menu</span>
@@ -367,17 +365,17 @@ export default function BinoAudioControlBar({
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={() => setIsVoiceSettingsOpen(true)}
-              className="flex-1 sm:flex-initial justify-center px-2.5 sm:px-3 py-1.5 rounded-xl border border-amber-300 dark:border-amber-800 bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/50 text-amber-900 dark:text-amber-200 text-[11px] sm:text-xs font-bold flex items-center gap-1 transition-all shadow-2xs cursor-pointer truncate"
+              className="flex-1 sm:flex-initial justify-center px-2.5 sm:px-3 py-1.5 rounded-xl border border-blue-200/80 dark:border-blue-900/60 bg-blue-50/70 hover:bg-blue-100/70 dark:bg-blue-950/40 text-[#0071e3] dark:text-sky-300 text-[11px] sm:text-xs font-bold flex items-center gap-1 transition-all shadow-2xs cursor-pointer truncate"
               title="Tùy chỉnh giọng đọc Studio Neural"
             >
-              <Sparkles size={12} className="text-amber-500 shrink-0" />
+              <Sparkles size={12} className="text-[#0071e3] dark:text-sky-400 shrink-0" />
               <span className="truncate">Giọng AI 🎙️</span>
             </motion.button>
 
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={() => setIsGuideModalOpen(true)}
-              className="flex-1 sm:flex-initial justify-center px-2.5 sm:px-3 py-1.5 rounded-xl border border-amber-400/80 dark:border-amber-700 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-[11px] sm:text-xs font-black flex items-center gap-1 transition-all shadow-sm shadow-amber-500/20 active:scale-95 cursor-pointer truncate"
+              className="flex-1 sm:flex-initial justify-center px-2.5 sm:px-3 py-1.5 rounded-xl border border-blue-300/50 dark:border-blue-700/60 bg-gradient-to-r from-[#0071e3] to-sky-500 hover:from-[#0077ed] hover:to-sky-400 text-white text-[11px] sm:text-xs font-black flex items-center gap-1 transition-all shadow-sm shadow-blue-500/20 active:scale-95 cursor-pointer truncate"
               title="Xem cẩm nang hướng dẫn phương pháp học 4 bước"
             >
               <Lightbulb size={12} className="text-white shrink-0" />

@@ -312,12 +312,13 @@ export default function BinoFlashcardReviewPage() {
             >
               
               {/* CARD FRONT: ENGLISH WORD & PHONETIC */}
+              {/* CARD FRONT: ENGLISH WORD */}
               <div 
-                className="absolute inset-0 backface-hidden glass-card p-6 sm:p-8 rounded-3xl border border-slate-200/90 dark:border-slate-700 shadow-xl flex flex-col justify-between hover:border-amber-400 dark:hover:border-amber-500 transition-colors bg-white dark:bg-slate-900"
+                className="absolute inset-0 backface-hidden glass-card p-6 sm:p-8 rounded-3xl border border-slate-200/90 dark:border-slate-700 shadow-xl flex flex-col justify-between hover:border-[#0071e3]/60 transition-colors bg-white dark:bg-slate-900"
                 style={{ zIndex: isFlipped ? 0 : 1 }}
               >
                 <div className="flex justify-between items-center text-xs font-bold text-slate-400">
-                  <span className="uppercase tracking-wider font-extrabold flex items-center gap-1 text-amber-600 dark:text-amber-400">
+                  <span className="uppercase tracking-wider font-extrabold flex items-center gap-1 text-[#0071e3] dark:text-sky-400">
                     <Sparkles size={14} /> Mặt Trước (Tiếng Anh)
                   </span>
                   <div className="flex items-center gap-1.5">
@@ -334,7 +335,7 @@ export default function BinoFlashcardReviewPage() {
                         e.stopPropagation();
                         speakText(currentCard.word);
                       }}
-                      className="p-2.5 rounded-2xl hover:bg-amber-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-amber-600 transition-colors cursor-pointer"
+                      className="p-2.5 rounded-2xl hover:bg-blue-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-[#0071e3] transition-colors cursor-pointer"
                       title="Nghe phát âm"
                     >
                       <Volume2 size={20} />
@@ -348,7 +349,7 @@ export default function BinoFlashcardReviewPage() {
                   </h3>
 
                   {currentCard.phonetic && (
-                    <p className="text-base sm:text-lg font-serif italic text-amber-600 dark:text-amber-400 font-vietsub">
+                    <p className="text-base sm:text-lg font-serif italic text-[#0071e3] dark:text-sky-400 font-vietsub">
                       {currentCard.phonetic}
                     </p>
                   )}
@@ -367,7 +368,7 @@ export default function BinoFlashcardReviewPage() {
 
               {/* CARD BACK: VIETNAMESE MEANING & EXAMPLE SENTENCE */}
               <div 
-                className="absolute inset-0 backface-hidden glass-card p-6 sm:p-8 rounded-3xl border border-amber-300 dark:border-amber-800 shadow-2xl flex flex-col justify-between rotate-y-180 bg-gradient-to-br from-amber-50/90 via-white to-orange-50/70 dark:from-slate-850 dark:via-slate-850 dark:to-slate-800"
+                className="absolute inset-0 backface-hidden glass-card p-6 sm:p-8 rounded-3xl border border-blue-200 dark:border-blue-900/60 shadow-2xl flex flex-col justify-between rotate-y-180 bg-gradient-to-br from-blue-50/70 via-white to-sky-50/50 dark:from-slate-850 dark:via-slate-850 dark:to-slate-800"
                 style={{ zIndex: isFlipped ? 1 : 0 }}
               >
                 <div className="flex justify-between items-center text-xs font-bold text-slate-400">
@@ -388,7 +389,7 @@ export default function BinoFlashcardReviewPage() {
                         e.stopPropagation();
                         speakText(currentCard.word);
                       }}
-                      className="p-2.5 rounded-2xl hover:bg-amber-100/60 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 cursor-pointer"
+                      className="p-2.5 rounded-2xl hover:bg-blue-100/60 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 cursor-pointer"
                     >
                       <Volume2 size={20} />
                     </button>
@@ -403,13 +404,13 @@ export default function BinoFlashcardReviewPage() {
                   </p>
 
                   {currentCard.exampleSentence && (
-                    <div className="p-3.5 rounded-2xl bg-white/80 dark:bg-slate-800/80 border border-amber-200/60 dark:border-slate-700 text-xs sm:text-sm text-slate-600 dark:text-slate-300 italic font-medium max-w-md mx-auto">
+                    <div className="p-3.5 rounded-2xl bg-white/80 dark:bg-slate-800/80 border border-blue-100 dark:border-slate-700 text-xs sm:text-sm text-slate-600 dark:text-slate-300 italic font-medium max-w-md mx-auto">
                       "{currentCard.exampleSentence}"
                     </div>
                   )}
                 </div>
 
-                <div className="text-center text-xs font-bold text-amber-700 dark:text-amber-400">
+                <div className="text-center text-xs font-bold text-[#0071e3] dark:text-sky-400">
                   ✓ Chọn mức độ nhớ bên dưới để FSRS lên lịch ôn tối ưu:
                 </div>
               </div>

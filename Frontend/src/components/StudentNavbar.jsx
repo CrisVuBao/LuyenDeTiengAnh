@@ -134,7 +134,7 @@ export default function StudentNavbar() {
     {
       to: '/vocab',
       prefetch: 'vocab',
-      title: '3000 Từ Vựng',
+      title: 'Học Từ Vựng',
       shortTitle: '3000 Từ',
       desc: 'Oxford 3000 theo 60 chủ đề Flashcard 3D & Quiz',
       icon: Layers,
@@ -234,7 +234,7 @@ export default function StudentNavbar() {
             >
               <Layers size={14} className="shrink-0 text-emerald-400" />
               <span className="xl:hidden">Từ vựng</span>
-              <span className="hidden xl:inline">3000 Từ Vựng</span>
+              <span className="hidden xl:inline">Học Từ Vựng</span>
             </NavLink>
 
             <NavLink

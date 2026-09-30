@@ -62,7 +62,7 @@ export default function BinoDictationSection({
 
             <button
               onClick={() => speakText(currentDictationLine.englishText, currentDictationLine.characterName, 0.6)}
-              className="px-3 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-md shadow-amber-500/20 active:scale-95 transition-all cursor-pointer"
+              className="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-md shadow-indigo-500/20 active:scale-95 transition-all cursor-pointer"
             >
               <Gauge size={15} />
               <span>Rất Chậm (0.6x)</span>
@@ -76,7 +76,7 @@ export default function BinoDictationSection({
           onChange={(e) => { setDictationInput(e.target.value); setDictationChecked(false); }}
           placeholder="Gõ lại câu tiếng Anh bạn vừa nghe vào đây..."
           rows={3}
-          className="w-full p-4 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm font-semibold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+          className="w-full p-4 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm font-semibold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#0071e3]/40"
         />
 
         {/* Check button */}

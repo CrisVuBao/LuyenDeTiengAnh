@@ -13,6 +13,8 @@ import { useBinoPlayerStore } from './components/BinoPlaylistModal';
 import BinoLearningGuideModal from './components/BinoLearningGuideModal';
 import SeoMeta from '../../components/SeoMeta';
 import toast from 'react-hot-toast';
+import LuxurySpotlightCard from '../../components/luxury/LuxurySpotlightCard';
+import AnimatedCounter from '../../components/luxury/AnimatedCounter';
 
 export default function BinoBookOverviewPage() {
   const [book, setBook] = useState(() => binoApi.peekBookOverview());
@@ -67,194 +69,201 @@ export default function BinoBookOverviewPage() {
       {loading && <PageLoader />}
       
       {/* ========================================================================= */}
-      {/* 1. HERO BANNER GIÁO TRÌNH VBACE - ULTRA SHARP & FULL RESPONSIVE */}
+      {/* 1. HAUTE COUTURE HERO PAVILION — APPLE x DIOR x HERMÈS AESTHETIC          */}
       {/* ========================================================================= */}
-      <div 
-        className="p-4 sm:p-8 md:p-10 rounded-2xl sm:rounded-3xl relative overflow-hidden bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-sm"
+      <LuxurySpotlightCard
+        spotlightColor="rgba(0, 113, 227, 0.08)"
+        borderColor="rgba(0, 113, 227, 0.22)"
+        hoverLift={false}
+        className="rounded-[32px] sm:rounded-[38px] p-6 sm:p-9 lg:p-10 shadow-[0_12px_45px_rgb(0,0,0,0.03)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.45)] mb-2"
       >
         {/* Subtle decorative background circles */}
-        <div className="absolute -top-24 -right-24 w-72 h-72 bg-amber-400/10 dark:bg-amber-400/5 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-24 -left-24 w-72 h-72 bg-blue-500/10 dark:bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="pointer-events-none absolute -top-24 -right-24 w-80 h-80 bg-blue-500/[0.06] dark:bg-blue-500/[0.04] rounded-full blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-24 -left-24 w-80 h-80 bg-sky-400/[0.06] dark:bg-sky-400/[0.04] rounded-full blur-3xl" />
 
-        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 sm:gap-6 relative z-10">
-          <div className="space-y-2.5 sm:space-y-3.5 max-w-2xl w-full">
-            {/* Tag Badges */}
-            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-              <span className="px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[11px] sm:text-xs font-black uppercase tracking-wider bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-300 flex items-center gap-1 shadow-2xs border border-amber-300/80 dark:border-amber-800">
-                <Sparkles size={12} className="text-amber-600 dark:text-amber-400" /> Vũ Bảo Software
-              </span>
-              <span className="px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[11px] sm:text-xs font-extrabold bg-blue-100 text-blue-900 dark:bg-blue-950 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8 relative z-10">
+          <div className="space-y-4 max-w-2xl w-full">
+            
+            {/* Atelier Monogram Ribbon Badges */}
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/90 dark:bg-white/[0.06] text-slate-800 dark:text-slate-200 text-xs font-semibold border border-slate-200/90 dark:border-white/10 shadow-2xs backdrop-blur-md">
+                <span className="text-[#0071e3] font-serif">✦</span>
+                <span className="tracking-[0.2em] text-[10px] uppercase font-bold text-[#0071e3] dark:text-sky-400">
+                  ENGLISH
+                </span>
+                <span className="text-slate-300 dark:text-slate-700">•</span>
+                <span className="text-xs font-medium text-slate-600 dark:text-slate-400">Édition 2026</span>
+              </div>
+
+              <span className="px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-100/90 dark:bg-white/[0.06] text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-white/10">
                 {book?.totalChapters || 12} Chương • {book?.totalLessonsCount || 72} Bài Học
               </span>
-              <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 hidden sm:inline-flex">
-                Đầy Đủ 12 Chương + Mục B, C & Mindset
+
+              <span className="px-3 py-1.5 rounded-full text-xs font-semibold bg-blue-500/10 text-[#0071e3] dark:text-sky-400 border border-blue-500/20 hidden sm:inline-flex">
+                Mục B, C &amp; Mindset
               </span>
             </div>
 
-            {/* Title */}
-            <h1 className="text-xl sm:text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
-              Giao Tiếp Thực Chiến: <span className="bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 bg-clip-text text-transparent">Phản Xạ Tiếng Anh Tức Thì</span>
+            {/* Apple Pro Blue Typography */}
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[42px] font-black tracking-[-0.035em] leading-[1.14]">
+              <span className="text-slate-950 dark:text-white">
+                Giao Tiếp Thực Chiến:
+              </span>{' '}
+              <span className="bg-gradient-to-r from-[#0071e3] to-sky-500 dark:from-sky-400 dark:to-blue-400 bg-clip-text text-transparent font-medium">
+                Phản Xạ Tiếng Anh Tức Thì
+              </span>
             </h1>
 
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-normal line-clamp-2 sm:line-clamp-none">
-              Phương pháp phản xạ ngôn ngữ tự nhiên: Học từ vựng theo giấy note ghim, luyện nói 1:1 nhập vai với Leo, vận dụng đổi từ Substitution Drilling, kèm đầy đủ Mẫu câu mở rộng (Section B) & VBaceEnglish Mindset cuối mỗi chương.
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-normal max-w-xl">
+              Phương pháp phản xạ ngôn ngữ tự nhiên: Học từ vựng theo giấy note ghim, luyện nói 1:1 nhập vai với Leo, vận dụng đổi từ Substitution Drilling, kèm đầy đủ Mẫu câu mở rộng (Section B) &amp; VBaceEnglish Mindset cuối mỗi chương.
             </p>
 
-            {/* Primary CTA Row + Secondary Horizontal Scroll Strip on Mobile */}
-            <div className="space-y-2 pt-1">
-              <div className="grid grid-cols-12 sm:flex sm:flex-wrap items-center gap-2 sm:gap-2.5">
-                {/* Nút Nghe Toàn Bộ - Nổi bật */}
+            {/* Tactile Button Row (Sapphire Blue #0071e3 + Glass Pills) */}
+            <div className="space-y-3 pt-1">
+              <div className="flex flex-wrap items-center gap-2.5">
+                {/* Nút Nghe Toàn Bộ - Sapphire Blue */}
                 <button
                   onClick={() => openPlaylistWith(null, true)}
-                  className="col-span-7 sm:col-span-1 px-3.5 sm:px-5 py-2.5 sm:py-3 bg-[#0071e3] hover:bg-[#0077ED] dark:bg-sky-500 dark:hover:bg-sky-400 text-white font-extrabold rounded-xl sm:rounded-2xl shadow-[0_4px_14px_rgba(0,113,227,0.28)] flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm transition-all duration-150 hover:-translate-y-0.5 cursor-pointer"
+                  className="px-5 py-3 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white font-bold text-xs sm:text-sm shadow-[0_4px_18px_rgba(0,113,227,0.32)] border border-white/20 dark:border-transparent flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
                 >
                   <ListMusic size={16} className="shrink-0" />
-                  <span className="truncate">Nghe Toàn Bộ ({book?.totalLessonsCount || 72} Bài)</span>
+                  <span>Nghe Toàn Bộ ({book?.totalLessonsCount || 72} Bài)</span>
                 </button>
 
+                {/* Nút Hướng Dẫn - Blue Tint Capsule */}
+                <button
+                  onClick={() => setIsGuideModalOpen(true)}
+                  className="px-4 py-3 rounded-full bg-blue-500/10 hover:bg-blue-500/20 text-[#0071e3] dark:text-sky-400 border border-blue-500/30 font-bold text-xs sm:text-sm shadow-xs flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+                >
+                  <Lightbulb size={15} className="text-[#0071e3] dark:text-sky-400 fill-current" />
+                  <span>Cách Học 4 Bước 💡</span>
+                </button>
+
+                {/* Secondary Pill Buttons */}
                 <button
                   onClick={() => openPlaylistWith(null, false)}
-                  className="col-span-5 sm:col-span-1 px-3 sm:px-4 py-2.5 sm:py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl sm:rounded-2xl shadow-xs shadow-amber-500/25 flex items-center justify-center gap-1.5 text-xs sm:text-sm transition-all duration-150 hover:-translate-y-0.5 cursor-pointer"
+                  className="px-4 py-3 rounded-full bg-white/90 dark:bg-white/[0.06] hover:bg-slate-100 dark:hover:bg-white/[0.1] text-slate-700 dark:text-slate-200 font-semibold text-xs sm:text-sm border border-slate-200/80 dark:border-white/10 shadow-2xs transition-all cursor-pointer"
                 >
-                  <ListMusic size={15} className="shrink-0" />
-                  <span className="truncate">Chọn Bài Nghe</span>
-                </button>
-
-                {/* Desktop inline buttons (hidden on mobile where they sit in the swipe bar below) */}
-                <button
-                  onClick={() => navigate('/communication/dialogue/3')}
-                  className="hidden sm:flex px-4 py-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold rounded-2xl border border-slate-300 dark:border-slate-700 items-center justify-center gap-1.5 text-sm shadow-xs transition-all duration-150 hover:-translate-y-0.5 cursor-pointer"
-                >
-                  <Play size={14} fill="currentColor" className="text-amber-500" />
-                  <span>Bài Mẫu (Hội thoại 3)</span>
+                  <ListMusic size={14} className="shrink-0 inline mr-1 text-[#0071e3]" />
+                  <span>Chọn Bài Nghe</span>
                 </button>
 
                 <button
                   onClick={() => navigate('/communication/flashcards')}
-                  className="hidden sm:flex px-4 py-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold rounded-2xl border border-slate-300 dark:border-slate-700 items-center justify-center gap-1.5 text-sm shadow-xs transition-all duration-150 hover:-translate-y-0.5 cursor-pointer"
+                  className="hidden sm:inline-flex px-4 py-3 rounded-full bg-white/90 dark:bg-white/[0.06] hover:bg-slate-100 dark:hover:bg-white/[0.1] text-slate-700 dark:text-slate-200 font-semibold text-xs sm:text-sm border border-slate-200/80 dark:border-white/10 shadow-2xs transition-all cursor-pointer items-center gap-1.5"
                 >
-                  <Layers size={15} className="text-emerald-500" />
+                  <Layers size={14} className="text-[#0071e3]" />
                   <span>Ôn Từ Vựng (SRS)</span>
                 </button>
 
                 <button
-                  onClick={() => setIsGuideModalOpen(true)}
-                  className="hidden sm:flex px-4 py-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-black rounded-2xl shadow-xs shadow-amber-500/25 items-center justify-center gap-1.5 text-sm transition-all duration-150 hover:-translate-y-0.5 cursor-pointer"
+                  onClick={() => navigate('/communication/dialogue/3')}
+                  className="hidden sm:inline-flex px-4 py-3 rounded-full bg-white/90 dark:bg-white/[0.06] hover:bg-slate-100 dark:hover:bg-white/[0.1] text-slate-700 dark:text-slate-200 font-semibold text-xs sm:text-sm border border-slate-200/80 dark:border-white/10 shadow-2xs transition-all cursor-pointer items-center gap-1.5"
                 >
-                  <Lightbulb size={16} className="text-white" />
-                  <span>Cách Học 4 Bước 💡</span>
+                  <Play size={13} fill="currentColor" className="text-[#0071e3]" />
+                  <span>Bài Mẫu #3</span>
                 </button>
               </div>
 
-              {/* Mobile Horizontal Swipe Strip for Secondary Actions (1 compact row instead of 3 rows) */}
-              <div className="flex sm:hidden items-center gap-2 overflow-x-auto whitespace-nowrap hide-scrollbar pb-0.5">
-                <button
-                  onClick={() => setIsGuideModalOpen(true)}
-                  className="px-3 py-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-black rounded-xl text-xs flex items-center gap-1.5 shrink-0 shadow-2xs cursor-pointer"
-                >
-                  <Lightbulb size={13} />
-                  <span>Cách Học 4 Bước 💡</span>
-                </button>
+              {/* Mobile Swipe Strip for Secondary Actions */}
+              <div className="flex sm:hidden items-center gap-2 overflow-x-auto whitespace-nowrap hide-scrollbar pb-0.5 pt-1">
                 <button
                   onClick={() => navigate('/communication/flashcards')}
-                  className="px-3 py-2 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold rounded-xl border border-slate-200 dark:border-slate-700 flex items-center gap-1.5 text-xs shrink-0 cursor-pointer"
+                  className="px-3.5 py-2 rounded-full bg-white/90 dark:bg-white/[0.06] text-slate-700 dark:text-slate-300 font-semibold text-xs border border-slate-200 dark:border-white/10 flex items-center gap-1.5 shrink-0"
                 >
-                  <Layers size={13} className="text-emerald-500" />
+                  <Layers size={12} className="text-[#0071e3]" />
                   <span>Ôn Từ Vựng SRS</span>
                 </button>
                 <button
                   onClick={() => navigate('/communication/dialogue/3')}
-                  className="px-3 py-2 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold rounded-xl border border-slate-200 dark:border-slate-700 flex items-center gap-1.5 text-xs shrink-0 cursor-pointer"
+                  className="px-3.5 py-2 rounded-full bg-white/90 dark:bg-white/[0.06] text-slate-700 dark:text-slate-300 font-semibold text-xs border border-slate-200 dark:border-white/10 flex items-center gap-1.5 shrink-0"
                 >
-                  <Play size={12} fill="currentColor" className="text-amber-500" />
+                  <Play size={12} fill="currentColor" className="text-[#0071e3]" />
                   <span>Bài Mẫu #3</span>
                 </button>
               </div>
             </div>
           </div>
 
-          {/* Progress Mini Card (Compact inline bar on mobile, card on lg) */}
-          <div className="w-full lg:w-72 bg-slate-50 dark:bg-slate-800 rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 border border-slate-200 dark:border-slate-700 shadow-xs flex flex-col justify-between space-y-2 sm:space-y-4 shrink-0">
-            <div className="flex items-center justify-between lg:block">
-              <div className="flex items-center gap-2 lg:justify-between">
-                <span className="text-[11px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Tiến độ học</span>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300">
-                  {book?.progressPercentage || 0}%
-                </span>
-              </div>
-              <div className="flex items-baseline gap-1.5 lg:mt-1.5">
-                <span className="text-lg sm:text-3xl font-black text-slate-900 dark:text-white">
-                  {book?.completedLessonsCount || 0}
-                </span>
-                <span className="text-xs text-slate-500 dark:text-slate-400 font-bold">/ {book?.totalLessonsCount || 72} bài</span>
-              </div>
+          {/* Progress Mini Capsule (Apple Activity Style - Sapphire Blue) */}
+          <div className="w-full lg:w-72 rounded-[28px] bg-white/90 dark:bg-white/[0.04] backdrop-blur-xl p-5 border border-slate-200/80 dark:border-white/10 shadow-[0_4px_24px_rgba(0,0,0,0.02)] flex flex-col justify-between space-y-4 shrink-0">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-semibold tracking-wider text-slate-400 uppercase">
+                Tiến độ lộ trình
+              </span>
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-blue-500/10 text-[#0071e3] dark:text-sky-400 border border-blue-500/20">
+                {book?.progressPercentage || 0}%
+              </span>
             </div>
 
-            {/* Progress Bar */}
+            <div className="flex items-baseline gap-2">
+              <span className="text-3xl font-black text-slate-950 dark:text-white tracking-tight">
+                <AnimatedCounter value={book?.completedLessonsCount || 0} />
+              </span>
+              <span className="text-xs text-slate-400 font-medium">
+                / {book?.totalLessonsCount || 72} bài hoàn tất
+              </span>
+            </div>
+
+            {/* Apple Progress Bar */}
             <div className="space-y-1.5">
-              <div className="w-full bg-slate-200 dark:bg-slate-700 h-2 sm:h-2.5 rounded-full overflow-hidden p-0.5">
-                <div
-                  style={{ width: `${book?.progressPercentage || 0}%` }}
-                  className="bg-gradient-to-r from-amber-500 to-orange-500 h-full rounded-full transition-all duration-700"
+              <div className="w-full bg-slate-100 dark:bg-white/[0.08] h-2 rounded-full overflow-hidden p-0.5">
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${Math.max(4, book?.progressPercentage || 0)}%` }}
+                  transition={{ duration: 0.9, ease: 'easeOut' }}
+                  className="bg-gradient-to-r from-[#0071e3] to-sky-400 h-full rounded-full"
                 />
               </div>
             </div>
 
-            <div className="hidden sm:flex text-[11px] text-slate-600 dark:text-slate-300 items-center gap-1.5 pt-2 border-t border-slate-200/80 dark:border-slate-700 font-medium">
-              <CheckCircle2 size={14} className="text-emerald-500 shrink-0" />
-              <span>Trọn bộ 12 Chương • 72 Bài Thực Chiến</span>
+            <div className="flex text-[11px] text-slate-500 dark:text-slate-400 items-center gap-1.5 pt-2 border-t border-slate-100 dark:border-white/[0.06] font-medium">
+              <CheckCircle2 size={13} className="text-[#0071e3] shrink-0" />
+              <span>12 Chương • 72 Bài Chuẩn Thực Chiến</span>
             </div>
           </div>
         </div>
-      </div>
+      </LuxurySpotlightCard>
 
 
       {/* ========================================================================= */}
-      {/* 2. MOBILE HORIZONTAL CHAPTERS SWIPE CAROUSEL (< lg) - STICKY & SLEEK */}
+      {/* 2. MOBILE HORIZONTAL CHAPTERS SWIPE CAROUSEL (< lg) - LUXURY PILLS */}
       {/* ========================================================================= */}
       <div className="block lg:hidden sticky top-14 z-30 -mx-3 px-3 py-2 bg-slate-50/95 dark:bg-slate-950/95 backdrop-blur-md border-b border-slate-200/60 dark:border-slate-800/80 space-y-1.5">
         <div className="flex items-center justify-between px-0.5">
-          <span className="text-[11px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1">
-            <Compass size={13} className="text-blue-500" /> Chọn Chương ({book?.chapters?.length || 12})
+          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+            <Compass size={13} className="text-[#0071e3]" /> Chọn Chương ({book?.chapters?.length || 12})
           </span>
-          <span className="text-[10px] text-amber-600 dark:text-amber-400 font-bold">
+          <span className="text-[10px] text-[#0071e3] dark:text-sky-400 font-bold">
             Vuốt ngang ➔
           </span>
         </div>
 
-        <div className="flex gap-1.5 overflow-x-auto pb-0.5 hide-scrollbar scroll-smooth snap-x">
+        <div className="flex gap-2 overflow-x-auto pb-1 hide-scrollbar scroll-smooth snap-x">
           {book?.chapters?.map((chap) => {
             const isSelected = chap.chapterNumber === selectedChapter;
             return (
               <button
                 key={chap.id}
                 onClick={() => setSelectedChapter(chap.chapterNumber)}
-                className={`relative px-3 py-2 rounded-xl text-xs font-bold transition-all shrink-0 snap-start flex items-center gap-2 border ${
+                className={`relative px-3.5 py-2 rounded-2xl text-xs font-semibold transition-all shrink-0 snap-start flex items-center gap-2 border cursor-pointer ${
                   isSelected
-                    ? 'bg-blue-600 text-white border-blue-600 shadow-sm shadow-blue-500/25'
-                    : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:border-slate-300'
+                    ? 'bg-[#0071e3] text-white border-[#0071e3] shadow-[0_4px_16px_rgba(0,113,227,0.3)]'
+                    : 'bg-white/90 dark:bg-[#0c101a]/90 text-slate-700 dark:text-slate-300 border-slate-200/80 dark:border-white/[0.08] hover:border-slate-300'
                 }`}
               >
-                <span className={`w-5 h-5 rounded-md flex items-center justify-center text-[10px] font-black ${
-                  isSelected ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
+                <span className={`w-5 h-5 rounded-lg flex items-center justify-center text-[10px] font-mono font-bold ${
+                  isSelected ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-white/[0.08] text-slate-600 dark:text-slate-300'
                 }`}>
                   {chap.chapterNumber < 10 ? `0${chap.chapterNumber}` : chap.chapterNumber}
                 </span>
 
                 <div className="text-left">
-                  <div className="truncate max-w-[110px] text-[11px] leading-tight">{chap.title}</div>
-                  <div className={`text-[9px] leading-tight ${isSelected ? 'text-blue-100' : 'text-slate-400'}`}>
+                  <div className="truncate max-w-[110px] text-[11px] font-medium leading-tight">{chap.title}</div>
+                  <div className={`text-[9px] font-mono leading-tight ${isSelected ? 'text-white/80' : 'text-slate-400'}`}>
                     {chap.completedLessons}/{chap.totalLessons} bài
                   </div>
                 </div>
-
-                {isSelected && (
-                  <motion.div 
-                    layoutId="activeMobilePill"
-                    className="absolute inset-0 rounded-xl border-2 border-blue-400 pointer-events-none"
-                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                  />
-                )}
               </button>
             );
           })}

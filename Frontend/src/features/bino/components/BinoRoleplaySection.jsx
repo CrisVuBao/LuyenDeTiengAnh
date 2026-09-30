@@ -39,7 +39,7 @@ export default function BinoRoleplaySection({
     >
       <div className="max-w-xl space-y-2">
         <h3 className="text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
-          <Sparkles size={20} className="text-amber-500" />
+          <Sparkles size={20} className="text-[#0071e3]" />
           <span>Luyện Phản Xạ Đóng Vai 1:1 Cùng Leo</span>
         </h3>
         <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-normal">
@@ -56,7 +56,7 @@ export default function BinoRoleplaySection({
             onClick={() => { setSelectedRole(r); setRoleplayStep(0); setUserTranscript(''); setRoleplayEval(null); }}
             className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               selectedRole === r
-                ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25'
+                ? 'bg-[#0071e3] text-white shadow-md shadow-blue-500/25'
                 : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
             }`}
           >
@@ -66,7 +66,7 @@ export default function BinoRoleplaySection({
       </div>
 
       {/* Interactive Roleplay Step Box */}
-      <div className="p-4 sm:p-6 rounded-2xl bg-gradient-to-br from-amber-50/60 to-blue-50/60 dark:from-slate-800 dark:to-slate-850 border border-slate-200 dark:border-slate-700 space-y-4">
+      <div className="p-4 sm:p-6 rounded-2xl bg-gradient-to-br from-blue-50/40 via-sky-50/20 to-slate-50 dark:from-slate-800 dark:to-slate-850 border border-slate-200 dark:border-slate-700 space-y-4">
         <div className="flex items-center justify-between text-xs font-bold text-slate-500">
           <span>Lượt thoại {roleplayStep + 1} / {lesson.dialogueLines?.length || 8}</span>
           <button
@@ -83,7 +83,7 @@ export default function BinoRoleplaySection({
               <span className={`px-2.5 py-0.5 rounded-md text-xs font-black uppercase ${
                 currentLine.characterName === selectedRole
                   ? 'bg-emerald-600 text-white animate-pulse'
-                  : 'bg-orange-500 text-white'
+                  : 'bg-[#0071e3] text-white'
               }`}>
                 {currentLine.characterName}
                 {currentLine.characterName === selectedRole && ' (LƯỢT CỦA BẠN!)'}
@@ -158,7 +158,7 @@ export default function BinoRoleplaySection({
                   {roleplayEval && (
                     <div className="space-y-2 pt-2 border-t border-slate-200/70 dark:border-slate-700">
                       <div className="text-xs font-extrabold">
-                        <span className={roleplayEval.isPass ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'}>
+                        <span className={roleplayEval.isPass ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}>
                           Điểm phản xạ phát âm: {roleplayEval.score}% — {roleplayEval.feedback}
                         </span>
                       </div>
@@ -220,7 +220,7 @@ export default function BinoRoleplaySection({
                     }
                   }
                 }}
-                className="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl text-xs font-bold shadow-md shadow-orange-500/20 flex items-center gap-1.5 active:scale-95 cursor-pointer"
+                className="px-5 py-2.5 bg-[#0071e3] hover:bg-[#0077ed] text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/25 flex items-center gap-1.5 active:scale-95 cursor-pointer"
               >
                 <span>{roleplayStep < lesson.dialogueLines.length - 1 ? 'Câu Tiếp Theo' : 'Hoàn Thành! 🎉'}</span>
                 <ChevronRight size={15} />

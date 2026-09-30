@@ -304,22 +304,22 @@ export default function BinoChapterBonusPage() {
           <button
             disabled={currentChapNum <= 1}
             onClick={() => navigate(`/communication/chapter/${currentChapNum - 1}/bonus`)}
-            className="p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 disabled:opacity-40 hover:border-amber-400 transition-all text-xs font-bold flex items-center gap-1"
+            className="p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 disabled:opacity-40 hover:border-[#0071e3] transition-all text-xs font-bold flex items-center gap-1 cursor-pointer"
             title="Chương trước"
           >
             <ChevronLeft size={15} />
             <span className="hidden sm:inline">Chương {currentChapNum - 1}</span>
           </button>
 
-          <span className="px-3.5 py-1.5 rounded-full text-xs font-black bg-amber-100 dark:bg-amber-950 text-amber-900 dark:text-amber-300 flex items-center gap-1.5 shadow-sm border border-amber-300/80 dark:border-amber-800">
-            <Star size={14} className="text-amber-500 fill-amber-500" />
+          <span className="px-3.5 py-1.5 rounded-full text-xs font-black bg-blue-500/10 text-[#0071e3] dark:text-sky-400 flex items-center gap-1.5 shadow-sm border border-blue-500/30">
+            <Star size={14} className="text-[#0071e3] fill-[#0071e3]" />
             <span>Cuối Chương {currentChapNum < 10 ? `0${currentChapNum}` : currentChapNum} / 12</span>
           </span>
 
           <button
             disabled={currentChapNum >= 12}
             onClick={() => navigate(`/communication/chapter/${currentChapNum + 1}/bonus`)}
-            className="p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 disabled:opacity-40 hover:border-amber-400 transition-all text-xs font-bold flex items-center gap-1"
+            className="p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 disabled:opacity-40 hover:border-[#0071e3] transition-all text-xs font-bold flex items-center gap-1 cursor-pointer"
             title="Chương tiếp theo"
           >
             <span className="hidden sm:inline">Chương {currentChapNum + 1}</span>
@@ -332,11 +332,11 @@ export default function BinoChapterBonusPage() {
       <motion.div 
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
-        className="glass-card p-6 sm:p-10 rounded-3xl bg-gradient-to-br from-amber-500/15 via-orange-500/10 to-purple-600/10 border border-amber-300/70 dark:border-amber-900/40 space-y-4 shadow-xl relative overflow-hidden"
+        className="glass-card p-6 sm:p-10 rounded-3xl bg-gradient-to-br from-blue-500/15 via-sky-500/10 to-indigo-600/10 border border-blue-200/80 dark:border-blue-900/40 space-y-4 shadow-xl relative overflow-hidden"
       >
-        <div className="absolute -top-16 -right-16 w-56 h-56 bg-amber-400/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -top-16 -right-16 w-56 h-56 bg-blue-400/20 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="flex flex-wrap items-center gap-2 text-xs font-black uppercase tracking-wider text-amber-600 dark:text-amber-400">
+        <div className="flex flex-wrap items-center gap-2 text-xs font-black uppercase tracking-wider text-[#0071e3] dark:text-sky-400">
           <Lightbulb size={16} />
           <span>Trọn Vẹn Nội Dung Cuối Chương Giáo Trình (Section B • Section C • VBace&apos;s Mindset)</span>
         </div>
@@ -353,7 +353,7 @@ export default function BinoChapterBonusPage() {
         <div className="space-y-3">
           <div className="flex items-center justify-between px-1">
             <h3 className="text-sm sm:text-base font-black text-slate-900 dark:text-white flex items-center gap-2">
-              <Sparkles size={18} className="text-amber-500" />
+              <Sparkles size={18} className="text-[#0071e3]" />
               <span>Từ Khóa & Cụm Từ Phản Xạ Nhanh Trong Chương {currentChapNum}:</span>
             </h3>
             <span className="text-xs text-slate-400 font-bold">{bonus.slangList.length} cụm từ</span>
@@ -365,10 +365,10 @@ export default function BinoChapterBonusPage() {
                 key={idx}
                 whileHover={{ y: -2, scale: 1.01 }}
                 onClick={() => speakSlang(slang)}
-                className="p-3.5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between group hover:border-amber-400 cursor-pointer transition-all"
+                className="p-3.5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between group hover:border-[#0071e3] cursor-pointer transition-all"
               >
                 <div className="flex items-center gap-2.5 truncate">
-                  <span className="w-7 h-7 rounded-xl bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 font-black text-xs flex items-center justify-center shrink-0">
+                  <span className="w-7 h-7 rounded-xl bg-blue-100 dark:bg-blue-950 text-[#0071e3] dark:text-sky-300 font-black text-xs flex items-center justify-center shrink-0">
                     {idx + 1}
                   </span>
                   <span className="font-bold text-sm text-slate-900 dark:text-white truncate">
@@ -381,7 +381,7 @@ export default function BinoChapterBonusPage() {
                     e.stopPropagation();
                     speakSlang(slang);
                   }}
-                  className="p-2 rounded-xl text-slate-400 group-hover:text-amber-600 group-hover:bg-amber-50 dark:group-hover:bg-slate-700 transition-colors shrink-0"
+                  className="p-2 rounded-xl text-slate-400 group-hover:text-[#0071e3] group-hover:bg-blue-50 dark:group-hover:bg-slate-700 transition-colors shrink-0 cursor-pointer"
                   title="Nghe phát âm chuẩn"
                 >
                   <Volume2 size={16} />
@@ -417,7 +417,7 @@ export default function BinoChapterBonusPage() {
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
             onClick={() => navigate('/communication')}
-            className="px-5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl shadow-sm transition-all flex items-center gap-1.5"
+            className="px-5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl shadow-sm transition-all flex items-center gap-1.5 cursor-pointer"
           >
             <ArrowLeft size={14} />
             <span>Trở Về Lộ Trình 12 Chương</span>
@@ -428,7 +428,7 @@ export default function BinoChapterBonusPage() {
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
               onClick={() => navigate(`/communication/chapter/${currentChapNum + 1}/bonus`)}
-              className="px-6 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-xs font-black rounded-xl shadow-md transition-all flex items-center gap-1.5"
+              className="px-6 py-2.5 bg-[#0071e3] hover:bg-[#0077ed] text-white text-xs font-black rounded-xl shadow-md shadow-blue-500/25 transition-all flex items-center gap-1.5 cursor-pointer"
             >
               <span>Xem Tiếp Cuối Chương {currentChapNum + 1}</span>
               <ArrowRight size={14} />

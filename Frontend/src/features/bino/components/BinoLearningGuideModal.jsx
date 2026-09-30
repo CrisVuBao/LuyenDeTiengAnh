@@ -33,11 +33,11 @@ export default function BinoLearningGuideModal({ isOpen, onClose }) {
       badge: "Bước 2",
       title: "Bẻ Khóa Cụm Từ Phản Xạ (Lexical Chunks)",
       subtitle: "Học theo 'khối ngôn ngữ' đúc sẵn, không học từ vựng riêng lẻ",
-      color: "from-amber-500 to-orange-500",
-      accentBg: "bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-800",
+      color: "from-blue-600 to-indigo-600",
+      accentBg: "bg-blue-50 dark:bg-blue-950/40 text-[#0071e3] dark:text-sky-300 border-blue-200 dark:border-blue-800",
       instruction: "Mở Vietsub và giải mã các cụm từ đúc sẵn trong bài:",
       details: [
-        "Đọc các tờ **Giấy Note Vàng Ghim** ở góc bài học: Chú ý các cụm Idiom/Phrasal Verbs như `get the hang of it`, `check it out`, `getting used to`.",
+        "Đọc các phần **Từ Khóa Cốt Lõi** ở góc bài học: Chú ý các cụm Idiom/Phrasal Verbs như `get the hang of it`, `check it out`, `getting used to`.",
         "Hiểu nghĩa của **cả cụm từ** chứ tuyệt đối không dịch từng chữ một (*word-by-word*).",
         "Bấm biểu tượng Bookmark ghim vào **Bộ thẻ Flashcard SRS** để hệ thống thuật toán SM-2 tự động nhắc ôn cách quãng."
       ],
@@ -86,14 +86,14 @@ export default function BinoLearningGuideModal({ isOpen, onClose }) {
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 p-2 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition z-10"
+          className="absolute top-5 right-5 p-2 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition z-10 cursor-pointer"
         >
           <X size={20} />
         </button>
 
         {/* Modal Header */}
         <div className="flex items-center gap-3.5 mb-5 pb-4 border-b border-slate-100 dark:border-slate-800">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 text-white flex items-center justify-center shadow-lg shadow-amber-500/30 shrink-0">
+          <div className="w-12 h-12 rounded-2xl bg-[#0071e3] text-white flex items-center justify-center shadow-lg shadow-blue-500/30 shrink-0">
             <Sparkles size={24} />
           </div>
           <div>
@@ -112,14 +112,14 @@ export default function BinoLearningGuideModal({ isOpen, onClose }) {
             <button
               key={s.step}
               onClick={() => setActiveStep(s.step)}
-              className={`py-2 px-1.5 rounded-xl text-xs font-black transition-all flex flex-col sm:flex-row items-center justify-center gap-1 ${
+              className={`py-2 px-1.5 rounded-xl text-xs font-black transition-all flex flex-col sm:flex-row items-center justify-center gap-1 cursor-pointer ${
                 activeStep === s.step
                   ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm'
                   : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
               }`}
             >
               <span className={`w-5 h-5 rounded-full text-[10px] flex items-center justify-center font-black ${
-                activeStep === s.step ? 'bg-amber-500 text-white' : 'bg-slate-200 dark:bg-slate-600 text-slate-700'
+                activeStep === s.step ? 'bg-[#0071e3] text-white' : 'bg-slate-200 dark:bg-slate-600 text-slate-700'
               }`}>
                 {s.step}
               </span>
@@ -178,8 +178,8 @@ export default function BinoLearningGuideModal({ isOpen, onClose }) {
                 </div>
 
                 {/* Pro Tip Callout */}
-                <div className="p-3.5 rounded-2xl bg-amber-50/80 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-900/40 flex items-start gap-2.5 text-xs text-amber-900 dark:text-amber-200 leading-relaxed">
-                  <Lightbulb size={18} className="text-amber-500 shrink-0 mt-0.5" />
+                <div className="p-3.5 rounded-2xl bg-blue-50/80 dark:bg-blue-950/30 border border-blue-200/80 dark:border-blue-900/40 flex items-start gap-2.5 text-xs text-[#0071e3] dark:text-sky-200 leading-relaxed">
+                  <Lightbulb size={18} className="text-[#0071e3] shrink-0 mt-0.5" />
                   <div>
                     <strong className="font-black">Mẹo Vàng Phản Xạ: </strong>
                     <span>{s.tip}</span>
@@ -218,7 +218,7 @@ export default function BinoLearningGuideModal({ isOpen, onClose }) {
               <button
                 type="button"
                 onClick={() => setActiveStep(activeStep - 1)}
-                className="px-3.5 py-2 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+                className="px-3.5 py-2 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
               >
                 Bước trước
               </button>
@@ -227,7 +227,7 @@ export default function BinoLearningGuideModal({ isOpen, onClose }) {
               <button
                 type="button"
                 onClick={() => setActiveStep(activeStep + 1)}
-                className="px-3.5 py-2 rounded-xl text-xs font-bold text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950 transition"
+                className="px-3.5 py-2 rounded-xl text-xs font-bold text-[#0071e3] dark:text-sky-400 hover:bg-blue-50 dark:hover:bg-blue-950 transition cursor-pointer"
               >
                 Bước tiếp theo →
               </button>
@@ -237,7 +237,7 @@ export default function BinoLearningGuideModal({ isOpen, onClose }) {
           <button
             type="button"
             onClick={onClose}
-            className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-black text-xs shadow-md shadow-amber-500/25 active:scale-95 transition"
+            className="px-5 py-2.5 rounded-xl bg-[#0071e3] hover:bg-[#0077ed] text-white font-black text-xs shadow-md shadow-blue-500/25 active:scale-95 transition cursor-pointer"
           >
             Đã hiểu, Bắt đầu học ngay!
           </button>
