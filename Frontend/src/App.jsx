@@ -7,6 +7,7 @@ import PageLoader from "./components/PageLoader";
 import ErrorBoundary from "./components/ErrorBoundary";
 import RoleProtectedRoute from "./components/RoleProtectedRoute";
 import useAuthStore from "./store/authStore";
+import useBrandingStore from "./store/useBrandingStore";
 import authApi from "./api/authApi";
 import { Toaster } from "react-hot-toast";
 
@@ -67,6 +68,11 @@ const RootRedirector = () => {
 function App() {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const updateUser = useAuthStore((state) => state.updateUser);
+  const fetchBranding = useBrandingStore((state) => state.fetchBranding);
+
+  useEffect(() => {
+    fetchBranding();
+  }, [fetchBranding]);
 
   useEffect(() => {
     if (isAuthenticated) {

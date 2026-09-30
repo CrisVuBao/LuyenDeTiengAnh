@@ -6,6 +6,8 @@ import SeoMeta from '../../components/SeoMeta';
 import LanguageSelector from '../../components/LanguageSelector';
 import useAuthStore from '../../store/authStore';
 import useThemeStore from '../../store/themeStore';
+import useBrandingStore from '../../store/useBrandingStore';
+import BrandLogo from '../../components/BrandLogo';
 import LandingHeroStudio from './components/LandingHeroStudio';
 import LandingPillars from './components/LandingPillars';
 import LandingMethodology from './components/LandingMethodology';
@@ -16,6 +18,7 @@ export default function LandingPage() {
   const navigate = useNavigate();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const { mode, toggleTheme } = useThemeStore();
+  const branding = useBrandingStore((state) => state.branding);
 
   const handlePrimaryAction = () => {
     navigate(isAuthenticated ? '/home' : '/auth');
@@ -31,8 +34,8 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-[#f8fafc] dark:bg-[#060913] text-slate-900 dark:text-slate-100 flex flex-col relative overflow-x-hidden selection:bg-[#0071e3]/20 selection:text-[#0071e3] dark:selection:text-sky-400">
       <SeoMeta
-        title="Nền Tảng Học Tiếng Anh Giao Tiếp & Luyện Thi Đỉnh Cao"
-        description="Luyện phản xạ giao tiếp 1500 câu thực chiến, 3000 từ vựng Oxford với thuật toán lặp lại ngắt quãng FSRS, Shadowing và AI giải thích chuyên sâu."
+        title={`Nền Tảng Học Tiếng Anh Giao Tiếp & Luyện Thi Đỉnh Cao | ${branding.brandName}`}
+        description={`${branding.brandName} - ${branding.slogan || 'Luyện phản xạ giao tiếp 1500 câu thực chiến, 3000 từ vựng Oxford với thuật toán lặp lại ngắt quãng FSRS, Shadowing và AI giải thích chuyên sâu.'}`}
         canonicalUrl="https://vbaceenglish.com/"
         structuredData={{
           "@context": "https://schema.org",
@@ -40,11 +43,11 @@ export default function LandingPage() {
             {
               "@type": "WebApplication",
               "@id": "https://vbaceenglish.com/#webapp",
-              "name": "VBaceEnglish",
+              "name": branding.brandName || "VBaceEnglish",
               "url": "https://vbaceenglish.com",
               "applicationCategory": "EducationalApplication",
               "operatingSystem": "All",
-              "description": "Nền tảng học tiếng Anh giao tiếp & luyện thi TOEIC, THPT, IELTS và tiếng Trung thông minh với công nghệ phản xạ và FSRS.",
+              "description": branding.slogan || "Nền tảng học tiếng Anh giao tiếp & luyện thi TOEIC, THPT, IELTS và tiếng Trung thông minh với công nghệ phản xạ và FSRS.",
               "offers": {
                 "@type": "Offer",
                 "price": "0",
@@ -54,9 +57,9 @@ export default function LandingPage() {
             {
               "@type": "EducationalOrganization",
               "@id": "https://vbaceenglish.com/#organization",
-              "name": "VBaceEnglish by Vũ Bảo Software",
+              "name": `${branding.brandName} by ${branding.companyName || 'Software'}`,
               "url": "https://vbaceenglish.com",
-              "logo": "https://vbaceenglish.com/favicon.svg"
+              "logo": branding.logoUrl || "https://vbaceenglish.com/favicon.svg"
             }
           ]
         }}
@@ -84,17 +87,7 @@ export default function LandingPage() {
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             className="flex items-center gap-3 cursor-pointer group shrink-0"
           >
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#0071e3] to-sky-500 text-white flex items-center justify-center shadow-[0_6px_18px_rgba(0,113,227,0.32)] group-hover:scale-105 transition-transform duration-200">
-              <Sparkles size={19} />
-            </div>
-            <div className="flex flex-col leading-none">
-              <span className="font-extrabold text-base sm:text-lg tracking-tight text-slate-900 dark:text-white">
-                VBaceEnglish
-              </span>
-              <span className="text-[10px] sm:text-[11px] font-semibold text-slate-500 dark:text-slate-400 tracking-tight mt-0.5">
-                By Vũ Bảo Software
-              </span>
-            </div>
+            <BrandLogo size="md" />
           </div>
 
           <nav className="hidden lg:flex items-center gap-1 p-1 rounded-full bg-slate-100/90 dark:bg-slate-900/90 border border-slate-200/70 dark:border-slate-800">

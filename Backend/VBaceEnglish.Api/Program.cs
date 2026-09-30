@@ -220,6 +220,8 @@ contentTypeProvider.Mappings[".webm"] = "video/webm";
 contentTypeProvider.Mappings[".json"] = "application/json";
 contentTypeProvider.Mappings[".woff"] = "font/woff";
 contentTypeProvider.Mappings[".woff2"] = "font/woff2";
+contentTypeProvider.Mappings[".svg"] = "image/svg+xml";
+contentTypeProvider.Mappings[".ico"] = "image/x-icon";
 
 app.UseDefaultFiles();
 app.UseStaticFiles(new StaticFileOptions
@@ -239,7 +241,8 @@ app.UseStaticFiles(new StaticFileOptions
         }
         else if (path.StartsWith("/images/", StringComparison.OrdinalIgnoreCase) ||
                  path.StartsWith("/audios/", StringComparison.OrdinalIgnoreCase) ||
-                 path.StartsWith("/ebooks/", StringComparison.OrdinalIgnoreCase))
+                 path.StartsWith("/ebooks/", StringComparison.OrdinalIgnoreCase) ||
+                 path.StartsWith("/uploads/", StringComparison.OrdinalIgnoreCase))
         {
             ctx.Context.Response.Headers["Cache-Control"] = "public, max-age=604800";
         }

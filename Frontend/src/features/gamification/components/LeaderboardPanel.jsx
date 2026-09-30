@@ -3,10 +3,12 @@ import { motion } from 'framer-motion';
 import { Trophy, Flame, Crown, Medal, Sparkles, TrendingUp, User } from 'lucide-react';
 import useGamificationStore from '../store/useGamificationStore';
 import useAuthStore from '../../../store/authStore';
+import useBrandingStore from '../../../store/useBrandingStore';
 
 export default function LeaderboardPanel() {
   const { leaderboard, fetchLeaderboard, profile } = useGamificationStore();
   const currentUser = useAuthStore((s) => s.user);
+  const brandName = useBrandingStore((s) => s.branding.brandName);
 
   useEffect(() => {
     fetchLeaderboard();
@@ -33,7 +35,7 @@ export default function LeaderboardPanel() {
             <span>Thi đua tuần này • Reset vào 23:59 Chủ Nhật</span>
           </div>
           <h3 className="text-xl sm:text-2xl font-black">
-            Bảng Xếp Hạng Cao Thủ VBaceEnglish
+            Bảng Xếp Hạng Cao Thủ {brandName}
           </h3>
           <p className="text-xs sm:text-sm text-white/80">
             Học tập, hoàn thành nhiệm vụ và luyện phản xạ mỗi ngày để tích lũy XP leo đỉnh vinh quang.

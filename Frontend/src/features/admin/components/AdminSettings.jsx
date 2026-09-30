@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Settings,
   Shield,
@@ -19,13 +19,26 @@ import {
   EyeOff,
   Zap,
   Sparkles,
-  Clock
+  Clock,
+  Upload,
+  Image as ImageIcon,
+  Globe,
+  Building,
+  Phone,
+  Mail,
+  FileText,
+  Check,
+  ExternalLink,
+  Layers
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { settingsApi, dashboardApi } from '../../../api/dashboardAndAiApi';
 import PageLoader from '../../../components/PageLoader';
+import BrandLogo from '../../../components/BrandLogo';
+import useBrandingStore from '../../../store/useBrandingStore';
 
 const TABS = [
+  { id: 'Branding', label: 'Thương Hiệu & Logo', icon: Sparkles, color: 'text-amber-500' },
   { id: 'General', label: 'Cài Đặt Chung', icon: Settings, color: 'text-blue-500' },
   { id: 'Security', label: 'Bảo Mật & Đăng Nhập', icon: Shield, color: 'text-emerald-500' },
   { id: 'Learning', label: 'Học Tập & Gamification', icon: Gamepad2, color: 'text-purple-500' },
@@ -35,9 +48,10 @@ const TABS = [
 ];
 
 export default function AdminSettings() {
-  const [activeTab, setActiveTab] = useState('General');
+  const [activeTab, setActiveTab] = useState('Branding');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploadingKey, setUploadingKey] = useState(null);
   const [settingsMap, setSettingsMap] = useState({});
   const [systemInfo, setSystemInfo] = useState(null);
   const [showApiKey, setShowApiKey] = useState(false);
@@ -80,7 +94,30 @@ export default function AdminSettings() {
   }, []);
 
   const updateVal = (key, val) => {
-    setSettingsMap((prev) => ({ ...prev, [key]: String(val) }));
+    setSettingsMap((prev) => {
+      const next = { ...prev, [key]: String(val) };
+      if (key === 'brand.name') next['app.name'] = String(val);
+      if (key === 'app.name') next['brand.name'] = String(val);
+      if (key === 'brand.tagline') next['app.tagline'] = String(val);
+      if (key === 'app.tagline') next['brand.tagline'] = String(val);
+      return next;
+    });
+  };
+
+  const handleFileUpload = async (key, file) => {
+    if (!file) return;
+    try {
+      setUploadingKey(key);
+      const res = await settingsApi.uploadBrandingAsset(file);
+      const url = res?.data?.url || res?.url;
+      if (!url) throw new Error('Không nhận được đường dẫn tệp tải lên');
+      updateVal(key, url);
+      toast.success('Đã tải tệp ảnh lên máy chủ thành công!');
+    } catch (err) {
+      toast.error('Lỗi khi tải ảnh: ' + (err.response?.data?.message || err.message));
+    } finally {
+      setUploadingKey(null);
+    }
   };
 
   const getBool = (key) => settingsMap[key] === 'true';
@@ -89,7 +126,8 @@ export default function AdminSettings() {
     try {
       setSaving(true);
       await settingsApi.updateSettings(settingsMap);
-      toast.success('Đã lưu cấu hình hệ thống thành công!');
+      await useBrandingStore.getState().fetchBranding();
+      toast.success('Đã lưu cấu hình hệ thống & áp dụng thương hiệu tức thì!');
       fetchSettingsAndSystem(true);
     } catch (err) {
       toast.error(err.message || 'Lỗi khi lưu cài đặt');
@@ -103,6 +141,7 @@ export default function AdminSettings() {
     try {
       setSaving(true);
       await settingsApi.resetToDefaults();
+      await useBrandingStore.getState().fetchBranding();
       toast.success('Đã khôi phục toàn bộ cài đặt về mặc định!');
       fetchSettingsAndSystem(true);
     } catch {
@@ -187,10 +226,112 @@ export default function AdminSettings() {
         >
           <span
             className={`absolute top-0.5 left-0.5 w-5.5 h-5.5 rounded-full bg-white shadow-sm transition-transform ${
-              checked ? 'translate-x-5.5' : 'translate-x-0'
-            }`}
+            checked ? 'translate-x-5.5' : 'translate-x-0'
+          }`}
           />
         </button>
+      </div>
+    );
+  };
+
+  const BrandingAssetUploader = ({ label, desc, settingKey, accept = "image/*", placeholder, recommended }) => {
+    const currentVal = settingsMap[settingKey] || '';
+    const isUploading = uploadingKey === settingKey;
+    const inputRef = useRef(null);
+
+    return (
+      <div className="p-4 sm:p-5 rounded-2xl bg-slate-50/80 dark:bg-slate-800/50 border border-slate-200/70 dark:border-slate-800 space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <div className="flex items-center gap-2">
+              <label className="text-xs font-extrabold text-slate-800 dark:text-slate-200">
+                {label}
+              </label>
+              {recommended && (
+                <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300">
+                  {recommended}
+                </span>
+              )}
+            </div>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">{desc}</p>
+          </div>
+
+          <div className="flex items-center gap-2 shrink-0">
+            <input
+              type="file"
+              ref={inputRef}
+              accept={accept}
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) handleFileUpload(settingKey, file);
+                e.target.value = '';
+              }}
+            />
+            <button
+              type="button"
+              disabled={isUploading}
+              onClick={() => inputRef.current?.click()}
+              className="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer disabled:opacity-60"
+            >
+              {isUploading ? (
+                <RefreshCw size={13} className="animate-spin" />
+              ) : (
+                <Upload size={13} />
+              )}
+              <span>{isUploading ? 'Đang tải...' : 'Tải file lên'}</span>
+            </button>
+
+            {currentVal && (
+              <button
+                type="button"
+                onClick={() => updateVal(settingKey, '')}
+                className="p-1.5 rounded-xl text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
+                title="Xóa logo này (quay về biểu tượng mặc định)"
+              >
+                <Trash2 size={15} />
+              </button>
+            )}
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <input
+            type="text"
+            value={currentVal}
+            placeholder={placeholder || 'Nhập URL hình ảnh hoặc bấm nút Tải file lên...'}
+            onChange={(e) => updateVal(settingKey, e.target.value)}
+            className="flex-1 px-3.5 py-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-900 dark:text-slate-100"
+          />
+        </div>
+
+        {/* Mini Preview Box */}
+        {currentVal ? (
+          <div className="flex items-center gap-4 p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-700/80">
+            <div className="w-16 h-12 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center p-1 overflow-hidden shrink-0 border border-dashed border-slate-300 dark:border-slate-600">
+              <img
+                src={currentVal}
+                alt={label}
+                className="max-h-full max-w-full object-contain"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                }}
+              />
+            </div>
+            <div className="min-w-0 flex-1 text-xs">
+              <span className="font-bold text-slate-700 dark:text-slate-300 block truncate">
+                {currentVal}
+              </span>
+              <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1 mt-0.5">
+                <CheckCircle2 size={11} /> Đã nhận diện tệp ảnh
+              </span>
+            </div>
+          </div>
+        ) : (
+          <div className="text-[11px] text-slate-400 dark:text-slate-500 italic px-1">
+            Chưa có tệp riêng (Hệ thống dùng phong cách biểu tượng vector mặc định).
+          </div>
+        )}
       </div>
     );
   };
@@ -260,6 +401,287 @@ export default function AdminSettings() {
 
       {/* ===== TAB CONTENT AREA ===== */}
       <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800 shadow-xs">
+        {/* TAB 0: BRANDING & LOGO */}
+        {activeTab === 'Branding' && (
+          <div className="space-y-8">
+            {/* Header description */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200/70 dark:border-slate-800">
+              <div>
+                <h2 className="text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
+                  <Sparkles size={20} className="text-amber-500" />
+                  Quản Lý Thương Hiệu & Logo Toàn Diện (Whitelabel)
+                </h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-2xl">
+                  Tùy chỉnh toàn bộ tên thương hiệu, tên viết tắt, tagline, biểu tượng logo (chế độ sáng/tối), favicon trình duyệt và thông tin bản quyền chân trang. Mọi thay đổi sẽ cập nhật tức thì trên toàn bộ ứng dụng mà không cần tải lại trang.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2 shrink-0">
+                <span className="px-3 py-1 rounded-full text-xs font-extrabold uppercase bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-300/40">
+                  Instant Whitelabel
+                </span>
+              </div>
+            </div>
+
+            {/* LIVE PREVIEW SECTION */}
+            <div className="rounded-3xl bg-slate-950 text-white p-5 sm:p-6 border border-slate-800 shadow-xl space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Eye size={16} className="text-sky-400" />
+                  <span className="text-xs font-black uppercase tracking-wider text-slate-300">
+                    Xem Trước Thực Tế (Real-Time Live Preview)
+                  </span>
+                </div>
+                <span className="text-[10px] font-bold text-slate-500">
+                  Mô phỏng tức thì theo các ô nhập bên dưới
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                {/* 1. Light Mode Header Preview */}
+                <div className="rounded-2xl bg-white p-4 text-slate-900 border border-slate-200 shadow-sm flex flex-col justify-between min-h-[110px]">
+                  <div className="flex items-center justify-between border-b border-slate-100 pb-2 mb-2">
+                    <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">
+                      Giao diện sáng (Light Mode Navbar)
+                    </span>
+                    <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <BrandLogo
+                      size="md"
+                      isDark={false}
+                      customTitle={settingsMap['brand.name'] || 'VBaceEnglish'}
+                      customTagline={settingsMap['brand.tagline'] || 'By Vũ Bảo Software'}
+                      customLogoUrl={settingsMap['brand.logo_url'] || null}
+                    />
+                    <div className="hidden sm:flex items-center gap-2 text-xs font-bold text-slate-500">
+                      <span className="px-3 py-1 rounded-full bg-slate-100">Khóa Học</span>
+                      <span className="px-3 py-1 rounded-full bg-blue-600 text-white">Bắt đầu</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2. Dark Mode Header Preview */}
+                <div className="rounded-2xl bg-slate-900 p-4 text-white border border-slate-800 shadow-sm flex flex-col justify-between min-h-[110px]">
+                  <div className="flex items-center justify-between border-b border-slate-800 pb-2 mb-2">
+                    <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">
+                      Giao diện tối (Dark Mode Navbar)
+                    </span>
+                    <span className="w-2 h-2 rounded-full bg-sky-400" />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <BrandLogo
+                      size="md"
+                      isDark={true}
+                      customTitle={settingsMap['brand.name'] || 'VBaceEnglish'}
+                      customTagline={settingsMap['brand.tagline'] || 'By Vũ Bảo Software'}
+                      customLogoUrl={settingsMap['brand.logo_dark_url'] || settingsMap['brand.logo_url'] || null}
+                    />
+                    <div className="hidden sm:flex items-center gap-2 text-xs font-bold text-slate-400">
+                      <span className="px-3 py-1 rounded-full bg-slate-800">Khóa Học</span>
+                      <span className="px-3 py-1 rounded-full bg-blue-600 text-white">Bắt đầu</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 3. Browser Tab Simulation */}
+              <div className="rounded-2xl bg-slate-900/90 border border-slate-800 p-3 flex items-center gap-3">
+                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 border border-slate-700 max-w-md truncate">
+                  {settingsMap['brand.favicon_url'] ? (
+                    <img
+                      src={settingsMap['brand.favicon_url']}
+                      alt="Favicon"
+                      className="w-4 h-4 rounded-xs object-contain shrink-0"
+                      onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                    />
+                  ) : (
+                    <Globe size={14} className="text-sky-400 shrink-0" />
+                  )}
+                  <span className="text-xs font-bold text-slate-200 truncate">
+                    {settingsMap['brand.name'] || 'VBaceEnglish'} — {settingsMap['brand.tagline'] || 'Nền Tảng Tiếng Anh'}
+                  </span>
+                </div>
+                <span className="text-[10px] text-slate-500 hidden sm:inline">
+                  Mô phỏng tiêu đề & Favicon trên thanh Tab trình duyệt
+                </span>
+              </div>
+            </div>
+
+            {/* SECTION 1: CORE BRAND TEXTS */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 text-slate-900 dark:text-white font-extrabold text-sm">
+                <FileText size={17} className="text-blue-500" />
+                <span>1. Định Danh & Tên Thương Hiệu</span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-xs font-extrabold text-slate-700 dark:text-slate-300 mb-1.5">
+                    Tên Thương Hiệu Đầy Đủ (Brand Name) *
+                  </label>
+                  <input
+                    type="text"
+                    value={settingsMap['brand.name'] || ''}
+                    onChange={(e) => updateVal('brand.name', e.target.value)}
+                    placeholder="VD: VBaceEnglish"
+                    className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500/20"
+                  />
+                  <p className="text-[10px] text-slate-400 mt-1">Xuất hiện tại Navbar, Sidebar, tiêu đề tab trình duyệt.</p>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-extrabold text-slate-700 dark:text-slate-300 mb-1.5">
+                    Tên Rút Gọn / Ký Hiệu (Short Name)
+                  </label>
+                  <input
+                    type="text"
+                    value={settingsMap['brand.short_name'] || ''}
+                    onChange={(e) => updateVal('brand.short_name', e.target.value)}
+                    placeholder="VD: VBace hoặc VB"
+                    className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500/20"
+                  />
+                  <p className="text-[10px] text-slate-400 mt-1">Dùng cho biểu tượng ứng dụng hoặc thiết bị di động nhỏ.</p>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-extrabold text-slate-700 dark:text-slate-300 mb-1.5">
+                    Tagline Phụ (Sub-tagline)
+                  </label>
+                  <input
+                    type="text"
+                    value={settingsMap['brand.tagline'] || ''}
+                    onChange={(e) => updateVal('brand.tagline', e.target.value)}
+                    placeholder="VD: By Vũ Bảo Software"
+                    className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500/20"
+                  />
+                  <p className="text-[10px] text-slate-400 mt-1">Dòng chữ nhỏ dưới tên thương hiệu ở logo.</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-extrabold text-slate-700 dark:text-slate-300 mb-1.5">
+                    Đơn Vị Chủ Quản / Tên Công Ty (Company Name)
+                  </label>
+                  <input
+                    type="text"
+                    value={settingsMap['brand.company_name'] || ''}
+                    onChange={(e) => updateVal('brand.company_name', e.target.value)}
+                    placeholder="VD: Vũ Bảo Software Corporation"
+                    className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm font-medium text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500/20"
+                  />
+                  <p className="text-[10px] text-slate-400 mt-1">Sử dụng trong thẻ SEO JSON-LD và hồ sơ pháp lý.</p>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-extrabold text-slate-700 dark:text-slate-300 mb-1.5">
+                    Khẩu Hiệu / Định Vị Sản Phẩm (Slogan)
+                  </label>
+                  <input
+                    type="text"
+                    value={settingsMap['brand.slogan'] || ''}
+                    onChange={(e) => updateVal('brand.slogan', e.target.value)}
+                    placeholder="VD: Luyện Phản Xạ 1500 Câu & 3000 Từ Vựng Thực Chiến"
+                    className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm font-medium text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500/20"
+                  />
+                  <p className="text-[10px] text-slate-400 mt-1">Hiển thị tại trang Đăng Nhập và thông tin mô tả ứng dụng.</p>
+                </div>
+              </div>
+            </div>
+
+            {/* SECTION 2: LOGO & VISUAL ASSETS */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 text-slate-900 dark:text-white font-extrabold text-sm">
+                <ImageIcon size={17} className="text-emerald-500" />
+                <span>2. Tải Lên Logo & Biểu Tượng Nhận Diện (Assets & Favicon)</span>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                {/* 1. Main Logo */}
+                <BrandingAssetUploader
+                  label="Logo Chính (Light Mode / Mặc Định)"
+                  desc="Khuyến nghị: Tệp ảnh SVG hoặc PNG nền trong suốt, chiều cao 36–64px."
+                  settingKey="brand.logo_url"
+                  placeholder="https://.../logo.png hoặc /uploads/branding/..."
+                  recommended="Khuyên dùng"
+                />
+
+                {/* 2. Dark Mode Logo */}
+                <BrandingAssetUploader
+                  label="Logo Chế Độ Tối (Dark Mode)"
+                  desc="Nếu để trống, hệ thống sẽ tự động dùng Logo Chính cho cả 2 giao diện."
+                  settingKey="brand.logo_dark_url"
+                  placeholder="Tùy chọn: Logo sáng màu trên nền tối..."
+                  recommended="Tùy chọn"
+                />
+
+                {/* 3. Browser Favicon */}
+                <BrandingAssetUploader
+                  label="Favicon Trình Duyệt"
+                  desc="Icon hiển thị trên Tab trình duyệt (.ico, .svg, .png). Kích thước 32x32 hoặc 64x64."
+                  settingKey="brand.favicon_url"
+                  accept="image/x-icon,image/svg+xml,image/png"
+                  placeholder="VD: /favicon.svg hoặc URL icon..."
+                  recommended="Chuẩn SEO"
+                />
+              </div>
+            </div>
+
+            {/* SECTION 3: FOOTER & CONTACT INFO */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 text-slate-900 dark:text-white font-extrabold text-sm">
+                <Building size={17} className="text-purple-500" />
+                <span>3. Chân Trang & Thông Tin Liên Hệ Hỗ Trợ</span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-xs font-extrabold text-slate-700 dark:text-slate-300 mb-1.5">
+                    Bản Quyền Chân Trang (Copyright)
+                  </label>
+                  <input
+                    type="text"
+                    value={settingsMap['brand.copyright'] || ''}
+                    onChange={(e) => updateVal('brand.copyright', e.target.value)}
+                    placeholder="VD: © 2026 VBaceEnglish — By Vũ Bảo Software."
+                    className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm font-medium text-slate-900 dark:text-white"
+                  />
+                  <p className="text-[10px] text-slate-400 mt-1">Xuất hiện ở dòng cuối cùng của Landing Page & Dashboard.</p>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-extrabold text-slate-700 dark:text-slate-300 mb-1.5">
+                    Email Hỗ Trợ Học Viên
+                  </label>
+                  <input
+                    type="email"
+                    value={settingsMap['brand.support_email'] || ''}
+                    onChange={(e) => updateVal('brand.support_email', e.target.value)}
+                    placeholder="VD: support@vbaceenglish.com"
+                    className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm font-medium text-slate-900 dark:text-white"
+                  />
+                  <p className="text-[10px] text-slate-400 mt-1">Hiển thị tại chân trang và trang liên hệ giải đáp thắc mắc.</p>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-extrabold text-slate-700 dark:text-slate-300 mb-1.5">
+                    Hotline Tư Vấn / Hỗ Trợ Kỹ Thuật
+                  </label>
+                  <input
+                    type="text"
+                    value={settingsMap['brand.hotline'] || ''}
+                    onChange={(e) => updateVal('brand.hotline', e.target.value)}
+                    placeholder="VD: 1900 6868 hoặc 0987654321"
+                    className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm font-medium text-slate-900 dark:text-white"
+                  />
+                  <p className="text-[10px] text-slate-400 mt-1">Số hotline hiển thị ở chân trang để học viên tiện liên hệ.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* TAB 1: GENERAL */}
         {activeTab === 'General' && (
           <div className="space-y-6">
@@ -270,6 +692,25 @@ export default function AdminSettings() {
               <p className="text-xs text-slate-500 mt-0.5">
                 Điều chỉnh thông tin thương hiệu, cổng đăng ký tài khoản và chế độ bảo trì toàn trang
               </p>
+            </div>
+
+            <div className="p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex items-center gap-2.5 text-xs text-amber-900 dark:text-amber-200">
+                <Sparkles size={16} className="text-amber-500 shrink-0" />
+                <span>
+                  Cấu hình nâng cao gồm Logo tải lên, Dark Mode Logo, Favicon trình duyệt và bản quyền chân trang hiện đã được tách thành tab riêng{' '}
+                  <strong className="font-black underline cursor-pointer" onClick={() => setActiveTab('Branding')}>
+                    Thương Hiệu & Logo
+                  </strong>.
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setActiveTab('Branding')}
+                className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold shrink-0 transition-colors cursor-pointer"
+              >
+                Đến Tab Thương Hiệu
+              </button>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

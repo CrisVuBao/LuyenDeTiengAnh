@@ -14,6 +14,8 @@ import {
 } from 'lucide-react';
 import authApi, { normalizeVietnamPhone, validateVietnamPhone } from '../../../api/authApi';
 import useAuthStore from '../../../store/authStore';
+import useBrandingStore from '../../../store/useBrandingStore';
+import BrandLogo from '../../../components/BrandLogo';
 import toast from 'react-hot-toast';
 
 export default function Auth() {
@@ -21,6 +23,7 @@ export default function Auth() {
   const [loading, setLoading] = useState(false);
   const [pendingApprovalNotice, setPendingApprovalNotice] = useState(null);
   const setAuth = useAuthStore((state) => state.setAuth);
+  const branding = useBrandingStore((state) => state.branding);
   const navigate = useNavigate();
 
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -291,24 +294,16 @@ export default function Auth() {
 
       <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl max-w-md w-full p-8 rounded-[28px] shadow-[0_20px_60px_rgba(15,23,42,0.08)] relative z-10 border border-slate-200/80 dark:border-slate-800">
         {/* Header */}
-        <div className="text-center mb-7">
+        <div className="text-center mb-7 flex flex-col items-center">
           <Link
             to="/"
             className="inline-block group cursor-pointer"
-            title="Quay về trang giới thiệu VBaceEnglish"
+            title={`Quay về trang giới thiệu ${branding.brandName}`}
           >
-            <div className="w-12 h-12 rounded-2xl bg-[#0071e3] text-white flex items-center justify-center mx-auto mb-4 shadow-sm group-hover:scale-105 transition-transform">
-              <Sparkles size={24} />
-            </div>
-            <h2 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white leading-none group-hover:text-[#0071e3] dark:group-hover:text-sky-400 transition-colors">
-              VBaceEnglish
-            </h2>
+            <BrandLogo size="lg" />
           </Link>
-          <p className="text-xs font-semibold text-[#0071e3] dark:text-sky-400 mt-1 tracking-wide">
-            By Vũ Bảo Software
-          </p>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1.5">
-            Giao Tiếp Thực Chiến & Luyện Đề TOEIC Chuẩn ETS
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 max-w-xs">
+            {branding.slogan || 'Giao Tiếp Thực Chiến & Luyện Đề TOEIC Chuẩn ETS'}
           </p>
         </div>
 
@@ -617,7 +612,7 @@ export default function Auth() {
             className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-[#0071e3] dark:hover:text-sky-400 transition-colors"
           >
             <ArrowLeft size={13} />
-            <span>Khám phá lại trang chủ giới thiệu VBaceEnglish</span>
+            <span>Khám phá lại trang chủ giới thiệu {branding.brandName}</span>
           </Link>
         </div>
       </div>

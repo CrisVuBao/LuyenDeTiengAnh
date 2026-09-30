@@ -4,7 +4,11 @@ import StudentNavbar from './StudentNavbar';
 import BinoPlaylistModal from '../features/bino/components/BinoPlaylistModal';
 import CelebrationEffects from '../features/gamification/components/CelebrationEffects';
 
+import useBrandingStore from '../store/useBrandingStore';
+
 export default function StudentLayout() {
+  const branding = useBrandingStore((s) => s.branding);
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col transition-colors duration-300">
       
@@ -22,7 +26,7 @@ export default function StudentLayout() {
 
       {/* Simple Clean Footer */}
       <footer className="hidden md:block border-t border-slate-200 dark:border-slate-800/80 py-6 text-center text-xs text-slate-400 dark:text-slate-500 bg-white/50 dark:bg-slate-900/50">
-        <p>© 2026 VBaceEnglish — By Vũ Bảo Software. Nền tảng học và luyện thi tiếng Anh chuẩn quốc tế.</p>
+        <p>{branding.copyright || `© ${new Date().getFullYear()} ${branding.brandName} — By ${branding.companyName || 'Software'}. Nền tảng học và luyện thi tiếng Anh chuẩn quốc tế.`}</p>
       </footer>
 
     </div>

@@ -40,6 +40,7 @@ public interface ISystemSettingsService
     Task<double> GetDoubleSettingAsync(string key, double defaultValue = 1.0);
     Task<Response<bool>> UpdateSettingsAsync(int adminUserId, string adminName, Dictionary<string, string> settings, string ipAddress = "");
     Task<Response<List<SystemSettingItemDto>>> ResetToDefaultsAsync(int adminUserId, string adminName, string ipAddress = "");
+    Task<Response<PublicBrandingDto>> GetPublicBrandingAsync();
     Task<Response<SystemHealthAndInfoDto>> GetSystemInfoAsync(string webRootPath);
     Task<Response<CleanupDataResultDto>> CleanupOldDataAsync(int adminUserId, string adminName, CleanupDataRequestDto dto);
 }
@@ -575,6 +576,25 @@ public class SystemSettingsService : ISystemSettingsService
         if (settings == null || settings.Count == 0)
             return Response<bool>.Failure("Không có dữ liệu cài đặt để cập nhật.");
 
+        // Đồng bộ hai chiều giữa brand.name và app.name, brand.tagline và app.tagline
+        if (settings.TryGetValue("brand.name", out var bName) && !string.IsNullOrWhiteSpace(bName))
+        {
+            settings["app.name"] = bName;
+        }
+        else if (settings.TryGetValue("app.name", out var aName) && !string.IsNullOrWhiteSpace(aName) && !settings.ContainsKey("brand.name"))
+        {
+            settings["brand.name"] = aName;
+        }
+
+        if (settings.TryGetValue("brand.tagline", out var bTag) && !string.IsNullOrWhiteSpace(bTag))
+        {
+            settings["app.tagline"] = bTag;
+        }
+        else if (settings.TryGetValue("app.tagline", out var aTag) && !string.IsNullOrWhiteSpace(aTag) && !settings.ContainsKey("brand.tagline"))
+        {
+            settings["brand.tagline"] = aTag;
+        }
+
         await _unitOfWork.AdminManagement.UpsertSettingsAsync(settings, adminUserId);
         _cache.Remove(SettingsCacheKey);
 
@@ -591,6 +611,52 @@ public class SystemSettingsService : ISystemSettingsService
         );
 
         return Response<bool>.SuccessResult("Đã lưu cấu hình hệ thống thành công!", true);
+    }
+
+    public async Task<Response<PublicBrandingDto>> GetPublicBrandingAsync()
+    {
+        var brandName = await GetSettingValueAsync("brand.name", "");
+        if (string.IsNullOrWhiteSpace(brandName))
+            brandName = await GetSettingValueAsync("app.name", "VBaceEnglish");
+
+        var tagline = await GetSettingValueAsync("brand.tagline", "");
+        if (string.IsNullOrWhiteSpace(tagline))
+            tagline = await GetSettingValueAsync("app.tagline", "By Vũ Bảo Software");
+
+        var shortName = await GetSettingValueAsync("brand.short_name", "VBace");
+        var slogan = await GetSettingValueAsync("brand.slogan", "Giao Tiếp Thực Chiến & Luyện Đề TOEIC Chuẩn ETS");
+        var description = await GetSettingValueAsync("brand.description", "Nền tảng học tiếng Anh giao tiếp & luyện thi TOEIC, THPT, IELTS thông minh với công nghệ phản xạ và FSRS.");
+        var companyName = await GetSettingValueAsync("brand.company_name", "Vũ Bảo Software");
+        var logoUrl = await GetSettingValueAsync("brand.logo_url", "");
+        var logoDarkUrl = await GetSettingValueAsync("brand.logo_dark_url", "");
+        var faviconUrl = await GetSettingValueAsync("brand.favicon_url", "/favicon.svg");
+        var copyright = await GetSettingValueAsync("brand.copyright", $"© {DateTime.UtcNow.Year} {brandName} — By {companyName}. Tất cả quyền được bảo lưu.");
+        var supportEmail = await GetSettingValueAsync("brand.support_email", "support@vbaceenglish.com");
+        var hotline = await GetSettingValueAsync("brand.hotline", "0988.xxx.xxx");
+        var maintenanceMode = await GetBoolSettingAsync("app.maintenance_mode", false);
+        var maintenanceMessage = await GetSettingValueAsync("app.maintenance_message", "Hệ thống đang được nâng cấp tính năng mới. Vui lòng quay lại sau ít phút!");
+        var registrationOpen = await GetBoolSettingAsync("app.registration_open", true);
+
+        var dto = new PublicBrandingDto
+        {
+            BrandName = brandName,
+            ShortName = shortName,
+            Tagline = tagline,
+            Slogan = slogan,
+            Description = description,
+            CompanyName = companyName,
+            LogoUrl = logoUrl,
+            LogoDarkUrl = logoDarkUrl,
+            FaviconUrl = string.IsNullOrWhiteSpace(faviconUrl) ? "/favicon.svg" : faviconUrl,
+            Copyright = copyright,
+            SupportEmail = supportEmail,
+            Hotline = hotline,
+            MaintenanceMode = maintenanceMode,
+            MaintenanceMessage = maintenanceMessage,
+            RegistrationOpen = registrationOpen
+        };
+
+        return Response<PublicBrandingDto>.SuccessResult("Lấy thông tin thương hiệu thành công", dto);
     }
 
     public async Task<Response<List<SystemSettingItemDto>>> ResetToDefaultsAsync(
@@ -720,6 +786,17 @@ public class SystemSettingsService : ISystemSettingsService
 
     private static List<SystemSetting> InfrastructureFallbackDefaults() =>
     [
+        new() { Key = "brand.name", Value = "VBaceEnglish", Category = "Branding", Description = "Tên thương hiệu hiển thị trên toàn hệ thống" },
+        new() { Key = "brand.short_name", Value = "VBace", Category = "Branding", Description = "Tên viết tắt / Logo mark text" },
+        new() { Key = "brand.tagline", Value = "By Vũ Bảo Software", Category = "Branding", Description = "Khẩu hiệu / Tagline hiển thị dưới logo" },
+        new() { Key = "brand.slogan", Value = "Giao Tiếp Thực Chiến & Luyện Đề TOEIC Chuẩn ETS", Category = "Branding", Description = "Slogan mô tả sản phẩm" },
+        new() { Key = "brand.company_name", Value = "Vũ Bảo Software", Category = "Branding", Description = "Tên công ty / Đơn vị chủ quản" },
+        new() { Key = "brand.logo_url", Value = "", Category = "Branding", Description = "Đường dẫn ảnh Logo chính (để trống để dùng biểu tượng mặc định)" },
+        new() { Key = "brand.logo_dark_url", Value = "", Category = "Branding", Description = "Đường dẫn ảnh Logo cho chế độ tối (để trống dùng logo chính)" },
+        new() { Key = "brand.favicon_url", Value = "/favicon.svg", Category = "Branding", Description = "Đường dẫn Favicon trình duyệt" },
+        new() { Key = "brand.copyright", Value = "© 2026 VBaceEnglish — By Vũ Bảo Software. Tất cả quyền được bảo lưu.", Category = "Branding", Description = "Văn bản bản quyền hiển thị tại chân trang" },
+        new() { Key = "brand.support_email", Value = "support@vbaceenglish.com", Category = "Branding", Description = "Email hỗ trợ học viên" },
+        new() { Key = "brand.hotline", Value = "0988.xxx.xxx", Category = "Branding", Description = "Hotline tư vấn và giải đáp" },
         new() { Key = "app.name", Value = "VBaceEnglish", Category = "General", Description = "Tên ứng dụng hiển thị trên toàn hệ thống" },
         new() { Key = "app.tagline", Value = "By Vũ Bảo Software", Category = "General", Description = "Slogan thương hiệu hiển thị dưới logo" },
         new() { Key = "app.maintenance_mode", Value = "false", Category = "General", Description = "Bật chế độ bảo trì hệ thống (tạm ngưng học viên truy cập)" },

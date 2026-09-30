@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronDown, Sparkles, ArrowRight } from 'lucide-react';
+import BrandLogo from '../../../components/BrandLogo';
+import useBrandingStore from '../../../store/useBrandingStore';
 
 const FAQ_ITEMS = [
   {
@@ -23,6 +25,7 @@ const FAQ_ITEMS = [
 
 export default function LandingFaqCta({ onStartLearning, scrollToSection, isAuthenticated }) {
   const [openFaqIdx, setOpenFaqIdx] = useState(0);
+  const branding = useBrandingStore((s) => s.branding);
 
   return (
     <>
@@ -102,19 +105,7 @@ export default function LandingFaqCta({ onStartLearning, scrollToSection, isAuth
       {/* FOOTER */}
       <footer className="border-t border-slate-200/80 dark:border-slate-800/80 bg-white/70 dark:bg-[#080c17] py-10 relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-[#0071e3] text-white flex items-center justify-center shadow-xs">
-              <Sparkles size={17} />
-            </div>
-            <div className="flex flex-col leading-none text-left">
-              <span className="font-extrabold text-base text-slate-900 dark:text-white">
-                VBaceEnglish
-              </span>
-              <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mt-0.5">
-                By Vũ Bảo Software
-              </span>
-            </div>
-          </div>
+          <BrandLogo size="md" />
 
           <div className="flex flex-wrap items-center justify-center gap-5 text-xs font-semibold text-slate-500 dark:text-slate-400">
             <button onClick={() => scrollToSection('live-studio')} className="hover:text-[#0071e3] cursor-pointer">
@@ -131,8 +122,15 @@ export default function LandingFaqCta({ onStartLearning, scrollToSection, isAuth
             </button>
           </div>
 
-          <div className="text-xs text-slate-400 dark:text-slate-500 text-center sm:text-right">
-            © 2026 VBaceEnglish — By Vũ Bảo Software. Thiết kế đột phá & tối ưu hiệu năng.
+          <div className="text-xs text-slate-400 dark:text-slate-500 text-center sm:text-right space-y-1">
+            <p>{branding.copyright || `© ${new Date().getFullYear()} ${branding.brandName}. Thiết kế đột phá & tối ưu hiệu năng.`}</p>
+            {(branding.supportEmail || branding.hotline) && (
+              <p className="text-[11px] text-slate-400 dark:text-slate-500 flex items-center justify-center sm:justify-end gap-2">
+                {branding.supportEmail && <span>Hỗ trợ: <a href={`mailto:${branding.supportEmail}`} className="underline hover:text-blue-500">{branding.supportEmail}</a></span>}
+                {branding.supportEmail && branding.hotline && <span>•</span>}
+                {branding.hotline && <span>Hotline: <a href={`tel:${branding.hotline}`} className="underline hover:text-blue-500">{branding.hotline}</a></span>}
+              </p>
+            )}
           </div>
         </div>
       </footer>

@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
+using VBaceEnglish.Application.Contracts.Services;
 using VBaceEnglish.Application.DTOs.Dashboard;
 using VBaceEnglish.Application.Helpers;
 using VBaceEnglish.Application.Services;
@@ -39,6 +40,38 @@ public class SystemSettingsController : ControllerBase
 
     private string GetClientIp() =>
         HttpContext.Connection.RemoteIpAddress?.ToString() ?? "127.0.0.1";
+
+    /// <summary>
+    /// Lấy thông tin nhận diện thương hiệu công khai (Logo, Tên hệ thống, Slogan, Bản quyền)
+    /// </summary>
+    [HttpGet("public")]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetPublicBranding()
+    {
+        var result = await _settingsService.GetPublicBrandingAsync();
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Tải lên Logo hoặc Favicon thương hiệu
+    /// </summary>
+    [HttpPost("upload-branding")]
+    [RequestSizeLimit(10_000_000)] // 10MB
+    public async Task<IActionResult> UploadBrandingAsset([FromServices] IFileStorageService storageService, IFormFile file)
+    {
+        if (file == null || file.Length == 0)
+            return BadRequest(Response<string>.Failure("Vui lòng chọn file ảnh hợp lệ."));
+
+        var allowedExts = new[] { ".png", ".jpg", ".jpeg", ".svg", ".webp", ".ico" };
+        var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
+        if (!allowedExts.Contains(ext))
+            return BadRequest(Response<string>.Failure("Chỉ hỗ trợ định dạng PNG, JPG, JPEG, SVG, WEBP hoặc ICO."));
+
+        using var stream = file.OpenReadStream();
+        var relativeUrl = await storageService.SaveFileAsync(stream, file.FileName, "branding");
+
+        return Ok(Response<string>.SuccessResult("Tải ảnh thương hiệu lên thành công", relativeUrl));
+    }
 
     /// <summary>
     /// Lấy toàn bộ danh sách cài đặt hệ thống (6 phân nhóm)

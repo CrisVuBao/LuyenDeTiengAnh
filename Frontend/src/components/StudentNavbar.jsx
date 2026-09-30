@@ -16,6 +16,8 @@ import XPBar from '../features/gamification/components/XPBar';
 import NotificationBell from './NotificationBell';
 import LanguageSelector from './LanguageSelector';
 import MasterLearningGuideModal from './MasterLearningGuideModal';
+import BrandLogo from './BrandLogo';
+import useBrandingStore from '../store/useBrandingStore';
 
 // Prefetch JS chunks & API data on hover
 const prefetchRoute = (route) => {
@@ -48,6 +50,7 @@ export default function StudentNavbar() {
   const dropdownRef = useRef(null);
   const { user, logout } = useAuthStore();
   const { mode, toggleTheme } = useThemeStore();
+  const branding = useBrandingStore((s) => s.branding);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -163,19 +166,9 @@ export default function StudentNavbar() {
             <NavLink 
               to="/home" 
               onMouseEnter={() => prefetchRoute('home')} 
-              className="flex items-center gap-2.5 group shrink-0"
+              className="flex items-center group shrink-0"
             >
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#0071e3] to-sky-400 text-white flex items-center justify-center transition-transform group-hover:scale-105 shadow-sm shadow-blue-500/20 shrink-0">
-                <Sparkles size={17} />
-              </div>
-              <div className="flex flex-col leading-none">
-                <span className="font-extrabold text-sm sm:text-base tracking-tight text-slate-900 dark:text-white leading-tight">
-                  VBaceEnglish
-                </span>
-                <span className="text-[8.5px] sm:text-[10px] font-bold text-slate-400 dark:text-slate-500 tracking-tight leading-none mt-0.5 block">
-                  By Vũ Bảo Software
-                </span>
-              </div>
+              <BrandLogo size="sm" />
             </NavLink>
           </div>
 
@@ -646,7 +639,7 @@ export default function StudentNavbar() {
 
                 <div className="text-center pt-1">
                   <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500">
-                    VBaceEnglish • By Vũ Bảo Software
+                    {branding.brandName} • {branding.companyName || branding.tagline}
                   </p>
                 </div>
               </div>

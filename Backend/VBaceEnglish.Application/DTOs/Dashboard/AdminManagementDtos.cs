@@ -114,6 +114,25 @@ public class UpdateSystemSettingsRequestDto
     public Dictionary<string, string> Settings { get; set; } = new();
 }
 
+public class PublicBrandingDto
+{
+    public string BrandName { get; set; } = "VBaceEnglish";
+    public string ShortName { get; set; } = "VBace";
+    public string Tagline { get; set; } = "By Vũ Bảo Software";
+    public string Slogan { get; set; } = "Giao Tiếp Thực Chiến & Luyện Đề TOEIC Chuẩn ETS";
+    public string Description { get; set; } = "Nền tảng học tiếng Anh giao tiếp & luyện thi TOEIC, THPT, IELTS thông minh với công nghệ phản xạ và FSRS.";
+    public string CompanyName { get; set; } = "Vũ Bảo Software";
+    public string LogoUrl { get; set; } = "";
+    public string LogoDarkUrl { get; set; } = "";
+    public string FaviconUrl { get; set; } = "/favicon.svg";
+    public string Copyright { get; set; } = "© 2026 VBaceEnglish — By Vũ Bảo Software. Tất cả quyền được bảo lưu.";
+    public string SupportEmail { get; set; } = "support@vbaceenglish.com";
+    public string Hotline { get; set; } = "0988.xxx.xxx";
+    public bool MaintenanceMode { get; set; } = false;
+    public string MaintenanceMessage { get; set; } = "";
+    public bool RegistrationOpen { get; set; } = true;
+}
+
 public class SystemHealthAndInfoDto
 {
     public string AppName { get; set; } = "VBaceEnglish";

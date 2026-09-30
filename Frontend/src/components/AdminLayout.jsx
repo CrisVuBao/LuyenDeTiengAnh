@@ -23,11 +23,14 @@ import useThemeStore from '../store/themeStore';
 import useNotificationStore from '../store/useNotificationStore';
 import authApi from '../api/authApi';
 import NotificationBell from './NotificationBell';
+import BrandLogo from './BrandLogo';
+import useBrandingStore from '../store/useBrandingStore';
 import toast from 'react-hot-toast';
 
 export default function AdminLayout() {
   const { user, logout } = useAuthStore();
   const { mode, toggleTheme } = useThemeStore();
+  const branding = useBrandingStore((s) => s.branding);
   const disconnectRealtime = useNotificationStore((s) => s.disconnectRealtime);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
@@ -83,7 +86,7 @@ export default function AdminLayout() {
     if (location.pathname.startsWith('/admin/content')) return 'Giám Sát 3000 Từ Vựng & Phản Xạ 50';
     if (location.pathname.startsWith('/admin/activity-log')) return 'Nhật Ký Hoạt Động Quản Trị (Audit Log)';
     if (location.pathname.startsWith('/admin/settings')) return 'Cài Đặt & Cấu Hình Hệ Thống';
-    return 'Bảng Quản Trị VBaceEnglish';
+    return `Bảng Quản Trị ${branding.brandName || 'Hệ Thống'}`;
   };
 
   return (
@@ -91,23 +94,11 @@ export default function AdminLayout() {
       {/* ===== ADMIN SIDEBAR (280px) ===== */}
       <aside className="hidden md:flex flex-col w-72 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-r border-slate-200/80 dark:border-slate-800/80 p-5 sticky top-0 h-screen z-30">
         {/* Brand Logo */}
-        <div className="flex items-center gap-3 mb-6 px-2">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center shadow-lg shadow-blue-500/25 shrink-0">
-            <Sparkles size={21} />
-          </div>
-          <div>
-            <h1 className="font-black text-lg tracking-tight text-gradient leading-tight">
-              VBaceEnglish
-            </h1>
-            <div className="flex items-center gap-1.5 mt-0.5">
-              <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400">
-                By Vũ Bảo Software
-              </span>
-              <span className="px-1.5 py-0.2 rounded text-[9px] font-extrabold uppercase bg-blue-100 text-blue-700 dark:bg-blue-900/60 dark:text-blue-300 tracking-wider">
-                ADMIN
-              </span>
-            </div>
-          </div>
+        <div className="flex items-center justify-between mb-6 px-1">
+          <BrandLogo size="md" />
+          <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold uppercase bg-blue-100 text-blue-700 dark:bg-blue-900/60 dark:text-blue-300 tracking-wider">
+            ADMIN
+          </span>
         </div>
 
         {/* Navigation Links */}
@@ -215,17 +206,7 @@ export default function AdminLayout() {
 
             {/* Mobile Brand */}
             <div className="md:hidden flex items-center gap-2">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center shadow-sm">
-                <Sparkles size={16} />
-              </div>
-              <div className="flex flex-col leading-none">
-                <span className="font-black text-sm tracking-tight text-slate-900 dark:text-white">
-                  VBaceEnglish
-                </span>
-                <span className="text-[9px] font-bold text-slate-400 dark:text-slate-500 tracking-tight mt-0.5">
-                  By Vũ Bảo Software
-                </span>
-              </div>
+              <BrandLogo size="sm" showTagline={false} />
             </div>
 
             <h2 className="hidden md:block text-base font-extrabold text-slate-800 dark:text-slate-100">
@@ -288,19 +269,7 @@ export default function AdminLayout() {
             >
               <div>
                 <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center shadow-md">
-                      <Sparkles size={18} />
-                    </div>
-                    <div>
-                      <h3 className="font-black text-base text-slate-900 dark:text-white leading-tight">
-                        VBaceEnglish
-                      </h3>
-                      <p className="text-[10px] font-bold text-slate-400 mt-0.5">
-                        By Vũ Bảo Software
-                      </p>
-                    </div>
-                  </div>
+                  <BrandLogo size="sm" />
                   <button
                     onClick={() => setMobileMenuOpen(false)}
                     className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white"
@@ -382,7 +351,7 @@ export default function AdminLayout() {
                   </button>
                 </div>
                 <p className="text-[9px] font-bold text-slate-400 text-center">
-                  VBaceEnglish • By Vũ Bảo Software
+                  {branding.brandName} • {branding.companyName || branding.tagline}
                 </p>
               </div>
             </motion.div>

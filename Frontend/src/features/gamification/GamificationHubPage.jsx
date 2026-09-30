@@ -7,6 +7,7 @@ import AchievementGallery from './components/AchievementGallery';
 import StreakCalendar from './components/StreakCalendar';
 import DailyQuestsPanel from './components/DailyQuestsPanel';
 import useGamificationStore from './store/useGamificationStore';
+import useBrandingStore from '../../store/useBrandingStore';
 import SeoMeta from '../../components/SeoMeta';
 
 export default function GamificationHubPage() {
@@ -14,6 +15,7 @@ export default function GamificationHubPage() {
   const initialTab = searchParams.get('tab') || 'leaderboard';
   const [activeTab, setActiveTab] = useState(initialTab);
   const navigate = useNavigate();
+  const brandName = useBrandingStore((s) => s.branding.brandName);
 
   const { profile, fetchProfile } = useGamificationStore();
 
@@ -37,7 +39,7 @@ export default function GamificationHubPage() {
     <div className="max-w-5xl mx-auto space-y-6 pb-12 animate-fade-in">
       <SeoMeta
         title="Bảng Xếp Hạng & Đấu Trường Danh Vọng"
-        description="Theo dõi thứ hạng tuần, huy hiệu thành tích và chuỗi ngày học tập tại VBaceEnglish."
+        description={`Theo dõi thứ hạng tuần, huy hiệu thành tích và chuỗi ngày học tập tại ${brandName}.`}
       />
       {/* Top Navigation Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
