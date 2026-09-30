@@ -148,5 +148,18 @@ public class UserProgressController : ControllerBase
         var result = await _progressService.GetCompetenceRadarAsync(userId);
         return Ok(result);
     }
+
+    /// <summary>
+    /// F5. Lá Chắn Trí Nhớ — FSRS Memory Health Shield
+    /// </summary>
+    [HttpGet("memory-shield")]
+    public async Task<IActionResult> GetMemoryShield()
+    {
+        int userId = GetCurrentUserId();
+        if (userId == 0) return Unauthorized(Response<string>.Failure("Chưa xác thực"));
+
+        var result = await _progressService.GetMemoryShieldAsync(userId);
+        return Ok(result);
+    }
 }
 

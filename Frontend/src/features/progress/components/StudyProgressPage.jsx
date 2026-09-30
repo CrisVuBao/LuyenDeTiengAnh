@@ -20,6 +20,7 @@ import PageLoader from '../../../components/PageLoader';
 import SeoMeta from '../../../components/SeoMeta';
 import toast from 'react-hot-toast';
 import CompetenceRadarCard from './CompetenceRadarCard';
+import FsrsMemoryShieldCard from '../../vocab/components/FsrsMemoryShieldCard';
 
 export default function StudyProgressPage() {
   // Chế độ chính: 'radar' (Radar Năng Lực) | 'bino' (Chém Tiếng Anh Bino) | 'reflex50' (Phản Xạ 50) | 'vocab' (3000 Từ Vựng) | 'toeic' (TOEIC)
@@ -1284,6 +1285,9 @@ export default function StudyProgressPage() {
             animate={{ opacity: 1, y: 0 }}
             className="space-y-6"
           >
+            {/* F5. LÁ CHẮN TRÍ NHỚ FSRS */}
+            <FsrsMemoryShieldCard />
+
             {/* 4 KPI Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-1">

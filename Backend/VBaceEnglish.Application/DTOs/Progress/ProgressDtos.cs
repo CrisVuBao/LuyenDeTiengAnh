@@ -129,5 +129,18 @@ public class CompetenceRadarDto
     public List<CompetenceDomainDto> Domains { get; set; } = new();
 }
 
-
-
+public class MemoryShieldDto
+{
+    public int TotalLearnedWords { get; set; }
+    public double HealthPercentage { get; set; }
+    public double ProjectedTomorrowPercentage { get; set; }
+    public double DecayDeltaPercentage { get; set; }
+    public int SolidWordsCount { get; set; }
+    public int FadingWordsCount { get; set; }
+    public int CriticalWordsCount { get; set; }
+    public int EstimatedReviewMinutes { get; set; }
+    public string TierCode { get; set; } = "Pristine"; // Pristine | Stable | Decaying
+    public string TierLabel { get; set; } = "Trí nhớ đang KHỎE";
+    public string StatusMessage { get; set; } = string.Empty;
+    public string WarningBanner { get; set; } = string.Empty;
+}

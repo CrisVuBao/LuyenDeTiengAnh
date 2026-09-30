@@ -1,0 +1,492 @@
+import React, { useState, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Shield,
+  Sparkles,
+  TrendingDown,
+  TrendingUp,
+  AlertTriangle,
+  CheckCircle2,
+  Clock,
+  Zap,
+  Volume2,
+  ChevronDown,
+  ChevronUp,
+  ArrowRight,
+  Info,
+  Flame,
+  Award,
+  Layers
+} from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import useVocabStore from '../store/useVocabStore';
+import { calculateMemoryShield } from '../../../utils/fsrsMemoryShieldEngine';
+import FsrsShieldRecoveryModal from './FsrsShieldRecoveryModal';
+
+export default function FsrsMemoryShieldCard({
+  className = '',
+  compact = false,
+  showTitle = true
+}) {
+  const navigate = useNavigate();
+  const [isRecoveryOpen, setIsRecoveryOpen] = useState(false);
+  const [wordsToReview, setWordsToReview] = useState([]);
+  const [expandedPreview, setExpandedPreview] = useState(false);
+  const [previewFilter, setPreviewFilter] = useState('critical'); // 'critical' | 'fading' | 'solid'
+  const [showInfoModal, setShowInfoModal] = useState(false);
+
+  const fsrsCards = useVocabStore((s) => s.fsrsCards);
+  const masteredWords = useVocabStore((s) => s.masteredWords);
+  const speakWord = useVocabStore((s) => s.speakWord);
+
+  // Tính toán trạng thái Lá Chắn Trí Nhớ theo thời gian thực
+  const shield = useMemo(() => {
+    return calculateMemoryShield(fsrsCards, masteredWords);
+  }, [fsrsCards, masteredWords]);
+
+  const handleStartReview = (words, initialHealth) => {
+    if (!words || words.length === 0) return;
+    setWordsToReview(words);
+    setIsRecoveryOpen(true);
+  };
+
+  const previewList = useMemo(() => {
+    if (previewFilter === 'critical') return shield.criticalWords.slice(0, 15);
+    if (previewFilter === 'fading') return shield.fadingWords.slice(0, 15);
+    return shield.solidWords.slice(0, 15);
+  }, [previewFilter, shield]);
+
+  // Màu sắc động theo cấp bậc sức khỏe
+  const isPristine = shield.tier.code === 'pristine';
+  const isStable = shield.tier.code === 'stable';
+  const isDecaying = shield.tier.code === 'decaying';
+
+  const shieldTheme = isPristine
+    ? {
+        border: 'border-emerald-500/25',
+        badge: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/30',
+        shieldColor: '#10b981',
+        glow: 'rgba(16, 185, 129, 0.25)',
+        ringBg: 'text-emerald-500'
+      }
+    : isStable
+    ? {
+        border: 'border-amber-500/25',
+        badge: 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/30',
+        shieldColor: '#f59e0b',
+        glow: 'rgba(245, 158, 11, 0.25)',
+        ringBg: 'text-amber-500'
+      }
+    : {
+        border: 'border-rose-500/25',
+        badge: 'bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/30',
+        shieldColor: '#f43f5e',
+        glow: 'rgba(244, 63, 94, 0.25)',
+        ringBg: 'text-rose-500'
+      };
+
+  return (
+    <div
+      className={`relative overflow-hidden rounded-[28px] bg-white dark:bg-slate-900 border ${shieldTheme.border} p-5 sm:p-7 shadow-[0_4px_24px_rgba(0,0,0,0.03)] dark:shadow-none transition-all ${className}`}
+    >
+      {/* Background Decorative Ambient Radial Glow */}
+      <div
+        className="pointer-events-none absolute -right-20 -top-20 w-80 h-80 rounded-full blur-3xl opacity-30"
+        style={{ backgroundColor: shieldTheme.shieldColor }}
+      />
+
+      {/* 1. Header with Badge & Info Trigger */}
+      {showTitle && (
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-slate-200/70 dark:border-slate-800">
+          <div className="flex items-center gap-3">
+            <div
+              className="w-10 h-10 rounded-2xl flex items-center justify-center transition-all shadow-xs"
+              style={{
+                backgroundColor: `${shieldTheme.shieldColor}18`,
+                color: shieldTheme.shieldColor
+              }}
+            >
+              <Shield size={22} className="animate-pulse" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-lg sm:text-xl font-bold tracking-tight text-slate-900 dark:text-white">
+                  Lá Chắn Trí Nhớ FSRS
+                </h3>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-blue-500/10 text-[#0071e3] dark:text-sky-400 border border-blue-500/20">
+                  DSR AI
+                </span>
+              </div>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Bảo vệ vốn từ của bạn trước Đường cong lãng quên Ebbinghaus
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 self-start sm:self-auto">
+            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${shieldTheme.badge}`}>
+              <span className="w-2 h-2 rounded-full animate-ping" style={{ backgroundColor: shieldTheme.shieldColor }} />
+              <span>{shield.tier.label}</span>
+            </span>
+
+            <button
+              type="button"
+              onClick={() => setShowInfoModal(true)}
+              className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 flex items-center justify-center transition-colors cursor-pointer"
+              title="Tìm hiểu về cơ chế Lá Chắn Trí Nhớ"
+            >
+              <Info size={15} />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 2. Main Hero Layout (Shield SVG Graphic + 3 Tiers + Loss Aversion Banner) */}
+      <div className="relative z-10 pt-5 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+        
+        {/* Left: Interactive Animated Shield Graphic (4 Cols) */}
+        <div className="lg:col-span-4 flex flex-col items-center justify-center text-center p-4 rounded-3xl bg-slate-50/80 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60">
+          <div className="relative w-36 h-36 flex items-center justify-center my-1">
+            
+            {/* Outer Rotating Energy Ring SVG */}
+            <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
+              <circle
+                cx="50"
+                cy="50"
+                r="44"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="4"
+                className="text-slate-200/80 dark:text-slate-700/50"
+              />
+              <motion.circle
+                cx="50"
+                cy="50"
+                r="44"
+                fill="none"
+                stroke={shieldTheme.shieldColor}
+                strokeWidth="5"
+                strokeLinecap="round"
+                strokeDasharray="276.46"
+                initial={{ strokeDashoffset: 276.46 }}
+                animate={{ strokeDashoffset: 276.46 - (276.46 * shield.healthPercentage) / 100 }}
+                transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
+              />
+            </svg>
+
+            {/* Inner Shield Badge SVG with Gradient Fill */}
+            <div className="relative z-10 flex flex-col items-center justify-center">
+              <svg width="68" height="78" viewBox="0 0 24 28" fill="none" className="drop-shadow-md">
+                <defs>
+                  <linearGradient id="shieldGrad" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stopColor={shieldTheme.shieldColor} stopOpacity="0.9" />
+                    <stop offset="100%" stopColor={shieldTheme.shieldColor} stopOpacity="0.4" />
+                  </linearGradient>
+                </defs>
+                <path
+                  d="M12 1L2 5V12C2 18.5 6.2 24.6 12 27C17.8 24.6 22 18.5 22 12V5L12 1Z"
+                  fill="url(#shieldGrad)"
+                  stroke={shieldTheme.shieldColor}
+                  strokeWidth="1.2"
+                />
+              </svg>
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
+                <span className="text-2xl font-black tracking-tight leading-none text-slate-900 dark:text-white">
+                  {shield.healthPercentage}%
+                </span>
+                <span className="text-[10px] font-bold text-slate-500 dark:text-slate-300 uppercase tracking-wide mt-0.5">
+                  Độ Bền
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-2 space-y-0.5">
+            <span className="text-xs font-semibold text-slate-700 dark:text-slate-200">
+              {shield.totalWords > 0 ? `Bảo vệ ${shield.totalWords} từ vựng` : 'Chưa có từ vựng'}
+            </span>
+            {shield.hasDecayRisk && (
+              <p className="text-[11px] text-rose-500 dark:text-rose-400 font-medium flex items-center justify-center gap-1">
+                <TrendingDown size={13} />
+                <span>Ngày mai còn {shield.projectedTomorrowPercentage}% nếu không ôn</span>
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Right: 3 Tier Breakdown Cards + Loss Aversion Alert + Action CTA (8 Cols) */}
+        <div className="lg:col-span-8 space-y-4">
+          
+          {/* 3 Tier Status Cards (Endowment Effect) */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+            
+            {/* Green Tier: Solid */}
+            <div
+              onClick={() => {
+                setPreviewFilter('solid');
+                setExpandedPreview(true);
+              }}
+              className={`p-3 rounded-2xl border transition-all cursor-pointer ${
+                previewFilter === 'solid' && expandedPreview
+                  ? 'bg-emerald-500/10 border-emerald-500/40 ring-1 ring-emerald-500/30'
+                  : 'bg-slate-50 dark:bg-slate-800/60 border-slate-200/80 dark:border-slate-800 hover:border-emerald-500/30'
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+                <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">
+                  {shield.solidCount} từ
+                </span>
+              </div>
+              <p className="text-xs font-bold text-slate-800 dark:text-slate-100 mt-2">
+                Nhớ Vững Chắc
+              </p>
+              <p className="text-[11px] text-slate-400 leading-tight mt-0.5">
+                Độ bền &gt; 14 ngày, đã khắc sâu vào dài hạn
+              </p>
+            </div>
+
+            {/* Yellow Tier: Fading */}
+            <div
+              onClick={() => {
+                setPreviewFilter('fading');
+                setExpandedPreview(true);
+              }}
+              className={`p-3 rounded-2xl border transition-all cursor-pointer ${
+                previewFilter === 'fading' && expandedPreview
+                  ? 'bg-amber-500/10 border-amber-500/40 ring-1 ring-amber-500/30'
+                  : 'bg-slate-50 dark:bg-slate-800/60 border-slate-200/80 dark:border-slate-800 hover:border-amber-500/30'
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
+                <span className="text-xs font-bold text-amber-600 dark:text-amber-400">
+                  {shield.fadingCount} từ
+                </span>
+              </div>
+              <p className="text-xs font-bold text-slate-800 dark:text-slate-100 mt-2">
+                Bắt Đầu Mờ Nhạt
+              </p>
+              <p className="text-[11px] text-slate-400 leading-tight mt-0.5">
+                Cần ôn trong 2–3 ngày tới để duy trì
+              </p>
+            </div>
+
+            {/* Red Tier: Critical / Due */}
+            <div
+              onClick={() => {
+                setPreviewFilter('critical');
+                setExpandedPreview(true);
+              }}
+              className={`p-3 rounded-2xl border transition-all cursor-pointer ${
+                previewFilter === 'critical' && expandedPreview
+                  ? 'bg-rose-500/10 border-rose-500/40 ring-1 ring-rose-500/30'
+                  : 'bg-slate-50 dark:bg-slate-800/60 border-slate-200/80 dark:border-slate-800 hover:border-rose-500/30'
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <span className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse" />
+                <span className="text-xs font-bold text-rose-600 dark:text-rose-400">
+                  {shield.criticalCount} từ
+                </span>
+              </div>
+              <p className="text-xs font-bold text-slate-800 dark:text-slate-100 mt-2">
+                Sắp Quên!
+              </p>
+              <p className="text-[11px] text-slate-400 leading-tight mt-0.5">
+                Cần kích hoạt lá chắn ôn tập HÔM NAY
+              </p>
+            </div>
+
+          </div>
+
+          {/* Loss Aversion Warning Banner */}
+          <div className="p-3 sm:p-3.5 rounded-2xl bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/25 flex items-center justify-between gap-3 text-xs">
+            <div className="flex items-center gap-2.5 text-amber-800 dark:text-amber-300 font-medium">
+              <AlertTriangle size={16} className="shrink-0 text-amber-600 dark:text-amber-400" />
+              <span>{shield.warningBanner}</span>
+            </div>
+            {shield.criticalCount > 0 && (
+              <span className="shrink-0 font-bold text-amber-700 dark:text-amber-300 hidden sm:inline">
+                Ước tính ~{shield.estimatedReviewMinutes} phút
+              </span>
+            )}
+          </div>
+
+          {/* CTA Actions */}
+          <div className="flex flex-wrap items-center gap-3 pt-1">
+            {shield.criticalCount > 0 ? (
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => handleStartReview(shield.criticalWords, shield.healthPercentage)}
+                className="flex-1 sm:flex-none px-6 py-3.5 rounded-full bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white font-bold text-xs sm:text-sm shadow-md shadow-rose-500/25 flex items-center justify-center gap-2 cursor-pointer transition-all"
+              >
+                <Shield size={16} />
+                <span>Bảo Vệ Lá Chắn — Ôn ngay {shield.criticalCount} từ đỏ (~{shield.estimatedReviewMinutes}&apos;)</span>
+              </motion.button>
+            ) : shield.fadingCount > 0 ? (
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => handleStartReview(shield.fadingWords, shield.healthPercentage)}
+                className="flex-1 sm:flex-none px-6 py-3.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-slate-950 font-bold text-xs sm:text-sm shadow-md shadow-amber-500/25 flex items-center justify-center gap-2 cursor-pointer transition-all"
+              >
+                <Zap size={16} />
+                <span>Củng Cố Lá Chắn — Ôn {shield.fadingCount} từ mờ nhạt</span>
+              </motion.button>
+            ) : (
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => navigate('/vocab')}
+                className="flex-1 sm:flex-none px-6 py-3.5 rounded-full bg-[#0071e3] hover:bg-[#0077ED] text-white font-bold text-xs sm:text-sm shadow-md shadow-blue-500/25 flex items-center justify-center gap-2 cursor-pointer transition-all"
+              >
+                <Sparkles size={16} />
+                <span>Lá Chắn Đạt 100% — Học Thêm Từ Mới</span>
+              </motion.button>
+            )}
+
+            <button
+              onClick={() => setExpandedPreview((prev) => !prev)}
+              className="px-4 py-3 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 font-semibold text-xs transition-colors flex items-center gap-1.5 cursor-pointer"
+            >
+              <span>{expandedPreview ? 'Thu gọn danh sách' : 'Xem chi tiết các từ'}</span>
+              {expandedPreview ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* 3. Mascot Bino Coaching Message */}
+      <div className="relative z-10 mt-5 pt-4 border-t border-slate-200/70 dark:border-slate-800 flex items-start gap-3">
+        <div className="w-8 h-8 rounded-full bg-amber-400 text-slate-950 flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
+          🐱
+        </div>
+        <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed italic my-auto">
+          <strong>Bino nhắc nhở:</strong> &ldquo;{shield.tier.mascotMessage}&rdquo;
+        </p>
+      </div>
+
+      {/* 4. Expandable Word Preview Drawer */}
+      <AnimatePresence>
+        {expandedPreview && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="relative z-10 pt-4 mt-4 border-t border-slate-200/70 dark:border-slate-800 overflow-hidden space-y-3"
+          >
+            <div className="flex items-center justify-between text-xs">
+              <span className="font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                Xem nhanh danh sách từ ({previewFilter === 'critical' ? '🔴 Sắp quên' : previewFilter === 'fading' ? '🟡 Mờ nhạt' : '🟢 Vững chắc'}):
+              </span>
+              <span className="text-[11px] text-slate-400">Hiển thị tối đa 15 từ</span>
+            </div>
+
+            {previewList.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                {previewList.map((item) => (
+                  <div
+                    key={item.id}
+                    className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700 flex items-center justify-between gap-2"
+                  >
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-bold text-slate-900 dark:text-white text-xs truncate">
+                          {item.word}
+                        </span>
+                        {item.pos && (
+                          <span className="text-[10px] text-slate-400">({item.pos})</span>
+                        )}
+                      </div>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
+                        {item.meaning}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <span className={`text-[10px] font-bold ${
+                        item.retrievability >= 85
+                          ? 'text-emerald-500'
+                          : item.retrievability >= 65
+                          ? 'text-amber-500'
+                          : 'text-rose-500'
+                      }`}>
+                        {item.retrievability}%
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => speakWord(item.word)}
+                        className="w-6 h-6 rounded-md hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-400 hover:text-[#0071e3] flex items-center justify-center transition-colors cursor-pointer"
+                        title="Nghe phát âm"
+                      >
+                        <Volume2 size={13} />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-xs text-slate-400 italic text-center py-3">
+                Không có từ nào trong danh mục này.
+              </p>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* 5. Educational Info Modal explaining Loss Aversion & FSRS */}
+      {showInfoModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs animate-fade-in">
+          <div className="max-w-md w-full bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Shield size={20} className="text-[#0071e3] dark:text-sky-400" />
+                <h4 className="font-bold text-slate-900 dark:text-white">
+                  Khoa Học Về Lá Chắn Trí Nhớ
+                </h4>
+              </div>
+              <button
+                onClick={() => setShowInfoModal(false)}
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="text-xs text-slate-600 dark:text-slate-300 space-y-2.5 leading-relaxed">
+              <p>
+                <strong>🧠 Hiệu ứng Tâm lý Sở hữu (Endowment Effect):</strong> Khi bạn đã nạp được một lượng từ vựng, chúng trở thành <em>tài sản cá nhân</em> của bạn.
+              </p>
+              <p>
+                <strong>📉 Nỗi đau mất mát (Loss Aversion):</strong> Theo nghiên cứu của Kahneman &amp; Tversky, não người cảm thấy nỗi đau mất đi 10 từ vựng mạnh gấp <strong>2.5 lần</strong> niềm vui học thêm 10 từ mới.
+              </p>
+              <p>
+                <strong>🛡️ Cơ chế FSRS DSR:</strong> Lá chắn tính toán xác suất gợi nhớ <em>Retrievability R(t, S)</em> dựa trên độ bền <em>Stability (S)</em> của từng từ. Chỉ cần 5–8 phút ôn các từ đỏ mỗi ngày, bạn sẽ giữ vững lá chắn ở mức 100% vĩnh viễn!
+              </p>
+            </div>
+
+            <button
+              onClick={() => setShowInfoModal(false)}
+              className="w-full py-2.5 rounded-full bg-[#0071e3] text-white font-bold text-xs cursor-pointer"
+            >
+              Đã hiểu & Bắt đầu bảo vệ!
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 6. Active Recovery Flashcard Session Modal */}
+      <FsrsShieldRecoveryModal
+        isOpen={isRecoveryOpen}
+        onClose={() => setIsRecoveryOpen(false)}
+        wordsToReview={wordsToReview}
+        initialHealth={shield.healthPercentage}
+        onSuccess={() => {
+          // Callback when finished
+        }}
+      />
+    </div>
+  );
+}

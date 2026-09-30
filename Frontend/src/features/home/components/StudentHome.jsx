@@ -23,6 +23,7 @@ import SeoMeta from '../../../components/SeoMeta';
 import ContentModuleExplorer from '../../../components/ContentModuleExplorer';
 import MasterLearningGuideModal from '../../../components/MasterLearningGuideModal';
 import CompetenceRadarCard from '../../progress/components/CompetenceRadarCard';
+import FsrsMemoryShieldCard from '../../vocab/components/FsrsMemoryShieldCard';
 
 // Apple-style Spring Variants (120FPS GPU-accelerated transform & opacity)
 const pageContainerVariants = {
@@ -571,6 +572,13 @@ export default function StudentHome() {
           binoLessonsCompleted={completedBinoLessons}
           toeicCompleted={stats?.totalConfidentQuestions || stats?.totalCompletedQuestions || 0}
         />
+      </motion.section>
+
+      {/* ===================================================================== */}
+      {/* F5. LÁ CHẮN TRÍ NHỚ — FSRS MEMORY HEALTH SHIELD                      */}
+      {/* ===================================================================== */}
+      <motion.section variants={sectionRevealVariants}>
+        <FsrsMemoryShieldCard />
       </motion.section>
 
       {/* ===================================================================== */}

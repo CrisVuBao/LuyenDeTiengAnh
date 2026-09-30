@@ -10,7 +10,8 @@ const progressApi = {
   saveReflexProgress: (data) => axiosClient.post('/userprogress/reflex', data),
   getEbookProgress: (bookSlug) => axiosClient.get('/userprogress/ebook', { params: bookSlug ? { bookSlug } : {} }),
   saveEbookProgress: (data) => axiosClient.post('/userprogress/ebook', data),
-  getCompetenceRadar: () => axiosClient.get('/userprogress/competence-radar')
+  getCompetenceRadar: () => axiosClient.get('/userprogress/competence-radar'),
+  getMemoryShield: () => axiosClient.get('/userprogress/memory-shield')
 };
 
 export default progressApi;

@@ -25,6 +25,7 @@ public interface IUserProgressService
     Task<Response<UserVocabProgressDto>> GetVocabProgressAsync(int userId);
     Task<Response<bool>> SaveVocabProgressAsync(int userId, UpsertVocabProgressDto dto);
     Task<Response<CompetenceRadarDto>> GetCompetenceRadarAsync(int userId);
+    Task<Response<MemoryShieldDto>> GetMemoryShieldAsync(int userId);
 }
 
 public class UserProgressService : IUserProgressService
@@ -609,6 +610,158 @@ public class UserProgressService : IUserProgressService
         };
 
         return Response<CompetenceRadarDto>.SuccessResult("Lấy dữ liệu Radar năng lực thực tế thành công", result);
+    }
+
+    public async Task<Response<MemoryShieldDto>> GetMemoryShieldAsync(int userId)
+    {
+        var vocab = await _unitOfWork.UserProgresses.GetVocabProgressAsync(userId);
+        int totalLearned = vocab?.MasteredCount ?? 0;
+
+        if (vocab == null || string.IsNullOrWhiteSpace(vocab.ProgressDataJson) || vocab.ProgressDataJson == "{}")
+        {
+            return Response<MemoryShieldDto>.SuccessResult("Lấy trạng thái Lá Chắn Trí Nhớ thành công", new MemoryShieldDto
+            {
+                TotalLearnedWords = totalLearned,
+                HealthPercentage = 100,
+                ProjectedTomorrowPercentage = 100,
+                DecayDeltaPercentage = 0,
+                SolidWordsCount = totalLearned,
+                FadingWordsCount = 0,
+                CriticalWordsCount = 0,
+                EstimatedReviewMinutes = 0,
+                TierCode = "Pristine",
+                TierLabel = "Trí nhớ đang RẤT KHỎE",
+                StatusMessage = "Lá chắn kiên cố 100%! Hãy bắt đầu học từ mới để xây dựng hệ thống phòng thủ trí nhớ.",
+                WarningBanner = "Lá chắn đang ở trạng thái tối ưu!"
+            });
+        }
+
+        int solidCount = 0;
+        int fadingCount = 0;
+        int criticalCount = 0;
+        double sumR = 0;
+        double sumRTomorrow = 0;
+        int countCards = 0;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(vocab.ProgressDataJson);
+            var root = doc.RootElement;
+            if (root.TryGetProperty("fsrsCards", out var cardsElem) && cardsElem.ValueKind == JsonValueKind.Object)
+            {
+                var now = DateTime.UtcNow;
+                foreach (var prop in cardsElem.EnumerateObject())
+                {
+                    countCards++;
+                    var card = prop.Value;
+                    double stability = 2.0;
+                    if (card.TryGetProperty("stability", out var stabElem) && stabElem.TryGetDouble(out var sVal))
+                    {
+                        stability = Math.Max(0.5, sVal);
+                    }
+
+                    DateTime lastReviewed = now;
+                    if (card.TryGetProperty("lastReviewedAt", out var lastElem) && lastElem.GetString() is string sDate && DateTime.TryParse(sDate, out var dt))
+                    {
+                        lastReviewed = dt;
+                    }
+
+                    bool isDue = false;
+                    if (card.TryGetProperty("nextReviewDate", out var nextElem) && nextElem.GetString() is string nDate && DateTime.TryParse(nDate, out var nDt))
+                    {
+                        if (nDt <= now) isDue = true;
+                    }
+
+                    double elapsedDays = Math.Max(0, (now - lastReviewed).TotalDays);
+                    // FSRS Retrievability R(t, S) = (1 + (19/81) * (t / S))^(-0.5)
+                    double r = Math.Pow(1.0 + (19.0 / 81.0) * (elapsedDays / stability), -0.5) * 100.0;
+                    r = Math.Clamp(r, 5.0, 100.0);
+
+                    double rTomorrow = Math.Pow(1.0 + (19.0 / 81.0) * ((elapsedDays + 1.0) / stability), -0.5) * 100.0;
+                    rTomorrow = Math.Clamp(rTomorrow, 5.0, 100.0);
+
+                    sumR += r;
+                    sumRTomorrow += rTomorrow;
+
+                    if (r < 65 || isDue)
+                    {
+                        criticalCount++;
+                    }
+                    else if (r < 85)
+                    {
+                        fadingCount++;
+                    }
+                    else
+                    {
+                        solidCount++;
+                    }
+                }
+            }
+        }
+        catch
+        {
+            // fallback if json parse error
+        }
+
+        if (countCards == 0)
+        {
+            solidCount = totalLearned;
+            sumR = totalLearned * 95.0;
+            sumRTomorrow = totalLearned * 90.0;
+            countCards = Math.Max(1, totalLearned);
+        }
+
+        double healthPct = Math.Round(Math.Clamp(sumR / countCards, 0.0, 100.0), 1);
+        double tomorrowPct = Math.Round(Math.Clamp(sumRTomorrow / countCards, 0.0, 100.0), 1);
+        double decayDelta = Math.Round(Math.Max(0.0, healthPct - tomorrowPct), 1);
+        int estMinutes = Math.Max(1, (int)Math.Ceiling((criticalCount * 9.0) / 60.0));
+
+        string tierCode;
+        string tierLabel;
+        string statusMsg;
+        string warningBanner;
+
+        if (healthPct >= 85)
+        {
+            tierCode = "Pristine";
+            tierLabel = "Trí nhớ đang RẤT KHỎE";
+            statusMsg = "Trí nhớ của bạn đang như bàn thạch! Đa số từ vựng đã được khắc sâu vào trí nhớ dài hạn. 🛡️✨";
+            warningBanner = criticalCount > 0
+                ? $"Nếu không ôn hôm nay, lá chắn sẽ giảm xuống {tomorrowPct}% (-{decayDelta}%)"
+                : "Lá chắn đang ở mức phòng thủ tối ưu! Duy trì học đều đặn mỗi ngày.";
+        }
+        else if (healthPct >= 70)
+        {
+            tierCode = "Stable";
+            tierLabel = "Trí nhớ ĐANG ỔN ĐỊNH";
+            statusMsg = $"Lá chắn đang ở mức khá ({healthPct}%), nhưng một số từ vựng đang mờ dần. Hãy ôn tập để hồi phục 100%!";
+            warningBanner = $"⚠️ Nếu không ôn hôm nay, lá chắn sẽ giảm xuống {tomorrowPct}% (-{decayDelta}%) vào ngày mai!";
+        }
+        else
+        {
+            tierCode = "Decaying";
+            tierLabel = "Lá Chắn ĐANG BỊ BÀO MÒN";
+            statusMsg = $"Cảnh báo đỏ! Đường cong lãng quên đang tấn công {criticalCount} từ vựng của bạn. Cần kích hoạt lá chắn bảo vệ ngay!";
+            warningBanner = $"🚨 Nguy cơ quên sạch {criticalCount} từ vựng nếu không ôn tập hôm nay!";
+        }
+
+        var result = new MemoryShieldDto
+        {
+            TotalLearnedWords = Math.Max(totalLearned, countCards),
+            HealthPercentage = healthPct,
+            ProjectedTomorrowPercentage = tomorrowPct,
+            DecayDeltaPercentage = decayDelta,
+            SolidWordsCount = solidCount,
+            FadingWordsCount = fadingCount,
+            CriticalWordsCount = criticalCount,
+            EstimatedReviewMinutes = estMinutes,
+            TierCode = tierCode,
+            TierLabel = tierLabel,
+            StatusMessage = statusMsg,
+            WarningBanner = warningBanner
+        };
+
+        return Response<MemoryShieldDto>.SuccessResult("Lấy trạng thái Lá Chắn Trí Nhớ thành công", result);
     }
 }
 

@@ -15,6 +15,7 @@ import {
 import toast from 'react-hot-toast';
 import useVocabStore from './store/useVocabStore';
 import SeoMeta from '../../components/SeoMeta';
+import FsrsMemoryShieldCard from './components/FsrsMemoryShieldCard';
 
 // Map icon string to Lucide component
 const ICON_COMPONENT_MAP = {
@@ -155,6 +156,9 @@ export default function VocabOverviewPage() {
         {/* Decorative background glow */}
         <div className="absolute -right-20 -top-20 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl pointer-events-none" />
       </div>
+
+      {/* F5. LÁ CHẮN TRÍ NHỚ FSRS */}
+      <FsrsMemoryShieldCard />
 
       {/* 2. Global Search & Filter Bar */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-2.5 sm:gap-4">
