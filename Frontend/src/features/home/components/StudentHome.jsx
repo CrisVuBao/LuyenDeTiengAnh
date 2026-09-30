@@ -22,6 +22,7 @@ import VocabShowcaseSection from './VocabShowcaseSection';
 import SeoMeta from '../../../components/SeoMeta';
 import ContentModuleExplorer from '../../../components/ContentModuleExplorer';
 import MasterLearningGuideModal from '../../../components/MasterLearningGuideModal';
+import CompetenceRadarCard from '../../progress/components/CompetenceRadarCard';
 
 // Apple-style Spring Variants (120FPS GPU-accelerated transform & opacity)
 const pageContainerVariants = {
@@ -250,8 +251,14 @@ export default function StudentHome() {
   // Reactive subscription to Reflex 50 store so progress updates immediately across browsers
   const reflexMasteredIds = useReflex50Store((s) => s.masteredIds);
   const reflexLastStudiedUnit = useReflex50Store((s) => s.lastStudiedUnit);
-  const getOverallReflex = useReflex50Store((s) => s.getOverallStats);
-  const reflexStats = useMemo(() => getOverallReflex(), [getOverallReflex, reflexMasteredIds]);
+  const reflexStats = useMemo(() => {
+    return useReflex50Store.getState().getOverallStats();
+  }, [reflexMasteredIds]);
+
+  const vocabMasteredMap = useVocabStore((s) => s.masteredWords);
+  const vocabMasteredCount = useMemo(() => {
+    return Object.values(vocabMasteredMap || {}).filter(Boolean).length;
+  }, [vocabMasteredMap]);
 
   useEffect(() => {
     fetchProfile();
@@ -552,6 +559,18 @@ export default function StudentHome() {
       {/* GAMIFICATION: DAILY QUESTS */}
       <motion.section variants={sectionRevealVariants}>
         <DailyQuestsPanel />
+      </motion.section>
+
+      {/* ===================================================================== */}
+      {/* F1. RADAR NĂNG LỰC THỰC TẾ — "BẠN HIỂU BAO NHIÊU % THẾ GIỚI?"         */}
+      {/* ===================================================================== */}
+      <motion.section variants={sectionRevealVariants}>
+        <CompetenceRadarCard
+          wordsMastered={vocabMasteredCount}
+          reflexMastered={reflexStats?.totalMastered || 0}
+          binoLessonsCompleted={completedBinoLessons}
+          toeicCompleted={stats?.totalConfidentQuestions || stats?.totalCompletedQuestions || 0}
+        />
       </motion.section>
 
       {/* ===================================================================== */}

@@ -104,4 +104,30 @@ public class UpsertVocabProgressDto
     public string ProgressDataJson { get; set; } = "{}";
 }
 
+public class CompetenceDomainDto
+{
+    public string Id { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public string Icon { get; set; } = string.Empty;
+    public double Percentage { get; set; }
+    public string LevelLabel { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+    public string NextMilestoneTip { get; set; } = string.Empty;
+    public int TargetWordCount { get; set; }
+}
+
+public class CompetenceRadarDto
+{
+    public double OverallPercentage { get; set; }
+    public double DailyGainPercentage { get; set; }
+    public int MasteredWords { get; set; }
+    public int MasteredReflexSentences { get; set; }
+    public int CompletedBinoLessons { get; set; }
+    public int CompletedToeicQuestions { get; set; }
+    public string BinoMascotMessage { get; set; } = string.Empty;
+    public string RecommendedFocusDomain { get; set; } = string.Empty;
+    public List<CompetenceDomainDto> Domains { get; set; } = new();
+}
+
+
 

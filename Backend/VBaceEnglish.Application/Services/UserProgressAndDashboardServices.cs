@@ -24,6 +24,7 @@ public interface IUserProgressService
     Task<Response<bool>> SaveEbookProgressAsync(int userId, UpsertEbookProgressDto dto);
     Task<Response<UserVocabProgressDto>> GetVocabProgressAsync(int userId);
     Task<Response<bool>> SaveVocabProgressAsync(int userId, UpsertVocabProgressDto dto);
+    Task<Response<CompetenceRadarDto>> GetCompetenceRadarAsync(int userId);
 }
 
 public class UserProgressService : IUserProgressService
@@ -453,6 +454,161 @@ public class UserProgressService : IUserProgressService
 
         await _unitOfWork.CompleteAsync();
         return Response<bool>.SuccessResult("Đồng bộ tiến độ từ vựng thành công", true);
+    }
+
+    public async Task<Response<CompetenceRadarDto>> GetCompetenceRadarAsync(int userId)
+    {
+        var vocab = await _unitOfWork.UserProgresses.GetVocabProgressAsync(userId);
+        var reflex = await _unitOfWork.UserProgresses.GetReflexProgressAsync(userId);
+        var binoProg = await _unitOfWork.BinoLearning.GetProgressByUserAsync(userId);
+        var toeicSummaries = await _unitOfWork.UserProgresses.GetSummariesByUserAsync(userId);
+
+        int wordsMastered = vocab?.MasteredCount ?? 0;
+        int reflexMastered = reflex?.MasteredCount ?? 0;
+        int binoCompleted = binoProg?.Count(p => p.IsCompleted) ?? 0;
+        int toeicCompleted = toeicSummaries?.Sum(s => s.CompletedQuestions) ?? 0;
+
+        // Ratios scaled to real-world target corpuses
+        double rRatio = Math.Min(1.0, reflexMastered / 1500.0);
+        double bRatio = Math.Min(1.0, binoCompleted / 72.0);
+        double vRatioCore = Math.Min(1.0, wordsMastered / 1200.0);
+        double vRatioMid = Math.Min(1.0, wordsMastered / 2000.0);
+        double vRatioBroad = Math.Min(1.0, wordsMastered / 3000.0);
+        double tRatio = Math.Min(1.0, toeicCompleted / 400.0);
+
+        // 1. Daily Casual Conversation (Zipf high frequency concentration)
+        double conversationPct = Math.Min(98.0, Math.Round(8.0 + 35.0 * Math.Pow(rRatio, 0.7) + 27.0 * Math.Pow(bRatio, 0.7) + 28.0 * Math.Pow(vRatioCore, 0.7), 1));
+
+        // 2. Netflix Shows & Movies (Dialogue + slang + emotional)
+        double netflixPct = Math.Min(95.0, Math.Round(5.0 + 30.0 * Math.Pow(bRatio, 0.75) + 30.0 * Math.Pow(rRatio, 0.75) + 32.0 * Math.Pow(vRatioMid, 0.75), 1));
+
+        // 3. News & Media (BBC, CNN, Reuters)
+        double newsPct = Math.Min(92.0, Math.Round(4.0 + 55.0 * Math.Pow(vRatioBroad, 0.85) + 25.0 * Math.Pow(rRatio, 0.85) + 10.0 * Math.Pow(tRatio, 0.85), 1));
+
+        // 4. Music Lyrics & Pop Culture
+        double musicPct = Math.Min(96.0, Math.Round(10.0 + 35.0 * Math.Pow(vRatioCore, 0.65) + 30.0 * Math.Pow(bRatio, 0.65) + 23.0 * Math.Pow(rRatio, 0.65), 1));
+
+        // 5. Workplace, Meetings & Professional Emails
+        double workplacePct = Math.Min(95.0, Math.Round(5.0 + 35.0 * Math.Pow(vRatioMid, 0.8) + 30.0 * Math.Pow(rRatio, 0.8) + 27.0 * Math.Pow(tRatio, 0.7), 1));
+
+        // 6. Literature, Novels & Academic Books
+        double literaturePct = Math.Min(90.0, Math.Round(3.0 + 60.0 * Math.Pow(vRatioBroad, 0.9) + 20.0 * Math.Pow(bRatio, 0.9) + 12.0 * Math.Pow(rRatio, 0.9), 1));
+
+        // Overall Weighted Average (Linguistic Competence Index)
+        double overallPct = Math.Round(
+            conversationPct * 0.25 +
+            netflixPct * 0.20 +
+            musicPct * 0.15 +
+            workplacePct * 0.15 +
+            newsPct * 0.15 +
+            literaturePct * 0.10, 1);
+
+        static string GetLevelLabel(double pct) =>
+            pct >= 85 ? "Bản Ngữ (Native-like)" :
+            pct >= 70 ? "Lưu Loát (Fluent)" :
+            pct >= 50 ? "Tự Tin (Confident)" :
+            pct >= 30 ? "Nền Tảng (Developing)" : "Mới Khởi Đầu (Beginner)";
+
+        var domains = new List<CompetenceDomainDto>
+        {
+            new()
+            {
+                Id = "conversation",
+                Name = "Giao Tiếp Hàng Ngày",
+                Icon = "MessageCircle",
+                Percentage = conversationPct,
+                LevelLabel = GetLevelLabel(conversationPct),
+                Description = "Giao tiếp xã hội, kết bạn, du lịch, hỏi đường và trò chuyện tự nhiên",
+                NextMilestoneTip = conversationPct < 50 ? "Luyện thêm 50 câu Phản Xạ để vượt mốc 50%!" : "Duy trì phản xạ 3 giây để đạt độ nhạy bản ngữ.",
+                TargetWordCount = 1200
+            },
+            new()
+            {
+                Id = "netflix",
+                Name = "Xem Phim Netflix Không Sub",
+                Icon = "Tv",
+                Percentage = netflixPct,
+                LevelLabel = GetLevelLabel(netflixPct),
+                Description = "Nghe hiểu thoại phim ảnh, TV shows, gameshow và tình huống đời sống",
+                NextMilestoneTip = netflixPct < 70 ? "Học thêm 2 bài Hội Thoại Bino để bứt phá lên 70%!" : "Bạn gần như có thể tắt hoàn toàn phụ đề tiếng Việt rồi!",
+                TargetWordCount = 2000
+            },
+            new()
+            {
+                Id = "music",
+                Name = "Hiểu Lời Bài Hát Tiếng Anh",
+                Icon = "Music",
+                Percentage = musicPct,
+                LevelLabel = GetLevelLabel(musicPct),
+                Description = "Nghe bắt chữ bài hát Pop, R&B, Rock và ca từ nhạc Âu Mỹ",
+                NextMilestoneTip = "Học từ vựng vần điệu và cụm từ cảm xúc để tăng % nghe nhạc.",
+                TargetWordCount = 1500
+            },
+            new()
+            {
+                Id = "workplace",
+                Name = "Giao Tiếp Công Sở & Email",
+                Icon = "Briefcase",
+                Percentage = workplacePct,
+                LevelLabel = GetLevelLabel(workplacePct),
+                Description = "Viết email chuyên nghiệp, họp hành, thuyết trình và đàm phán công việc",
+                NextMilestoneTip = "Luyện đề TOEIC và từ vựng văn phòng để tăng vọt năng lực công sở.",
+                TargetWordCount = 2200
+            },
+            new()
+            {
+                Id = "news",
+                Name = "Đọc Báo BBC / CNN / Reuters",
+                Icon = "Newspaper",
+                Percentage = newsPct,
+                LevelLabel = GetLevelLabel(newsPct),
+                Description = "Đọc hiểu tin tức quốc tế, thời sự thế giới, tài chính và công nghệ",
+                NextMilestoneTip = "Tích lũy thêm từ vựng B2 Oxford 3000 để đọc báo mượt mà hơn.",
+                TargetWordCount = 2500
+            },
+            new()
+            {
+                Id = "literature",
+                Name = "Đọc Sách & Tiểu Thuyết",
+                Icon = "BookOpen",
+                Percentage = literaturePct,
+                LevelLabel = GetLevelLabel(literaturePct),
+                Description = "Đọc sách văn học, tiểu thuyết, truyện tiếng Anh và bài nghiên cứu",
+                NextMilestoneTip = "Mở rộng vốn từ tượng hình và tính từ mô tả trong Oxford 3000.",
+                TargetWordCount = 3000
+            }
+        };
+
+        var lowestDomain = domains.OrderBy(d => d.Percentage).First();
+
+        string mascotMsg;
+        if (overallPct >= 85)
+            mascotMsg = "Native speaker giả mạo đây rồi! Bạn hiểu hầu như mọi nội dung tiếng Anh trên thế giới! 🤫🇬🇧";
+        else if (netflixPct >= 70)
+            mascotMsg = "Bạn sắp bỏ phụ đề Netflix được rồi! Đỉnh quá, tối nay thưởng thức 1 tập phim ngay nào! 📺✨";
+        else if (conversationPct >= 50)
+            mascotMsg = "Tuyệt vời! Bạn đã hiểu hơn nửa số cuộc trò chuyện tiếng Anh của người bản xứ rồi đó! 🎉";
+        else if (newsPct >= 60)
+            mascotMsg = "Tin tức quốc tế BBC/CNN không còn là nỗi sợ nữa, tự tin đọc báo tiếng Anh mỗi sáng! 📰💪";
+        else
+            mascotMsg = $"Mỗi từ bạn học hôm nay đều trực tiếp mở rộng năng lực thực tế! Hãy tập trung vào '{lowestDomain.Name}' để tăng điểm nhanh nhất nhé! 🚀";
+
+        double dailyGain = Math.Round(Math.Max(0.2, (wordsMastered % 15) * 0.05 + (reflexMastered % 10) * 0.04), 2);
+
+        var result = new CompetenceRadarDto
+        {
+            OverallPercentage = overallPct,
+            DailyGainPercentage = dailyGain,
+            MasteredWords = wordsMastered,
+            MasteredReflexSentences = reflexMastered,
+            CompletedBinoLessons = binoCompleted,
+            CompletedToeicQuestions = toeicCompleted,
+            BinoMascotMessage = mascotMsg,
+            RecommendedFocusDomain = lowestDomain.Name,
+            Domains = domains
+        };
+
+        return Response<CompetenceRadarDto>.SuccessResult("Lấy dữ liệu Radar năng lực thực tế thành công", result);
     }
 }
 

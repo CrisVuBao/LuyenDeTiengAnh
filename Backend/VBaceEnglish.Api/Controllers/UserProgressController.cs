@@ -135,5 +135,18 @@ public class UserProgressController : ControllerBase
         var result = await _progressService.SaveVocabProgressAsync(userId, model);
         return Ok(result);
     }
+
+    /// <summary>
+    /// F1. Radar Năng Lực Thực Tế — "Bạn Hiểu Bao Nhiêu % Thế Giới?"
+    /// </summary>
+    [HttpGet("competence-radar")]
+    public async Task<IActionResult> GetCompetenceRadar()
+    {
+        int userId = GetCurrentUserId();
+        if (userId == 0) return Unauthorized(Response<string>.Failure("Chưa xác thực"));
+
+        var result = await _progressService.GetCompetenceRadarAsync(userId);
+        return Ok(result);
+    }
 }
 

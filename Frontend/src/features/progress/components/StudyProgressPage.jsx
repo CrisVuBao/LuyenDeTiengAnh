@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Award, CheckCircle2, HelpCircle, BookOpen, RotateCcw, 
@@ -19,10 +19,11 @@ import useGamificationStore from '../../gamification/store/useGamificationStore'
 import PageLoader from '../../../components/PageLoader';
 import SeoMeta from '../../../components/SeoMeta';
 import toast from 'react-hot-toast';
+import CompetenceRadarCard from './CompetenceRadarCard';
 
 export default function StudyProgressPage() {
-  // Chế độ chính: 'bino' (Chém Tiếng Anh Bino) | 'reflex50' (Phản Xạ 50) | 'vocab' (3000 Từ Vựng) | 'toeic' (TOEIC)
-  const [courseMode, setCourseMode] = useState('bino');
+  // Chế độ chính: 'radar' (Radar Năng Lực) | 'bino' (Chém Tiếng Anh Bino) | 'reflex50' (Phản Xạ 50) | 'vocab' (3000 Từ Vựng) | 'toeic' (TOEIC)
+  const [courseMode, setCourseMode] = useState('radar');
 
   // Vocab state
   const [vocabSearch, setVocabSearch] = useState('');
@@ -46,8 +47,15 @@ export default function StudyProgressPage() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // Reactive subscription for Reflex 50
+  // Reactive subscription for Reflex 50 & 3000 Vocab
   const reflexMasteredIds = useReflex50Store((s) => s.masteredIds);
+  const vocabMasteredMap = useVocabStore((s) => s.masteredWords);
+  const vocabMasteredCount = useMemo(() => {
+    return Object.values(vocabMasteredMap || {}).filter(Boolean).length;
+  }, [vocabMasteredMap]);
+  const reflexMasteredCount = useMemo(() => {
+    return Object.keys(reflexMasteredIds || {}).length;
+  }, [reflexMasteredIds]);
 
   const loadData = async () => {
     setLoading(true);
@@ -230,22 +238,34 @@ export default function StudyProgressPage() {
         </div>
 
         {/* Apple Segmented Course Switcher */}
-        <div className="inline-flex p-1 rounded-full bg-slate-200/80 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700/70 self-stretch sm:self-auto">
+        <div className="inline-flex p-1 rounded-full bg-slate-200/80 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700/70 self-stretch sm:self-auto overflow-x-auto">
+          <button
+            onClick={() => setCourseMode('radar')}
+            className={`flex-1 sm:flex-none px-4 py-2 rounded-full text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap ${
+              courseMode === 'radar'
+                ? 'bg-white dark:bg-slate-900 text-[#0071e3] dark:text-sky-400 shadow-xs'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+            }`}
+          >
+            <Sparkles size={14} className="text-amber-500" />
+            <span>🎯 Radar Năng Lực</span>
+          </button>
+
           <button
             onClick={() => setCourseMode('bino')}
-            className={`flex-1 sm:flex-none px-5 py-2 rounded-full text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer ${
+            className={`flex-1 sm:flex-none px-4 py-2 rounded-full text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap ${
               courseMode === 'bino'
                 ? 'bg-white dark:bg-slate-900 text-[#0071e3] dark:text-sky-400 shadow-xs'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <Sparkles size={14} />
+            <BookOpen size={14} />
             <span>Giao Tiếp Thực Chiến</span>
           </button>
 
           <button
             onClick={() => setCourseMode('reflex50')}
-            className={`flex-1 sm:flex-none px-5 py-2 rounded-full text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer ${
+            className={`flex-1 sm:flex-none px-4 py-2 rounded-full text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap ${
               courseMode === 'reflex50'
                 ? 'bg-white dark:bg-slate-900 text-[#0071e3] dark:text-sky-400 shadow-xs'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
@@ -257,7 +277,7 @@ export default function StudyProgressPage() {
 
           <button
             onClick={() => setCourseMode('vocab')}
-            className={`flex-1 sm:flex-none px-5 py-2 rounded-full text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer ${
+            className={`flex-1 sm:flex-none px-4 py-2 rounded-full text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap ${
               courseMode === 'vocab'
                 ? 'bg-white dark:bg-slate-900 text-[#0071e3] dark:text-sky-400 shadow-xs'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
@@ -269,17 +289,36 @@ export default function StudyProgressPage() {
 
           <button
             onClick={() => setCourseMode('toeic')}
-            className={`flex-1 sm:flex-none px-5 py-2 rounded-full text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer ${
+            className={`flex-1 sm:flex-none px-4 py-2 rounded-full text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap ${
               courseMode === 'toeic'
                 ? 'bg-white dark:bg-slate-900 text-[#0071e3] dark:text-sky-400 shadow-xs'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <BookOpen size={14} />
+            <Award size={14} />
             <span>Luyện Đề TOEIC</span>
           </button>
         </div>
       </div>
+
+      {/* ===================================================================== */}
+      {/* MODE 0: RADAR NĂNG LỰC THỰC TẾ — "BẠN HIỂU BAO NHIÊU % THẾ GIỚI?"     */}
+      {/* ===================================================================== */}
+      {courseMode === 'radar' && (
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="space-y-6"
+        >
+          <CompetenceRadarCard
+            wordsMastered={vocabMasteredCount}
+            reflexMastered={reflexMasteredCount}
+            binoLessonsCompleted={binoSummary?.completedLessons ?? 0}
+            toeicCompleted={stats?.totalConfidentQuestions ?? stats?.totalCompletedQuestions ?? 0}
+          />
+        </motion.div>
+      )}
 
       {/* ===================================================================== */}
       {/* MODE 1: QUẢN LÝ QUÁ TRÌNH HỌC TẬP "GIAO TIẾP THỰC CHIẾN"              */}

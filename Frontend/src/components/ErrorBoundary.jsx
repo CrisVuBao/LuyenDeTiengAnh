@@ -43,12 +43,6 @@ class ErrorBoundary extends Component {
               Trang vừa gặp lỗi hiển thị bất ngờ. Đừng lo lắng, dữ liệu học tập và tiến độ của bạn vẫn được lưu an toàn.
             </p>
 
-            {this.state.error?.message && (
-              <div className="mb-6 p-3 bg-slate-950/60 rounded-xl text-xs font-mono text-rose-300/90 text-left overflow-x-auto max-h-32 border border-slate-700/50">
-                {this.state.error.message}
-              </div>
-            )}
-
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <button
                 onClick={this.handleReset}
