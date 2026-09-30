@@ -351,16 +351,16 @@ function LuxuryHeroPavilion({
           <div className="flex items-center sm:flex-wrap gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar pb-0.5 sm:pb-0">
             {/* Apple Studio Badge */}
             <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 text-xs font-semibold border border-slate-200/90 dark:border-white/10 shadow-2xs shrink-0">
-              <span className="relative flex h-2 w-2">
+              {/* <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#0071e3] opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-[#0071e3]" />
-              </span>
+              </span> */}
               <span className="tracking-[0.14em] text-[10px] sm:text-[10.5px] uppercase font-extrabold text-[#0071e3] dark:text-sky-400">
                 HOME STUDIO
               </span>
               <span className="hidden sm:inline text-slate-300 dark:text-slate-700">•</span>
               <span className="hidden sm:inline text-[11px] font-semibold text-slate-500 dark:text-slate-400">
-                Édition 2026
+                Edition
               </span>
             </div>
 
@@ -440,39 +440,24 @@ function LuxuryHeroPavilion({
             </p>
           </div>
 
-          {/* Interactive Micro-Metrics Strip (3 Quick Clickable Pills) */}
-          <div className="grid grid-cols-3 gap-2 sm:gap-2.5 max-w-lg pt-0.5">
-            {aiDiagnosis.pillars.map((p, idx) => {
-              const isSelectedSlide = pillarSlide === idx + 1;
-              return (
-                <button
-                  key={p.id}
-                  onClick={() => goToPillarSlide(idx + 1)}
-                  className={`p-2 sm:p-3 rounded-xl sm:rounded-2xl border text-left transition-all cursor-pointer hover:-translate-y-0.5 ${
-                    isSelectedSlide
-                      ? 'bg-[#0071e3]/10 dark:bg-[#0071e3]/20 border-[#0071e3]/50 shadow-xs'
-                      : 'bg-white dark:bg-slate-900 border-slate-200/80 dark:border-white/[0.08] hover:border-[#0071e3]/35'
-                  }`}
-                >
-                  <div className="flex items-center justify-between text-[10px] font-bold text-slate-400">
-                    <span className="flex items-center gap-1 min-w-0">
-                      <span
-                        className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full shrink-0"
-                        style={{ backgroundColor: p.color }}
-                      />
-                      <span className="truncate">{p.shortName}</span>
-                    </span>
-                    <span className="text-[#0071e3] dark:text-sky-400 font-extrabold">
-                      {p.percent}%
-                    </span>
-                  </div>
-                  <p className="text-[11px] sm:text-xs font-extrabold text-slate-900 dark:text-white mt-0.5 sm:mt-1 truncate">
-                    {p.countText}
-                  </p>
-                </button>
-              );
-            })}
-          </div>
+          {/* Smart Next-Lesson Resume Bar (Clean, zero duplication with Right Tri-Pillar Card) */}
+          {nextDialogue && (
+            <div
+              onClick={() => onNavigate(`/communication/dialogue/${nextDialogue.id}`)}
+              className="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-2xl bg-slate-50/90 hover:bg-blue-50/60 dark:bg-slate-900/90 dark:hover:bg-slate-800/90 border border-slate-200/80 dark:border-white/[0.08] hover:border-[#0071e3]/40 transition-all cursor-pointer group max-w-full"
+            >
+              <span className="px-2 py-0.5 rounded-lg bg-[#0071e3]/10 dark:bg-sky-500/20 text-[#0071e3] dark:text-sky-400 text-[10px] font-extrabold uppercase tracking-wider shrink-0">
+                Học tiếp Chương {nextDialogue.chapterNumber}
+              </span>
+              <span className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate group-hover:text-[#0071e3] dark:group-hover:text-sky-400 transition-colors">
+                {nextDialogue.title}
+              </span>
+              <ChevronRight
+                size={14}
+                className="text-slate-400 group-hover:text-[#0071e3] group-hover:translate-x-0.5 transition-all shrink-0"
+              />
+            </div>
+          )}
 
           {/* Tactile Apple Command Buttons (Ergonomic Mobile Layout + Desktop Row) */}
           <div className="pt-0.5 sm:pt-1 flex flex-wrap items-center gap-2 sm:gap-3">
