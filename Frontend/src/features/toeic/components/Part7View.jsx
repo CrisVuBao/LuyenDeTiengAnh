@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { RotateCcw, Filter, Sparkles, AlertTriangle } from 'lucide-react';
+import { RotateCcw, Filter, Sparkles, AlertTriangle, CheckCircle2, HelpCircle, Key, Eye, Radar, FileText } from 'lucide-react';
 import AudioPlayer from '../../../components/AudioPlayer';
 import AiTutorModal from './AiTutorModal';
 
@@ -32,11 +32,16 @@ export default function Part7View({ passages = [], testId, studyProgress }) {
       const parts = text.split(regex);
       return parts.map((part, i) =>
         part.toLowerCase() === currentHighlight.toLowerCase() ? (
-          <span key={i} className="bg-yellow-300 text-yellow-950 font-bold px-1 rounded animate-pulse">
+          <span
+            key={i}
+            className="bg-amber-300 text-slate-950 font-bold px-1.5 py-0.5 rounded-md shadow-2xs"
+          >
             {part}
           </span>
         ) : (
-          <span key={i} className="opacity-50 transition-opacity">{part}</span>
+          <span key={i} className="opacity-55 transition-opacity">
+            {part}
+          </span>
         )
       );
     } catch {
@@ -45,184 +50,238 @@ export default function Part7View({ passages = [], testId, studyProgress }) {
   };
 
   return (
-    <div className="space-y-6">
-      
-      {/* Top Toolbar */}
-      <div className="flex items-center justify-between bg-white/60 dark:bg-slate-900/60 p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-800">
-        <div className="flex items-center gap-2">
-          <label className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition-all">
-            <Filter size={14} className={filterUnsure ? "text-orange-500" : "text-slate-400"} />
-            <span>Chỉ câu Chưa chắc</span>
-            <input
-              type="checkbox"
-              className="hidden"
-              checked={filterUnsure}
-              onChange={(e) => setFilterUnsure(e.target.checked)}
-            />
-          </label>
+    <div className="space-y-5">
+      {/* Top Control Bar */}
+      <div className="p-4 sm:p-5 rounded-2xl sm:rounded-[24px] bg-white dark:bg-slate-900 border border-slate-200/85 dark:border-white/[0.08] shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="space-y-0.5">
+          <h3 className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+            <span>Part 7 • Reading Comprehension (Đọc hiểu & Radar Dẫn Chứng)</span>
+          </h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            Chạm hoặc di chuột vào câu hỏi đã mở lời giải để làm sáng dẫn chứng trực tiếp trong văn bản.
+          </p>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2 shrink-0">
+          <button
+            type="button"
+            onClick={() => setFilterUnsure((prev) => !prev)}
+            className={`px-3.5 py-2 rounded-full text-xs font-bold border flex items-center gap-1.5 transition-colors cursor-pointer ${
+              filterUnsure
+                ? 'bg-amber-500/15 border-amber-500/35 text-amber-700 dark:text-amber-300'
+                : 'bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 border-slate-200/90 dark:border-slate-800 text-slate-700 dark:text-slate-200'
+            }`}
+          >
+            <Filter size={14} className={filterUnsure ? 'text-amber-500' : 'text-slate-400'} />
+            <span>Chỉ câu cần ôn lại</span>
+          </button>
 
           <button
             onClick={handleReset}
-            className="px-3.5 py-2 rounded-xl text-xs font-bold text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 border border-transparent hover:border-red-200 dark:hover:border-red-900 transition-all flex items-center gap-1.5"
+            className="px-3.5 py-2 rounded-full text-xs font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-transparent hover:border-rose-200 dark:hover:border-rose-900/50 transition-colors flex items-center gap-1.5 cursor-pointer"
           >
-            <RotateCcw size={14} /> Làm lại
+            <RotateCcw size={14} />
+            <span>Làm lại</span>
           </button>
         </div>
       </div>
 
-      {/* Main Container */}
-      <div className="bg-white dark:bg-slate-900 border-2 border-black dark:border-slate-700 p-5 md:p-10 font-serif text-slate-900 dark:text-slate-100 shadow-xl rounded-sm">
-        
-        {/* Directions */}
-        <div className="mb-8 border-b-2 border-black dark:border-slate-700 pb-6">
-          <h3 className="text-xl font-bold mb-2">PART 7</h3>
-          <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300">
-            <span className="font-bold">Directions:</span> In this part you will read a selection of texts, such as magazine and newspaper articles, e-mails, and instant messages. Each text or set of texts is followed by several questions. Select the best answer for each question and mark the letter (A), (B), (C), or (D) on your answer sheet.
-          </p>
-        </div>
+      {/* Passages & Evidence Radar Studio */}
+      <div className="space-y-6">
+        {passages.map((p, idx) => {
+          const visibleQuestions = filterUnsure
+            ? p.questions.filter((q) => isConfident(7, q.id) === false)
+            : p.questions;
 
-        <div className="space-y-12">
-          {passages.map((p, idx) => {
-            const visibleQuestions = filterUnsure
-              ? p.questions.filter(q => isConfident(7, q.id) === false)
-              : p.questions;
+          if (filterUnsure && visibleQuestions.length === 0) return null;
 
-            if (filterUnsure && visibleQuestions.length === 0) return null;
-
-            return (
-              <div key={p.id || idx} className="border-b-2 border-slate-200 dark:border-slate-800 pb-12 last:border-0 last:pb-0">
-                <div className="space-y-6">
-                  
-                  {/* Passage Text Centered / Wide */}
-                  <div>
-                    <h4 className="font-bold mb-2 uppercase text-xs tracking-wider text-center text-slate-500 dark:text-slate-400">
-                      {p.passageTitle}
-                    </h4>
-                    <div className="border-2 border-black dark:border-slate-700 p-6 bg-white dark:bg-slate-950 leading-loose text-base md:text-lg text-justify max-w-3xl mx-auto shadow-inner">
-                      {renderPassage(p.passageText, activeHighlight)}
+          return (
+            <div
+              key={p.id || idx}
+              className="p-5 sm:p-7 rounded-2xl sm:rounded-[28px] bg-white dark:bg-slate-900 border border-slate-200/85 dark:border-white/[0.08] shadow-[0_4px_20px_rgba(0,0,0,0.02)]"
+            >
+              <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
+                {/* Left Column: Passage Document Reader (Sticky on Desktop) */}
+                <div className="w-full lg:w-1/2 lg:sticky lg:top-32 space-y-3">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-[#0071e3] dark:text-sky-400">
+                      <FileText size={14} />
+                      <span>{p.passageTitle || `Văn bản đọc hiểu ${idx + 1}`}</span>
                     </div>
-                    {p.audioUrl && (
-                      <div className="mt-4 max-w-sm mx-auto">
-                        <AudioPlayer audioUrl={p.audioUrl} />
-                      </div>
+                    {activeHighlight && (
+                      <button
+                        type="button"
+                        onClick={() => setActiveHighlight(null)}
+                        className="text-[11px] font-bold text-amber-600 dark:text-amber-400 hover:underline cursor-pointer"
+                      >
+                        Bỏ tô sáng dẫn chứng
+                      </button>
                     )}
                   </div>
 
-                  {/* Questions List */}
-                  <div className="space-y-8 mt-6 max-w-3xl mx-auto">
-                    {visibleQuestions.map((q) => {
-                      const revealed = isRevealed(7, q.id);
-                      const confidentVal = isConfident(7, q.id);
-                      const isHovered = activeHighlight === q.evidenceInPassage;
-
-                      return (
-                        <div
-                          key={q.id}
-                          className={`relative transition-all p-3 rounded-lg ${
-                            isHovered ? 'bg-amber-50 dark:bg-amber-950/30 ring-2 ring-amber-400' : ''
-                          }`}
-                          onMouseEnter={() => revealed && q.evidenceInPassage && setActiveHighlight(q.evidenceInPassage)}
-                          onMouseLeave={() => setActiveHighlight(null)}
-                        >
-                          <div className="flex gap-2">
-                            <span className="font-bold text-lg">{q.id}.</span>
-                            <div className="text-lg leading-relaxed flex-1">
-                              {q.question}
-
-                              {!revealed ? (
-                                <div
-                                  onClick={() => markRevealed(7, q.id)}
-                                  className="mt-4 border border-dashed border-slate-400 dark:border-slate-600 p-3 text-center text-slate-500 dark:text-slate-400 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-sans rounded"
-                                >
-                                  [ Click to Reveal Answer & Evidence Radar ]
-                                </div>
-                              ) : (
-                                <div className="mt-4 p-4 border border-slate-300 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/60 font-sans text-sm rounded shadow-inner space-y-3">
-                                  <div className="flex items-center justify-between">
-                                    <div>
-                                      <span className="font-bold uppercase text-green-700 dark:text-green-400 text-xs block mb-1">Đáp án đúng</span>
-                                      <div className="flex items-center gap-2">
-                                        <span className="font-bold border border-green-600 text-green-700 dark:text-green-300 px-1.5 rounded">[ {q.correctAnswer} ]</span>
-                                        <span className="font-bold text-slate-800 dark:text-slate-200">
-                                          {q.correctAnswerText || (q.options && q.options[q.correctAnswer])}
-                                        </span>
-                                      </div>
-                                    </div>
-
-                                    <button
-                                      onClick={() => setAiModalData({
-                                        question: q.question,
-                                        correctAnswer: q.correctAnswer,
-                                        options: JSON.stringify(q.options),
-                                        context: p.passageText
-                                      })}
-                                      className="flex items-center gap-1 px-2.5 py-1 text-xs font-bold text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950/60 rounded border border-purple-200 dark:border-purple-800"
-                                    >
-                                      <Sparkles size={12} /> Hỏi AI Tutor
-                                    </button>
-                                  </div>
-
-                                  {q.translation && <p className="text-slate-600 dark:text-slate-400 italic text-xs">{q.translation}</p>}
-
-                                  {/* Evidence Radar Box */}
-                                  {q.evidenceInPassage && (
-                                    <div className="p-2.5 bg-yellow-100/70 dark:bg-yellow-950/40 border border-yellow-300 dark:border-yellow-800 rounded">
-                                      <span className="font-bold text-yellow-900 dark:text-yellow-300 text-xs block mb-1">🎯 Dẫn chứng trong bài đọc:</span>
-                                      <p className="text-yellow-800 dark:text-yellow-200 italic text-xs">"...{q.evidenceInPassage}..."</p>
-                                    </div>
-                                  )}
-
-                                  {(q.recognitionKey || q.explanation) && (
-                                    <div className="border-t border-slate-200 dark:border-slate-700 pt-2 space-y-1">
-                                      {q.recognitionKey && <p className="font-bold text-slate-900 dark:text-slate-100 text-xs">🔑 {q.recognitionKey}</p>}
-                                      {q.explanation && <p className="text-slate-700 dark:text-slate-300 text-xs">{q.explanation}</p>}
-                                    </div>
-                                  )}
-
-                                  {q.trap && (
-                                    <div className="p-2 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/40 rounded text-xs text-red-700 dark:text-red-300 flex items-start gap-1.5">
-                                      <AlertTriangle size={14} className="flex-shrink-0 mt-0.5" />
-                                      <span><strong>Bẫy:</strong> {q.trap}</span>
-                                    </div>
-                                  )}
-
-                                  <div className="border-t border-slate-200 dark:border-slate-700 pt-2 flex gap-2">
-                                    <button
-                                      onClick={() => markConfident(7, q.id, true)}
-                                      className={`px-3 py-1 font-bold text-xs border rounded transition-all ${
-                                        confidentVal === true
-                                          ? 'bg-green-100 dark:bg-green-950 border-green-600 text-green-800 dark:text-green-300'
-                                          : 'bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-500'
-                                      }`}
-                                    >
-                                      ✓ Nhớ rồi
-                                    </button>
-                                    <button
-                                      onClick={() => markConfident(7, q.id, false)}
-                                      className={`px-3 py-1 font-bold text-xs border rounded transition-all ${
-                                        confidentVal === false
-                                          ? 'bg-orange-100 dark:bg-orange-950 border-orange-500 text-orange-800 dark:text-orange-300'
-                                          : 'bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-500'
-                                      }`}
-                                    >
-                                      ? Chưa chắc
-                                    </button>
-                                  </div>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
+                  <div className="p-5 sm:p-6 rounded-2xl bg-slate-50/90 dark:bg-slate-950/60 border border-slate-200/85 dark:border-slate-800/90 leading-relaxed text-sm sm:text-base text-slate-800 dark:text-slate-200">
+                    {renderPassage(p.passageText, activeHighlight)}
                   </div>
 
+                  {p.audioUrl && (
+                    <div className="pt-1 max-w-sm">
+                      <AudioPlayer audioUrl={p.audioUrl} />
+                    </div>
+                  )}
+                </div>
+
+                {/* Right Column: Questions & Evidence Radar */}
+                <div className="w-full lg:w-1/2 space-y-4">
+                  {visibleQuestions.map((q) => {
+                    const revealed = isRevealed(7, q.id);
+                    const confidentVal = isConfident(7, q.id);
+                    const isHovered = activeHighlight && activeHighlight === q.evidenceInPassage;
+
+                    return (
+                      <div
+                        key={q.id}
+                        onMouseEnter={() => revealed && q.evidenceInPassage && setActiveHighlight(q.evidenceInPassage)}
+                        onMouseLeave={() => setActiveHighlight(null)}
+                        className={`p-4 sm:p-5 rounded-2xl border transition-all space-y-3.5 ${
+                          isHovered
+                            ? 'bg-amber-50/70 dark:bg-amber-950/25 border-amber-400 dark:border-amber-500/60 shadow-xs'
+                            : 'bg-slate-50/70 dark:bg-slate-800/40 border-slate-200/80 dark:border-slate-800'
+                        }`}
+                      >
+                        <div className="flex items-start gap-3">
+                          <span className="w-7 h-7 rounded-lg bg-[#0071e3]/10 dark:bg-sky-500/20 text-[#0071e3] dark:text-sky-300 font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5">
+                            {q.id}
+                          </span>
+                          <p className="text-sm sm:text-base font-semibold text-slate-900 dark:text-white leading-relaxed flex-1">
+                            {q.question}
+                          </p>
+                        </div>
+
+                        {!revealed ? (
+                          <button
+                            type="button"
+                            onClick={() => markRevealed(7, q.id)}
+                            className="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-[#0071e3] dark:bg-slate-800 dark:hover:bg-[#0071e3] text-white font-bold text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-2xs"
+                          >
+                            <Eye size={14} />
+                            <span>Xem đáp án & Bật Radar Dẫn Chứng</span>
+                          </button>
+                        ) : (
+                          <div className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-700/80 space-y-3 animate-fade-in">
+                            <div className="flex flex-wrap items-center justify-between gap-2">
+                              <div className="flex items-center gap-2">
+                                <span className="px-2.5 py-0.5 rounded-lg bg-[#0071e3] text-white font-extrabold text-xs">
+                                  {q.correctAnswer}
+                                </span>
+                                <span className="font-bold text-sm text-[#0071e3] dark:text-sky-300">
+                                  {q.correctAnswerText || (q.options && q.options[q.correctAnswer])}
+                                </span>
+                              </div>
+{/* 
+                              <button
+                                onClick={() =>
+                                  setAiModalData({
+                                    question: q.question,
+                                    correctAnswer: q.correctAnswer,
+                                    options: JSON.stringify(q.options),
+                                    context: p.passageText
+                                  })
+                                }
+                                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-slate-900 hover:bg-[#0071e3] dark:bg-slate-800 dark:hover:bg-[#0071e3] text-white transition-colors cursor-pointer"
+                              >
+                                <Sparkles size={12} className="text-amber-400" />
+                                <span>Hỏi AI Tutor</span>
+                              </button> */}
+                            </div>
+
+                            {q.translation && (
+                              <p className="text-slate-500 dark:text-slate-400 font-vietsub text-xs border-l-2 border-[#0071e3]/40 pl-2.5">
+                                {q.translation}
+                              </p>
+                            )}
+
+                            {/* Evidence Radar Box (Tap on mobile or hover on desktop to highlight in passage) */}
+                            {q.evidenceInPassage && (
+                              <div
+                                onClick={() =>
+                                  setActiveHighlight((prev) =>
+                                    prev === q.evidenceInPassage ? null : q.evidenceInPassage
+                                  )
+                                }
+                                className="p-3 rounded-xl bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/30 cursor-pointer space-y-1"
+                                title="Bấm để tô sáng câu dẫn chứng trong bài đọc"
+                              >
+                                <div className="flex items-center justify-between text-xs font-extrabold text-amber-800 dark:text-amber-300">
+                                  <span className="flex items-center gap-1.5">
+                                    <Radar size={13} className="text-amber-500" />
+                                    <span>Dẫn chứng trong bài đọc (Chạm để định vị):</span>
+                                  </span>
+                                </div>
+                                <p className="text-amber-900 dark:text-amber-200 italic text-xs leading-relaxed">
+                                  &ldquo;...{q.evidenceInPassage}...&rdquo;
+                                </p>
+                              </div>
+                            )}
+
+                            {(q.recognitionKey || q.explanation) && (
+                              <div className="border-t border-slate-100 dark:border-slate-800 pt-2.5 space-y-1.5 text-xs">
+                                {q.recognitionKey && (
+                                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold">
+                                    <Key size={12} className="text-[#0071e3] shrink-0" />
+                                    <span>{q.recognitionKey}</span>
+                                  </div>
+                                )}
+                                {q.explanation && (
+                                  <p className="text-slate-700 dark:text-slate-300 leading-relaxed">
+                                    {q.explanation}
+                                  </p>
+                                )}
+                              </div>
+                            )}
+
+                            {q.trap && (
+                              <div className="p-2.5 bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/40 rounded-xl text-xs text-rose-700 dark:text-rose-300 flex items-start gap-2">
+                                <AlertTriangle size={14} className="shrink-0 mt-0.5 text-rose-500" />
+                                <span>
+                                  <strong>Bẫy đề thi:</strong> {q.trap}
+                                </span>
+                              </div>
+                            )}
+
+                            <div className="border-t border-slate-100 dark:border-slate-800 pt-2.5 flex items-center justify-end gap-2">
+                              <button
+                                onClick={() => markConfident(7, q.id, true)}
+                                className={`px-3 py-1.5 rounded-full font-bold text-xs border transition-all flex items-center gap-1.5 cursor-pointer ${
+                                  confidentVal === true
+                                    ? 'bg-[#0071e3] border-[#0071e3] text-white'
+                                    : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300'
+                                }`}
+                              >
+                                <CheckCircle2 size={12} />
+                                <span>Đã nắm chắc</span>
+                              </button>
+                              <button
+                                onClick={() => markConfident(7, q.id, false)}
+                                className={`px-3 py-1.5 rounded-full font-bold text-xs border transition-all flex items-center gap-1.5 cursor-pointer ${
+                                  confidentVal === false
+                                    ? 'bg-amber-500 border-amber-500 text-white'
+                                    : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300'
+                                }`}
+                              >
+                                <HelpCircle size={12} />
+                                <span>Cần ôn lại</span>
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
-            );
-          })}
-        </div>
-
+            </div>
+          );
+        })}
       </div>
 
       {aiModalData && (
@@ -235,7 +294,6 @@ export default function Part7View({ passages = [], testId, studyProgress }) {
           context={aiModalData.context}
         />
       )}
-
     </div>
   );
 }

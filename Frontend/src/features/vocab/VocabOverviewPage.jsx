@@ -101,81 +101,98 @@ export default function VocabOverviewPage() {
     });
   }, [topics, activeFilter, masteredWords, starredWords]);
 
+  const activeResumeTopic = useMemo(() => {
+    return topics.find((t) => t.id === lastStudiedTopic) || topics[0] || { id: 1, title: 'Con Người & Ngoại Hình' };
+  }, [topics, lastStudiedTopic]);
+
   return (
-    <div className="max-w-7xl mx-auto space-y-4 sm:space-y-8">
+    <div className="max-w-7xl mx-auto space-y-3.5 sm:space-y-5">
       <SeoMeta
         title="3000 Từ Vựng Tiếng Anh Cốt Lõi"
         description="Học 3000 từ vựng Oxford thông dụng nhất theo 60 chủ đề cốt lõi với flashcard tương tác và phát âm chuẩn."
       />
       
-      {/* 1. Hero Banner */}
-      <div className="relative overflow-hidden rounded-2xl sm:rounded-[32px] bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white p-4 sm:p-10 border border-slate-800 shadow-2xl">
-        <div className="relative z-10 max-w-3xl space-y-2.5 sm:space-y-4">
-          <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-blue-500/20 text-sky-300 text-[11px] sm:text-xs font-bold border border-blue-400/30 backdrop-blur-md">
-            <Sparkles size={13} className="shrink-0" />
-            <span className="truncate">Oxford & Cambridge • 60 Chủ Đề Cốt Lõi</span>
+      {/* 1. Compact Apple-Style Hero Banner */}
+      <div className="relative overflow-hidden rounded-2xl sm:rounded-[28px] bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white p-4 sm:p-6 lg:p-7 border border-slate-800 shadow-xl">
+        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6">
+          {/* Left: Title + Quick Resume CTA */}
+          <div className="space-y-2 sm:space-y-3 max-w-2xl">
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-500/20 text-sky-300 text-[11px] font-bold border border-blue-400/30">
+                <Sparkles size={12} className="shrink-0" />
+                <span>Oxford &amp; Cambridge • 60 Chủ Đề Cốt Lõi</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => navigate(`/vocab/${activeResumeTopic.id}`)}
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white text-[11px] font-bold shadow-sm transition-colors cursor-pointer"
+              >
+                <Play size={11} fill="currentColor" />
+                <span>Học tiếp Chủ đề #{activeResumeTopic.id}: {activeResumeTopic.title}</span>
+              </button>
+            </div>
+
+            <h1 className="text-xl sm:text-3xl lg:text-4xl font-black tracking-tight leading-tight">
+              3000 Từ Vựng Tiếng Anh{' '}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-[#0071e3]">
+                Theo 60 Chủ Đề
+              </span>
+            </h1>
+
+            <p className="text-xs sm:text-sm text-slate-300 font-normal leading-relaxed max-w-xl hidden sm:block">
+              Học nhanh nhớ lâu qua Flashcard 3D, Trắc nghiệm phản xạ 2 chiều, Luyện gõ chính tả và thuật toán lặp lại ngắt quãng FSRS.
+            </p>
           </div>
 
-          <h1 className="text-2xl sm:text-5xl font-black tracking-tight leading-tight">
-            3000 Từ Vựng Tiếng Anh{' '}
-            <br className="hidden sm:inline" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-[#0071e3]">
-              Theo Chủ Đề
-            </span>
-          </h1>
-
-          <p className="text-xs sm:text-base text-slate-300 font-medium leading-relaxed max-w-2xl line-clamp-2 sm:line-clamp-none">
-            Nền tảng vốn từ thiết yếu giúp bạn tự tin giao tiếp, đọc hiểu và phản xạ trong mọi ngữ cảnh đời sống. Học qua Flashcard 3D, Trắc nghiệm phản xạ và Luyện gõ chính tả.
-          </p>
-
-          {/* Overall Stats Bar */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 pt-1 sm:pt-2">
-            <div className="p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
-              <span className="text-[10px] sm:text-[11px] font-semibold text-slate-400 block">Đã ghi nhớ</span>
-              <span className="text-base sm:text-2xl font-black text-amber-300">
-                {masteredCount} <span className="text-[11px] sm:text-xs font-bold text-slate-400">/ {totalWords}</span>
+          {/* Right: Compact 4-Stat Strip */}
+          <div className="grid grid-cols-4 gap-1.5 sm:gap-2.5 lg:w-[420px] shrink-0">
+            <div className="p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 text-center sm:text-left">
+              <span className="text-[10px] font-semibold text-slate-400 block truncate">Đã thuộc</span>
+              <span className="text-sm sm:text-xl font-black text-amber-300">
+                {masteredCount}
+                <span className="text-[10px] font-bold text-slate-400 hidden sm:inline">/{totalWords}</span>
               </span>
             </div>
-            <div className="p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
-              <span className="text-[10px] sm:text-[11px] font-semibold text-slate-400 block">Tiến độ toàn kho</span>
-              <span className="text-base sm:text-2xl font-black text-sky-400">{totalProgressPercent}%</span>
+            <div className="p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 text-center sm:text-left">
+              <span className="text-[10px] font-semibold text-slate-400 block truncate">Tiến độ</span>
+              <span className="text-sm sm:text-xl font-black text-sky-400">{totalProgressPercent}%</span>
             </div>
-            <div className="p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
-              <span className="text-[10px] sm:text-[11px] font-semibold text-slate-400 block">Chủ đề hoàn thành</span>
-              <span className="text-base sm:text-2xl font-black text-emerald-400">
-                {completedTopicsCount} <span className="text-[11px] sm:text-xs font-bold text-slate-400">/ 60</span>
+            <div className="p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 text-center sm:text-left">
+              <span className="text-[10px] font-semibold text-slate-400 block truncate">Chủ đề xong</span>
+              <span className="text-sm sm:text-xl font-black text-emerald-400">
+                {completedTopicsCount}<span className="text-[10px] font-bold text-slate-400">/60</span>
               </span>
             </div>
-            <div className="p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
-              <span className="text-[10px] sm:text-[11px] font-semibold text-slate-400 block">Từ vựng yêu thích</span>
-              <span className="text-base sm:text-2xl font-black text-purple-400">{starredCount}</span>
+            <div className="p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 text-center sm:text-left">
+              <span className="text-[10px] font-semibold text-slate-400 block truncate">Đánh dấu</span>
+              <span className="text-sm sm:text-xl font-black text-purple-400">{starredCount}</span>
             </div>
           </div>
         </div>
 
         {/* Decorative background glow */}
-        <div className="absolute -right-20 -top-20 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -right-20 -top-20 w-72 h-72 bg-blue-500/20 rounded-full blur-3xl pointer-events-none" />
       </div>
 
-      {/* F5. LÁ CHẮN TRÍ NHỚ FSRS */}
-      <FsrsMemoryShieldCard />
+      {/* F5. LÁ CHẮN TRÍ NHỚ FSRS — Chế độ Thanh Gọn Thông Minh (Bấm Chi Tiết để mở rộng) */}
+      <FsrsMemoryShieldCard compact />
 
-      {/* 2. Global Search & Filter Bar */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-2.5 sm:gap-4">
+      {/* 2. Sticky Global Search & Filter Bar (Luôn nổi trên đầu khi cuộn trên Mobile) */}
+      <div className="sticky top-[58px] z-20 -mx-3 px-3 py-2 sm:static sm:mx-0 sm:px-0 sm:py-0 bg-slate-50/95 dark:bg-slate-950/95 sm:bg-transparent backdrop-blur-md sm:backdrop-blur-none border-b border-slate-200/60 dark:border-slate-800/70 sm:border-none flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-4">
         {/* Instant Search Bar */}
         <div className="relative w-full sm:w-96">
-          <Search size={17} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Tra cứu từ tiếng Anh hoặc nghĩa tiếng Việt..."
-            className="w-full pl-10 pr-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 text-xs sm:text-sm font-medium outline-none focus:border-[#0071e3] shadow-sm transition-all text-slate-900 dark:text-white"
+            placeholder="Tra cứu nhanh trong 3000 từ vựng..."
+            className="w-full pl-9 pr-4 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 text-xs sm:text-sm font-medium outline-none focus:border-[#0071e3] shadow-2xs transition-all text-slate-900 dark:text-white"
           />
         </div>
 
         {/* Filter Tabs */}
-        <div className="flex items-center gap-1.5 overflow-x-auto whitespace-nowrap hide-scrollbar pb-0.5 sm:pb-0 w-full sm:w-auto">
+        <div className="flex items-center gap-1.5 overflow-x-auto whitespace-nowrap hide-scrollbar w-full sm:w-auto">
           {[
             { id: 'all', label: `Tất cả (60)` },
             { id: 'learning', label: 'Đang học' },
@@ -185,9 +202,9 @@ export default function VocabOverviewPage() {
             <button
               key={tab.id}
               onClick={() => setActiveFilter(tab.id)}
-              className={`px-3.5 sm:px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer shrink-0 ${
+              className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer shrink-0 ${
                 activeFilter === tab.id
-                  ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-md'
+                  ? 'bg-[#0071e3] text-white shadow-sm'
                   : 'bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50'
               }`}
             >

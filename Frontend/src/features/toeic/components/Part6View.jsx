@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { RotateCcw, Shuffle, Filter, Sparkles, Volume2 } from 'lucide-react';
+import { RotateCcw, Filter, Sparkles, CheckCircle2, HelpCircle, Key, Eye, FileText } from 'lucide-react';
 import AudioPlayer from '../../../components/AudioPlayer';
 import AiTutorModal from './AiTutorModal';
 
@@ -22,165 +22,197 @@ export default function Part6View({ passages = [], testId, studyProgress }) {
   };
 
   return (
-    <div className="space-y-6">
-      
-      {/* Top Toolbar */}
-      <div className="flex items-center justify-between bg-white/60 dark:bg-slate-900/60 p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-800">
-        <div className="flex items-center gap-2">
-          <label className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition-all">
-            <Filter size={14} className={filterUnsure ? "text-orange-500" : "text-slate-400"} />
-            <span>Chỉ câu Chưa chắc</span>
-            <input
-              type="checkbox"
-              className="hidden"
-              checked={filterUnsure}
-              onChange={(e) => setFilterUnsure(e.target.checked)}
-            />
-          </label>
+    <div className="space-y-5">
+      {/* Top Control Bar */}
+      <div className="p-4 sm:p-5 rounded-2xl sm:rounded-[24px] bg-white dark:bg-slate-900 border border-slate-200/85 dark:border-white/[0.08] shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="space-y-0.5">
+          <h3 className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white">
+            Part 6 • Text Completion (Điền khuyết đoạn văn)
+          </h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            Đọc văn bản bên trái và hoàn thành các khoảng trống tương ứng bên phải.
+          </p>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2 shrink-0">
+          <button
+            type="button"
+            onClick={() => setFilterUnsure((prev) => !prev)}
+            className={`px-3.5 py-2 rounded-full text-xs font-bold border flex items-center gap-1.5 transition-colors cursor-pointer ${
+              filterUnsure
+                ? 'bg-amber-500/15 border-amber-500/35 text-amber-700 dark:text-amber-300'
+                : 'bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 border-slate-200/90 dark:border-slate-800 text-slate-700 dark:text-slate-200'
+            }`}
+          >
+            <Filter size={14} className={filterUnsure ? 'text-amber-500' : 'text-slate-400'} />
+            <span>Chỉ câu cần ôn lại</span>
+          </button>
 
           <button
             onClick={handleReset}
-            className="px-3.5 py-2 rounded-xl text-xs font-bold text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 border border-transparent hover:border-red-200 dark:hover:border-red-900 transition-all flex items-center gap-1.5"
+            className="px-3.5 py-2 rounded-full text-xs font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-transparent hover:border-rose-200 dark:hover:border-rose-900/50 transition-colors flex items-center gap-1.5 cursor-pointer"
           >
-            <RotateCcw size={14} /> Làm lại
+            <RotateCcw size={14} />
+            <span>Làm lại</span>
           </button>
         </div>
       </div>
 
-      {/* Main Container */}
-      <div className="bg-white dark:bg-slate-900 border-2 border-black dark:border-slate-700 p-5 md:p-10 font-serif text-slate-900 dark:text-slate-100 shadow-xl rounded-sm">
-        
-        {/* Directions */}
-        <div className="mb-8 border-b-2 border-black dark:border-slate-700 pb-6">
-          <h3 className="text-xl font-bold mb-2">PART 6</h3>
-          <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300">
-            <span className="font-bold">Directions:</span> Read the texts that follow. A word, phrase, or sentence is missing in parts of each text. Four answer choices for each question are given below the text. Select the best answer to complete the text. Then mark the letter (A), (B), (C), or (D) on your answer sheet.
-          </p>
-        </div>
+      {/* Passages Split-Screen Studio */}
+      <div className="space-y-6">
+        {passages.map((p, idx) => {
+          const visibleQuestions = filterUnsure
+            ? p.questions.filter((q) => isConfident(6, q.id) === false)
+            : p.questions;
 
-        <div className="space-y-12">
-          {passages.map((p, idx) => {
-            const visibleQuestions = filterUnsure
-              ? p.questions.filter(q => isConfident(6, q.id) === false)
-              : p.questions;
+          if (filterUnsure && visibleQuestions.length === 0) return null;
 
-            if (filterUnsure && visibleQuestions.length === 0) return null;
-
-            return (
-              <div key={p.id || idx} className="border-b-2 border-slate-200 dark:border-slate-800 pb-12 last:border-0 last:pb-0">
-                <div className="flex flex-col lg:flex-row gap-8 items-start">
-                  
-                  {/* Passage Box (Left) */}
-                  <div className="w-full lg:w-1/2">
-                    <h4 className="font-bold mb-2 uppercase text-xs tracking-wider text-slate-500 dark:text-slate-400">{p.passageTitle}</h4>
-                    <div className="border-2 border-black dark:border-slate-700 p-5 bg-white dark:bg-slate-950 leading-loose text-base md:text-lg text-justify shadow-inner">
-                      {p.passageContext.split('\n').map((line, i) => (
-                        <React.Fragment key={i}>
-                          {line}
-                          <br />
-                        </React.Fragment>
-                      ))}
-                    </div>
-                    {p.audioUrl && (
-                      <div className="mt-4 max-w-sm">
-                        <AudioPlayer audioUrl={p.audioUrl} />
-                      </div>
-                    )}
+          return (
+            <div
+              key={p.id || idx}
+              className="p-5 sm:p-7 rounded-2xl sm:rounded-[28px] bg-white dark:bg-slate-900 border border-slate-200/85 dark:border-white/[0.08] shadow-[0_4px_20px_rgba(0,0,0,0.02)]"
+            >
+              <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
+                {/* Passage Document Box (Left, Sticky on Desktop) */}
+                <div className="w-full lg:w-1/2 lg:sticky lg:top-32 space-y-3">
+                  <div className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-[#0071e3] dark:text-sky-400">
+                    <FileText size={14} />
+                    <span>{p.passageTitle || `Đoạn văn ${idx + 1}`}</span>
                   </div>
 
-                  {/* Questions (Right) */}
-                  <div className="w-full lg:w-1/2 space-y-8">
-                    {visibleQuestions.map((q) => {
-                      const revealed = isRevealed(6, q.id);
-                      const confidentVal = isConfident(6, q.id);
+                  <div className="p-5 sm:p-6 rounded-2xl bg-slate-50/90 dark:bg-slate-950/60 border border-slate-200/85 dark:border-slate-800/90 leading-relaxed text-sm sm:text-base text-slate-800 dark:text-slate-200 space-y-2">
+                    {(p.passageContext || '').split('\n').map((line, i) => (
+                      <p key={i} className="min-h-[1rem]">
+                        {line}
+                      </p>
+                    ))}
+                  </div>
 
-                      return (
-                        <div key={q.id} className="relative">
-                          <div className="flex gap-2 mb-2">
-                            <span className="font-bold text-lg">{q.id}.</span>
-                            <div className="text-lg leading-relaxed flex-1">
-                              {q.question || q.text}
+                  {p.audioUrl && (
+                    <div className="pt-1 max-w-sm">
+                      <AudioPlayer audioUrl={p.audioUrl} />
+                    </div>
+                  )}
+                </div>
 
-                              {!revealed ? (
-                                <div
-                                  onClick={() => markRevealed(6, q.id)}
-                                  className="mt-4 border border-dashed border-slate-400 dark:border-slate-600 p-3 text-center text-slate-500 dark:text-slate-400 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-sans rounded"
-                                >
-                                  [ Click to Reveal Answer & Analysis ]
-                                </div>
-                              ) : (
-                                <div className="mt-4 p-4 border border-slate-300 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/60 font-sans text-sm rounded shadow-inner space-y-3">
-                                  <div className="flex items-center justify-between">
-                                    <div>
-                                      <span className="font-bold uppercase text-green-700 dark:text-green-400 text-xs block mb-1">Đáp án đúng</span>
-                                      <div className="flex items-center gap-2">
-                                        <span className="font-bold border border-green-600 text-green-700 dark:text-green-300 px-1.5 rounded">[ {q.correctAnswer} ]</span>
-                                        <span className="font-bold text-slate-800 dark:text-slate-200">
-                                          {q.correctAnswerText || (q.options && q.options[q.correctAnswer])}
-                                        </span>
-                                      </div>
-                                    </div>
+                {/* Questions Column (Right) */}
+                <div className="w-full lg:w-1/2 space-y-4">
+                  {visibleQuestions.map((q) => {
+                    const revealed = isRevealed(6, q.id);
+                    const confidentVal = isConfident(6, q.id);
 
-                                    <button
-                                      onClick={() => setAiModalData({
-                                        question: q.question || q.text,
-                                        correctAnswer: q.correctAnswer,
-                                        options: JSON.stringify(q.options),
-                                        context: p.passageContext
-                                      })}
-                                      className="flex items-center gap-1 px-2.5 py-1 text-xs font-bold text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950/60 rounded border border-purple-200 dark:border-purple-800"
-                                    >
-                                      <Sparkles size={12} /> Hỏi AI Tutor
-                                    </button>
-                                  </div>
-
-                                  {q.translation && <p className="text-slate-600 dark:text-slate-400 italic text-xs">{q.translation}</p>}
-                                  {q.correctAnswerTextVi && <p className="text-slate-600 dark:text-slate-400 italic text-xs">{q.correctAnswerTextVi}</p>}
-
-                                  {(q.recognitionKey || q.explanation) && (
-                                    <div className="border-t border-slate-200 dark:border-slate-700 pt-2 space-y-1">
-                                      {q.recognitionKey && <p className="font-bold text-slate-900 dark:text-slate-100 text-xs">🔑 {q.recognitionKey}</p>}
-                                      {q.explanation && <p className="text-slate-700 dark:text-slate-300 text-xs">{q.explanation}</p>}
-                                    </div>
-                                  )}
-
-                                  <div className="border-t border-slate-200 dark:border-slate-700 pt-2 flex gap-2">
-                                    <button
-                                      onClick={() => markConfident(6, q.id, true)}
-                                      className={`px-3 py-1 font-bold text-xs border rounded transition-all ${
-                                        confidentVal === true
-                                          ? 'bg-green-100 dark:bg-green-950 border-green-600 text-green-800 dark:text-green-300'
-                                          : 'bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-500'
-                                      }`}
-                                    >
-                                      ✓ Nhớ rồi
-                                    </button>
-                                    <button
-                                      onClick={() => markConfident(6, q.id, false)}
-                                      className={`px-3 py-1 font-bold text-xs border rounded transition-all ${
-                                        confidentVal === false
-                                          ? 'bg-orange-100 dark:bg-orange-950 border-orange-500 text-orange-800 dark:text-orange-300'
-                                          : 'bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-500'
-                                      }`}
-                                    >
-                                      ? Chưa chắc
-                                    </button>
-                                  </div>
-                                </div>
-                              )}
-                            </div>
+                    return (
+                      <div
+                        key={q.id}
+                        className="p-4 sm:p-5 rounded-2xl bg-slate-50/70 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 space-y-3.5"
+                      >
+                        <div className="flex items-start gap-3">
+                          <span className="w-7 h-7 rounded-lg bg-[#0071e3]/10 dark:bg-sky-500/20 text-[#0071e3] dark:text-sky-300 font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5">
+                            {q.id}
+                          </span>
+                          <div className="text-sm sm:text-base font-semibold text-slate-900 dark:text-white leading-relaxed flex-1">
+                            {q.question || q.text || `Chọn đáp án điền vào vị trí [${q.id}]`}
                           </div>
                         </div>
-                      );
-                    })}
-                  </div>
 
+                        {!revealed ? (
+                          <button
+                            type="button"
+                            onClick={() => markRevealed(6, q.id)}
+                            className="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-[#0071e3] dark:bg-slate-800 dark:hover:bg-[#0071e3] text-white font-bold text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-2xs"
+                          >
+                            <Eye size={14} />
+                            <span>Xem đáp án & Phân tích ngữ cảnh</span>
+                          </button>
+                        ) : (
+                          <div className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-700/80 space-y-3 animate-fade-in">
+                            <div className="flex flex-wrap items-center justify-between gap-2">
+                              <div className="flex items-center gap-2">
+                                <span className="px-2.5 py-0.5 rounded-lg bg-[#0071e3] text-white font-extrabold text-xs">
+                                  {q.correctAnswer}
+                                </span>
+                                <span className="font-bold text-sm text-[#0071e3] dark:text-sky-300">
+                                  {q.correctAnswerText || (q.options && q.options[q.correctAnswer])}
+                                </span>
+                              </div>
+
+                              {/* <button
+                                onClick={() =>
+                                  setAiModalData({
+                                    question: q.question || q.text,
+                                    correctAnswer: q.correctAnswer,
+                                    options: JSON.stringify(q.options),
+                                    context: p.passageContext
+                                  })
+                                }
+                                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-slate-900 hover:bg-[#0071e3] dark:bg-slate-800 dark:hover:bg-[#0071e3] text-white transition-colors cursor-pointer"
+                              >
+                                <Sparkles size={12} className="text-amber-400" />
+                                <span>Hỏi AI Tutor</span>
+                              </button> */}
+                            </div>
+
+                            {q.translation && (
+                              <p className="text-slate-500 dark:text-slate-400 font-vietsub text-xs border-l-2 border-[#0071e3]/40 pl-2.5">
+                                {q.translation}
+                              </p>
+                            )}
+                            {q.correctAnswerTextVi && (
+                              <p className="text-slate-500 dark:text-slate-400 font-vietsub text-xs">
+                                {q.correctAnswerTextVi}
+                              </p>
+                            )}
+
+                            {(q.recognitionKey || q.explanation) && (
+                              <div className="border-t border-slate-100 dark:border-slate-800 pt-2.5 space-y-1.5 text-xs">
+                                {q.recognitionKey && (
+                                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-800 dark:text-amber-300 border border-amber-500/25 font-bold">
+                                    <Key size={12} className="text-amber-500 shrink-0" />
+                                    <span>{q.recognitionKey}</span>
+                                  </div>
+                                )}
+                                {q.explanation && (
+                                  <p className="text-slate-700 dark:text-slate-300 leading-relaxed">
+                                    {q.explanation}
+                                  </p>
+                                )}
+                              </div>
+                            )}
+
+                            <div className="border-t border-slate-100 dark:border-slate-800 pt-2.5 flex items-center justify-end gap-2">
+                              <button
+                                onClick={() => markConfident(6, q.id, true)}
+                                className={`px-3 py-1.5 rounded-full font-bold text-xs border transition-all flex items-center gap-1.5 cursor-pointer ${
+                                  confidentVal === true
+                                    ? 'bg-[#0071e3] border-[#0071e3] text-white'
+                                    : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300'
+                                }`}
+                              >
+                                <CheckCircle2 size={12} />
+                                <span>Đã nắm chắc</span>
+                              </button>
+                              <button
+                                onClick={() => markConfident(6, q.id, false)}
+                                className={`px-3 py-1.5 rounded-full font-bold text-xs border transition-all flex items-center gap-1.5 cursor-pointer ${
+                                  confidentVal === false
+                                    ? 'bg-amber-500 border-amber-500 text-white'
+                                    : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300'
+                                }`}
+                              >
+                                <HelpCircle size={12} />
+                                <span>Cần ôn lại</span>
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
-            );
-          })}
-        </div>
-
+            </div>
+          );
+        })}
       </div>
 
       {aiModalData && (
@@ -193,7 +225,6 @@ export default function Part6View({ passages = [], testId, studyProgress }) {
           context={aiModalData.context}
         />
       )}
-
     </div>
   );
 }

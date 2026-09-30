@@ -2,6 +2,9 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
+  --font-sans: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-display: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --color-primary-50: #eff6ff;
   --color-primary-500: #3b82f6;
   --color-primary-600: #2563eb;
@@ -9,12 +12,24 @@
   --shadow-glass: 0 10px 30px -5px rgba(15, 23, 42, 0.06), 0 4px 12px -2px rgba(15, 23, 42, 0.03);
 }
 
-/* Smooth scrolling & anti-jank GPU rendering */
+/* Siêu nét 100% Vector ClearType: Không dùng antialiased làm mờ chữ trên Windows, không ép negative tracking làm dính nét */
 html {
+  font-family: var(--font-sans);
   scroll-behavior: smooth;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+}
+
+body {
+  font-family: var(--font-sans);
+}
+
+h1, h2, h3, .font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.015em;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
 }
 
 @layer utilities {
@@ -50,13 +65,13 @@ html {
   }
 
   .text-gradient-vip {
-    background: linear-gradient(135deg, #f59e0b, #ea580c, #d97706);
+    background: linear-gradient(135deg, #0071e3, #0284c7, #38bdf8);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
 
   .font-vietsub {
-    font-family: 'Be Vietnam Pro', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: var(--font-sans);
   }
 
   /* 3D Card Flip Utilities */
@@ -75,26 +90,26 @@ html {
   }
 }
 
-/* VIP Page & Modal Entrance Animations (100% GPU Composited: transform + opacity only) */
+/* Kết thúc animation trả về transform: none để trình duyệt hủy lớp bitmap GPU và vẽ chữ Vector sắc nét 100% */
 @keyframes vipPageEnter {
   0% {
     opacity: 0;
-    transform: translate3d(0, 10px, 0) scale(0.992);
+    transform: translateY(8px);
   }
   100% {
     opacity: 1;
-    transform: translate3d(0, 0, 0) scale(1);
+    transform: none;
   }
 }
 
 @keyframes fadeInFast {
   from {
     opacity: 0;
-    transform: translate3d(0, 6px, 0);
+    transform: translateY(5px);
   }
   to {
     opacity: 1;
-    transform: translate3d(0, 0, 0);
+    transform: none;
   }
 }
 
@@ -109,10 +124,10 @@ html {
 
 @keyframes pulseGlow {
   0%, 100% {
-    box-shadow: 0 0 15px -3px rgba(245, 158, 11, 0.35), 0 0 6px -2px rgba(245, 158, 11, 0.2);
+    box-shadow: 0 0 15px -3px rgba(0, 113, 227, 0.35), 0 0 6px -2px rgba(0, 113, 227, 0.2);
   }
   50% {
-    box-shadow: 0 0 25px 3px rgba(245, 158, 11, 0.6), 0 0 10px 1px rgba(245, 158, 11, 0.4);
+    box-shadow: 0 0 25px 3px rgba(0, 113, 227, 0.6), 0 0 10px 1px rgba(0, 113, 227, 0.4);
   }
 }
 
@@ -142,8 +157,7 @@ html {
 
 .animate-fade-in,
 .animate-fadeIn {
-  animation: vipPageEnter 0.28s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-  will-change: transform, opacity;
+  animation: vipPageEnter 0.25s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .animate-pulse-glow {
@@ -188,7 +202,7 @@ html {
   border-radius: 9999px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(245, 158, 11, 0.55);
+  background: rgba(0, 113, 227, 0.55);
 }
 .custom-scrollbar::-webkit-scrollbar-track {
   background: transparent;

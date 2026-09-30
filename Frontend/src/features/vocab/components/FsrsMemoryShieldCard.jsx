@@ -29,6 +29,7 @@ export default function FsrsMemoryShieldCard({
   showTitle = true
 }) {
   const navigate = useNavigate();
+  const [isBodyExpanded, setIsBodyExpanded] = useState(!compact);
   const [isRecoveryOpen, setIsRecoveryOpen] = useState(false);
   const [wordsToReview, setWordsToReview] = useState([]);
   const [expandedPreview, setExpandedPreview] = useState(false);
@@ -44,7 +45,7 @@ export default function FsrsMemoryShieldCard({
     return calculateMemoryShield(fsrsCards, masteredWords);
   }, [fsrsCards, masteredWords]);
 
-  const handleStartReview = (words, initialHealth) => {
+  const handleStartReview = (words) => {
     if (!words || words.length === 0) return;
     setWordsToReview(words);
     setIsRecoveryOpen(true);
@@ -59,7 +60,6 @@ export default function FsrsMemoryShieldCard({
   // Màu sắc động theo cấp bậc sức khỏe
   const isPristine = shield.tier.code === 'pristine';
   const isStable = shield.tier.code === 'stable';
-  const isDecaying = shield.tier.code === 'decaying';
 
   const shieldTheme = isPristine
     ? {
@@ -87,62 +87,152 @@ export default function FsrsMemoryShieldCard({
 
   return (
     <div
-      className={`relative overflow-hidden rounded-[28px] bg-white dark:bg-slate-900 border ${shieldTheme.border} p-5 sm:p-7 shadow-[0_4px_24px_rgba(0,0,0,0.03)] dark:shadow-none transition-all ${className}`}
+      className={`relative overflow-hidden rounded-2xl sm:rounded-[28px] bg-white dark:bg-slate-900 border ${shieldTheme.border} ${
+        isBodyExpanded ? 'p-4 sm:p-7' : 'p-3 sm:p-4'
+      } shadow-[0_4px_24px_rgba(0,0,0,0.03)] dark:shadow-none transition-all ${className}`}
     >
       {/* Background Decorative Ambient Radial Glow */}
       <div
-        className="pointer-events-none absolute -right-20 -top-20 w-80 h-80 rounded-full blur-3xl opacity-30"
+        className="pointer-events-none absolute -right-20 -top-20 w-80 h-80 rounded-full blur-3xl opacity-25"
         style={{ backgroundColor: shieldTheme.shieldColor }}
       />
 
-      {/* 1. Header with Badge & Info Trigger */}
+      {/* 1. Header / Compact Smart HUD Bar */}
       {showTitle && (
-        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-slate-200/70 dark:border-slate-800">
-          <div className="flex items-center gap-3">
+        <div
+          className={`relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-3 ${
+            isBodyExpanded ? 'pb-4 sm:pb-5 border-b border-slate-200/70 dark:border-slate-800' : ''
+          }`}
+        >
+          {/* Left: Mini Shield Progress Ring + Title + Quick 3-Tier Pills */}
+          <div className="flex items-center gap-3 min-w-0">
+            {/* Mini SVG Health Gauge */}
             <div
-              className="w-10 h-10 rounded-2xl flex items-center justify-center transition-all shadow-xs"
-              style={{
-                backgroundColor: `${shieldTheme.shieldColor}18`,
-                color: shieldTheme.shieldColor
-              }}
+              onClick={() => setIsBodyExpanded((prev) => !prev)}
+              className="relative w-11 h-11 sm:w-12 sm:h-12 shrink-0 flex items-center justify-center cursor-pointer"
+              title="Bấm để đóng/mở chi tiết Lá Chắn Trí Nhớ"
             >
-              <Shield size={22} className="animate-pulse" />
+              <svg className="w-full h-full -rotate-90" viewBox="0 0 44 44">
+                <circle
+                  cx="22"
+                  cy="22"
+                  r="18"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="3.5"
+                  className="text-slate-200/80 dark:text-slate-800"
+                />
+                <circle
+                  cx="22"
+                  cy="22"
+                  r="18"
+                  fill="none"
+                  stroke={shieldTheme.shieldColor}
+                  strokeWidth="3.5"
+                  strokeLinecap="round"
+                  strokeDasharray="113.1"
+                  strokeDashoffset={113.1 - (113.1 * shield.healthPercentage) / 100}
+                  className="transition-all duration-700"
+                />
+              </svg>
+              <span className="absolute inset-0 flex items-center justify-center text-[11px] font-black text-slate-900 dark:text-white">
+                {shield.healthPercentage}%
+              </span>
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h3 className="text-lg sm:text-xl font-bold tracking-tight text-slate-900 dark:text-white">
+
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                <h3 className="text-sm sm:text-lg font-extrabold tracking-tight text-slate-900 dark:text-white truncate">
                   Lá Chắn Trí Nhớ FSRS
                 </h3>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-blue-500/10 text-[#0071e3] dark:text-sky-400 border border-blue-500/20">
-                  DSR AI
+                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border ${shieldTheme.badge}`}>
+                  <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: shieldTheme.shieldColor }} />
+                  <span>{shield.tier.label}</span>
                 </span>
               </div>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                Bảo vệ vốn từ của bạn trước Đường cong lãng quên Ebbinghaus
-              </p>
+
+              {/* Compact 3-Tier Summary Pills */}
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1 text-[11px] font-semibold text-slate-500 dark:text-slate-400">
+                <span className="inline-flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                  <strong className="text-slate-700 dark:text-slate-200">{shield.solidCount}</strong> vững
+                </span>
+                <span className="inline-flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-amber-500" />
+                  <strong className="text-slate-700 dark:text-slate-200">{shield.fadingCount}</strong> mờ nhạt
+                </span>
+                <span className="inline-flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+                  <strong className="text-rose-600 dark:text-rose-400">{shield.criticalCount}</strong> cần ôn
+                </span>
+              </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 self-start sm:self-auto">
-            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${shieldTheme.badge}`}>
-              <span className="w-2 h-2 rounded-full animate-ping" style={{ backgroundColor: shieldTheme.shieldColor }} />
-              <span>{shield.tier.label}</span>
-            </span>
+          {/* Right: 1-Tap Quick Action + Expand/Collapse Toggle + Info */}
+          <div className="flex flex-wrap items-center justify-between sm:justify-end gap-2 shrink-0">
+            {!isBodyExpanded && (
+              <>
+                {shield.criticalCount > 0 ? (
+                  <button
+                    type="button"
+                    onClick={() => handleStartReview(shield.criticalWords)}
+                    className="flex-1 sm:flex-none px-3.5 py-2 rounded-full bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white font-bold text-xs shadow-sm shadow-rose-500/20 flex items-center justify-center gap-1.5 cursor-pointer transition-all"
+                  >
+                    <Shield size={13} />
+                    <span>Ôn ngay {shield.criticalCount} từ đỏ (~{shield.estimatedReviewMinutes}p)</span>
+                  </button>
+                ) : shield.fadingCount > 0 ? (
+                  <button
+                    type="button"
+                    onClick={() => handleStartReview(shield.fadingWords)}
+                    className="flex-1 sm:flex-none px-3.5 py-2 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white font-bold text-xs shadow-sm flex items-center justify-center gap-1.5 cursor-pointer transition-all"
+                  >
+                    <Zap size={13} />
+                    <span>Củng cố {shield.fadingCount} từ</span>
+                  </button>
+                ) : (
+                  <span className="px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold border border-emerald-500/20">
+                    ✓ Độ bền tối đa 100%
+                  </span>
+                )}
+              </>
+            )}
 
-            <button
-              type="button"
-              onClick={() => setShowInfoModal(true)}
-              className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 flex items-center justify-center transition-colors cursor-pointer"
-              title="Tìm hiểu về cơ chế Lá Chắn Trí Nhớ"
-            >
-              <Info size={15} />
-            </button>
+            <div className="flex items-center gap-1.5 ml-auto sm:ml-0">
+              <button
+                type="button"
+                onClick={() => setIsBodyExpanded((prev) => !prev)}
+                className="px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200/80 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center gap-1 transition-colors cursor-pointer"
+              >
+                <span>{isBodyExpanded ? 'Thu gọn' : 'Chi tiết'}</span>
+                {isBodyExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setShowInfoModal(true)}
+                className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 flex items-center justify-center transition-colors cursor-pointer"
+                title="Tìm hiểu về cơ chế Lá Chắn Trí Nhớ"
+              >
+                <Info size={14} />
+              </button>
+            </div>
           </div>
         </div>
       )}
 
-      {/* 2. Main Hero Layout (Shield SVG Graphic + 3 Tiers + Loss Aversion Banner) */}
-      <div className="relative z-10 pt-5 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+      {/* 2. Collapsible Full Hero Body (Shield SVG Graphic + 3 Tiers + Loss Aversion Banner) */}
+      <AnimatePresence initial={false}>
+        {isBodyExpanded && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto', transitionEnd: { transform: 'none' } }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            className="overflow-hidden"
+          >
+            <div className="relative z-10 pt-5 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
         
         {/* Left: Interactive Animated Shield Graphic (4 Cols) */}
         <div className="lg:col-span-4 flex flex-col items-center justify-center text-center p-4 rounded-3xl bg-slate-50/80 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60">
@@ -432,6 +522,9 @@ export default function FsrsMemoryShieldCard({
                 Không có từ nào trong danh mục này.
               </p>
             )}
+          </motion.div>
+        )}
+      </AnimatePresence>
           </motion.div>
         )}
       </AnimatePresence>

@@ -75,18 +75,18 @@ export default function BinoBookOverviewPage() {
         spotlightColor="rgba(0, 113, 227, 0.08)"
         borderColor="rgba(0, 113, 227, 0.22)"
         hoverLift={false}
-        className="rounded-[32px] sm:rounded-[38px] p-6 sm:p-9 lg:p-10 shadow-[0_12px_45px_rgb(0,0,0,0.03)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.45)] mb-2"
+        className="rounded-2xl sm:rounded-[38px] p-4 sm:p-9 lg:p-10 shadow-[0_12px_45px_rgb(0,0,0,0.03)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.45)] mb-1 sm:mb-2"
       >
         {/* Subtle decorative background circles */}
         <div className="pointer-events-none absolute -top-24 -right-24 w-80 h-80 bg-blue-500/[0.06] dark:bg-blue-500/[0.04] rounded-full blur-3xl" />
         <div className="pointer-events-none absolute -bottom-24 -left-24 w-80 h-80 bg-sky-400/[0.06] dark:bg-sky-400/[0.04] rounded-full blur-3xl" />
 
-        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8 relative z-10">
-          <div className="space-y-4 max-w-2xl w-full">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 sm:gap-8 relative z-10">
+          <div className="space-y-2.5 sm:space-y-4 max-w-2xl w-full">
             
             {/* Atelier Monogram Ribbon Badges */}
-            <div className="flex flex-wrap items-center gap-2">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/90 dark:bg-white/[0.06] text-slate-800 dark:text-slate-200 text-xs font-semibold border border-slate-200/90 dark:border-white/10 shadow-2xs backdrop-blur-md">
+            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+              <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-white/90 dark:bg-white/[0.06] text-slate-800 dark:text-slate-200 text-xs font-semibold border border-slate-200/90 dark:border-white/10 shadow-2xs">
                 <span className="text-[#0071e3] font-serif">✦</span>
                 <span className="tracking-[0.2em] text-[10px] uppercase font-bold text-[#0071e3] dark:text-sky-400">
                   ENGLISH
@@ -95,7 +95,7 @@ export default function BinoBookOverviewPage() {
                 <span className="text-xs font-medium text-slate-600 dark:text-slate-400">Édition 2026</span>
               </div>
 
-              <span className="px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-100/90 dark:bg-white/[0.06] text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-white/10">
+              <span className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs font-semibold bg-slate-100/90 dark:bg-white/[0.06] text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-white/10">
                 {book?.totalChapters || 12} Chương • {book?.totalLessonsCount || 72} Bài Học
               </span>
 
@@ -105,16 +105,16 @@ export default function BinoBookOverviewPage() {
             </div>
 
             {/* Apple Pro Blue Typography */}
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[42px] font-black tracking-[-0.035em] leading-[1.14]">
+            <h1 className="text-xl sm:text-3xl md:text-4xl lg:text-[42px] font-black tracking-tight leading-[1.18]">
               <span className="text-slate-950 dark:text-white">
                 Giao Tiếp Thực Chiến:
               </span>{' '}
-              <span className="bg-gradient-to-r from-[#0071e3] to-sky-500 dark:from-sky-400 dark:to-blue-400 bg-clip-text text-transparent font-medium">
-                Phản Xạ Tiếng Anh Tức Thì
+              <span className="bg-gradient-to-r from-[#0071e3] to-sky-500 dark:from-sky-400 dark:to-blue-400 bg-clip-text text-transparent font-bold">
+                Phản Xạ Tiếng Anh Tức Thì.
               </span>
             </h1>
 
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-normal max-w-xl">
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-normal max-w-xl line-clamp-2 sm:line-clamp-none">
               Phương pháp phản xạ ngôn ngữ tự nhiên: Học từ vựng theo giấy note ghim, luyện nói 1:1 nhập vai với Leo, vận dụng đổi từ Substitution Drilling, kèm đầy đủ Mẫu câu mở rộng (Section B) &amp; VBaceEnglish Mindset cuối mỗi chương.
             </p>
 

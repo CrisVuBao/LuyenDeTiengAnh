@@ -72,9 +72,9 @@ export default function XPBar() {
         className="flex items-center gap-1.5 sm:gap-2 bg-slate-100 hover:bg-slate-200/80 dark:bg-slate-800 dark:hover:bg-slate-700/80 transition-all rounded-full py-1 px-2.5 sm:px-3 border border-slate-200/80 dark:border-slate-700/80 cursor-pointer active:scale-95 shrink-0 select-none"
         title="Xem chi tiết Cấp độ, Điểm XP & Chuỗi học"
       >
-        <div className="flex items-center gap-1 font-bold text-[#0071e3] dark:text-sky-400">
-          <div className="w-5 h-5 rounded-full bg-[#0071e3]/10 dark:bg-sky-400/20 flex items-center justify-center shrink-0">
-            <Trophy size={11} className="text-[#0071e3] dark:text-sky-400" />
+        <div className="flex items-center gap-1 font-bold text-slate-900 dark:text-white">
+          <div className="w-5 h-5 rounded-full bg-amber-500/15 dark:bg-amber-400/20 flex items-center justify-center shrink-0">
+            <Trophy size={11} className="text-amber-500 fill-amber-500/25" />
           </div>
           <span className="text-xs tracking-tight font-extrabold">Lv.{currentLevel}</span>
         </div>
@@ -100,7 +100,7 @@ export default function XPBar() {
               {/* Header */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#0071e3] to-sky-400 text-white flex items-center justify-center font-black shadow-md shadow-blue-500/20">
+                  <div className="w-10 h-10 rounded-xl bg-slate-900 dark:bg-slate-800 text-amber-400 flex items-center justify-center font-black shadow-md border border-slate-800 dark:border-slate-700">
                     <Trophy size={19} />
                   </div>
                   <div>

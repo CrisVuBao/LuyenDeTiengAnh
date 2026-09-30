@@ -40,10 +40,9 @@ export default function LuxurySpotlightCard({
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onClick={onClick}
-      whileHover={hoverLift ? { y: -4, scale: 1.008 } : {}}
-      whileTap={onClick ? { scale: 0.985 } : {}}
-      transition={{ type: 'spring', stiffness: 340, damping: 25 }}
-      className={`group relative overflow-hidden rounded-[30px] sm:rounded-[34px] bg-white/95 dark:bg-[#0c101a]/95 backdrop-blur-2xl border border-slate-200/80 dark:border-white/[0.08] shadow-[0_8px_30px_rgb(0,0,0,0.03)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.4)] ${
+      whileHover={hoverLift ? { y: -4 } : {}}
+      transition={{ duration: 0.22, ease: 'easeOut' }}
+      className={`group relative overflow-hidden rounded-[30px] sm:rounded-[34px] bg-white dark:bg-[#0c101a] border border-slate-200/85 dark:border-white/[0.08] shadow-[0_8px_30px_rgb(0,0,0,0.03)] hover:shadow-[0_14px_36px_rgba(0,113,227,0.08)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.4)] transition-shadow ${
         onClick ? 'cursor-pointer' : ''
       } ${className}`}
     >

@@ -11,10 +11,11 @@ import useBrandingStore from "./store/useBrandingStore";
 import authApi from "./api/authApi";
 import { Toaster } from "react-hot-toast";
 
-// LAZY LOADED PAGES (Route-level Code Splitting)
+import StudentHome from "./features/home/components/StudentHome";
+
+// LAZY LOADED PAGES (Route-level Code Splitting for Secondary Routes)
 const LandingPage = lazy(() => import("./features/public/LandingPage"));
 const Auth = lazy(() => import("./features/auth/components/Auth"));
-const StudentHome = lazy(() => import("./features/home/components/StudentHome"));
 const ToeicStudyPage = lazy(() => import("./features/toeic/ToeicStudyPage"));
 const Home = lazy(() => import("./features/dashboard/components/Home"));
 const StudyProgressPage = lazy(() => import("./features/progress/components/StudyProgressPage"));

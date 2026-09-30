@@ -656,118 +656,46 @@ export default function StudentNavbar() {
         aria-label="Mobile Navigation" 
         className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-t border-slate-200/80 dark:border-slate-800/80 shadow-[0_-4px_25px_rgba(0,0,0,0.06)] pb-[max(env(safe-area-inset-bottom),0.35rem)] pt-1"
       >
-        <div className="flex items-center justify-around px-2">
-          
-          <NavLink
-            to="/home"
-            onMouseEnter={() => prefetchRoute('home')}
-            className={({ isActive }) =>
-              `flex-1 flex flex-col items-center justify-center py-1 transition-colors ${
-                isActive 
-                  ? 'text-[#0071e3] dark:text-sky-400 font-bold' 
-                  : 'text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-medium'
-              }`
-            }
-          >
-            {({ isActive }) => (
-              <>
-                <Home size={19} className={`transition-transform ${isActive ? 'scale-110' : ''}`} />
-                <span className="text-[10px] mt-0.5 leading-tight">Trang chủ</span>
-                {isActive && (
-                  <motion.div layoutId="bottomNavDot" className="w-1 h-1 rounded-full bg-[#0071e3] dark:bg-sky-400 mt-0.5" />
+        <div className="flex items-center justify-around px-1.5">
+          {[
+            { to: '/home', prefetch: 'home', label: 'Trang chủ', icon: Home },
+            { to: '/communication', prefetch: 'communication', label: 'Giao tiếp', icon: Sparkles },
+            { to: '/reflex-50', prefetch: 'reflex50', label: 'Phản xạ', icon: Zap },
+            { to: '/vocab', prefetch: 'vocab', label: 'Từ vựng', icon: Layers },
+            { to: '/toeic', prefetch: 'toeic', label: 'TOEIC', icon: BookOpen }
+          ].map((item) => {
+            const Icon = item.icon;
+            return (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                onMouseEnter={() => prefetchRoute(item.prefetch)}
+                onClick={() => {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                className={({ isActive }) =>
+                  `flex-1 flex flex-col items-center justify-center py-1 min-h-[46px] rounded-xl transition-colors select-none ${
+                    isActive
+                      ? 'text-[#0071e3] dark:text-sky-400 font-bold'
+                      : 'text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-medium'
+                  }`
+                }
+              >
+                {({ isActive }) => (
+                  <>
+                    <div
+                      className={`px-3 py-0.5 rounded-full flex items-center justify-center transition-colors ${
+                        isActive ? 'bg-[#0071e3]/12 dark:bg-sky-500/20' : ''
+                      }`}
+                    >
+                      <Icon size={18} />
+                    </div>
+                    <span className="text-[10px] mt-0.5 leading-tight">{item.label}</span>
+                  </>
                 )}
-              </>
-            )}
-          </NavLink>
-
-          <NavLink
-            to="/communication"
-            onMouseEnter={() => prefetchRoute('communication')}
-            className={({ isActive }) =>
-              `flex-1 flex flex-col items-center justify-center py-1 transition-colors ${
-                isActive 
-                  ? 'text-[#0071e3] dark:text-sky-400 font-bold' 
-                  : 'text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-medium'
-              }`
-            }
-          >
-            {({ isActive }) => (
-              <>
-                <Sparkles size={19} className={`transition-transform ${isActive ? 'scale-110' : ''}`} />
-                <span className="text-[10px] mt-0.5 leading-tight">Giao tiếp</span>
-                {isActive && (
-                  <motion.div layoutId="bottomNavDot" className="w-1 h-1 rounded-full bg-[#0071e3] dark:bg-sky-400 mt-0.5" />
-                )}
-              </>
-            )}
-          </NavLink>
-
-          <NavLink
-            to="/reflex-50"
-            onMouseEnter={() => prefetchRoute('reflex50')}
-            className={({ isActive }) =>
-              `flex-1 flex flex-col items-center justify-center py-1 transition-colors ${
-                isActive 
-                  ? 'text-[#0071e3] dark:text-sky-400 font-bold' 
-                  : 'text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-medium'
-              }`
-            }
-          >
-            {({ isActive }) => (
-              <>
-                <Zap size={19} className={`transition-transform ${isActive ? 'scale-110' : ''}`} />
-                <span className="text-[10px] mt-0.5 leading-tight">Phản xạ</span>
-                {isActive && (
-                  <motion.div layoutId="bottomNavDot" className="w-1 h-1 rounded-full bg-[#0071e3] dark:bg-sky-400 mt-0.5" />
-                )}
-              </>
-            )}
-          </NavLink>
-
-          <NavLink
-            to="/vocab"
-            onMouseEnter={() => prefetchRoute('vocab')}
-            className={({ isActive }) =>
-              `flex-1 flex flex-col items-center justify-center py-1 transition-colors ${
-                isActive 
-                  ? 'text-[#0071e3] dark:text-sky-400 font-bold' 
-                  : 'text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-medium'
-              }`
-            }
-          >
-            {({ isActive }) => (
-              <>
-                <Layers size={19} className={`transition-transform ${isActive ? 'scale-110' : ''}`} />
-                <span className="text-[10px] mt-0.5 leading-tight">Từ vựng</span>
-                {isActive && (
-                  <motion.div layoutId="bottomNavDot" className="w-1 h-1 rounded-full bg-[#0071e3] dark:bg-sky-400 mt-0.5" />
-                )}
-              </>
-            )}
-          </NavLink>
-
-          <NavLink
-            to="/toeic"
-            onMouseEnter={() => prefetchRoute('toeic')}
-            className={({ isActive }) =>
-              `flex-1 flex flex-col items-center justify-center py-1 transition-colors ${
-                isActive 
-                  ? 'text-[#0071e3] dark:text-sky-400 font-bold' 
-                  : 'text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-medium'
-              }`
-            }
-          >
-            {({ isActive }) => (
-              <>
-                <BookOpen size={19} className={`transition-transform ${isActive ? 'scale-110' : ''}`} />
-                <span className="text-[10px] mt-0.5 leading-tight">TOEIC</span>
-                {isActive && (
-                  <motion.div layoutId="bottomNavDot" className="w-1 h-1 rounded-full bg-[#0071e3] dark:bg-sky-400 mt-0.5" />
-                )}
-              </>
-            )}
-          </NavLink>
-
+              </NavLink>
+            );
+          })}
         </div>
       </nav>
 
