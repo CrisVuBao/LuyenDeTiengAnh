@@ -11,12 +11,21 @@ public partial class GamificationService
 
         var nowVn = GetVietnamTime();
         var todayVn = nowVn.Date;
-        var lastActiveVn = gamification.LastActiveDate?.Date ?? DateTime.MinValue;
 
-        if (lastActiveVn == todayVn) return;
+        // Đánh giá trạng thái streak trước (tiêu hao freeze nếu bỏ lỡ ngày hôm qua, hoặc reset về 0 nếu đứt chuỗi)
+        EvaluateStreak(gamification, todayVn);
+
+        var lastActiveVn = gamification.LastActiveDate?.Date;
+
+        if (lastActiveVn == todayVn)
+        {
+            // Đã ghi nhận học tập hôm nay, không tăng thêm lần nữa
+            return;
+        }
 
         if (lastActiveVn == todayVn.AddDays(-1))
         {
+            // Tiếp nối ngày học hôm qua liên tiếp
             gamification.CurrentStreak++;
             if (gamification.CurrentStreak % 7 == 0 && gamification.StreakFreezeCount < 3)
             {
@@ -25,15 +34,8 @@ public partial class GamificationService
         }
         else
         {
-            if (gamification.StreakFreezeCount > 0)
-            {
-                gamification.StreakFreezeCount--;
-                gamification.CurrentStreak++;
-            }
-            else
-            {
-                gamification.CurrentStreak = 1;
-            }
+            // Bắt đầu chuỗi mới từ 1 (chuỗi trước đó đã bị đứt về 0 hoặc người dùng mới)
+            gamification.CurrentStreak = 1;
         }
 
         if (gamification.CurrentStreak > gamification.LongestStreak)

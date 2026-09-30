@@ -23,37 +23,24 @@ public partial class GamificationService
         var todayVn = nowVn.Date;
 
         // 1. Cập nhật chuỗi ngày học Streak (theo giờ Việt Nam UTC+7)
-        if (gamification.LastActiveDate == null)
+        EvaluateStreak(gamification, todayVn);
+
+        var lastActiveVn = gamification.LastActiveDate?.Date;
+        if (lastActiveVn != todayVn)
         {
-            gamification.CurrentStreak = 1;
-        }
-        else
-        {
-            var lastActiveVn = gamification.LastActiveDate.Value.Date;
-            if (lastActiveVn != todayVn)
+            if (lastActiveVn == todayVn.AddDays(-1))
             {
-                if (lastActiveVn == todayVn.AddDays(-1))
+                gamification.CurrentStreak++;
+                // Cứ mỗi mốc 7 ngày liên tục -> Tặng 1 lượt Streak Freeze bảo vệ (tối đa 3 lượt)
+                if (gamification.CurrentStreak % 7 == 0 && gamification.StreakFreezeCount < 3)
                 {
-                    gamification.CurrentStreak++;
-                    // Cứ mỗi mốc 7 ngày liên tục -> Tặng 1 lượt Streak Freeze bảo vệ (tối đa 3 lượt)
-                    if (gamification.CurrentStreak % 7 == 0 && gamification.StreakFreezeCount < 3)
-                    {
-                        gamification.StreakFreezeCount++;
-                    }
+                    gamification.StreakFreezeCount++;
                 }
-                else
-                {
-                    // Đứt chuỗi: Kiểm tra xem có Streak Freeze bảo vệ không
-                    if (gamification.StreakFreezeCount > 0)
-                    {
-                        gamification.StreakFreezeCount--;
-                        gamification.CurrentStreak++;
-                    }
-                    else
-                    {
-                        gamification.CurrentStreak = 1;
-                    }
-                }
+            }
+            else
+            {
+                // Bắt đầu chuỗi mới từ 1 (chuỗi trước đó đã bị đứt về 0 hoặc người dùng mới)
+                gamification.CurrentStreak = 1;
             }
         }
 

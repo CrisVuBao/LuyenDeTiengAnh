@@ -344,15 +344,19 @@ export default function StudentHome() {
                 transition={{ delay: 0.08, duration: 0.4 }}
                 className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-300 text-xs font-medium border border-slate-200/60 dark:border-slate-700/60"
               >
-                <span className="inline-flex items-center gap-1.5 text-orange-500 font-semibold">
+                <span className={`inline-flex items-center gap-1.5 font-semibold ${
+                  (profile?.currentStreak ?? stats?.currentStreakDays ?? 0) > 0 ? 'text-orange-500' : 'text-slate-500 dark:text-slate-400'
+                }`}>
                   <motion.span
-                    animate={{ scale: [1, 1.2, 1] }}
+                    animate={(profile?.currentStreak ?? stats?.currentStreakDays ?? 0) > 0 ? { scale: [1, 1.2, 1] } : {}}
                     transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
                     className="inline-flex"
                   >
-                    <Flame size={13} className="fill-current text-orange-500" />
+                    <Flame size={13} className={(profile?.currentStreak ?? stats?.currentStreakDays ?? 0) > 0 ? "fill-current text-orange-500" : "text-slate-400"} />
                   </motion.span>
-                  {profile?.currentStreak ?? stats?.currentStreakDays ?? 0} ngày liên tiếp
+                  {(profile?.currentStreak ?? stats?.currentStreakDays ?? 0) > 0
+                    ? `${profile?.currentStreak ?? stats?.currentStreakDays} ngày ${profile?.hasStudiedToday ? '• Đã thắp lửa' : '• Cần học hôm nay'}`
+                    : '0 ngày • Chưa thắp lửa'}
                 </span>
                 <span className="text-slate-300 dark:text-slate-600">•</span>
                 <span>Giao Tiếp Thực Chiến</span>

@@ -513,11 +513,8 @@ public class DashboardService : IDashboardService
         int binoTotal = 72;
         int binoTimeMinutes = (int)Math.Ceiling(binoProgresses.Sum(p => p.TimeSpentSeconds) / 60.0);
 
-        var activityDates = new List<DateTime>();
-        activityDates.AddRange(binoProgresses.Select(p => p.LastAccessedAt));
-        activityDates.AddRange(binoSrsReviews.Where(r => r.LastReviewedAt.HasValue).Select(r => r.LastReviewedAt!.Value));
-        activityDates.AddRange(toeicProgresses.Select(p => p.UpdatedAt));
-        int streakDays = BinoBookService.CalculateConsecutiveStreakDays(activityDates);
+        var gamificationRes = await _gamificationService.GetProfileAsync(userId);
+        int streakDays = gamificationRes?.Data?.CurrentStreak ?? 0;
 
         var stats = new DashboardStatsDto
         {

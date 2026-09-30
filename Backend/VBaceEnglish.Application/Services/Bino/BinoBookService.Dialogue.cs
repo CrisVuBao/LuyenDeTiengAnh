@@ -346,13 +346,14 @@ public partial class BinoBookService
             });
         }
 
-        // Tính chuỗi ngày học liên tiếp thực tế (Vietnam Time UTC+7)
-        var activityDates = new List<DateTime>();
-        activityDates.AddRange(userProgresses.Select(p => p.LastAccessedAt));
-        activityDates.AddRange(srsReviews.Where(r => r.LastReviewedAt.HasValue).Select(r => r.LastReviewedAt!.Value));
-        activityDates.AddRange(toeicProgresses.Select(t => t.UpdatedAt));
-
-        int streakDays = CalculateConsecutiveStreakDays(activityDates);
+        // Đồng bộ chuỗi ngày học liên tiếp theo Gamification chuẩn (Vietnam Time UTC+7)
+        var gamification = await _unitOfWork.Gamification.GetByUserIdAsync(userId);
+        var todayVn = DateTime.UtcNow.AddHours(7).Date;
+        if (gamification != null)
+        {
+            GamificationService.EvaluateStreak(gamification, todayVn);
+        }
+        int streakDays = gamification?.CurrentStreak ?? 0;
 
         var summaryDto = new BinoStudyProgressSummaryDto
         {

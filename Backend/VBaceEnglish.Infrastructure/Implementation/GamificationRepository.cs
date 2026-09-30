@@ -74,4 +74,13 @@ public class GamificationRepository : IGamificationRepository
                             (g.WeeklyXP == userGamification.WeeklyXP && g.TotalXP > userGamification.TotalXP)) + 1;
         return rank;
     }
+
+    public async Task<List<DateTime>> GetRecentActiveDatesAsync(int userId, int days = 70)
+    {
+        var cutoff = DateTime.UtcNow.AddDays(-days);
+        return await _context.Set<XPTransaction>()
+            .Where(x => x.UserId == userId && x.CreatedAt >= cutoff)
+            .Select(x => x.CreatedAt)
+            .ToListAsync();
+    }
 }

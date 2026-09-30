@@ -79,12 +79,12 @@ export default function XPBar() {
           <span className="text-xs tracking-tight font-extrabold">Lv.{currentLevel}</span>
         </div>
 
-        {currentStreak > 0 && (
-          <div className="flex items-center gap-1 text-orange-500 font-bold pl-1.5 border-l border-slate-200 dark:border-slate-700 shrink-0">
-            <Flame size={12} className="fill-orange-500 text-orange-500" />
-            <span className="text-xs">{currentStreak}</span>
-          </div>
-        )}
+        <div className={`flex items-center gap-1 font-bold pl-1.5 border-l border-slate-200 dark:border-slate-700 shrink-0 ${
+          currentStreak > 0 ? 'text-orange-500' : 'text-slate-400 dark:text-slate-500'
+        }`}>
+          <Flame size={12} className={currentStreak > 0 ? 'fill-orange-500 text-orange-500' : 'text-slate-400'} />
+          <span className="text-xs">{currentStreak}</span>
+        </div>
       </button>
 
       {/* Flyout Card: Rich details when user taps on the XP badge */}
@@ -136,10 +136,14 @@ export default function XPBar() {
               {/* Streak info */}
               <div className="bg-slate-50 dark:bg-slate-800/60 rounded-xl p-3 flex items-center justify-between text-xs border border-slate-100 dark:border-slate-800">
                 <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
-                  <Flame size={16} className="text-orange-500 fill-orange-500" />
+                  <Flame size={16} className={currentStreak > 0 ? 'text-orange-500 fill-orange-500' : 'text-slate-400'} />
                   <span className="font-semibold">Chuỗi học tập</span>
                 </div>
-                <span className="font-extrabold text-orange-500">{currentStreak} ngày liên tiếp 🔥</span>
+                <span className={`font-extrabold ${currentStreak > 0 ? 'text-orange-500' : 'text-slate-400'}`}>
+                  {currentStreak > 0 
+                    ? `${currentStreak} ngày ${profile?.hasStudiedToday ? '• Đã thắp lửa 🔥' : '• Cần học hôm nay ⚠️'}`
+                    : '0 ngày • Chưa thắp lửa ❄️'}
+                </span>
               </div>
 
               {/* Action Button */}

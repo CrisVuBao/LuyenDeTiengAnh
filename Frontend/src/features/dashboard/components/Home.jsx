@@ -113,7 +113,7 @@ export default function Home() {
             </div>
           </div>
           <div>
-            <div className="text-2xl md:text-3xl font-black text-orange-500">{stats?.currentStreakDays || 3} ngày</div>
+            <div className="text-2xl md:text-3xl font-black text-orange-500">{stats?.currentStreakDays ?? 0} ngày</div>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Duy trì phản xạ hàng ngày</p>
           </div>
         </div>

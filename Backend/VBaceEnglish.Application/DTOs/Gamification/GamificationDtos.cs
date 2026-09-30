@@ -11,6 +11,9 @@ public class GamificationProfileDto
     public int CurrentStreak { get; set; }
     public int LongestStreak { get; set; }
     public int StreakFreezeCount { get; set; }
+    public bool HasStudiedToday { get; set; }
+    public string StreakStatus { get; set; } = "at_risk";
+    public List<string> ActiveDates { get; set; } = new();
     public List<string> UnlockedBadges { get; set; } = new();
     public List<DailyQuestDto> DailyQuests { get; set; } = new();
     public int LeaderboardRank { get; set; }

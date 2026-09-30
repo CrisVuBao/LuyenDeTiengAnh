@@ -103,6 +103,7 @@ public interface IGamificationRepository
     Task AddXPTransactionAsync(XPTransaction transaction);
     Task<IEnumerable<UserGamification>> GetWeeklyLeaderboardAsync(int top = 20);
     Task<int> GetUserRankAsync(int userId);
+    Task<List<DateTime>> GetRecentActiveDatesAsync(int userId, int days = 70);
 }
 
 public interface IAdminManagementRepository

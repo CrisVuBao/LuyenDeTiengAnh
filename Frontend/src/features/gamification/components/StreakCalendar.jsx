@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Flame, Shield, Trophy, Calendar, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Flame, Shield, Trophy, Calendar, Sparkles, CheckCircle2, AlertTriangle, AlertCircle } from 'lucide-react';
 import useGamificationStore from '../store/useGamificationStore';
 import useReflex50Store from '../../reflex50/store/useReflex50Store';
 
@@ -20,58 +20,147 @@ export default function StreakCalendar() {
   const currentStreak = profile?.currentStreak ?? profile?.streakDays ?? 0;
   const longestStreak = profile?.longestStreak ?? currentStreak;
   const freezeCount = profile?.streakFreezeCount ?? 0;
+  const hasStudiedToday = Boolean(profile?.hasStudiedToday);
+  const streakStatus = profile?.streakStatus || (currentStreak > 0 ? (hasStudiedToday ? 'active' : 'at_risk') : 'broken');
+  const activeDates = profile?.activeDates || [];
 
-  // Generate last 70 days (10 weeks) for GitHub-style heatmap
+  // Generate last 70 days (10 weeks) for GitHub-style heatmap with real learning dates
   const heatmapDays = useMemo(() => {
     const days = [];
     const today = new Date();
+    const activeDatesSet = new Set(activeDates);
     
+    // Include reflex daily logs
+    Object.keys(reflexDailyLog).forEach((dateKey) => {
+      if (reflexDailyLog[dateKey] > 0) activeDatesSet.add(dateKey);
+    });
+
     for (let i = 69; i >= 0; i--) {
       const d = new Date(today);
       d.setDate(today.getDate() - i);
-      const key = d.toISOString().slice(0, 10);
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      const key = `${year}-${month}-${day}`;
       
-      // If within current streak (counting back from today) or has activity in reflexDailyLog
-      const hasReflexActivity = Boolean(reflexDailyLog[key] && reflexDailyLog[key] > 0);
-      const isWithinStreak = i < currentStreak;
-      const isActive = hasReflexActivity || isWithinStreak;
-      const intensity = hasReflexActivity ? Math.min(3, Math.ceil(reflexDailyLog[key] / 10)) : (isWithinStreak ? 2 : 0);
+      const reflexCount = reflexDailyLog[key] || 0;
+      const isDbActive = activeDatesSet.has(key);
+      const isToday = i === 0;
+      const isActive = isDbActive || reflexCount > 0 || (isToday && hasStudiedToday);
+
+      let intensity = 0;
+      if (isActive) {
+        if (reflexCount >= 20) intensity = 3;
+        else if (reflexCount >= 10) intensity = 2;
+        else intensity = isDbActive ? 2 : 1;
+      }
 
       days.push({
         date: key,
         displayDate: `${d.getDate()}/${d.getMonth() + 1}`,
         isActive,
         intensity,
-        isToday: i === 0
+        isToday
       });
     }
     return days;
-  }, [currentStreak, reflexDailyLog]);
+  }, [activeDates, reflexDailyLog, hasStudiedToday]);
 
   return (
     <div className="space-y-6">
+
+      {/* Streak Status Notification Banner */}
+      {streakStatus === 'active' && (
+        <motion.div
+          initial={{ opacity: 0, y: -6 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="p-4 rounded-2xl bg-gradient-to-r from-emerald-500/15 via-teal-500/10 to-emerald-500/5 border border-emerald-300 dark:border-emerald-800 flex items-center gap-3 text-emerald-800 dark:text-emerald-300"
+        >
+          <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+            <CheckCircle2 size={22} />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h4 className="text-sm font-bold text-emerald-900 dark:text-emerald-200">
+              Đã thắp lửa hôm nay! Chuỗi {currentStreak} ngày an toàn
+            </h4>
+            <p className="text-xs text-emerald-700/90 dark:text-emerald-400/90">
+              Tuyệt vời! Bạn đã hoàn thành bài học hôm nay. Hãy duy trì thói quen học tập này vào ngày mai nhé!
+            </p>
+          </div>
+        </motion.div>
+      )}
+
+      {streakStatus === 'at_risk' && (
+        <motion.div
+          initial={{ opacity: 0, y: -6 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="p-4 rounded-2xl bg-gradient-to-r from-amber-500/15 via-orange-500/10 to-amber-500/5 border border-amber-300 dark:border-amber-700/80 flex items-center gap-3 text-amber-900 dark:text-amber-200"
+        >
+          <div className="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-900/60 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 animate-pulse">
+            <AlertTriangle size={22} />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h4 className="text-sm font-bold text-amber-900 dark:text-amber-200">
+              Chuỗi {currentStreak} ngày đang gặp nguy hiểm!
+            </h4>
+            <p className="text-xs text-amber-700/90 dark:text-amber-400/90">
+              Hôm nay bạn chưa học bài nào. Hãy học ít nhất 1 bài (Giao tiếp, Phản xạ hoặc Từ vựng) trước 23:59 hôm nay để không bị mất chuỗi!
+            </p>
+          </div>
+        </motion.div>
+      )}
+
+      {streakStatus === 'broken' && (
+        <motion.div
+          initial={{ opacity: 0, y: -6 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="p-4 rounded-2xl bg-gradient-to-r from-slate-100 via-sky-50 to-slate-100 dark:from-slate-800/80 dark:via-slate-800/50 dark:to-slate-800/80 border border-slate-200 dark:border-slate-700 flex items-center gap-3 text-slate-800 dark:text-slate-300"
+        >
+          <div className="w-10 h-10 rounded-xl bg-slate-200/80 dark:bg-slate-700/80 text-slate-600 dark:text-slate-400 flex items-center justify-center shrink-0">
+            <Flame size={22} className="text-slate-400" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h4 className="text-sm font-bold text-slate-900 dark:text-white">
+              Chưa có chuỗi ngày học liên tục
+            </h4>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Chuỗi sẽ bị tắt nếu bạn bỏ lỡ ngày hôm qua. Đừng lo lắng, hãy học ngay 1 bài học hôm nay để bắt đầu chuỗi ngày học tập mới!
+            </p>
+          </div>
+        </motion.div>
+      )}
       
       {/* 3 Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         
         {/* Current Streak */}
-        <div className="p-5 rounded-2xl bg-gradient-to-br from-orange-500/10 via-amber-500/5 to-transparent border border-orange-200/80 dark:border-orange-900/50 flex items-center justify-between">
+        <div className={`p-5 rounded-2xl border flex items-center justify-between ${
+          currentStreak > 0
+            ? 'bg-gradient-to-br from-orange-500/10 via-amber-500/5 to-transparent border-orange-200/80 dark:border-orange-900/50'
+            : 'bg-slate-50 dark:bg-slate-800/40 border-slate-200/80 dark:border-slate-800'
+        }`}>
           <div className="space-y-1">
             <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
               Chuỗi hiện tại
             </span>
             <div className="flex items-baseline gap-1.5">
-              <span className="text-3xl font-black text-orange-500">
+              <span className={`text-3xl font-black ${currentStreak > 0 ? 'text-orange-500' : 'text-slate-400 dark:text-slate-500'}`}>
                 {currentStreak}
               </span>
               <span className="text-xs font-semibold text-slate-400">ngày</span>
             </div>
             <p className="text-[11px] text-slate-500 dark:text-slate-400">
-              Tiếp tục học hôm nay để duy trì
+              {currentStreak > 0
+                ? (hasStudiedToday ? 'Đã duy trì hôm nay' : 'Cần học hôm nay để duy trì')
+                : 'Bắt đầu học để thắp lửa'}
             </p>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-orange-100 dark:bg-orange-950/60 text-orange-500 flex items-center justify-center">
-            <Flame size={24} className="fill-orange-500" />
+          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
+            currentStreak > 0
+              ? 'bg-orange-100 dark:bg-orange-950/60 text-orange-500'
+              : 'bg-slate-100 dark:bg-slate-800 text-slate-400'
+          }`}>
+            <Flame size={24} className={currentStreak > 0 ? 'fill-orange-500' : ''} />
           </div>
         </div>
 

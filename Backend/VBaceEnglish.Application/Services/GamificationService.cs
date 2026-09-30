@@ -84,6 +84,64 @@ public partial class GamificationService : IGamificationService
         };
     }
 
+    /// <summary>
+    /// Đánh giá và cập nhật trạng thái chuỗi học tập (Streak).
+    /// Quy tắc nghiêm ngặt: Ngày hôm đó không học là mất chuỗi!
+    /// - Nếu hôm nay đã học: Chuỗi an toàn (active, hasStudiedToday = true).
+    /// - Nếu hôm qua đã học: Chuỗi đang giữ (at_risk, hasStudiedToday = false). Cần học hôm nay để không mất chuỗi.
+    /// - Nếu hôm qua không học:
+    ///     + Nếu chỉ lỡ đúng hôm qua và có Streak Freeze: Tiêu hao 1 Freeze để bảo vệ, giữ nguyên chuỗi.
+    ///     + Nếu không có Freeze hoặc lỡ từ 2 ngày trở lên: MẤT CHUỖI (CurrentStreak = 0, broken).
+    /// </summary>
+    public static (bool changed, bool hasStudiedToday, string streakStatus) EvaluateStreak(UserGamification gamification, DateTime todayVn)
+    {
+        if (gamification == null) return (false, false, "broken");
+        bool changed = false;
+
+        var lastActiveDateVn = gamification.LastActiveDate?.Date;
+        bool hasStudiedToday = lastActiveDateVn.HasValue && lastActiveDateVn.Value == todayVn;
+
+        if (gamification.CurrentStreak > 0)
+        {
+            if (lastActiveDateVn == null)
+            {
+                gamification.CurrentStreak = 0;
+                changed = true;
+                return (changed, false, "broken");
+            }
+
+            if (lastActiveDateVn.Value == todayVn)
+            {
+                // Đã học trong hôm nay -> Chuỗi an toàn
+                return (changed, true, "active");
+            }
+
+            if (lastActiveDateVn.Value == todayVn.AddDays(-1))
+            {
+                // Đã học hôm qua, hôm nay chưa học -> Có nguy cơ mất chuỗi nếu hết hôm nay không học
+                return (changed, false, "at_risk");
+            }
+
+            // Bỏ lỡ ngày hôm qua (lastActiveDateVn < yesterday)
+            if (lastActiveDateVn.Value == todayVn.AddDays(-2) && gamification.StreakFreezeCount > 0)
+            {
+                // Tự động tiêu hao 1 lượt bảo vệ chuỗi cho ngày hôm qua
+                gamification.StreakFreezeCount--;
+                gamification.LastActiveDate = todayVn.AddDays(-1).AddHours(23).AddMinutes(59);
+                changed = true;
+                return (changed, false, "at_risk");
+            }
+
+            // Mất chuỗi do không học hôm qua và không có lượt đóng băng bảo vệ (hoặc bỏ lỡ >= 2 ngày)
+            gamification.CurrentStreak = 0;
+            changed = true;
+            return (changed, false, "broken");
+        }
+
+        string status = hasStudiedToday ? "active" : "broken";
+        return (changed, hasStudiedToday, status);
+    }
+
     public async Task<Response<GamificationProfileDto>> GetProfileAsync(int userId)
     {
         var gamification = await _unitOfWork.Gamification.GetByUserIdAsync(userId);
@@ -114,7 +172,14 @@ public partial class GamificationService : IGamificationService
             hasChanges = true;
         }
 
-        // 2. Kiểm tra nếu sang ngày mới mà chưa có nhiệm vụ ngày hôm nay hoặc nhiệm vụ còn sót TOEIC
+        // 2. Đánh giá Chuỗi học tập (Streak) theo quy tắc nghiêm ngặt: Ngày hôm đó không học là mất chuỗi
+        var (streakChanged, hasStudiedToday, streakStatus) = EvaluateStreak(gamification, todayVn);
+        if (streakChanged)
+        {
+            hasChanges = true;
+        }
+
+        // 3. Kiểm tra nếu sang ngày mới mà chưa có nhiệm vụ ngày hôm nay hoặc nhiệm vụ còn sót TOEIC
         bool hasToeicInQuests = !string.IsNullOrEmpty(gamification.DailyQuestsJson) && 
                                 gamification.DailyQuestsJson.Contains("toeic", StringComparison.OrdinalIgnoreCase);
 
@@ -152,6 +217,18 @@ public partial class GamificationService : IGamificationService
             .Replace("từ vựng Bino", "thẻ từ vựng SRS");
         var dailyQuests = JsonSerializer.Deserialize<List<DailyQuestDto>>(sanitizedQuestsJson) ?? new List<DailyQuestDto>();
 
+        // Lấy lịch sử ngày hoạt động học tập thực tế từ XPTransaction
+        var recentDates = await _unitOfWork.Gamification.GetRecentActiveDatesAsync(userId, 70);
+        var activeDateStrings = recentDates
+            .Select(d => d.AddHours(7).ToString("yyyy-MM-dd"))
+            .ToList();
+
+        if (gamification.LastActiveDate != null)
+        {
+            activeDateStrings.Add(gamification.LastActiveDate.Value.ToString("yyyy-MM-dd"));
+        }
+        var distinctActiveDates = activeDateStrings.Distinct().OrderBy(d => d).ToList();
+
         var dto = new GamificationProfileDto
         {
             TotalXP = gamification.TotalXP,
@@ -163,6 +240,9 @@ public partial class GamificationService : IGamificationService
             CurrentStreak = gamification.CurrentStreak,
             LongestStreak = gamification.LongestStreak,
             StreakFreezeCount = gamification.StreakFreezeCount,
+            HasStudiedToday = hasStudiedToday,
+            StreakStatus = streakStatus,
+            ActiveDates = distinctActiveDates,
             UnlockedBadges = unlockedBadges,
             DailyQuests = dailyQuests,
             LeaderboardRank = rank
