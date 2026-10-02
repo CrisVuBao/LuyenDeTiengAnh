@@ -22,33 +22,40 @@ public partial class GamificationService
         var nowVn = GetVietnamTime();
         var todayVn = nowVn.Date;
 
-        // 1. Cập nhật chuỗi ngày học Streak (theo giờ Việt Nam UTC+7)
-        EvaluateStreak(gamification, todayVn);
-
-        var lastActiveVn = gamification.LastActiveDate?.Date;
-        if (lastActiveVn != todayVn)
+        // 1. Cập nhật chuỗi ngày học Streak (theo giờ Việt Nam UTC+7):
+        // CHỈ các hành động học tập thực tế và có ý nghĩa mới được tính chuỗi:
+        // (Làm bài hội thoại, Đóng vai, Chép chính tả, Nói/Viết/Master Reflex, Ôn từ vựng Flashcard/Quiz/Spelling, Làm đề TOEIC)
+        // Tuyệt đối KHÔNG tính nghe thụ động (bino_listen, reflex_listen) hoặc quà tặng Admin
+        bool isMeaningfulStudy = IsMeaningfulStudyAction(source);
+        if (isMeaningfulStudy)
         {
-            if (lastActiveVn == todayVn.AddDays(-1))
+            EvaluateStreak(gamification, todayVn);
+
+            var lastActiveVn = ToVietnamDate(gamification.LastActiveDate);
+            if (lastActiveVn != todayVn)
             {
-                gamification.CurrentStreak++;
-                // Cứ mỗi mốc 7 ngày liên tục -> Tặng 1 lượt Streak Freeze bảo vệ (tối đa 3 lượt)
-                if (gamification.CurrentStreak % 7 == 0 && gamification.StreakFreezeCount < 3)
+                if (lastActiveVn == todayVn.AddDays(-1))
                 {
-                    gamification.StreakFreezeCount++;
+                    gamification.CurrentStreak++;
+                    // Cứ mỗi mốc 7 ngày liên tục -> Tặng 1 lượt Streak Freeze bảo vệ (tối đa 3 lượt)
+                    if (gamification.CurrentStreak % 7 == 0 && gamification.StreakFreezeCount < 3)
+                    {
+                        gamification.StreakFreezeCount++;
+                    }
+                }
+                else
+                {
+                    // Bắt đầu chuỗi mới từ 1 (chuỗi trước đó đã bị đứt về 0 hoặc người dùng mới)
+                    gamification.CurrentStreak = 1;
                 }
             }
-            else
-            {
-                // Bắt đầu chuỗi mới từ 1 (chuỗi trước đó đã bị đứt về 0 hoặc người dùng mới)
-                gamification.CurrentStreak = 1;
-            }
-        }
 
-        if (gamification.CurrentStreak > gamification.LongestStreak)
-        {
-            gamification.LongestStreak = gamification.CurrentStreak;
+            if (gamification.CurrentStreak > gamification.LongestStreak)
+            {
+                gamification.LongestStreak = gamification.CurrentStreak;
+            }
+            gamification.LastActiveDate = DateTime.UtcNow;
         }
-        gamification.LastActiveDate = nowVn;
 
         // 2. Chuẩn hóa mức thưởng XP theo cơ chế Cày Cuốc Thực Chất & Chống Spam
         int normalizedAmount = NormalizeAndValidateXpReward(userId, amount, source, description, todayVn);
@@ -227,5 +234,18 @@ public partial class GamificationService
         int finalXp = Math.Min(baseXp, dailySourceCap - earnedToday);
         _memoryCache.Set(dailyAccumKey, earnedToday + finalXp, TimeSpan.FromHours(24));
         return finalXp;
+    }
+
+    /// <summary>
+    /// Kiểm tra hành động học tập có đủ điều kiện để tính / duy trì chuỗi Streak hay không.
+    /// Loại trừ các hành vi thụ động (nghe 1 câu thoại) hoặc quà tặng của Admin.
+    /// </summary>
+    public static bool IsMeaningfulStudyAction(string? source)
+    {
+        if (string.IsNullOrWhiteSpace(source)) return false;
+        var s = source.Trim().ToLowerInvariant();
+        if (s == "bino_listen" || s == "reflex_listen" || s.StartsWith("admin"))
+            return false;
+        return true;
     }
 }

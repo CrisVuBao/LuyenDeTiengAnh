@@ -85,6 +85,22 @@ public partial class GamificationService : IGamificationService
     }
 
     /// <summary>
+    /// Chuyển đổi mốc thời gian sang Ngày theo Giờ Việt Nam (UTC+7) chuẩn xác 100%.
+    /// Xử lý trọn vẹn cả trường hợp dữ liệu cũ đã cộng sẵn +7 hoặc dữ liệu chuẩn UTC.
+    /// </summary>
+    public static DateTime? ToVietnamDate(DateTime? dateTime)
+    {
+        if (!dateTime.HasValue) return null;
+        var val = dateTime.Value;
+        // Nếu giá trị lớn hơn UtcNow + 3 giờ -> tức bản ghi đã lưu sẵn giờ VN (+7) trước đó
+        if (val > DateTime.UtcNow.AddHours(3))
+        {
+            return val.Date;
+        }
+        return val.AddHours(7).Date;
+    }
+
+    /// <summary>
     /// Đánh giá và cập nhật trạng thái chuỗi học tập (Streak).
     /// Quy tắc nghiêm ngặt: Ngày hôm đó không học là mất chuỗi!
     /// - Nếu hôm nay đã học: Chuỗi an toàn (active, hasStudiedToday = true).
@@ -98,7 +114,7 @@ public partial class GamificationService : IGamificationService
         if (gamification == null) return (false, false, "broken");
         bool changed = false;
 
-        var lastActiveDateVn = gamification.LastActiveDate?.Date;
+        var lastActiveDateVn = ToVietnamDate(gamification.LastActiveDate);
         bool hasStudiedToday = lastActiveDateVn.HasValue && lastActiveDateVn.Value == todayVn;
 
         if (gamification.CurrentStreak > 0)
@@ -122,12 +138,13 @@ public partial class GamificationService : IGamificationService
                 return (changed, false, "at_risk");
             }
 
-            // Bỏ lỡ ngày hôm qua (lastActiveDateVn < yesterday)
+            // Bỏ lỡ ngày hôm qua (lastActiveDateVn == yesterday)
             if (lastActiveDateVn.Value == todayVn.AddDays(-2) && gamification.StreakFreezeCount > 0)
             {
                 // Tự động tiêu hao 1 lượt bảo vệ chuỗi cho ngày hôm qua
                 gamification.StreakFreezeCount--;
-                gamification.LastActiveDate = todayVn.AddDays(-1).AddHours(23).AddMinutes(59);
+                // Gán ngày bảo vệ chuỗi tương ứng 23:59 ngày hôm qua (giờ UTC chuẩn: trừ đi 7 giờ)
+                gamification.LastActiveDate = todayVn.AddDays(-1).AddHours(23).AddMinutes(59).AddHours(-7);
                 changed = true;
                 return (changed, false, "at_risk");
             }
@@ -163,10 +180,12 @@ public partial class GamificationService : IGamificationService
             hasChanges = true;
         }
 
+        var lastActiveVn = ToVietnamDate(gamification.LastActiveDate);
+
         // 1. Kiểm tra Reset WeeklyXP vào đầu tuần (Thứ Hai 00:00 VN)
         int diff = (7 + (todayVn.DayOfWeek - DayOfWeek.Monday)) % 7;
         var mondayThisWeek = todayVn.AddDays(-diff);
-        if (gamification.LastActiveDate != null && gamification.LastActiveDate.Value.Date < mondayThisWeek)
+        if (lastActiveVn.HasValue && lastActiveVn.Value < mondayThisWeek)
         {
             gamification.WeeklyXP = 0;
             hasChanges = true;
@@ -183,8 +202,8 @@ public partial class GamificationService : IGamificationService
         bool hasToeicInQuests = !string.IsNullOrEmpty(gamification.DailyQuestsJson) && 
                                 gamification.DailyQuestsJson.Contains("toeic", StringComparison.OrdinalIgnoreCase);
 
-        bool needNewQuests = gamification.LastActiveDate == null || 
-                             gamification.LastActiveDate.Value.Date < todayVn ||
+        bool needNewQuests = !lastActiveVn.HasValue || 
+                             lastActiveVn.Value < todayVn ||
                              string.IsNullOrEmpty(gamification.DailyQuestsJson) || 
                              gamification.DailyQuestsJson == "[]" ||
                              hasToeicInQuests;
@@ -223,9 +242,9 @@ public partial class GamificationService : IGamificationService
             .Select(d => d.AddHours(7).ToString("yyyy-MM-dd"))
             .ToList();
 
-        if (gamification.LastActiveDate != null)
+        if (lastActiveVn.HasValue)
         {
-            activeDateStrings.Add(gamification.LastActiveDate.Value.ToString("yyyy-MM-dd"));
+            activeDateStrings.Add(lastActiveVn.Value.ToString("yyyy-MM-dd"));
         }
         var distinctActiveDates = activeDateStrings.Distinct().OrderBy(d => d).ToList();
 

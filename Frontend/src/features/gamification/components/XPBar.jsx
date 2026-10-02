@@ -79,11 +79,32 @@ export default function XPBar() {
           <span className="text-xs tracking-tight font-extrabold">Lv.{currentLevel}</span>
         </div>
 
-        <div className={`flex items-center gap-1 font-bold pl-1.5 border-l border-slate-200 dark:border-slate-700 shrink-0 ${
-          currentStreak > 0 ? 'text-orange-500' : 'text-slate-400 dark:text-slate-500'
-        }`}>
-          <Flame size={12} className={currentStreak > 0 ? 'fill-orange-500 text-orange-500' : 'text-slate-400'} />
+        <div 
+          className={`flex items-center gap-1 font-bold pl-1.5 border-l border-slate-200 dark:border-slate-700 shrink-0 ${
+            currentStreak > 0
+              ? (profile?.hasStudiedToday ? 'text-orange-500' : 'text-amber-600 dark:text-amber-400')
+              : 'text-slate-400 dark:text-slate-500'
+          }`}
+          title={
+            currentStreak > 0
+              ? (profile?.hasStudiedToday 
+                  ? `Đã thắp lửa hôm nay! Chuỗi ${currentStreak} ngày an toàn 🔥` 
+                  : `Chuỗi ${currentStreak} ngày • Bạn chưa học hôm nay! Cần vào học bài để giữ chuỗi ⚠️`)
+              : 'Chưa có chuỗi học tập. Học 1 bài để bắt đầu chuỗi!'
+          }
+        >
+          <Flame 
+            size={12} 
+            className={
+              currentStreak > 0 
+                ? (profile?.hasStudiedToday ? 'fill-orange-500 text-orange-500' : 'text-amber-500') 
+                : 'text-slate-400'
+            } 
+          />
           <span className="text-xs">{currentStreak}</span>
+          {currentStreak > 0 && !profile?.hasStudiedToday && (
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" title="Chưa học hôm nay" />
+          )}
         </div>
       </button>
 

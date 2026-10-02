@@ -379,9 +379,16 @@ function LuxuryHeroPavilion({
               <ChevronRight size={12} className="opacity-70" />
             </button>
 
-            {/* Streak Pill — Warm Amber-Orange Flame */}
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-amber-500/12 dark:bg-amber-500/20 text-amber-700 dark:text-amber-300 text-xs font-bold border border-amber-500/30 shadow-2xs shrink-0">
-              <Flame size={13} className="fill-orange-500 text-orange-500 animate-pulse" />
+            {/* Streak Pill — Warm Amber-Orange Flame (Chỉ rực sáng khi hôm nay đã học) */}
+            <div className={`inline-flex items-center gap-1.5 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full text-xs font-bold border shadow-2xs shrink-0 transition-all ${
+              profile?.hasStudiedToday
+                ? 'bg-orange-500/15 dark:bg-orange-500/25 text-orange-700 dark:text-orange-300 border-orange-500/35'
+                : 'bg-amber-500/10 dark:bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/25'
+            }`}>
+              <Flame 
+                size={13} 
+                className={profile?.hasStudiedToday ? "fill-orange-500 text-orange-500 animate-pulse" : "text-amber-500"} 
+              />
               <span>
                 <AnimatedCounter
                   value={profile?.currentStreak ?? stats?.currentStreakDays ?? 0}
@@ -389,8 +396,10 @@ function LuxuryHeroPavilion({
                 />
               </span>
               <span className="hidden sm:inline text-amber-400/70">•</span>
-              <span className="hidden sm:inline text-[11px] font-semibold text-amber-700/80 dark:text-amber-200/80">
-                {profile?.hasStudiedToday ? 'Đã giữ chuỗi' : 'Cần giữ chuỗi'}
+              <span className={`hidden sm:inline text-[11px] font-semibold ${
+                profile?.hasStudiedToday ? 'text-emerald-700 dark:text-emerald-300' : 'text-amber-700 dark:text-amber-200'
+              }`}>
+                {profile?.hasStudiedToday ? '✓ Đã giữ chuỗi hôm nay' : '⚠️ Cần học bài để giữ chuỗi'}
               </span>
             </div>
 

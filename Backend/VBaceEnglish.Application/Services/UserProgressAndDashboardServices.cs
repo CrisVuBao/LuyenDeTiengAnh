@@ -1040,6 +1040,14 @@ public class DashboardService : IDashboardService
                     lastActive = gamifTime;
             }
 
+            int calculatedStreak = 0;
+            if (gamification != null)
+            {
+                var todayVn = DateTime.UtcNow.AddHours(7).Date;
+                GamificationService.EvaluateStreak(gamification, todayVn);
+                calculatedStreak = gamification.CurrentStreak;
+            }
+
             result.Add(new AdminStudentProgressDto
             {
                 UserId = s.Id,
@@ -1064,7 +1072,7 @@ public class DashboardService : IDashboardService
                 VocabMasteredWords = vocab?.MasteredCount ?? 0,
                 TotalXp = gamification?.TotalXP ?? 0,
                 Level = gamification?.CurrentLevel ?? 1,
-                StreakDays = gamification?.CurrentStreak ?? 0
+                StreakDays = calculatedStreak
             });
         }
 

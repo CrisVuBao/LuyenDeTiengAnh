@@ -67,9 +67,7 @@ export const settingsApi = {
   uploadBrandingAsset: (file) => {
     const formData = new FormData();
     formData.append('file', file);
-    return axiosClient.post('/settings/upload-branding', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    });
+    return axiosClient.post('/settings/upload-branding', formData);
   },
   getAllSettings: () => axiosClient.get('/settings'),
   updateSettings: (settingsMap) => axiosClient.put('/settings', { settings: settingsMap }),

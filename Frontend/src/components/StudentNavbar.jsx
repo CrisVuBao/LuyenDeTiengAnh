@@ -161,24 +161,26 @@ export default function StudentNavbar() {
       <header className="sticky top-0 z-40 w-full max-w-full bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl border-b border-slate-200/70 dark:border-slate-800/80 transition-colors">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-14 sm:h-15 flex items-center justify-between gap-1.5 sm:gap-4 min-w-0">
           
-          {/* Zone 1: Brand Logo (Left) */}
-          <div className="flex items-center min-w-0 shrink">
+          {/* Zone 1: Brand Logo (Left) - Fixed shrink-0 with safe right margin */}
+          <div className="flex items-center shrink-0 mr-2 xl:mr-4">
             <NavLink 
               to="/home" 
               onMouseEnter={() => prefetchRoute('home')} 
-              className="flex items-center group min-w-0"
+              className="flex items-center group shrink-0"
+              title="Về Trang chủ"
             >
               <BrandLogo size="sm" />
             </NavLink>
           </div>
 
-          {/* Zone 2: Desktop Navigation Links (Center, Responsive, 0% Collision) */}
-          <nav className="hidden lg:flex items-center gap-1 xl:gap-1.5 shrink-0">
+          {/* Zone 2: Desktop Navigation Links (Center, 0% Collision with Logo) */}
+          <nav className="hidden lg:flex items-center gap-1 xl:gap-1.5 shrink-0 min-w-0">
+            {/* Trên màn hình lg (1024-1279px), BrandLogo đóng vai trò nút Trang chủ; trên xl (>=1280px) hiển thị đầy đủ */}
             <NavLink
               to="/home"
               onMouseEnter={() => prefetchRoute('home')}
               className={({ isActive }) =>
-                `flex items-center gap-1.5 px-2.5 xl:px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
+                `hidden xl:flex items-center gap-1.5 px-2.5 xl:px-3 py-1.5 rounded-full text-xs font-semibold transition-all shrink-0 ${
                   isActive
                     ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
                     : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800/60'

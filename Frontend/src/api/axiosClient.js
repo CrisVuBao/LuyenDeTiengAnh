@@ -7,8 +7,13 @@ const axiosClient = axios.create({
   withCredentials: true       // BẮT BUỘC: Gửi HttpOnly cookie trong mọi request
 });
 
-// REQUEST Interceptor — Attach token từ Zustand store (fallback khi cookie chưa set)
+// REQUEST Interceptor — Attach token từ Zustand store & Auto-handle FormData
 axiosClient.interceptors.request.use((config) => {
+  // Nếu request gửi FormData, xóa Content-Type để Axios/trình duyệt tự đính kèm multipart/form-data kèm boundary
+  if (config.data instanceof FormData && config.headers) {
+    delete config.headers['Content-Type'];
+    delete config.headers['content-type'];
+  }
   const token = useAuthStore.getState().token;
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;

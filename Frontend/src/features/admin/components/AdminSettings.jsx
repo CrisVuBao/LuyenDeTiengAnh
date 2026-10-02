@@ -109,8 +109,11 @@ export default function AdminSettings() {
     try {
       setUploadingKey(key);
       const res = await settingsApi.uploadBrandingAsset(file);
-      const url = res?.data?.url || res?.url;
-      if (!url) throw new Error('Không nhận được đường dẫn tệp tải lên');
+      // Hỗ trợ cả trường hợp Backend trả về string URL trực tiếp hoặc object { url: string }
+      const url = typeof res?.data === 'string'
+        ? res.data
+        : (res?.data?.url || res?.data?.relativeUrl || res?.url || (typeof res === 'string' ? res : null));
+      if (!url) throw new Error('Không nhận được đường dẫn tệp tải lên từ máy chủ');
       updateVal(key, url);
       toast.success('Đã tải tệp ảnh lên máy chủ thành công!');
     } catch (err) {
@@ -234,7 +237,14 @@ export default function AdminSettings() {
     );
   };
 
-  const BrandingAssetUploader = ({ label, desc, settingKey, accept = "image/*", placeholder, recommended }) => {
+  const BrandingAssetUploader = ({ 
+    label, 
+    desc, 
+    settingKey, 
+    accept = ".png,.jpg,.jpeg,.webp,.svg,.ico,.gif,.avif,image/png,image/jpeg,image/webp,image/svg+xml,image/x-icon,image/*", 
+    placeholder, 
+    recommended 
+  }) => {
     const currentVal = settingsMap[settingKey] || '';
     const isUploading = uploadingKey === settingKey;
     const inputRef = useRef(null);
@@ -601,27 +611,29 @@ export default function AdminSettings() {
                 {/* 1. Main Logo */}
                 <BrandingAssetUploader
                   label="Logo Chính (Light Mode / Mặc Định)"
-                  desc="Khuyến nghị: Tệp ảnh SVG hoặc PNG nền trong suốt, chiều cao 36–64px."
+                  desc="Hỗ trợ đầy đủ SVG, WEBP, PNG, JPG, GIF, AVIF. Khuyến nghị tệp SVG hoặc PNG trong suốt, chiều cao 36–64px."
                   settingKey="brand.logo_url"
                   placeholder="https://.../logo.png hoặc /uploads/branding/..."
                   recommended="Khuyên dùng"
+                  accept=".png,.jpg,.jpeg,.webp,.svg,.ico,.gif,.avif,image/*"
                 />
 
                 {/* 2. Dark Mode Logo */}
                 <BrandingAssetUploader
                   label="Logo Chế Độ Tối (Dark Mode)"
-                  desc="Nếu để trống, hệ thống sẽ tự động dùng Logo Chính cho cả 2 giao diện."
+                  desc="Hỗ trợ đầy đủ SVG, WEBP, PNG, JPG, GIF. Nếu để trống, hệ thống sẽ tự động dùng Logo Chính."
                   settingKey="brand.logo_dark_url"
                   placeholder="Tùy chọn: Logo sáng màu trên nền tối..."
                   recommended="Tùy chọn"
+                  accept=".png,.jpg,.jpeg,.webp,.svg,.ico,.gif,.avif,image/*"
                 />
 
                 {/* 3. Browser Favicon */}
                 <BrandingAssetUploader
                   label="Favicon Trình Duyệt"
-                  desc="Icon hiển thị trên Tab trình duyệt (.ico, .svg, .png). Kích thước 32x32 hoặc 64x64."
+                  desc="Icon hiển thị trên Tab trình duyệt (.svg, .webp, .ico, .png). Kích thước 32x32, 64x64 hoặc vector SVG."
                   settingKey="brand.favicon_url"
-                  accept="image/x-icon,image/svg+xml,image/png"
+                  accept=".ico,.svg,.webp,.png,image/x-icon,image/svg+xml,image/png,image/webp"
                   placeholder="VD: /favicon.svg hoặc URL icon..."
                   recommended="Chuẩn SEO"
                 />

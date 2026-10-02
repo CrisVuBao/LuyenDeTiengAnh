@@ -11,20 +11,21 @@ public class LocalFileStorageService : IFileStorageService
     public LocalFileStorageService(ILogger<LocalFileStorageService> logger)
     {
         _logger = logger;
-        // Determine wwwroot folder path
+        // Determine wwwroot folder path across local dev, IIS and remote hosting (MonsterASP)
         var currentDir = Directory.GetCurrentDirectory();
-        var candidate = Path.Combine(currentDir, "wwwroot");
-        if (!Directory.Exists(candidate))
-        {
-            // Check if inside Api project or root
-            var apiWwwRoot = Path.Combine(currentDir, "VBaceEnglish.Api", "wwwroot");
-            _webRootPath = Directory.Exists(apiWwwRoot) ? apiWwwRoot : candidate;
-        }
-        else
-        {
-            _webRootPath = candidate;
-        }
+        var baseDir = AppContext.BaseDirectory;
+        string candidate;
 
+        if (Directory.Exists(Path.Combine(currentDir, "wwwroot")))
+            candidate = Path.Combine(currentDir, "wwwroot");
+        else if (Directory.Exists(Path.Combine(currentDir, "VBaceEnglish.Api", "wwwroot")))
+            candidate = Path.Combine(currentDir, "VBaceEnglish.Api", "wwwroot");
+        else if (Directory.Exists(Path.Combine(baseDir, "wwwroot")))
+            candidate = Path.Combine(baseDir, "wwwroot");
+        else
+            candidate = Path.Combine(currentDir, "wwwroot");
+
+        _webRootPath = candidate;
         if (!Directory.Exists(_webRootPath))
         {
             Directory.CreateDirectory(_webRootPath);

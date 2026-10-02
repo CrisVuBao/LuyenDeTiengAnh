@@ -15,7 +15,7 @@ public partial class GamificationService
         // Đánh giá trạng thái streak trước (tiêu hao freeze nếu bỏ lỡ ngày hôm qua, hoặc reset về 0 nếu đứt chuỗi)
         EvaluateStreak(gamification, todayVn);
 
-        var lastActiveVn = gamification.LastActiveDate?.Date;
+        var lastActiveVn = ToVietnamDate(gamification.LastActiveDate);
 
         if (lastActiveVn == todayVn)
         {
@@ -43,7 +43,7 @@ public partial class GamificationService
             gamification.LongestStreak = gamification.CurrentStreak;
         }
 
-        gamification.LastActiveDate = nowVn;
+        gamification.LastActiveDate = DateTime.UtcNow;
         gamification.UpdatedAt = DateTime.UtcNow;
         await _unitOfWork.Gamification.UpsertAsync(gamification);
         await _unitOfWork.CompleteAsync();

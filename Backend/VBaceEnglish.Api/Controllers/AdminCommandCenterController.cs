@@ -53,24 +53,54 @@ public class SystemSettingsController : ControllerBase
     }
 
     /// <summary>
-    /// Tải lên Logo hoặc Favicon thương hiệu
+    /// Tải lên Logo hoặc Favicon thương hiệu (Hỗ trợ SVG, WEBP, PNG, JPG, JPEG, ICO, GIF, AVIF, BMP)
     /// </summary>
     [HttpPost("upload-branding")]
     [RequestSizeLimit(10_000_000)] // 10MB
-    public async Task<IActionResult> UploadBrandingAsset([FromServices] IFileStorageService storageService, IFormFile file)
+    public async Task<IActionResult> UploadBrandingAsset([FromServices] IFileStorageService storageService, [FromForm(Name = "file")] IFormFile? file)
     {
+        // Fallback đọc từ Request.Form.Files nếu model binding không bắt được qua tham số
+        if (file == null || file.Length == 0)
+        {
+            if (Request.HasFormContentType && Request.Form.Files.Count > 0)
+            {
+                file = Request.Form.Files["file"] ?? Request.Form.Files[0];
+            }
+        }
+
         if (file == null || file.Length == 0)
             return BadRequest(Response<string>.Failure("Vui lòng chọn file ảnh hợp lệ."));
 
-        var allowedExts = new[] { ".png", ".jpg", ".jpeg", ".svg", ".webp", ".ico" };
-        var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
+        var allowedExts = new[] { ".png", ".jpg", ".jpeg", ".svg", ".webp", ".ico", ".gif", ".avif", ".jfif", ".bmp" };
+        var rawFileName = file.FileName?.Trim('\"', '\'', ' ') ?? "";
+        var cleanFileName = Path.GetFileName(rawFileName);
+        var ext = Path.GetExtension(cleanFileName).ToLowerInvariant();
+
+        // Nếu file không có đuôi mở rộng rõ ràng, suy luận từ MIME Content-Type
+        if (string.IsNullOrEmpty(ext) && !string.IsNullOrEmpty(file.ContentType))
+        {
+            var mime = file.ContentType.ToLowerInvariant();
+            if (mime.Contains("webp")) ext = ".webp";
+            else if (mime.Contains("svg")) ext = ".svg";
+            else if (mime.Contains("png")) ext = ".png";
+            else if (mime.Contains("jpeg") || mime.Contains("jpg")) ext = ".jpg";
+            else if (mime.Contains("icon") || mime.Contains("ico")) ext = ".ico";
+            else if (mime.Contains("gif")) ext = ".gif";
+            else if (mime.Contains("avif")) ext = ".avif";
+            else if (mime.Contains("bmp")) ext = ".bmp";
+        }
+
         if (!allowedExts.Contains(ext))
-            return BadRequest(Response<string>.Failure("Chỉ hỗ trợ định dạng PNG, JPG, JPEG, SVG, WEBP hoặc ICO."));
+            return BadRequest(Response<string>.Failure($"Định dạng file không được hỗ trợ ({ext}). Hệ thống hỗ trợ: SVG, WEBP, PNG, JPG, JPEG, ICO, GIF, AVIF, BMP."));
+
+        var baseName = Path.GetFileNameWithoutExtension(cleanFileName);
+        if (string.IsNullOrWhiteSpace(baseName)) baseName = "brand_asset";
+        var finalFileName = baseName + ext;
 
         using var stream = file.OpenReadStream();
-        var relativeUrl = await storageService.SaveFileAsync(stream, file.FileName, "branding");
+        var relativeUrl = await storageService.SaveFileAsync(stream, finalFileName, "branding");
 
-        return Ok(Response<string>.SuccessResult("Tải ảnh thương hiệu lên thành công", relativeUrl));
+        return Ok(Response<object>.SuccessResult("Tải ảnh thương hiệu lên thành công", new { url = relativeUrl, relativeUrl }));
     }
 
     /// <summary>
