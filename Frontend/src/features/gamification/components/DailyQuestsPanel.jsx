@@ -78,13 +78,13 @@ export default function DailyQuestsPanel() {
   return (
     <div
       id="daily-quests-section"
-      className="relative overflow-hidden p-4 sm:p-6 rounded-2xl sm:rounded-[28px] bg-white dark:bg-slate-900 border border-slate-200/85 dark:border-white/[0.08] shadow-[0_4px_20px_rgba(0,0,0,0.03)] space-y-4"
+      className="relative overflow-hidden p-4 sm:p-6 rounded-2xl sm:rounded-[28px] bg-white dark:bg-slate-900 border border-slate-200/85 dark:border-white/[0.08] shadow-[0_4px_20px_rgba(0,0,0,0.03)] space-y-4 w-full min-w-0 max-w-full"
     >
       {/* Top Specular Hairline — Warm Champagne Amber & Emerald Jade */}
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amber-500/45 to-transparent" />
 
       {/* Compact Action Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 min-w-0">
         <div className="flex items-center gap-3 min-w-0">
           {/* Circular Quest Progress Indicator — Standout Champagne Amber-Orange */}
           <div
@@ -115,7 +115,7 @@ export default function DailyQuestsPanel() {
                 </span>
               )}
             </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 truncate mt-0.5">
+            <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5">
               Chạm vào nhiệm vụ để vào học ngay và nhận thưởng XP thăng cấp mỗi ngày.
             </p>
           </div>

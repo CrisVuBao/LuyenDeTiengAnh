@@ -216,7 +216,7 @@ export default function StudyProgressPage() {
   };
 
   return (
-    <div className="space-y-8 animate-fade-in max-w-6xl mx-auto pb-12">
+    <div className="space-y-6 sm:space-y-8 animate-fade-in w-full min-w-0 max-w-6xl mx-auto pb-12">
       <SeoMeta
         title="Thống Kê Tiến Độ Học Tập"
         description="Theo dõi chi tiết tiến độ học giao tiếp, 3000 từ vựng Oxford FSRS và phản xạ 50 chủ đề trên VBaceEnglish."
@@ -225,12 +225,12 @@ export default function StudyProgressPage() {
       {/* ===================================================================== */}
       {/* HEADER & APPLE SEGMENTED SWITCHER                                     */}
       {/* ===================================================================== */}
-      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5">
-        <div>
+      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 sm:gap-5 min-w-0">
+        <div className="min-w-0">
           <p className="text-xs font-semibold uppercase tracking-wider text-[#0071e3] dark:text-sky-400">
             Theo dõi số liệu thực tế
           </p>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white mt-0.5">
+          <h1 className="text-xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white mt-0.5">
             Quản Lý Quá Trình Học Tập
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
@@ -239,64 +239,64 @@ export default function StudyProgressPage() {
         </div>
 
         {/* Apple Segmented Course Switcher */}
-        <div className="inline-flex p-1 rounded-full bg-slate-200/80 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700/70 self-stretch sm:self-auto overflow-x-auto">
+        <div className="flex items-center p-1 rounded-full bg-slate-200/80 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700/70 w-full sm:w-auto max-w-full overflow-x-auto no-scrollbar">
           <button
             onClick={() => setCourseMode('radar')}
-            className={`flex-1 sm:flex-none px-4 py-2 rounded-full text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap ${
+            className={`shrink-0 px-3.5 sm:px-4 py-2 rounded-full text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap ${
               courseMode === 'radar'
                 ? 'bg-white dark:bg-slate-900 text-[#0071e3] dark:text-sky-400 shadow-xs'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <Sparkles size={14} className="text-amber-500" />
+            <Sparkles size={14} className="text-amber-500 shrink-0" />
             <span>🎯 Radar Năng Lực</span>
           </button>
 
           <button
             onClick={() => setCourseMode('bino')}
-            className={`flex-1 sm:flex-none px-4 py-2 rounded-full text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap ${
+            className={`shrink-0 px-3.5 sm:px-4 py-2 rounded-full text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap ${
               courseMode === 'bino'
                 ? 'bg-white dark:bg-slate-900 text-[#0071e3] dark:text-sky-400 shadow-xs'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <BookOpen size={14} />
+            <BookOpen size={14} className="shrink-0" />
             <span>Giao Tiếp Thực Chiến</span>
           </button>
 
           <button
             onClick={() => setCourseMode('reflex50')}
-            className={`flex-1 sm:flex-none px-4 py-2 rounded-full text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap ${
+            className={`shrink-0 px-3.5 sm:px-4 py-2 rounded-full text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap ${
               courseMode === 'reflex50'
                 ? 'bg-white dark:bg-slate-900 text-[#0071e3] dark:text-sky-400 shadow-xs'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <Zap size={14} />
+            <Zap size={14} className="shrink-0" />
             <span>Phản Xạ 50 Chủ Đề</span>
           </button>
 
           <button
             onClick={() => setCourseMode('vocab')}
-            className={`flex-1 sm:flex-none px-4 py-2 rounded-full text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap ${
+            className={`shrink-0 px-3.5 sm:px-4 py-2 rounded-full text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap ${
               courseMode === 'vocab'
                 ? 'bg-white dark:bg-slate-900 text-[#0071e3] dark:text-sky-400 shadow-xs'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <Layers size={14} />
+            <Layers size={14} className="shrink-0" />
             <span>3000 Từ Vựng</span>
           </button>
 
           <button
             onClick={() => setCourseMode('toeic')}
-            className={`flex-1 sm:flex-none px-4 py-2 rounded-full text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap ${
+            className={`shrink-0 px-3.5 sm:px-4 py-2 rounded-full text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap ${
               courseMode === 'toeic'
                 ? 'bg-white dark:bg-slate-900 text-[#0071e3] dark:text-sky-400 shadow-xs'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <Award size={14} />
+            <Award size={14} className="shrink-0" />
             <span>Luyện Đề TOEIC</span>
           </button>
         </div>

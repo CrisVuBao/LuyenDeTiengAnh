@@ -197,7 +197,7 @@ export default function StudentHome() {
       variants={pageContainerVariants}
       initial="hidden"
       animate="visible"
-      className="space-y-6 sm:space-y-8 max-w-6xl mx-auto pb-24 md:pb-16"
+      className="space-y-5 sm:space-y-8 w-full min-w-0 max-w-6xl mx-auto pb-24 md:pb-16"
     >
       <SeoMeta
         title="Trang Chủ Học Tập"
@@ -236,7 +236,7 @@ export default function StudentHome() {
       {/* ===================================================================== */}
       {/* 2. NHIỆM VỤ HÀNG NGÀY — ĐẶT NGAY DƯỚI HERO ĐỂ THAO TÁC 1 CHẠM        */}
       {/* ===================================================================== */}
-      <motion.section variants={sectionRevealVariants}>
+      <motion.section variants={sectionRevealVariants} className="w-full min-w-0 max-w-full">
         <DailyQuestsPanel />
       </motion.section>
 
@@ -245,16 +245,16 @@ export default function StudentHome() {
       {/* ===================================================================== */}
       <motion.div
         variants={sectionRevealVariants}
-        className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 px-1"
+        className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 px-0.5 sm:px-1 w-full min-w-0 max-w-full"
       >
         <div className="flex items-center gap-2 text-xs font-bold text-slate-500 dark:text-slate-400">
-          <Compass size={15} className="text-[#0071e3] dark:text-sky-400" />
+          <Compass size={15} className="text-[#0071e3] dark:text-sky-400 shrink-0" />
           <span>Không gian học tập trọng tâm:</span>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2 max-w-full">
+        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto min-w-0 max-w-full">
           <div
-            className="flex items-center gap-1 p-1 rounded-full bg-white dark:bg-slate-900 border border-slate-200/85 dark:border-white/10 shadow-2xs overflow-x-auto max-w-full no-scrollbar"
+            className="flex items-center gap-1 p-1 rounded-full bg-white dark:bg-slate-900 border border-slate-200/85 dark:border-white/10 shadow-2xs overflow-x-auto w-full sm:w-auto max-w-full no-scrollbar"
             style={{ scrollbarWidth: 'none' }}
           >
             {[
@@ -268,7 +268,7 @@ export default function StudentHome() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveFilter(tab.id)}
-                  className={`relative px-3 sm:px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-colors cursor-pointer ${
+                  className={`relative px-2.5 sm:px-3.5 py-1.5 rounded-full text-[11px] sm:text-xs font-bold whitespace-nowrap transition-colors cursor-pointer shrink-0 ${
                     isActive
                       ? 'text-white'
                       : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
@@ -310,7 +310,7 @@ export default function StudentHome() {
 
       {/* Compact FSRS Shield Bar (Always compact by default so it never clutters vertical scroll) */}
       {showSection('analytics') && (
-        <motion.section variants={sectionRevealVariants} className="space-y-4">
+        <motion.section variants={sectionRevealVariants} className="space-y-4 w-full min-w-0 max-w-full">
           <div id="shield-section">
             <Suspense fallback={<SectionProgressiveFallback height="h-20" />}>
               <FsrsMemoryShieldCard compact={activeFilter !== 'analytics'} />
@@ -348,7 +348,7 @@ export default function StudentHome() {
       {/*    (Signature Studio Card with Live Substitution Bar & 12 Chapters)   */}
       {/* ===================================================================== */}
       {showSection('reflex') && allChapters.length > 0 && (
-        <motion.section variants={sectionRevealVariants}>
+        <motion.section variants={sectionRevealVariants} className="w-full min-w-0 max-w-full">
           <Suspense fallback={<SectionProgressiveFallback height="h-64" />}>
             <LuxuryChapterCarousel
               chapters={allChapters}
@@ -375,17 +375,17 @@ export default function StudentHome() {
           return (
             <motion.section
               variants={sectionRevealVariants}
-              className="relative overflow-hidden p-5 sm:p-8 rounded-[32px] bg-white dark:bg-slate-900/95 border border-slate-200/85 dark:border-white/[0.08] shadow-[0_6px_28px_rgb(0,0,0,0.03)] space-y-5"
+              className="relative overflow-hidden p-4 sm:p-8 rounded-[24px] sm:rounded-[32px] bg-white dark:bg-slate-900/95 border border-slate-200/85 dark:border-white/[0.08] shadow-[0_6px_28px_rgb(0,0,0,0.03)] space-y-4 sm:space-y-5 w-full min-w-0 max-w-full"
             >
               <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#0071e3]/30 to-transparent" />
 
-              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                <div className="space-y-1.5 max-w-2xl">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/50 text-[#0071e3] dark:text-sky-400 text-xs font-bold border border-[#0071e3]/20">
-                    <Zap size={13} />
-                    <span>TRỤ CỘT 02 • 50 CHỦ ĐỀ • 1.500 CÂU PHẢN XẠ 3 GIÂY</span>
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3.5 sm:gap-4 min-w-0">
+                <div className="space-y-1.5 max-w-2xl min-w-0">
+                  <div className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/50 text-[#0071e3] dark:text-sky-400 text-[10px] sm:text-xs font-bold border border-[#0071e3]/20 max-w-full">
+                    <Zap size={12} className="shrink-0" />
+                    <span className="truncate">TRỤ CỘT 02 • 50 CHỦ ĐỀ • 1.500 CÂU PHẢN XẠ 3 GIÂY</span>
                   </div>
-                  <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                  <h2 className="text-lg sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
                     Phản Xạ Nói – Viết 50 Chủ Đề ({reflexStats.totalMastered}/1500 câu)
                   </h2>
                   <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
@@ -394,25 +394,25 @@ export default function StudentHome() {
                   </p>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+                <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-2 sm:gap-2.5 w-full sm:w-auto min-w-0 shrink-0">
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.97 }}
                     onMouseEnter={() => loadReflex50FullData()}
                     onClick={() => navigate(`/reflex-50/unit/${activeUnitObj.unitNumber}`)}
-                    className="px-5 py-2.5 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer shadow-[0_6px_18px_rgba(0,113,227,0.26)]"
+                    className="w-full sm:w-auto justify-center px-4 sm:px-5 py-2.5 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer shadow-[0_6px_18px_rgba(0,113,227,0.26)] min-w-0"
                   >
-                    <span>
+                    <span className="truncate">
                       Học Unit {activeUnitObj.unitNumber}: {activeUnitObj.titleEn}
                     </span>
-                    <ArrowRight size={15} />
+                    <ArrowRight size={15} className="shrink-0" />
                   </motion.button>
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.97 }}
                     onMouseEnter={() => loadReflex50FullData()}
                     onClick={() => navigate('/reflex-50')}
-                    className="px-4 py-2.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200/80 text-slate-800 dark:text-slate-200 text-xs sm:text-sm font-semibold transition-colors cursor-pointer"
+                    className="w-full sm:w-auto justify-center px-4 py-2.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200/80 text-slate-800 dark:text-slate-200 text-xs sm:text-sm font-semibold transition-colors cursor-pointer text-center"
                   >
                     Xem đủ 50 Chủ đề
                   </motion.button>

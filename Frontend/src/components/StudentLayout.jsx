@@ -36,13 +36,13 @@ export default function StudentLayout() {
   const branding = useBrandingStore((s) => s.branding);
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col transition-colors duration-300">
+    <div className="min-h-screen w-full max-w-full overflow-x-clip bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col transition-colors duration-300">
       
       {/* Top Navbar Header */}
       <StudentNavbar />
 
       {/* Main Content Area (Full width, No sidebar, safe bottom clearance for mobile nav) */}
-      <main className="flex-1 max-w-7xl mx-auto w-full px-3 sm:px-6 lg:px-8 py-3.5 sm:py-6 md:py-8 pb-24 md:pb-8">
+      <main className="flex-1 min-w-0 max-w-7xl mx-auto w-full px-3 sm:px-6 lg:px-8 py-3.5 sm:py-6 md:py-8 pb-24 md:pb-8 overflow-x-clip">
         <Suspense fallback={<ProgressivePageSkeleton />}>
           <Outlet />
         </Suspense>

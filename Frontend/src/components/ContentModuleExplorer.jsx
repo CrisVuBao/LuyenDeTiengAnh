@@ -235,14 +235,14 @@ export default function ContentModuleExplorer({ compact = false }) {
   };
 
   return (
-    <section className="p-5 sm:p-6 rounded-[28px] bg-white dark:bg-slate-900 border border-slate-200/85 dark:border-white/[0.08] shadow-[0_4px_20px_rgba(0,0,0,0.025)] space-y-4">
+    <section className="p-4 sm:p-6 rounded-[24px] sm:rounded-[28px] bg-white dark:bg-slate-900 border border-slate-200/85 dark:border-white/[0.08] shadow-[0_4px_20px_rgba(0,0,0,0.025)] space-y-4 w-full min-w-0 max-w-full overflow-hidden">
       {/* Compact Header Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 min-w-0">
         <div className="flex items-center gap-3 min-w-0">
           <div className="w-10 h-10 rounded-2xl bg-[#0071e3]/10 dark:bg-sky-500/15 text-[#0071e3] dark:text-sky-400 flex items-center justify-center shrink-0">
             <GraduationCap size={20} />
           </div>
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
               <h2 className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white tracking-tight">
                 {t('modules.title', 'Lộ Trình Mở Rộng & Đa Ngôn Ngữ')}
@@ -251,7 +251,7 @@ export default function ContentModuleExplorer({ compact = false }) {
                 {modules.length} chuyên đề
               </span>
             </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
+            <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1">
               Tiếng Anh Giao Tiếp, Phản Xạ 50, TOEIC, IELTS, THPT (Lớp 10–12) và Tiếng Trung HSK
             </p>
           </div>

@@ -121,9 +121,9 @@ Cùng luyện tiếng Anh phản xạ thực chiến nhé! 🔥`;
       className={`rounded-3xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800 shadow-[0_12px_40px_rgba(15,23,42,0.06)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.35)] overflow-hidden transition-all duration-300 ${className}`}
     >
       {/* ===== 1. TOP HEADER BANNER ===== */}
-      <div className="p-5 sm:p-7 border-b border-slate-100 dark:border-slate-800/80 bg-gradient-to-r from-blue-50/70 via-indigo-50/40 to-transparent dark:from-blue-950/30 dark:via-indigo-950/20 dark:to-transparent flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2 mb-1.5">
+      <div className="p-4 sm:p-7 border-b border-slate-100 dark:border-slate-800/80 bg-gradient-to-r from-blue-50/70 via-indigo-50/40 to-transparent dark:from-blue-950/30 dark:via-indigo-950/20 dark:to-transparent flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2 mb-1.5">
             <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-[11px] font-black uppercase tracking-wider bg-blue-600 text-white shadow-xs">
               <Zap size={12} className="animate-pulse text-amber-300" />
               <span>F1 • Năng Lực Thực Tế</span>
@@ -133,7 +133,7 @@ Cùng luyện tiếng Anh phản xạ thực chiến nhé! 🔥`;
             </span>
           </div>
 
-          <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+          <h2 className="text-lg sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
             🎯 Bạn Hiểu Bao Nhiêu % Thế Giới?
           </h2>
           <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-1 max-w-xl">
@@ -197,7 +197,7 @@ Cùng luyện tiếng Anh phản xạ thực chiến nhé! 🔥`;
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="overflow-hidden bg-amber-500/10 dark:bg-amber-500/5 border-b border-amber-500/20 px-5 sm:px-7 py-4"
+            className="overflow-hidden bg-amber-500/10 dark:bg-amber-500/5 border-b border-amber-500/20 px-4 sm:px-7 py-4"
           >
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
               <div className="flex items-center gap-2">
@@ -212,7 +212,7 @@ Cùng luyện tiếng Anh phản xạ thực chiến nhé! 🔥`;
                 </div>
               </div>
 
-              <div className="flex flex-wrap items-center gap-4 sm:gap-6">
+              <div className="flex flex-wrap items-center gap-3 sm:gap-6">
                 {/* Words Slider */}
                 <div className="flex items-center gap-2">
                   <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 whitespace-nowrap">
@@ -263,11 +263,11 @@ Cùng luyện tiếng Anh phản xạ thực chiến nhé! 🔥`;
       </AnimatePresence>
 
       {/* ===== 3. MAIN CONTENT: RADAR CHART + DOMAIN METRICS GRID ===== */}
-      <div className="p-5 sm:p-7 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+      <div className="p-4 sm:p-7 grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center">
         
         {/* LEFT COLUMN: INTERACTIVE SVG RADAR HEXAGON (5 cols on lg) */}
-        <div className="lg:col-span-5 flex flex-col items-center justify-center">
-          <div className="relative w-full max-w-[320px] aspect-square flex items-center justify-center">
+        <div className="lg:col-span-5 flex flex-col items-center justify-center px-3 sm:px-0">
+          <div className="relative w-full max-w-[240px] sm:max-w-[320px] aspect-square flex items-center justify-center my-2 sm:my-0">
             
             <svg
               viewBox="0 0 320 320"
@@ -403,13 +403,13 @@ Cùng luyện tiếng Anh phản xạ thực chiến nhé! 🔥`;
                     top: `${(axis.labelY / 320) * 100}%`,
                     transform: 'translate(-50%, -50%)'
                   }}
-                  className={`p-1.5 rounded-xl border flex items-center gap-1 text-[10px] font-black transition-all cursor-pointer whitespace-nowrap shadow-xs ${
+                  className={`px-1.5 py-1 sm:p-1.5 rounded-xl border flex items-center gap-1 text-[9px] sm:text-[10px] font-black transition-all cursor-pointer whitespace-nowrap shadow-xs ${
                     isSelected
                       ? 'bg-blue-600 text-white border-blue-700 scale-105 z-20'
                       : 'bg-white/95 dark:bg-slate-800/95 text-slate-700 dark:text-slate-200 border-slate-200/90 dark:border-slate-700 hover:scale-105 z-10'
                   }`}
                 >
-                  <Icon size={12} className={isSelected ? 'text-white' : 'text-blue-500'} />
+                  <Icon size={11} className={isSelected ? 'text-white shrink-0' : 'text-blue-500 shrink-0'} />
                   <span>{axis.domain.shortName}</span>
                   <span className={isSelected ? 'text-blue-200' : 'text-slate-400 font-extrabold'}>
                     {axis.domain.percentage}%
@@ -419,13 +419,13 @@ Cùng luyện tiếng Anh phản xạ thực chiến nhé! 🔥`;
             })}
           </div>
 
-          <p className="text-[11px] text-slate-400 dark:text-slate-500 font-semibold mt-6 text-center">
+          <p className="text-[11px] text-slate-400 dark:text-slate-500 font-semibold mt-5 sm:mt-6 text-center">
             💡 Chạm vào các đỉnh hoặc thẻ bên phải để xem phân tích chi tiết từng lĩnh vực
           </p>
         </div>
 
         {/* RIGHT COLUMN: 6 DOMAIN PROGRESS CARDS (7 cols on lg) */}
-        <div className="lg:col-span-7 space-y-3">
+        <div className="lg:col-span-7 space-y-3 min-w-0">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {currentData.domains.map((domain) => {
               const Icon = DOMAIN_ICONS[domain.id] || Sparkles;
@@ -436,7 +436,7 @@ Cùng luyện tiếng Anh phản xạ thực chiến nhé! 🔥`;
                 <div
                   key={domain.id}
                   onClick={() => setSelectedDomainId(isSelected ? null : domain.id)}
-                  className={`p-3.5 rounded-2xl border transition-all duration-200 cursor-pointer flex flex-col justify-between ${
+                  className={`p-3.5 rounded-2xl border transition-all duration-200 cursor-pointer flex flex-col justify-between min-w-0 ${
                     isSelected
                       ? 'bg-blue-50/80 dark:bg-blue-950/40 border-blue-400 dark:border-blue-600 shadow-md ring-2 ring-blue-500/20'
                       : 'bg-slate-50/70 dark:bg-slate-800/40 hover:bg-slate-100/80 dark:hover:bg-slate-800/80 border-slate-200/70 dark:border-slate-800/80'
@@ -504,13 +504,13 @@ Cùng luyện tiếng Anh phản xạ thực chiến nhé! 🔥`;
       </div>
 
       {/* ===== 4. MASCOT BINO MOTIVATIONAL COACHING BAR ===== */}
-      <div className="px-5 sm:px-7 py-4 bg-slate-50/80 dark:bg-slate-800/60 border-t border-slate-200/70 dark:border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
+      <div className="px-4 sm:px-7 py-4 bg-slate-50/80 dark:bg-slate-800/60 border-t border-slate-200/70 dark:border-slate-800/80 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-3 min-w-0">
           <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-white flex items-center justify-center font-black text-lg shadow-sm shrink-0">
             🐱
           </div>
-          <div>
-            <div className="flex items-center gap-2">
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
               <span className="font-extrabold text-xs text-slate-900 dark:text-white">
                 Hướng Dẫn & Động Viên:
               </span>
@@ -530,7 +530,7 @@ Cùng luyện tiếng Anh phản xạ thực chiến nhé! 🔥`;
             const targetLink = DOMAIN_LINKS[lowest?.id] || '/reflex-50';
             navigate(targetLink);
           }}
-          className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shrink-0 transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer"
+          className="w-full sm:w-auto justify-center px-4 py-2.5 sm:py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shrink-0 transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer"
         >
           <span>Luyện {currentData.lowestDomain?.shortName} Ngay</span>
           <ChevronRight size={14} />

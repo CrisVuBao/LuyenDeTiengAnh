@@ -43,18 +43,18 @@ function VocabShowcaseSection({ sectionRevealVariants }) {
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, margin: '-40px' }}
-      className="relative overflow-hidden p-6 sm:p-8 rounded-[32px] bg-white dark:bg-slate-900/95 border border-slate-200/85 dark:border-white/[0.08] shadow-[0_6px_28px_rgba(0,0,0,0.03)] space-y-6"
+      className="relative overflow-hidden p-4 sm:p-8 rounded-[24px] sm:rounded-[32px] bg-white dark:bg-slate-900/95 border border-slate-200/85 dark:border-white/[0.08] shadow-[0_6px_28px_rgba(0,0,0,0.03)] space-y-5 sm:space-y-6 w-full min-w-0 max-w-full"
     >
       {/* Top Specular Hairline */}
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#0071e3]/30 to-transparent" />
 
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-        <div className="space-y-2 max-w-2xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0071e3]/10 dark:bg-sky-500/15 text-[#0071e3] dark:text-sky-400 text-xs font-bold border border-[#0071e3]/20">
-            <Layers size={13} />
-            <span>KHO TỪ VỰNG TOÀN DIỆN • 3000 TỪ OXFORD • 60 CHỦ ĐỀ</span>
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6 min-w-0">
+        <div className="space-y-2 max-w-2xl min-w-0">
+          <div className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 rounded-full bg-[#0071e3]/10 dark:bg-sky-500/15 text-[#0071e3] dark:text-sky-400 text-[10px] sm:text-xs font-bold border border-[#0071e3]/20 max-w-full">
+            <Layers size={12} className="shrink-0" />
+            <span className="truncate">KHO TỪ VỰNG TOÀN DIỆN • 3000 TỪ OXFORD • 60 CHỦ ĐỀ</span>
           </div>
-          <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+          <h2 className="text-lg sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             3000 Từ Vựng Tiếng Anh Cốt Lõi Oxford (60 Chủ Đề)
           </h2>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
@@ -62,19 +62,19 @@ function VocabShowcaseSection({ sectionRevealVariants }) {
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+        <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-2 sm:gap-2.5 w-full sm:w-auto min-w-0 shrink-0">
           <motion.button
             whileHover={{ y: -2 }}
             onClick={() => navigate(`/vocab/${activeTopic.id}`)}
-            className="px-5 py-2.5 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer shadow-[0_6px_18px_rgba(0,113,227,0.26)]"
+            className="w-full sm:w-auto justify-center px-4 sm:px-5 py-2.5 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer shadow-[0_6px_18px_rgba(0,113,227,0.26)] min-w-0"
           >
-            <span>Học Chủ đề {activeTopic.id}: {activeTopic.title}</span>
-            <ArrowRight size={15} />
+            <span className="truncate">Học Chủ đề {activeTopic.id}: {activeTopic.title}</span>
+            <ArrowRight size={15} className="shrink-0" />
           </motion.button>
           <motion.button
             whileHover={{ y: -2 }}
             onClick={() => navigate('/vocab')}
-            className="px-4 py-2.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200/80 text-slate-800 dark:text-slate-200 text-xs sm:text-sm font-semibold transition-colors cursor-pointer"
+            className="w-full sm:w-auto justify-center px-4 py-2.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200/80 text-slate-800 dark:text-slate-200 text-xs sm:text-sm font-semibold transition-colors cursor-pointer text-center truncate"
           >
             Xem đủ 60 Chủ đề ({masteredCount}/{totalWords || 1760} từ • {vocabPercent}%)
           </motion.button>

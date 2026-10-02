@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Sparkles, ArrowRight, Sun, Moon } from 'lucide-react';
 import SeoMeta from '../../components/SeoMeta';
-import LanguageSelector from '../../components/LanguageSelector';
+// import LanguageSelector from '../../components/LanguageSelector';
 import useAuthStore from '../../store/authStore';
 import useThemeStore from '../../store/themeStore';
 import useBrandingStore from '../../store/useBrandingStore';
@@ -32,7 +32,7 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] dark:bg-[#060913] text-slate-900 dark:text-slate-100 flex flex-col relative overflow-x-hidden selection:bg-[#0071e3]/20 selection:text-[#0071e3] dark:selection:text-sky-400">
+    <div className="min-h-screen w-full max-w-full bg-[#f8fafc] dark:bg-[#060913] text-slate-900 dark:text-slate-100 flex flex-col relative overflow-x-clip selection:bg-[#0071e3]/20 selection:text-[#0071e3] dark:selection:text-sky-400">
       <SeoMeta
         title={`Nền Tảng Học Tiếng Anh Giao Tiếp & Luyện Thi Đỉnh Cao | ${branding.brandName}`}
         description={`${branding.brandName} - ${branding.slogan || 'Luyện phản xạ giao tiếp 1500 câu thực chiến, 3000 từ vựng Oxford với thuật toán lặp lại ngắt quãng FSRS, Shadowing và AI giải thích chuyên sâu.'}`}
@@ -82,12 +82,12 @@ export default function LandingPage() {
 
       {/* STICKY GLASSMORPHIC HEADER */}
       <header className="sticky top-0 z-40 bg-white/80 dark:bg-[#0b101e]/80 backdrop-blur-xl border-b border-slate-200/75 dark:border-slate-800/80 transition-colors">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-14 sm:h-16 flex items-center justify-between gap-2 sm:gap-4">
           <div
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="flex items-center gap-3 cursor-pointer group shrink-0"
+            className="flex items-center gap-2 sm:gap-3 cursor-pointer group shrink-0 min-w-0"
           >
-            <BrandLogo size="md" />
+            <BrandLogo size="sm" />
           </div>
 
           <nav className="hidden lg:flex items-center gap-1 p-1 rounded-full bg-slate-100/90 dark:bg-slate-900/90 border border-slate-200/70 dark:border-slate-800">
@@ -107,16 +107,17 @@ export default function LandingPage() {
             ))}
           </nav>
 
-          <div className="flex items-center gap-2.5 shrink-0">
-            <LanguageSelector compact={true} />
+          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+            {/* Tạm ẩn tính năng chọn ngôn ngữ hiển thị theo yêu cầu */}
+            {/* <LanguageSelector compact={true} /> */}
 
             <button
               onClick={toggleTheme}
               aria-label="Chuyển đổi giao diện Sáng/Tối"
-              className="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700/80 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-[#0071e3] dark:hover:text-sky-400 transition-colors cursor-pointer"
+              className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-100 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700/80 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-[#0071e3] dark:hover:text-sky-400 transition-colors cursor-pointer shrink-0"
               title={mode === 'dark' ? 'Chuyển sang chế độ Sáng' : 'Chuyển sang chế độ Tối'}
             >
-              {mode === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+              {mode === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
             </button>
 
             {!isAuthenticated && (
@@ -132,10 +133,10 @@ export default function LandingPage() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.97 }}
               onClick={handlePrimaryAction}
-              className="px-4 sm:px-5 py-2 bg-[#0071e3] hover:bg-[#0077ED] text-white text-xs sm:text-sm font-semibold rounded-full shadow-[0_6px_20px_rgba(0,113,227,0.3)] flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="px-3 sm:px-5 py-1.5 sm:py-2 bg-[#0071e3] hover:bg-[#0077ED] text-white text-xs sm:text-sm font-semibold rounded-full shadow-[0_6px_20px_rgba(0,113,227,0.3)] flex items-center gap-1 sm:gap-1.5 whitespace-nowrap transition-colors cursor-pointer"
             >
               <span>{isAuthenticated ? 'Vào phòng học' : 'Học ngay miễn phí'}</span>
-              <ArrowRight size={14} />
+              <ArrowRight size={14} className="shrink-0" />
             </motion.button>
           </div>
         </div>

@@ -276,7 +276,7 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f5f5f7] dark:bg-slate-950 flex flex-col items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen w-full max-w-full bg-[#f5f5f7] dark:bg-slate-950 flex flex-col items-center justify-center p-3.5 sm:p-4 relative overflow-x-clip">
       {/* Decorative Subtle Ambient Blur */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-400/15 dark:bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-sky-400/15 dark:bg-indigo-600/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -292,9 +292,9 @@ export default function Auth() {
         </Link>
       </div>
 
-      <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl max-w-md w-full p-8 rounded-[28px] shadow-[0_20px_60px_rgba(15,23,42,0.08)] relative z-10 border border-slate-200/80 dark:border-slate-800">
+      <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl max-w-md w-full p-5 sm:p-8 rounded-[24px] sm:rounded-[28px] shadow-[0_20px_60px_rgba(15,23,42,0.08)] relative z-10 border border-slate-200/80 dark:border-slate-800">
         {/* Header */}
-        <div className="text-center mb-7 flex flex-col items-center">
+        <div className="text-center mb-6 sm:mb-7 flex flex-col items-center">
           <Link
             to="/"
             className="inline-block group cursor-pointer"
@@ -343,7 +343,7 @@ export default function Auth() {
           <button
             type="button"
             onClick={() => setIsLogin(true)}
-            className={`flex-1 py-2.5 text-sm font-bold rounded-xl transition-all cursor-pointer ${
+            className={`flex-1 py-2.5 text-xs sm:text-sm font-bold rounded-xl transition-all cursor-pointer ${
               isLogin
                 ? 'bg-white dark:bg-slate-900 text-[#0071e3] dark:text-blue-400 shadow-sm'
                 : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white'
@@ -357,7 +357,7 @@ export default function Auth() {
               setIsLogin(false);
               setPendingApprovalNotice(null);
             }}
-            className={`flex-1 py-2.5 text-sm font-bold rounded-xl transition-all cursor-pointer ${
+            className={`flex-1 py-2.5 text-xs sm:text-sm font-bold rounded-xl transition-all cursor-pointer ${
               !isLogin
                 ? 'bg-white dark:bg-slate-900 text-[#0071e3] dark:text-blue-400 shadow-sm'
                 : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white'
@@ -371,7 +371,7 @@ export default function Auth() {
         {isLogin ? (
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <div className="flex items-center justify-between mb-1.5">
+              <div className="flex flex-wrap items-center justify-between gap-1 mb-1.5">
                 <label className="block text-xs font-bold text-slate-600 dark:text-slate-300 uppercase">
                   Email hoặc Số điện thoại
                 </label>
@@ -450,7 +450,7 @@ export default function Auth() {
             </div>
 
             <div>
-              <div className="flex items-center justify-between mb-1">
+              <div className="flex flex-wrap items-center justify-between gap-1 mb-1">
                 <label className="block text-xs font-bold text-slate-600 dark:text-slate-300 uppercase">
                   Email <span className="text-red-500">*</span>
                 </label>
@@ -476,7 +476,7 @@ export default function Auth() {
                 />
               </div>
               {availability.emailAvailable === false && availability.emailMessage && (
-                <div className="mt-1.5 flex items-center justify-between gap-2 text-xs text-red-600 dark:text-red-400 font-medium">
+                <div className="mt-1.5 flex flex-wrap items-center justify-between gap-2 text-xs text-red-600 dark:text-red-400 font-medium">
                   <span className="flex items-center gap-1">
                     <AlertCircle size={13} className="shrink-0" />
                     {availability.emailMessage}
@@ -498,7 +498,7 @@ export default function Auth() {
             </div>
 
             <div>
-              <div className="flex items-center justify-between mb-1">
+              <div className="flex flex-wrap items-center justify-between gap-1 mb-1">
                 <label className="block text-xs font-bold text-slate-600 dark:text-slate-300 uppercase">
                   Số điện thoại <span className="text-red-500">*</span>
                 </label>
@@ -530,7 +530,7 @@ export default function Auth() {
                 />
               </div>
               {availability.phoneAvailable === false && availability.phoneMessage && (
-                <div className="mt-1.5 flex items-center justify-between gap-2 text-xs text-red-600 dark:text-red-400 font-medium">
+                <div className="mt-1.5 flex flex-wrap items-center justify-between gap-2 text-xs text-red-600 dark:text-red-400 font-medium">
                   <span className="flex items-center gap-1">
                     <AlertCircle size={13} className="shrink-0" />
                     {availability.phoneMessage}

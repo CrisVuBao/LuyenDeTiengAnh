@@ -158,7 +158,7 @@ export default function Reflex50OverviewPage() {
     ringCircumference - (Math.max(3, overall.overallPercent) / 100) * ringCircumference;
 
   return (
-    <div className="max-w-6xl mx-auto space-y-4 sm:space-y-8 pb-12 sm:pb-14">
+    <div className="w-full min-w-0 max-w-6xl mx-auto space-y-4 sm:space-y-8 pb-12 sm:pb-14">
       <SeoMeta
         title="Phản Xạ 50 Chủ Đề — 1500 Câu Nói Viết"
         description="Luyện phản xạ 1500 câu tiếng Anh theo 50 chủ đề thông dụng, kỹ thuật Chunking và Collocations bản xứ."
@@ -169,12 +169,12 @@ export default function Reflex50OverviewPage() {
       <motion.section
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-4 sm:p-8 shadow-xs"
+        className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-4 sm:p-8 shadow-xs w-full min-w-0 max-w-full"
       >
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-8">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-8 min-w-0">
           {/* Left Content */}
-          <div className="space-y-2.5 sm:space-y-4 max-w-2xl">
-            <div className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/50 border border-blue-200/70 dark:border-blue-800/70 text-[#0071e3] dark:text-sky-400 text-[11px] sm:text-xs font-semibold">
+          <div className="space-y-2.5 sm:space-y-4 max-w-2xl min-w-0">
+            <div className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/50 border border-blue-200/70 dark:border-blue-800/70 text-[#0071e3] dark:text-sky-400 text-[10px] sm:text-xs font-semibold max-w-full">
               <Sparkles size={12} className="shrink-0" />
               <span className="truncate">50 Chủ Đề Giao Tiếp • 1.500 Câu Phản Xạ Nói - Viết</span>
             </div>
@@ -188,10 +188,10 @@ export default function Reflex50OverviewPage() {
             </p>
 
             {/* Primary CTA Buttons */}
-            <div className="flex flex-wrap items-center gap-2 pt-1">
+            <div className="flex flex-wrap items-center gap-2 pt-1 min-w-0">
               <button
                 onClick={() => navigate(`/reflex-50/unit/${lastUnitObj.unitNumber}`)}
-                className="w-full sm:w-auto justify-center px-4 sm:px-5 py-2.5 rounded-xl sm:rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white text-xs sm:text-sm font-semibold shadow-sm transition-all flex items-center gap-2 cursor-pointer"
+                className="w-full sm:w-auto justify-center px-4 sm:px-5 py-2.5 rounded-xl sm:rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white text-xs sm:text-sm font-semibold shadow-sm transition-all flex items-center gap-2 cursor-pointer min-w-0"
               >
                 <span className="truncate">
                   Học tiếp Unit {lastUnitObj.unitNumber}: {lastUnitObj.titleEn}

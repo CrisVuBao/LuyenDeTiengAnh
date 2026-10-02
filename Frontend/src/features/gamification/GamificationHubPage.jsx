@@ -42,7 +42,7 @@ export default function GamificationHubPage() {
         description={`Theo dõi thứ hạng tuần, huy hiệu thành tích và chuỗi ngày học tập tại ${brandName}.`}
       />
       {/* Top Navigation Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 min-w-0">
         <button
           onClick={() => navigate('/home')}
           className="inline-flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors cursor-pointer self-start"
@@ -52,16 +52,16 @@ export default function GamificationHubPage() {
         </button>
 
         {profile && (
-          <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-xs font-bold shadow-xs">
-            <span className="text-[#0071e3] dark:text-sky-400">
+          <div className="inline-flex flex-wrap items-center gap-2 sm:gap-3 px-3.5 sm:px-4 py-1.5 rounded-2xl sm:rounded-full bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-xs font-bold shadow-xs max-w-full">
+            <span className="text-[#0071e3] dark:text-sky-400 truncate">
               Lv.{profile.currentLevel || 1} {profile.levelTitle || 'Tân binh'}
             </span>
             <span className="text-slate-300 dark:text-slate-600">•</span>
-            <span className="text-amber-500">
+            <span className="text-amber-500 shrink-0">
               {profile.totalXP || 0} Total XP
             </span>
             <span className="text-slate-300 dark:text-slate-600">•</span>
-            <span className="text-orange-500 flex items-center gap-1">
+            <span className="text-orange-500 flex items-center gap-1 shrink-0">
               <Flame size={13} className="fill-orange-500" />
               {profile.currentStreak || 0} ngày
             </span>
@@ -70,7 +70,7 @@ export default function GamificationHubPage() {
       </div>
 
       {/* Main Tab Pills */}
-      <div className="flex flex-wrap items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-3">
+      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar sm:flex-wrap border-b border-slate-200 dark:border-slate-800 pb-3 w-full max-w-full">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -78,13 +78,13 @@ export default function GamificationHubPage() {
             <button
               key={tab.id}
               onClick={() => handleTabChange(tab.id)}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
+              className={`flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs font-bold whitespace-nowrap shrink-0 transition-all cursor-pointer ${
                 isActive
                   ? 'bg-[#0071e3] text-white shadow-md shadow-blue-500/25'
                   : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800'
               }`}
             >
-              <Icon size={15} />
+              <Icon size={15} className="shrink-0" />
               <span>{tab.label}</span>
             </button>
           );

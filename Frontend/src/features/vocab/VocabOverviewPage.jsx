@@ -106,29 +106,29 @@ export default function VocabOverviewPage() {
   }, [topics, lastStudiedTopic]);
 
   return (
-    <div className="max-w-7xl mx-auto space-y-3.5 sm:space-y-5">
+    <div className="w-full min-w-0 max-w-7xl mx-auto space-y-3.5 sm:space-y-5">
       <SeoMeta
         title="3000 Từ Vựng Tiếng Anh Cốt Lõi"
         description="Học 3000 từ vựng Oxford thông dụng nhất theo 60 chủ đề cốt lõi với flashcard tương tác và phát âm chuẩn."
       />
       
       {/* 1. Compact Apple-Style Hero Banner */}
-      <div className="relative overflow-hidden rounded-2xl sm:rounded-[28px] bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white p-4 sm:p-6 lg:p-7 border border-slate-800 shadow-xl">
-        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6">
+      <div className="relative overflow-hidden rounded-2xl sm:rounded-[28px] bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white p-4 sm:p-6 lg:p-7 border border-slate-800 shadow-xl w-full min-w-0 max-w-full">
+        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6 min-w-0">
           {/* Left: Title + Quick Resume CTA */}
-          <div className="space-y-2 sm:space-y-3 max-w-2xl">
-            <div className="flex flex-wrap items-center gap-2">
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-500/20 text-sky-300 text-[11px] font-bold border border-blue-400/30">
+          <div className="space-y-2 sm:space-y-3 max-w-2xl min-w-0">
+            <div className="flex flex-wrap items-center gap-2 min-w-0">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-500/20 text-sky-300 text-[11px] font-bold border border-blue-400/30 max-w-full">
                 <Sparkles size={12} className="shrink-0" />
-                <span>Oxford &amp; Cambridge • 60 Chủ Đề Cốt Lõi</span>
+                <span className="truncate">Oxford &amp; Cambridge • 60 Chủ Đề Cốt Lõi</span>
               </div>
               <button
                 type="button"
                 onClick={() => navigate(`/vocab/${activeResumeTopic.id}`)}
-                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white text-[11px] font-bold shadow-sm transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white text-[11px] font-bold shadow-sm transition-colors cursor-pointer max-w-full min-w-0"
               >
-                <Play size={11} fill="currentColor" />
-                <span>Học tiếp Chủ đề #{activeResumeTopic.id}: {activeResumeTopic.title}</span>
+                <Play size={11} fill="currentColor" className="shrink-0" />
+                <span className="truncate">Học tiếp Chủ đề #{activeResumeTopic.id}: {activeResumeTopic.title}</span>
               </button>
             </div>
 
@@ -145,25 +145,25 @@ export default function VocabOverviewPage() {
           </div>
 
           {/* Right: Compact 4-Stat Strip */}
-          <div className="grid grid-cols-4 gap-1.5 sm:gap-2.5 lg:w-[420px] shrink-0">
-            <div className="p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 text-center sm:text-left">
+          <div className="grid grid-cols-4 gap-1.5 sm:gap-2.5 lg:w-[420px] shrink-0 min-w-0">
+            <div className="p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 text-center sm:text-left min-w-0">
               <span className="text-[10px] font-semibold text-slate-400 block truncate">Đã thuộc</span>
               <span className="text-sm sm:text-xl font-black text-amber-300">
                 {masteredCount}
                 <span className="text-[10px] font-bold text-slate-400 hidden sm:inline">/{totalWords}</span>
               </span>
             </div>
-            <div className="p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 text-center sm:text-left">
+            <div className="p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 text-center sm:text-left min-w-0">
               <span className="text-[10px] font-semibold text-slate-400 block truncate">Tiến độ</span>
               <span className="text-sm sm:text-xl font-black text-sky-400">{totalProgressPercent}%</span>
             </div>
-            <div className="p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 text-center sm:text-left">
+            <div className="p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 text-center sm:text-left min-w-0">
               <span className="text-[10px] font-semibold text-slate-400 block truncate">Chủ đề xong</span>
               <span className="text-sm sm:text-xl font-black text-emerald-400">
                 {completedTopicsCount}<span className="text-[10px] font-bold text-slate-400">/60</span>
               </span>
             </div>
-            <div className="p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 text-center sm:text-left">
+            <div className="p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 text-center sm:text-left min-w-0">
               <span className="text-[10px] font-semibold text-slate-400 block truncate">Đánh dấu</span>
               <span className="text-sm sm:text-xl font-black text-purple-400">{starredCount}</span>
             </div>
@@ -178,9 +178,9 @@ export default function VocabOverviewPage() {
       <FsrsMemoryShieldCard compact />
 
       {/* 2. Sticky Global Search & Filter Bar (Luôn nổi trên đầu khi cuộn trên Mobile) */}
-      <div className="sticky top-[58px] z-20 -mx-3 px-3 py-2 sm:static sm:mx-0 sm:px-0 sm:py-0 bg-slate-50/95 dark:bg-slate-950/95 sm:bg-transparent backdrop-blur-md sm:backdrop-blur-none border-b border-slate-200/60 dark:border-slate-800/70 sm:border-none flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-4">
+      <div className="sticky top-[56px] z-20 w-full min-w-0 max-w-full py-2 sm:static sm:py-0 bg-slate-50/95 dark:bg-slate-950/95 sm:bg-transparent backdrop-blur-md sm:backdrop-blur-none border-b border-slate-200/60 dark:border-slate-800/70 sm:border-none flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-4">
         {/* Instant Search Bar */}
-        <div className="relative w-full sm:w-96">
+        <div className="relative w-full sm:w-96 min-w-0">
           <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
             type="text"
@@ -192,7 +192,7 @@ export default function VocabOverviewPage() {
         </div>
 
         {/* Filter Tabs */}
-        <div className="flex items-center gap-1.5 overflow-x-auto whitespace-nowrap hide-scrollbar w-full sm:w-auto">
+        <div className="flex items-center gap-1.5 overflow-x-auto whitespace-nowrap hide-scrollbar w-full sm:w-auto max-w-full">
           {[
             { id: 'all', label: `Tất cả (60)` },
             { id: 'learning', label: 'Đang học' },

@@ -82,13 +82,13 @@ function LuxuryChapterCarousel({
   const displayedGridChapters = showAllInGrid ? chapters : chapters.slice(0, 6);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-full min-w-0 max-w-full">
       {/* =================================================================== */}
       {/* 1. THẺ "GIAO TIẾP THỰC CHIẾN: PHẢN XẠ TIẾNG ANH TỨC THÌ."          */}
       {/*    (Glacier Sapphire Pearl Silk × Royal Sapphire Jewel Console)     */}
       {/*    Mobile-First Ultra-Compact Layout + Full Desktop Grandeur        */}
       {/* =================================================================== */}
-      <div className="relative overflow-hidden p-4 sm:p-8 rounded-[24px] sm:rounded-[34px] bg-gradient-to-br from-[#e9f3ff] via-[#f4f9ff] to-[#ddeeff] dark:from-[#071529] dark:via-[#0b1f3b] dark:to-[#0d284c] border border-[#0071e3]/25 dark:border-sky-400/25 shadow-[0_14px_40px_rgba(0,113,227,0.10),inset_0_1px_0_rgba(255,255,255,0.9)] dark:shadow-[0_22px_55px_rgba(0,0,0,0.55)]">
+      <div className="relative overflow-hidden p-4 sm:p-8 rounded-[24px] sm:rounded-[34px] bg-gradient-to-br from-[#e9f3ff] via-[#f4f9ff] to-[#ddeeff] dark:from-[#071529] dark:via-[#0b1f3b] dark:to-[#0d284c] border border-[#0071e3]/25 dark:border-sky-400/25 shadow-[0_14px_40px_rgba(0,113,227,0.10),inset_0_1px_0_rgba(255,255,255,0.9)] dark:shadow-[0_22px_55px_rgba(0,0,0,0.55)] w-full min-w-0 max-w-full">
         {/* Top Specular Sapphire-Diamond Rim */}
         <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#0071e3]/65 dark:via-sky-400/60 to-transparent" />
 
@@ -96,18 +96,18 @@ function LuxuryChapterCarousel({
         <div className="pointer-events-none absolute -top-28 -right-20 w-80 sm:w-96 h-80 sm:h-96 rounded-full bg-gradient-to-br from-[#0071e3]/20 via-sky-400/15 to-transparent blur-3xl" />
         <div className="pointer-events-none absolute -bottom-28 -left-20 w-72 sm:w-80 h-72 sm:h-80 rounded-full bg-gradient-to-tr from-cyan-400/20 via-blue-500/12 to-transparent blur-3xl" />
 
-        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-3.5 sm:gap-6">
+        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-3.5 sm:gap-6 min-w-0">
           {/* Left: Glacier Pearl Editorial & Royal Sapphire Substitution Console */}
           <div className="space-y-2.5 sm:space-y-4 max-w-2xl flex-1 min-w-0">
             {/* Single-Row Status Ribbon on Mobile */}
-            <div className="flex items-center justify-between sm:justify-start gap-1.5 sm:gap-2">
-              <span className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1 rounded-full bg-gradient-to-r from-[#0062cc] to-[#0077ed] text-white text-[10px] sm:text-[11px] font-extrabold tracking-wider uppercase shadow-[0_4px_14px_rgba(0,113,227,0.26)] shrink-0">
-                <span className="inline-flex items-end gap-0.5 h-2.5 text-cyan-200">
+            <div className="flex items-center justify-between sm:justify-start gap-1.5 sm:gap-2 min-w-0">
+              <span className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1 rounded-full bg-gradient-to-r from-[#0062cc] to-[#0077ed] text-white text-[10px] sm:text-[11px] font-extrabold tracking-wider uppercase shadow-[0_4px_14px_rgba(0,113,227,0.26)] min-w-0 truncate">
+                <span className="inline-flex items-end gap-0.5 h-2.5 text-cyan-200 shrink-0">
                   <span className="w-0.5 h-1.5 bg-current rounded-full animate-pulse" />
                   <span className="w-0.5 h-2.5 bg-current rounded-full animate-pulse" />
                   <span className="w-0.5 h-2 bg-current rounded-full animate-pulse" />
                 </span>
-                <span className="sm:hidden">SPEAKING STUDIO • 12 CHƯƠNG</span>
+                <span className="sm:hidden truncate">SPEAKING STUDIO • 12 CHƯƠNG</span>
                 <span className="hidden sm:inline">SPEAKING STUDIO • 12 CHƯƠNG • {totalLessons} BÀI</span>
               </span>
 
@@ -127,11 +127,11 @@ function LuxuryChapterCarousel({
             </h2>
 
             {/* Jewel Royal Sapphire Interactive Substitution Drilling Console (Compact 2-line layout on mobile) */}
-            <div className="p-3 sm:p-4 rounded-2xl bg-gradient-to-r from-[#0055b3] via-[#0071e3] to-[#0284c7] text-white border border-sky-300/35 shadow-[0_10px_28px_rgba(0,113,227,0.22)] space-y-1.5 sm:space-y-0 sm:flex sm:items-center sm:justify-between sm:gap-3.5">
+            <div className="p-3 sm:p-4 rounded-2xl bg-gradient-to-r from-[#0055b3] via-[#0071e3] to-[#0284c7] text-white border border-sky-300/35 shadow-[0_10px_28px_rgba(0,113,227,0.22)] space-y-1.5 sm:space-y-0 sm:flex sm:items-center sm:justify-between sm:gap-3.5 min-w-0">
               <div className="min-w-0 space-y-1 flex-1">
                 {/* Top Header Row inside Console (Includes controls inline on mobile!) */}
-                <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-1 text-[10px] font-extrabold uppercase tracking-wider text-cyan-100 truncate">
+                <div className="flex items-center justify-between gap-2 min-w-0">
+                  <div className="flex items-center gap-1 text-[10px] font-extrabold uppercase tracking-wider text-cyan-100 min-w-0 truncate">
                     <Sparkles size={11} className="text-white shrink-0" />
                     <span className="truncate">Đổi ruột câu • {activeSlot.slotVi}</span>
                   </div>
@@ -158,7 +158,7 @@ function LuxuryChapterCarousel({
                   </div>
                 </div>
 
-                <p className="text-xs sm:text-sm font-bold text-white leading-snug">
+                <p className="text-xs sm:text-sm font-bold text-white leading-snug break-words">
                   &ldquo;It&apos;s been pretty good. I&apos;m still getting used to{' '}
                   <AnimatePresence mode="wait">
                     <motion.span
@@ -200,7 +200,7 @@ function LuxuryChapterCarousel({
           </div>
 
           {/* Right: 1-Row Side-by-Side Ergonomic Buttons on Mobile, Stacked on Desktop */}
-          <div className="flex flex-row lg:flex-col items-center lg:items-end justify-between sm:justify-start gap-2 sm:gap-2.5 shrink-0">
+          <div className="flex flex-row lg:flex-col items-center lg:items-end justify-between sm:justify-start gap-2 sm:gap-2.5 w-full lg:w-auto min-w-0 shrink-0">
             <button
               onClick={() => {
                 if (nextDialogue?.id) {
@@ -209,10 +209,10 @@ function LuxuryChapterCarousel({
                   onNavigateAll();
                 }
               }}
-              className="flex-1 sm:flex-none justify-center px-4 sm:px-6 py-2.5 sm:py-3.5 rounded-full bg-gradient-to-r from-[#0062cc] to-[#0077ed] hover:from-[#0058b8] hover:to-[#006be0] text-white text-xs sm:text-sm font-extrabold flex items-center gap-1.5 sm:gap-2 shadow-[0_8px_22px_rgba(0,113,227,0.30)] transition-all hover:-translate-y-0.5 cursor-pointer whitespace-nowrap"
+              className="flex-1 sm:flex-none justify-center px-3 sm:px-6 py-2.5 sm:py-3.5 rounded-full bg-gradient-to-r from-[#0062cc] to-[#0077ed] hover:from-[#0058b8] hover:to-[#006be0] text-white text-xs sm:text-sm font-extrabold flex items-center gap-1.5 sm:gap-2 shadow-[0_8px_22px_rgba(0,113,227,0.30)] transition-all hover:-translate-y-0.5 cursor-pointer min-w-0"
             >
               <Play size={13} fill="currentColor" className="shrink-0" />
-              <span>
+              <span className="truncate">
                 {nextDialogue
                   ? `Học tiếp Chương ${nextDialogue.chapterNumber}`
                   : 'Vào học Giao Tiếp'}
@@ -222,7 +222,7 @@ function LuxuryChapterCarousel({
 
             <button
               onClick={onNavigateAll}
-              className="shrink-0 justify-center px-3.5 sm:px-5 py-2.5 sm:py-3 rounded-full bg-white/90 hover:bg-white dark:bg-white/10 dark:hover:bg-white/15 text-[#005bb5] dark:text-sky-300 border border-[#0071e3]/25 dark:border-white/20 shadow-2xs text-xs sm:text-sm font-bold transition-all cursor-pointer whitespace-nowrap"
+              className="shrink-0 justify-center px-3 sm:px-5 py-2.5 sm:py-3 rounded-full bg-white/90 hover:bg-white dark:bg-white/10 dark:hover:bg-white/15 text-[#005bb5] dark:text-sky-300 border border-[#0071e3]/25 dark:border-white/20 shadow-2xs text-xs sm:text-sm font-bold transition-all cursor-pointer whitespace-nowrap"
             >
               <span className="sm:hidden">Đủ 12 Chương</span>
               <span className="hidden sm:inline">Khám phá trọn bộ 12 Chương</span>

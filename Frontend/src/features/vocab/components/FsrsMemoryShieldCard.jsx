@@ -89,7 +89,7 @@ export default function FsrsMemoryShieldCard({
     <div
       className={`relative overflow-hidden rounded-2xl sm:rounded-[28px] bg-white dark:bg-slate-900 border ${shieldTheme.border} ${
         isBodyExpanded ? 'p-4 sm:p-7' : 'p-3 sm:p-4'
-      } shadow-[0_4px_24px_rgba(0,0,0,0.03)] dark:shadow-none transition-all ${className}`}
+      } shadow-[0_4px_24px_rgba(0,0,0,0.03)] dark:shadow-none transition-all w-full min-w-0 max-w-full ${className}`}
     >
       {/* Background Decorative Ambient Radial Glow */}
       <div
@@ -100,7 +100,7 @@ export default function FsrsMemoryShieldCard({
       {/* 1. Header / Compact Smart HUD Bar */}
       {showTitle && (
         <div
-          className={`relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-3 ${
+          className={`relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-3 min-w-0 ${
             isBodyExpanded ? 'pb-4 sm:pb-5 border-b border-slate-200/70 dark:border-slate-800' : ''
           }`}
         >
@@ -170,29 +170,29 @@ export default function FsrsMemoryShieldCard({
           </div>
 
           {/* Right: 1-Tap Quick Action + Expand/Collapse Toggle + Info */}
-          <div className="flex flex-wrap items-center justify-between sm:justify-end gap-2 shrink-0">
+          <div className="flex flex-wrap items-center justify-between sm:justify-end gap-2 shrink-0 min-w-0">
             {!isBodyExpanded && (
               <>
                 {shield.criticalCount > 0 ? (
                   <button
                     type="button"
                     onClick={() => handleStartReview(shield.criticalWords)}
-                    className="flex-1 sm:flex-none px-3.5 py-2 rounded-full bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white font-bold text-xs shadow-sm shadow-rose-500/20 flex items-center justify-center gap-1.5 cursor-pointer transition-all"
+                    className="flex-1 sm:flex-none px-3 sm:px-3.5 py-2 rounded-full bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white font-bold text-xs shadow-sm shadow-rose-500/20 flex items-center justify-center gap-1.5 cursor-pointer transition-all min-w-0"
                   >
-                    <Shield size={13} />
-                    <span>Ôn ngay {shield.criticalCount} từ đỏ (~{shield.estimatedReviewMinutes}p)</span>
+                    <Shield size={13} className="shrink-0" />
+                    <span className="truncate">Ôn ngay {shield.criticalCount} từ đỏ (~{shield.estimatedReviewMinutes}p)</span>
                   </button>
                 ) : shield.fadingCount > 0 ? (
                   <button
                     type="button"
                     onClick={() => handleStartReview(shield.fadingWords)}
-                    className="flex-1 sm:flex-none px-3.5 py-2 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white font-bold text-xs shadow-sm flex items-center justify-center gap-1.5 cursor-pointer transition-all"
+                    className="flex-1 sm:flex-none px-3 sm:px-3.5 py-2 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white font-bold text-xs shadow-sm flex items-center justify-center gap-1.5 cursor-pointer transition-all min-w-0"
                   >
-                    <Zap size={13} />
-                    <span>Củng cố {shield.fadingCount} từ</span>
+                    <Zap size={13} className="shrink-0" />
+                    <span className="truncate">Củng cố {shield.fadingCount} từ</span>
                   </button>
                 ) : (
-                  <span className="px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold border border-emerald-500/20">
+                  <span className="px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold border border-emerald-500/20 truncate">
                     ✓ Độ bền tối đa 100%
                   </span>
                 )}

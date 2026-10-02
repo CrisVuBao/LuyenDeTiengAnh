@@ -86,7 +86,7 @@ export default function ToeicStudyPage() {
   const confidentCount = Math.round((progressPercent / 100) * totalQuestionsInTest);
 
   return (
-    <div className="max-w-6xl mx-auto space-y-5 sm:space-y-7 pb-24 md:pb-16 animate-fade-in">
+    <div className="w-full min-w-0 max-w-6xl mx-auto space-y-5 sm:space-y-7 pb-24 md:pb-16 animate-fade-in">
       <SeoMeta
         title={`Luyện Thi Đề ${activeTestDetail?.title || activeTestCode} — TOEIC Studio`}
         description="Luyện giải đề thi TOEIC chuẩn ETS đầy đủ Part 1 - 7 với lời giải chi tiết, dấu hiệu nhận biết 3 giây, Radar dẫn chứng và trợ lý AI Tutor."
@@ -95,14 +95,14 @@ export default function ToeicStudyPage() {
       {/* ===================================================================== */}
       {/* 1. APPLE FLAGSHIP ETS TOEIC STUDIO HERO HEADER                        */}
       {/* ===================================================================== */}
-      <div className="relative overflow-hidden p-5 sm:p-8 rounded-2xl sm:rounded-[32px] bg-white dark:bg-slate-900 border border-slate-200/85 dark:border-white/[0.08] shadow-[0_8px_30px_rgba(0,0,0,0.03)]">
+      <div className="relative overflow-hidden p-4 sm:p-8 rounded-2xl sm:rounded-[32px] bg-white dark:bg-slate-900 border border-slate-200/85 dark:border-white/[0.08] shadow-[0_8px_30px_rgba(0,0,0,0.03)] w-full min-w-0 max-w-full">
         {/* Specular Top Hairline */}
         <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#0071e3]/45 to-transparent" />
         <div className="pointer-events-none absolute -top-24 -right-24 w-72 h-72 rounded-full bg-[#0071e3]/[0.05] blur-3xl" />
 
-        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-5 sm:gap-6">
+        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6 min-w-0">
           {/* Left: Studio Branding & Active Test Title */}
-          <div className="space-y-2.5 max-w-2xl">
+          <div className="space-y-2.5 max-w-2xl min-w-0">
             <div className="flex flex-wrap items-center gap-2">
               <button
                 onClick={() => navigate('/home')}
@@ -133,14 +133,14 @@ export default function ToeicStudyPage() {
           </div>
 
           {/* Right: Test Selector Dropdown & Mastery Progress HUD */}
-          <div className="flex flex-col sm:flex-row lg:flex-col items-stretch sm:items-center lg:items-end justify-between gap-3.5 shrink-0">
+          <div className="flex flex-col sm:flex-row lg:flex-col items-stretch sm:items-center lg:items-end justify-between gap-3 sm:gap-3.5 shrink-0 min-w-0">
             {/* Test Selector Pill */}
-            <div className="relative w-full sm:w-auto">
+            <div className="relative w-full sm:w-auto min-w-0">
               <button
                 onClick={() => setShowTestDropdown(!showTestDropdown)}
-                className="w-full sm:w-auto flex items-center justify-between gap-3 px-4 py-2.5 bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 rounded-full font-bold text-xs sm:text-sm shadow-sm transition-all cursor-pointer"
+                className="w-full sm:w-auto flex items-center justify-between gap-3 px-4 py-2.5 bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 rounded-full font-bold text-xs sm:text-sm shadow-sm transition-all cursor-pointer min-w-0"
               >
-                <span className="flex items-center gap-2 truncate">
+                <span className="flex items-center gap-2 truncate min-w-0">
                   <FileCheck2 size={15} className="text-sky-400 dark:text-[#0071e3] shrink-0" />
                   <span className="truncate">Đổi bộ đề: {activeTestDetail?.title || activeTestCode}</span>
                 </span>
@@ -193,14 +193,14 @@ export default function ToeicStudyPage() {
             </div>
 
             {/* Real-time Mastery HUD Card */}
-            <div className="flex items-center gap-3.5 px-4 py-2.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-800">
+            <div className="flex items-center gap-3.5 px-4 py-2.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-800 min-w-0">
               <div className="w-9 h-9 rounded-xl bg-[#0071e3]/10 dark:bg-sky-500/20 text-[#0071e3] dark:text-sky-400 flex items-center justify-center shrink-0">
                 <Award size={18} />
               </div>
-              <div className="min-w-[140px]">
-                <div className="flex items-center justify-between text-xs mb-1">
-                  <span className="font-semibold text-slate-500 dark:text-slate-400">Đã nắm chắc:</span>
-                  <span className="font-extrabold text-[#0071e3] dark:text-sky-400">
+              <div className="flex-1 sm:min-w-[140px] min-w-0">
+                <div className="flex items-center justify-between gap-2 text-xs mb-1">
+                  <span className="font-semibold text-slate-500 dark:text-slate-400 truncate">Đã nắm chắc:</span>
+                  <span className="font-extrabold text-[#0071e3] dark:text-sky-400 shrink-0">
                     {confidentCount}/{totalQuestionsInTest} câu ({progressPercent}%)
                   </span>
                 </div>
@@ -219,9 +219,9 @@ export default function ToeicStudyPage() {
       {/* ===================================================================== */}
       {/* 2. STICKY APPLE SEGMENTED PART NAVIGATOR (PART 1 -> PART 7)           */}
       {/* ===================================================================== */}
-      <div className="sticky top-14 sm:top-16 z-30 -mx-3 px-3 sm:mx-0 sm:px-0 py-2 bg-slate-50/90 dark:bg-slate-950/90 backdrop-blur-md">
+      <div className="sticky top-14 sm:top-16 z-30 w-full min-w-0 max-w-full py-2 bg-slate-50/90 dark:bg-slate-950/90 backdrop-blur-md">
         <nav
-          className="flex items-center overflow-x-auto gap-1.5 sm:gap-2 p-1.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/85 dark:border-white/[0.08] shadow-xs no-scrollbar"
+          className="flex items-center overflow-x-auto gap-1.5 sm:gap-2 p-1.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/85 dark:border-white/[0.08] shadow-xs no-scrollbar w-full max-w-full"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           {tabs.map((tab) => {

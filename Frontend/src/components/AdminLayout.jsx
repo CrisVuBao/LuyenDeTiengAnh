@@ -191,39 +191,39 @@ export default function AdminLayout() {
       </aside>
 
       {/* ===== MAIN CONTENT WRAPPER ===== */}
-      <div className="flex-1 flex flex-col min-w-0 min-h-screen">
+      <div className="flex-1 flex flex-col min-w-0 max-w-full min-h-screen overflow-x-clip">
         {/* Top Header */}
-        <header className="sticky top-0 z-20 bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800/80 px-4 md:px-8 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
+        <header className="sticky top-0 z-20 bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800/80 px-3 sm:px-4 md:px-8 py-3 flex items-center justify-between gap-2 min-w-0">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             {/* Mobile Menu Hamburger */}
             <button
               onClick={() => setMobileMenuOpen(true)}
-              className="md:hidden p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 transition-colors"
+              className="md:hidden p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 transition-colors shrink-0"
               title="Mở menu quản trị"
             >
               <Menu size={18} />
             </button>
 
             {/* Mobile Brand */}
-            <div className="md:hidden flex items-center gap-2">
+            <div className="md:hidden flex items-center gap-2 min-w-0">
               <BrandLogo size="sm" showTagline={false} />
             </div>
 
-            <h2 className="hidden md:block text-base font-extrabold text-slate-800 dark:text-slate-100">
+            <h2 className="hidden md:block text-base font-extrabold text-slate-800 dark:text-slate-100 truncate">
               {getPageTitle()}
             </h2>
-            <span className="hidden sm:inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 border border-blue-200/60 dark:border-blue-800">
+            <span className="hidden sm:inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 border border-blue-200/60 dark:border-blue-800 shrink-0">
               Command Center 
             </span>
           </div>
 
-          <div className="flex items-center gap-2 md:gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3 shrink-0">
             {/* Realtime Notification Bell */}
             <NotificationBell isAdminHeader />
 
             <button
               onClick={toggleTheme}
-              className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all shadow-2xs active:scale-95"
+              className="p-2 sm:p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all shadow-2xs active:scale-95"
               title={mode === 'light' ? 'Bật Chế độ Tối' : 'Bật Chế độ Sáng'}
             >
               {mode === 'light' ? <Moon size={16} /> : <Sun size={16} className="text-amber-400" />}
@@ -231,9 +231,9 @@ export default function AdminLayout() {
 
             <button
               onClick={() => navigate('/home')}
-              className="px-2.5 sm:px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 transition-colors flex items-center gap-1.5"
+              className="px-2.5 sm:px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 transition-colors flex items-center gap-1.5 shrink-0"
             >
-              <ArrowLeft size={14} className="text-emerald-500" />
+              <ArrowLeft size={14} className="text-emerald-500 shrink-0" />
               <span className="hidden sm:inline">Giao diện Học viên</span>
               <span className="sm:hidden">Học viên</span>
             </button>
@@ -241,7 +241,7 @@ export default function AdminLayout() {
         </header>
 
         {/* Page Content Outlet */}
-        <main className="flex-1 p-4 md:p-8 max-w-7xl mx-auto w-full">
+        <main className="flex-1 min-w-0 max-w-7xl mx-auto w-full p-3 sm:p-4 md:p-8 overflow-x-clip">
           <Outlet />
         </main>
       </div>

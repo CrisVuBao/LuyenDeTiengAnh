@@ -598,8 +598,8 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
       </div>
 
       {/* 2. Top Controls: Session progress, Continuous Play & Settings */}
-      <div className="flex items-center justify-between gap-3 sm:gap-4 pt-0.5 sm:pt-1">
-        <div className="flex-1">
+      <div className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-2.5 sm:gap-4 pt-0.5 sm:pt-1">
+        <div className="flex-1 min-w-[120px]">
           <div className="flex justify-between items-center text-[11px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">
             <span>Thẻ {currentIndex + 1} / {sessionDeck.length}</span>
             <span>{progressPercent}%</span>
@@ -614,7 +614,7 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
           </div>
         </div>
 
-        <div className="flex items-center gap-1.5 shrink-0">
+        <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
           {currentIndex > 0 && (
             <button
               onClick={handlePrevCard}
@@ -627,14 +627,15 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
           <button
             onClick={toggleContinuousPlay}
             title={isAutoPlaying ? 'Dừng phát liên tục' : 'Phát liên tục toàn bộ thẻ'}
-            className={`px-2.5 py-1.5 rounded-xl text-xs font-extrabold flex items-center gap-1 transition-all cursor-pointer ${
+            className={`px-2.5 py-1.5 rounded-xl text-[11px] sm:text-xs font-extrabold flex items-center gap-1 transition-all cursor-pointer ${
               isAutoPlaying
                 ? 'bg-rose-600 hover:bg-rose-700 text-white shadow-sm animate-pulse'
                 : 'bg-blue-50 dark:bg-blue-950/60 hover:bg-blue-100 text-[#0071e3] dark:text-sky-400 border border-blue-200/60 dark:border-blue-800/60'
             }`}
           >
-            {isAutoPlaying ? <Square size={12} fill="currentColor" /> : <Play size={12} fill="currentColor" />}
-            <span>{isAutoPlaying ? 'Dừng' : 'Phát liên tục'}</span>
+            {isAutoPlaying ? <Square size={12} fill="currentColor" className="shrink-0" /> : <Play size={12} fill="currentColor" className="shrink-0" />}
+            <span className="sm:hidden">{isAutoPlaying ? 'Dừng' : 'Tự phát'}</span>
+            <span className="hidden sm:inline">{isAutoPlaying ? 'Dừng' : 'Phát liên tục'}</span>
           </button>
           <button
             onClick={handleShuffle}
@@ -655,7 +656,7 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
           <button
             onClick={() => setSpeechRate(speechRate === 1.0 ? 0.8 : 1.0)}
             title="Tốc độ giọng đọc"
-            className={`px-2.5 py-1.5 rounded-xl text-xs font-bold transition-colors cursor-pointer ${
+            className={`px-2 sm:px-2.5 py-1.5 rounded-xl text-xs font-bold transition-colors cursor-pointer ${
               speechRate === 0.8 
                 ? 'bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 border border-amber-300' 
                 : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
@@ -669,10 +670,10 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
       {/* FSRS DSR Memory Model Status Strip */}
       <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 text-[11px] font-bold">
         <div className="flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400">
-          <Brain size={13} />
+          <Brain size={13} className="shrink-0" />
           <span>FSRS AI • {fsrsMetrics.statusLabel}</span>
         </div>
-        <div className="flex items-center gap-2.5 text-slate-500 dark:text-slate-400">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 text-slate-500 dark:text-slate-400">
           <span title="Stability (S): Độ bền trí nhớ (ngày)">
             Độ bền S: <strong className="text-slate-800 dark:text-slate-200">{fsrsMetrics.stability > 0 ? `${fsrsMetrics.stability}d` : 'Mới'}</strong>
           </span>

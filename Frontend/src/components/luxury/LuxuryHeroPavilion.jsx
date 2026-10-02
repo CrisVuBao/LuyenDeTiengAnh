@@ -460,12 +460,12 @@ function LuxuryHeroPavilion({
           )}
 
           {/* Tactile Apple Command Buttons (Ergonomic Mobile Layout + Desktop Row) */}
-          <div className="pt-0.5 sm:pt-1 flex flex-wrap items-center gap-2 sm:gap-3">
+          <div className="pt-0.5 sm:pt-1 flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-2 sm:gap-3 w-full min-w-0">
             {/* Primary Sapphire Button (Full-width on mobile for 1-thumb tap) */}
             <button
               onMouseEnter={() => binoApi.prefetchBookOverview()}
               onClick={() => onNavigate('/communication')}
-              className="w-full sm:w-auto justify-center relative px-5 sm:px-7 py-3 sm:py-3.5 bg-[#0071e3] hover:bg-[#0077ed] hover:-translate-y-0.5 text-white font-bold rounded-full shadow-[0_10px_28px_rgba(0,113,227,0.34)] flex items-center gap-2 transition-all text-xs sm:text-sm cursor-pointer group overflow-hidden"
+              className="w-full sm:w-auto justify-center relative px-4 sm:px-7 py-3 sm:py-3.5 bg-[#0071e3] hover:bg-[#0077ed] hover:-translate-y-0.5 text-white font-bold rounded-full shadow-[0_10px_28px_rgba(0,113,227,0.34)] flex items-center gap-2 transition-all text-xs sm:text-sm cursor-pointer group overflow-hidden min-w-0"
             >
               <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-white/35" />
               <Play
@@ -473,55 +473,58 @@ function LuxuryHeroPavilion({
                 fill="currentColor"
                 className="group-hover:translate-x-0.5 transition-transform shrink-0"
               />
-              <span>Vào luyện Giao Tiếp Thực Chiến</span>
+              <span className="truncate">Vào luyện Giao Tiếp Thực Chiến</span>
             </button>
 
-            {/* Secondary Sky-Sapphire Pill Button */}
-            <button
-              onMouseEnter={() => loadReflex50FullData()}
-              onClick={() => onNavigate('/reflex-50')}
-              className="flex-1 sm:flex-none justify-center px-3.5 sm:px-5 py-2.5 sm:py-3.5 bg-[#0071e3]/10 hover:bg-[#0071e3]/18 hover:-translate-y-0.5 text-[#0071e3] dark:text-sky-400 border border-[#0071e3]/25 font-bold rounded-full flex items-center gap-1.5 sm:gap-2 transition-all text-xs sm:text-sm cursor-pointer shadow-2xs"
-            >
-              <Zap size={14} className="text-[#0071e3] dark:text-sky-400 shrink-0" />
-              <span className="truncate">Phản Xạ 50</span>
-            </button>
+            {/* Secondary 3-Button Grid on Mobile / Inline Flex on Desktop */}
+            <div className="grid grid-cols-3 sm:flex items-center gap-1.5 sm:gap-3 w-full sm:w-auto min-w-0">
+              {/* Secondary Sky-Sapphire Pill Button */}
+              <button
+                onMouseEnter={() => loadReflex50FullData()}
+                onClick={() => onNavigate('/reflex-50')}
+                className="justify-center px-2.5 sm:px-5 py-2.5 sm:py-3.5 bg-[#0071e3]/10 hover:bg-[#0071e3]/18 hover:-translate-y-0.5 text-[#0071e3] dark:text-sky-400 border border-[#0071e3]/25 font-bold rounded-full flex items-center gap-1 sm:gap-2 transition-all text-[11px] sm:text-sm cursor-pointer shadow-2xs min-w-0"
+              >
+                <Zap size={13} className="text-[#0071e3] dark:text-sky-400 shrink-0" />
+                <span className="truncate">Phản Xạ 50</span>
+              </button>
 
-            {/* Passive Audio 24/7 Pill */}
-            <button
-              onClick={onOpenPlaylist}
-              className="flex-1 sm:flex-none justify-center px-3.5 sm:px-5 py-2.5 sm:py-3.5 bg-slate-100 hover:bg-slate-200/80 dark:bg-slate-800 dark:hover:bg-slate-700 hover:-translate-y-0.5 text-slate-800 dark:text-slate-200 border border-slate-200/80 dark:border-white/10 font-semibold rounded-full flex items-center gap-1.5 sm:gap-2 transition-all text-xs sm:text-sm cursor-pointer"
-            >
-              {isGlobalPlaying ? (
-                <span className="inline-flex items-end gap-0.5 h-3.5 text-[#0071e3] dark:text-sky-400">
-                  <span className="equalizer-bar" />
-                  <span className="equalizer-bar" />
-                  <span className="equalizer-bar" />
-                </span>
-              ) : (
-                <Headphones size={14} className="text-[#0071e3] dark:text-sky-400 shrink-0" />
-              )}
-              <span className="truncate">Đài nghe</span>
-            </button>
+              {/* Passive Audio 24/7 Pill */}
+              <button
+                onClick={onOpenPlaylist}
+                className="justify-center px-2.5 sm:px-5 py-2.5 sm:py-3.5 bg-slate-100 hover:bg-slate-200/80 dark:bg-slate-800 dark:hover:bg-slate-700 hover:-translate-y-0.5 text-slate-800 dark:text-slate-200 border border-slate-200/80 dark:border-white/10 font-semibold rounded-full flex items-center gap-1 sm:gap-2 transition-all text-[11px] sm:text-sm cursor-pointer min-w-0"
+              >
+                {isGlobalPlaying ? (
+                  <span className="inline-flex items-end gap-0.5 h-3.5 text-[#0071e3] dark:text-sky-400 shrink-0">
+                    <span className="equalizer-bar" />
+                    <span className="equalizer-bar" />
+                    <span className="equalizer-bar" />
+                  </span>
+                ) : (
+                  <Headphones size={13} className="text-[#0071e3] dark:text-sky-400 shrink-0" />
+                )}
+                <span className="truncate">Đài nghe</span>
+              </button>
 
-            {/* Expandable Deep Tri-Pillar Diagnostic Toggle */}
-            <button
-              onClick={() => setIsDeepAnalysisOpen((prev) => !prev)}
-              className={`px-3.5 sm:px-4 py-2.5 sm:py-3.5 rounded-full font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer border shrink-0 ${
-                isDeepAnalysisOpen
-                  ? 'bg-[#0071e3] text-white border-[#0071e3] shadow-md shadow-blue-500/25'
-                  : 'bg-white dark:bg-slate-900 text-[#0071e3] dark:text-sky-400 border-[#0071e3]/25 hover:border-[#0071e3]/50'
-              }`}
-            >
-              <BarChart3 size={14} />
-              <span className="hidden sm:inline">Phân tích 3 Trụ Cột</span>
-              <span className="sm:hidden">Phân tích</span>
-              <ChevronDown
-                size={13}
-                className={`transition-transform duration-300 ${
-                  isDeepAnalysisOpen ? 'rotate-180' : ''
+              {/* Expandable Deep Tri-Pillar Diagnostic Toggle */}
+              <button
+                onClick={() => setIsDeepAnalysisOpen((prev) => !prev)}
+                className={`px-2.5 sm:px-4 py-2.5 sm:py-3.5 rounded-full font-bold text-[11px] sm:text-sm flex items-center justify-center gap-1 sm:gap-1.5 transition-all cursor-pointer border min-w-0 ${
+                  isDeepAnalysisOpen
+                    ? 'bg-[#0071e3] text-white border-[#0071e3] shadow-md shadow-blue-500/25'
+                    : 'bg-white dark:bg-slate-900 text-[#0071e3] dark:text-sky-400 border-[#0071e3]/25 hover:border-[#0071e3]/50'
                 }`}
-              />
-            </button>
+              >
+                <BarChart3 size={13} className="shrink-0" />
+                <span className="hidden sm:inline">Phân tích 3 Trụ Cột</span>
+                <span className="sm:hidden truncate">Phân tích</span>
+                <ChevronDown
+                  size={12}
+                  className={`shrink-0 transition-transform duration-300 ${
+                    isDeepAnalysisOpen ? 'rotate-180' : ''
+                  }`}
+                />
+              </button>
+            </div>
           </div>
         </div>
 
@@ -531,15 +534,15 @@ function LuxuryHeroPavilion({
         <div
           onMouseEnter={() => setIsSliderHovered(true)}
           onMouseLeave={() => setIsSliderHovered(false)}
-          className="w-full lg:w-[440px] xl:w-[465px] shrink-0 rounded-[24px] sm:rounded-[30px] bg-white dark:bg-[#0d1322] border border-slate-200/90 dark:border-white/[0.1] shadow-[0_12px_40px_rgba(0,113,227,0.08)] dark:shadow-[0_16px_50px_rgba(0,0,0,0.6)] p-4 sm:p-6 flex flex-col justify-between gap-3.5 sm:gap-4 relative overflow-hidden"
+          className="w-full min-w-0 max-w-full lg:w-[440px] xl:w-[465px] shrink-0 rounded-[22px] sm:rounded-[30px] bg-white dark:bg-[#0d1322] border border-slate-200/90 dark:border-white/[0.1] shadow-[0_12px_40px_rgba(0,113,227,0.08)] dark:shadow-[0_16px_50px_rgba(0,0,0,0.6)] p-3.5 sm:p-6 flex flex-col justify-between gap-3 sm:gap-4 relative overflow-hidden"
         >
           {/* Subtle Top Rim */}
           <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-[#0071e3]/40 to-transparent" />
 
           {/* Top Bar of Tri-Pillar Card: Segmented Tabs + Play/Pause & Arrows */}
-          <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center justify-between gap-1.5 sm:gap-2 min-w-0">
             {/* 4 Segmented Pillar Pills */}
-            <div className="flex items-center gap-1 p-1 rounded-full bg-slate-100 dark:bg-slate-800/90 border border-slate-200/70 dark:border-slate-700/70">
+            <div className="flex-1 sm:flex-none grid grid-cols-4 sm:flex items-center gap-0.5 sm:gap-1 p-1 rounded-full bg-slate-100 dark:bg-slate-800/90 border border-slate-200/70 dark:border-slate-700/70 min-w-0">
               {[
                 { idx: 0, label: 'Tổng hợp' },
                 { idx: 1, label: 'Hội thoại' },
@@ -551,7 +554,7 @@ function LuxuryHeroPavilion({
                   <button
                     key={tab.idx}
                     onClick={() => goToPillarSlide(tab.idx)}
-                    className={`relative px-2.5 py-1 rounded-full text-[11px] font-bold transition-colors cursor-pointer ${
+                    className={`relative px-1.5 sm:px-2.5 py-1 rounded-full text-[10px] sm:text-[11px] font-bold transition-colors cursor-pointer text-center truncate min-w-0 ${
                       isActive
                         ? 'text-white'
                         : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
@@ -564,40 +567,40 @@ function LuxuryHeroPavilion({
                         className="absolute inset-0 rounded-full bg-[#0071e3] shadow-2xs"
                       />
                     )}
-                    <span className="relative z-10">{tab.label}</span>
+                    <span className="relative z-10 truncate block">{tab.label}</span>
                   </button>
                 );
               })}
             </div>
 
             {/* Auto-Play & Prev/Next Controls */}
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 shrink-0">
               <button
                 onClick={() => setIsSliderAuto((prev) => !prev)}
-                className="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-[#0071e3] flex items-center justify-center transition-colors cursor-pointer"
+                className="hidden sm:flex w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-[#0071e3] items-center justify-center transition-colors cursor-pointer"
                 title={isSliderAuto ? 'Tạm dừng chuyển slide' : 'Tự động chuyển slide'}
               >
                 {isSliderAuto ? <Pause size={11} /> : <Play size={11} className="ml-0.5" />}
               </button>
               <button
                 onClick={() => paginatePillar(-1)}
-                className="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-[#0071e3] hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+                className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-[#0071e3] hover:text-white flex items-center justify-center transition-colors cursor-pointer"
                 aria-label="Trụ cột trước"
               >
-                <ChevronLeft size={14} />
+                <ChevronLeft size={13} />
               </button>
               <button
                 onClick={() => paginatePillar(1)}
-                className="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-[#0071e3] hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+                className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-[#0071e3] hover:text-white flex items-center justify-center transition-colors cursor-pointer"
                 aria-label="Trụ cột tiếp theo"
               >
-                <ChevronRight size={14} />
+                <ChevronRight size={13} />
               </button>
             </div>
           </div>
 
           {/* Middle Section: Interactive Triple Ring + Dynamic Slide Content */}
-          <div className="flex items-center justify-between gap-4 pt-1">
+          <div className="flex items-center justify-between gap-2.5 sm:gap-4 pt-1 min-w-0">
             {/* Left of Card: Dynamic Slide Info (Swipeable) */}
             <div className="flex-1 min-w-0">
               <AnimatePresence mode="wait" custom={slideDir}>
@@ -705,36 +708,38 @@ function LuxuryHeroPavilion({
             </div>
 
             {/* Right of Card: Interactive Triple Activity Ring (Click ring to switch slide!) */}
-            <LuxuryTripleActivityRing
-              ring1={{ label: 'Hội Thoại', percent: binoProgressPercent, color: '#0071E3' }}
-              ring2={{ label: 'Phản Xạ', percent: reflexPercent, color: '#38BDF8' }}
-              ring3={{ label: 'Từ Vựng', percent: vocabPercent, color: '#10B981' }}
-              overallScore={maisonMasteryScore}
-              activeRingIndex={activeRingIndex}
-              onSelectRing={(ringIdx) => {
-                if (ringIdx === null) goToPillarSlide(0);
-                else goToPillarSlide(ringIdx + 1);
-              }}
-              size={118}
-            />
+            <div className="shrink-0 max-sm:scale-90 max-sm:origin-right">
+              <LuxuryTripleActivityRing
+                ring1={{ label: 'Hội Thoại', percent: binoProgressPercent, color: '#0071E3' }}
+                ring2={{ label: 'Phản Xạ', percent: reflexPercent, color: '#38BDF8' }}
+                ring3={{ label: 'Từ Vựng', percent: vocabPercent, color: '#10B981' }}
+                overallScore={maisonMasteryScore}
+                activeRingIndex={activeRingIndex}
+                onSelectRing={(ringIdx) => {
+                  if (ringIdx === null) goToPillarSlide(0);
+                  else goToPillarSlide(ringIdx + 1);
+                }}
+                size={118}
+              />
+            </div>
           </div>
 
           {/* Interactive 3-Pillar Progress Strip (Click any pillar to inspect its slide) */}
-          <div className="grid grid-cols-3 gap-2 pt-3 border-t border-slate-200/70 dark:border-slate-800/80 text-[11px]">
+          <div className="grid grid-cols-3 gap-1.5 sm:gap-2 pt-3 border-t border-slate-200/70 dark:border-slate-800/80 text-[11px]">
             {aiDiagnosis.pillars.map((p, idx) => {
               const isFocused = pillarSlide === idx + 1;
               return (
                 <button
                   key={p.id}
                   onClick={() => goToPillarSlide(isFocused ? 0 : idx + 1)}
-                  className={`p-2 rounded-xl text-left transition-all cursor-pointer border ${
+                  className={`p-2 rounded-xl text-left transition-all cursor-pointer border min-w-0 ${
                     isFocused
                       ? 'bg-[#0071e3]/10 dark:bg-[#0071e3]/20 border-[#0071e3]/40'
                       : 'bg-slate-50/70 dark:bg-slate-800/40 border-transparent hover:border-slate-200 dark:hover:border-slate-700'
                   }`}
                 >
-                  <div className="flex items-center justify-between text-slate-400">
-                    <span className="flex items-center gap-1">
+                  <div className="flex items-center justify-between text-slate-400 min-w-0">
+                    <span className="flex items-center gap-1 min-w-0">
                       <span
                         className="w-2 h-2 rounded-full shrink-0"
                         style={{ backgroundColor: p.color }}
@@ -863,20 +868,20 @@ function LuxuryHeroPavilion({
             transition={{ type: 'spring', stiffness: 290, damping: 28 }}
             className="relative z-10 overflow-hidden"
           >
-            <div className="pt-8 mt-8 border-t border-slate-200/80 dark:border-white/[0.08] space-y-6">
+            <div className="pt-6 sm:pt-8 mt-6 sm:mt-8 border-t border-slate-200/80 dark:border-white/[0.08] space-y-5 sm:space-y-6">
               {/* Header of Deep Analysis Suite */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                  <div className="inline-flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#0071e3] dark:text-sky-400">
-                    <Sparkles size={13} />
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+                <div className="min-w-0">
+                  <div className="inline-flex items-center gap-1.5 text-[10px] sm:text-[11px] font-extrabold uppercase tracking-[0.12em] sm:tracking-[0.18em] text-[#0071e3] dark:text-sky-400">
+                    <Sparkles size={13} className="shrink-0" />
                     <span>TRUNG TÂM PHÂN TÍCH & DỰ PHÓNG TIẾN ĐỘ 3 TRỤ CỘT</span>
                   </div>
-                  <h3 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white mt-0.5">
+                  <h3 className="text-base sm:text-xl font-black text-slate-900 dark:text-white mt-0.5">
                     Chẩn đoán cân bằng năng lực & Giả lập lộ trình hoàn thành
                   </h3>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 shrink-0">
                   <button
                     onClick={onOpenGuide}
                     className="px-3.5 py-2 rounded-full bg-[#0071e3]/10 text-[#0071e3] dark:bg-sky-500/20 dark:text-sky-300 text-xs font-bold flex items-center gap-1.5 hover:bg-[#0071e3] hover:text-white transition-colors cursor-pointer"
@@ -888,28 +893,28 @@ function LuxuryHeroPavilion({
               </div>
 
               {/* 3 Detailed Pillar Diagnostic Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 sm:gap-4">
                 {aiDiagnosis.pillars.map((pillar) => {
                   const isBottleneck = aiDiagnosis.bottleneck.id === pillar.id;
                   return (
                     <div
                       key={pillar.id}
-                      className={`p-5 rounded-[24px] border transition-all flex flex-col justify-between gap-4 ${
+                      className={`p-4 sm:p-5 rounded-[22px] sm:rounded-[24px] border transition-all flex flex-col justify-between gap-4 ${
                         isBottleneck
                           ? 'bg-blue-50/50 dark:bg-[#0071e3]/10 border-[#0071e3]/40 shadow-sm'
                           : 'bg-white/90 dark:bg-slate-900/80 border-slate-200/80 dark:border-white/[0.07]'
                       }`}
                     >
                       <div className="space-y-2.5">
-                        <div className="flex items-center justify-between">
+                        <div className="flex items-center justify-between gap-2">
                           <span className="text-xs font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
                             <span
-                              className="w-2.5 h-2.5 rounded-full"
+                              className="w-2.5 h-2.5 rounded-full shrink-0"
                               style={{ backgroundColor: pillar.color }}
                             />
                             {pillar.name}
                           </span>
-                          <span className="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-[10px] font-bold text-slate-500">
+                          <span className="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-[10px] font-bold text-slate-500 shrink-0">
                             Tỷ trọng {pillar.weight}
                           </span>
                         </div>
@@ -963,11 +968,11 @@ function LuxuryHeroPavilion({
               </div>
 
               {/* Interactive Study Velocity Simulator Slider */}
-              <div className="p-5 sm:p-6 rounded-[26px] bg-white/95 dark:bg-slate-900/90 border border-slate-200/85 dark:border-white/[0.08] space-y-4">
-                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2 text-xs font-extrabold text-[#0071e3] dark:text-sky-400">
-                      <Clock size={14} />
+              <div className="p-4 sm:p-6 rounded-[22px] sm:rounded-[26px] bg-white/95 dark:bg-slate-900/90 border border-slate-200/85 dark:border-white/[0.08] space-y-4">
+                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3.5 sm:gap-4">
+                  <div className="space-y-1 min-w-0">
+                    <div className="flex items-center gap-2 text-[11px] sm:text-xs font-extrabold text-[#0071e3] dark:text-sky-400">
+                      <Clock size={14} className="shrink-0" />
                       <span>TRÌNH GIẢ LẬP TỐC ĐỘ CHINH PHỤC (VELOCITY SIMULATOR)</span>
                     </div>
                     <p className="text-xs text-slate-500 dark:text-slate-400">
@@ -976,14 +981,14 @@ function LuxuryHeroPavilion({
                   </div>
 
                   {/* Interactive Time Slider Pills */}
-                  <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-2xl bg-slate-100 dark:bg-slate-800/90 border border-slate-200/70 dark:border-slate-700">
+                  <div className="grid grid-cols-5 sm:flex sm:flex-wrap items-center gap-1 sm:gap-1.5 p-1 rounded-2xl bg-slate-100 dark:bg-slate-800/90 border border-slate-200/70 dark:border-slate-700">
                     {STUDY_PACE_PRESETS.map((preset, idx) => {
                       const isSelected = selectedPaceIdx === idx;
                       return (
                         <button
                           key={preset.minutes}
                           onClick={() => setSelectedPaceIdx(idx)}
-                          className={`relative px-3 py-1.5 rounded-xl text-xs font-bold transition-colors cursor-pointer ${
+                          className={`relative px-1.5 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold text-center transition-colors cursor-pointer ${
                             isSelected
                               ? 'text-white'
                               : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'

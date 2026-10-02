@@ -456,13 +456,13 @@ function LuxuryAppleSlider({
             {/* =============================================================== */}
             {activeSlide === 2 && (
               <>
-                <div className="lg:col-span-6 space-y-4">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-bold border border-emerald-500/25">
-                    <Layers size={13} />
-                    <span>TRỤ CỘT 03 • 3000 TỪ OXFORD • THUẬT TOÁN FSRS</span>
+                <div className="lg:col-span-6 space-y-3 sm:space-y-4 min-w-0">
+                  <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1 rounded-full bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[10px] sm:text-xs font-bold border border-emerald-500/25 max-w-full">
+                    <Layers size={13} className="shrink-0" />
+                    <span className="truncate">TRỤ CỘT 03 • 3000 TỪ OXFORD • THUẬT TOÁN FSRS</span>
                   </div>
 
-                  <h3 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
+                  <h3 className="text-xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
                     Nhớ từ vựng sâu gấp 3 lần cùng{' '}
                     <span className="bg-gradient-to-r from-[#0071e3] to-emerald-500 bg-clip-text text-transparent">
                       Flashcard 3D & Lá Chắn FSRS.
@@ -478,23 +478,23 @@ function LuxuryAppleSlider({
                       whileHover={{ scale: 1.03 }}
                       whileTap={{ scale: 0.96 }}
                       onClick={onNavigateVocab}
-                      className="px-6 py-3 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white text-xs sm:text-sm font-bold shadow-[0_8px_20px_rgba(0,113,227,0.28)] flex items-center gap-2 cursor-pointer"
+                      className="w-full sm:w-auto justify-center px-5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white text-xs sm:text-sm font-bold shadow-[0_8px_20px_rgba(0,113,227,0.28)] flex items-center gap-2 cursor-pointer"
                     >
-                      <span>Khám phá 60 Chủ Đề ({vocabMasteredCount} từ)</span>
-                      <ArrowRight size={15} />
+                      <span className="truncate">Khám phá 60 Chủ Đề ({vocabMasteredCount} từ)</span>
+                      <ArrowRight size={15} className="shrink-0" />
                     </motion.button>
                   </div>
                 </div>
 
                 {/* Right Interactive 3D Flashcard Sandbox */}
-                <div className="lg:col-span-6 flex flex-col gap-3">
+                <div className="lg:col-span-6 flex flex-col gap-3 min-w-0">
                   <motion.div
                     whileHover={{ y: -3 }}
                     whileTap={{ scale: 0.985 }}
                     onClick={() => setIsCardFlipped((prev) => !prev)}
-                    className="p-5 sm:p-6 rounded-[26px] bg-white/95 dark:bg-slate-900/90 border border-slate-200/90 dark:border-white/10 shadow-lg cursor-pointer space-y-3 relative overflow-hidden"
+                    className="p-4 sm:p-6 rounded-2xl sm:rounded-[26px] bg-white/95 dark:bg-slate-900/90 border border-slate-200/90 dark:border-white/10 shadow-lg cursor-pointer space-y-3 relative overflow-hidden min-w-0"
                   >
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between gap-2">
                       <span className="px-2.5 py-0.5 rounded-full bg-[#0071e3]/10 text-[#0071e3] dark:bg-sky-500/20 dark:text-sky-300 text-[11px] font-bold">
                         {currentCard.type}
                       </span>
@@ -519,9 +519,9 @@ function LuxuryAppleSlider({
                           animate={{ opacity: 1, rotateX: 0 }}
                           exit={{ opacity: 0, rotateX: 15 }}
                           transition={{ duration: 0.2 }}
-                          className="py-3 space-y-1"
+                          className="py-2 sm:py-3 space-y-1"
                         >
-                          <h4 className="text-2xl font-black text-slate-900 dark:text-white">
+                          <h4 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
                             {currentCard.word}
                           </h4>
                           <p className="text-xs font-mono text-[#0071e3] dark:text-sky-400">
@@ -550,8 +550,8 @@ function LuxuryAppleSlider({
                       )}
                     </AnimatePresence>
 
-                    <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800">
-                      <div className="flex gap-1.5" onClick={(e) => e.stopPropagation()}>
+                    <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100 dark:border-slate-800 min-w-0">
+                      <div className="flex flex-wrap gap-1 sm:gap-1.5 min-w-0" onClick={(e) => e.stopPropagation()}>
                         {MINI_FLASHCARDS.map((c, idx) => (
                           <button
                             key={c.word}
@@ -559,7 +559,7 @@ function LuxuryAppleSlider({
                               setIsCardFlipped(false);
                               setFlashcardIdx(idx);
                             }}
-                            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors cursor-pointer ${
+                            className={`px-2 sm:px-2.5 py-1 rounded-lg text-[10px] sm:text-[11px] font-bold transition-colors cursor-pointer ${
                               flashcardIdx === idx
                                 ? 'bg-[#0071e3] text-white'
                                 : 'bg-slate-100 dark:bg-slate-800 text-slate-500'
@@ -569,7 +569,7 @@ function LuxuryAppleSlider({
                           </button>
                         ))}
                       </div>
-                      <span className="text-[11px] font-semibold text-[#0071e3] dark:text-sky-400">
+                      <span className="text-[11px] font-semibold text-[#0071e3] dark:text-sky-400 shrink-0">
                         {isCardFlipped ? 'Mặt sau' : 'Mặt trước'}
                       </span>
                     </div>
@@ -583,13 +583,13 @@ function LuxuryAppleSlider({
             {/* =============================================================== */}
             {activeSlide === 3 && (
               <>
-                <div className="lg:col-span-6 space-y-4">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0071e3]/10 dark:bg-[#0071e3]/20 text-[#0071e3] dark:text-sky-400 text-xs font-bold border border-[#0071e3]/20">
-                    <Lightbulb size={13} />
-                    <span>LỘ TRÌNH CHUẨN SƯ PHẠM • 45–60 PHÚT MỖI NGÀY</span>
+                <div className="lg:col-span-6 space-y-3 sm:space-y-4 min-w-0">
+                  <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1 rounded-full bg-[#0071e3]/10 dark:bg-[#0071e3]/20 text-[#0071e3] dark:text-sky-400 text-[10px] sm:text-xs font-bold border border-[#0071e3]/20 max-w-full">
+                    <Lightbulb size={13} className="shrink-0" />
+                    <span className="truncate">LỘ TRÌNH CHUẨN SƯ PHẠM • 45–60 PHÚT MỖI NGÀY</span>
                   </div>
 
-                  <h3 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
+                  <h3 className="text-xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
                     Kết hợp 3 trụ cột theo{' '}
                     <span className="bg-gradient-to-r from-[#0071e3] to-sky-500 bg-clip-text text-transparent">
                       Tam Giác Vàng Phản Xạ.

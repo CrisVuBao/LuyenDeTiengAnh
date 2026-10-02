@@ -239,14 +239,14 @@ export default function LandingHeroStudio({ onStartLearning, scrollToSection, is
   const currentCard = OXFORD_CARDS[cardIndex];
 
   return (
-    <section id="live-studio" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-20 lg:pt-16 lg:pb-28">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+    <section id="live-studio" className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 pt-6 pb-14 sm:pt-10 sm:pb-20 lg:pt-16 lg:pb-28">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-10 lg:gap-12 items-center">
         {/* Left Column: Hero Narrative */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className="lg:col-span-6 space-y-6 text-left"
+          className="lg:col-span-6 space-y-5 sm:space-y-6 text-left min-w-0"
         >
           <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-white/90 dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 shadow-2xs">
             <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
@@ -254,14 +254,14 @@ export default function LandingHeroStudio({ onStartLearning, scrollToSection, is
             </span>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl xl:text-[56px] font-black tracking-[-0.035em] leading-[1.08] text-slate-900 dark:text-white">
+          <h1 className="text-3xl sm:text-5xl xl:text-[56px] font-black tracking-[-0.035em] leading-[1.12] sm:leading-[1.08] text-slate-900 dark:text-white">
             Bật Tiếng Anh Tự Nhiên{' '}
             <span className="bg-gradient-to-r from-[#0071e3] via-sky-500 to-indigo-600 dark:from-sky-400 dark:via-[#38bdf8] dark:to-indigo-400 bg-clip-text text-transparent">
               Không Cần Dịch Ngầm.
             </span>
           </h1>
 
-          <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed font-normal max-w-2xl">
+          <p className="text-sm sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed font-normal max-w-2xl">
             Kết hợp trọn bộ <strong className="font-semibold text-slate-900 dark:text-white">72 bài hội thoại Giao Tiếp Thực Chiến</strong>, phòng luyện <strong className="font-semibold text-slate-900 dark:text-white">1.500 câu phản xạ Nói - Viết</strong>, kho <strong className="font-semibold text-slate-900 dark:text-white">3000 từ vựng Oxford 3D</strong> và <strong className="font-semibold text-slate-900 dark:text-white">Phòng luyện tập TOEIC ETS tích hợp</strong>.
           </p>
 
@@ -284,27 +284,27 @@ export default function LandingHeroStudio({ onStartLearning, scrollToSection, is
             })}
           </div>
 
-          <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5">
+          <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
             <motion.button
               whileHover={{ scale: 1.02, y: -2 }}
               whileTap={{ scale: 0.97 }}
               onClick={onStartLearning}
-              className="px-7 py-4 bg-gradient-to-r from-[#0071e3] to-sky-500 hover:from-[#0077ED] hover:to-sky-400 text-white font-bold text-sm sm:text-base rounded-2xl shadow-[0_12px_28px_-6px_rgba(0,113,227,0.45)] flex items-center justify-center gap-2.5 cursor-pointer"
+              className="px-6 sm:px-7 py-3.5 sm:py-4 bg-gradient-to-r from-[#0071e3] to-sky-500 hover:from-[#0077ED] hover:to-sky-400 text-white font-bold text-sm sm:text-base rounded-2xl shadow-[0_12px_28px_-6px_rgba(0,113,227,0.45)] flex items-center justify-center gap-2.5 cursor-pointer"
             >
               <span>{isAuthenticated ? 'Tiếp tục lộ trình học' : 'Bắt đầu học ngay miễn phí'}</span>
-              <ArrowRight size={18} />
+              <ArrowRight size={18} className="shrink-0" />
             </motion.button>
 
             <button
               onClick={() => scrollToSection('four-pillars')}
-              className="px-6 py-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-[#0071e3]/40 text-slate-700 dark:text-slate-200 font-semibold text-sm sm:text-base flex items-center justify-center gap-2 transition-colors cursor-pointer"
+              className="px-6 py-3.5 sm:py-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-[#0071e3]/40 text-slate-700 dark:text-slate-200 font-semibold text-sm sm:text-base flex items-center justify-center gap-2 transition-colors cursor-pointer"
             >
-              <Compass size={17} className="text-[#0071e3] dark:text-sky-400" />
+              <Compass size={17} className="text-[#0071e3] dark:text-sky-400 shrink-0" />
               <span>Khám phá 4 trụ cột</span>
             </button>
           </div>
 
-          <div className="pt-4 grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="pt-2 sm:pt-4 grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
             {[
               { value: '72 Bài', label: 'Giao tiếp thực chiến', sub: '12 Chương & 688 câu' },
               { value: '1.500 Câu', label: 'Phản xạ Nói - Viết', sub: '50 Chủ đề thông dụng' },
@@ -313,15 +313,15 @@ export default function LandingHeroStudio({ onStartLearning, scrollToSection, is
             ].map((stat, idx) => (
               <div
                 key={idx}
-                className="p-3.5 rounded-2xl bg-white/85 dark:bg-slate-900/75 border border-slate-200/80 dark:border-slate-800/90 shadow-2xs"
+                className="p-3 sm:p-3.5 rounded-2xl bg-white/85 dark:bg-slate-900/75 border border-slate-200/80 dark:border-slate-800/90 shadow-2xs min-w-0"
               >
-                <div className="text-lg sm:text-xl font-black text-[#0071e3] dark:text-sky-400 tracking-tight">
+                <div className="text-base sm:text-xl font-black text-[#0071e3] dark:text-sky-400 tracking-tight">
                   {stat.value}
                 </div>
-                <div className="text-xs font-bold text-slate-800 dark:text-slate-100 mt-0.5">
+                <div className="text-xs font-bold text-slate-800 dark:text-slate-100 mt-0.5 truncate">
                   {stat.label}
                 </div>
-                <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 truncate">
                   {stat.sub}
                 </div>
               </div>
@@ -334,25 +334,25 @@ export default function LandingHeroStudio({ onStartLearning, scrollToSection, is
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-          className="lg:col-span-6"
+          className="lg:col-span-6 min-w-0"
         >
-          <div className="rounded-[28px] bg-white/95 dark:bg-[#0d1424]/95 border border-slate-200/90 dark:border-slate-800/90 shadow-[0_24px_60px_-15px_rgba(0,113,227,0.14)] overflow-hidden backdrop-blur-xl">
-            <div className="px-5 py-3.5 bg-slate-50/90 dark:bg-slate-900/90 border-b border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-2">
-              <div className="flex items-center gap-2">
-                <span className="w-3 h-3 rounded-full bg-rose-400/90" />
-                <span className="w-3 h-3 rounded-full bg-amber-400/90" />
-                <span className="w-3 h-3 rounded-full bg-emerald-400/90" />
-                <span className="ml-2 text-xs font-bold text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
-                  <Radio size={13} className="text-[#0071e3] dark:text-sky-400 animate-pulse" />
-                  Phòng Trải Nghiệm Tương Tác Trực Tiếp
+          <div className="rounded-[24px] sm:rounded-[28px] bg-white/95 dark:bg-[#0d1424]/95 border border-slate-200/90 dark:border-slate-800/90 shadow-[0_24px_60px_-15px_rgba(0,113,227,0.14)] overflow-hidden backdrop-blur-xl">
+            <div className="px-3.5 sm:px-5 py-3 sm:py-3.5 bg-slate-50/90 dark:bg-slate-900/90 border-b border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-2">
+              <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+                <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-rose-400/90 shrink-0" />
+                <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-amber-400/90 shrink-0" />
+                <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-emerald-400/90 shrink-0" />
+                <span className="ml-1 sm:ml-2 text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-200 flex items-center gap-1.5 min-w-0">
+                  <Radio size={13} className="text-[#0071e3] dark:text-sky-400 animate-pulse shrink-0" />
+                  <span className="truncate">Phòng Trải Nghiệm Tương Tác Trực Tiếp</span>
                 </span>
               </div>
-              <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-[#0071e3]/10 text-[#0071e3] dark:text-sky-400">
+              <span className="hidden sm:inline-flex shrink-0 text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-[#0071e3]/10 text-[#0071e3] dark:text-sky-400 whitespace-nowrap">
                 Bấm để thử ngay
               </span>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 p-2.5 bg-slate-100/70 dark:bg-slate-950/60 border-b border-slate-200/70 dark:border-slate-800/80">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 p-2 sm:p-2.5 bg-slate-100/70 dark:bg-slate-950/60 border-b border-slate-200/70 dark:border-slate-800/80">
               {[
                 { id: 'reflex', label: 'Phản Xạ 3 Giây', icon: Zap },
                 { id: 'bino', label: 'Giao Tiếp Thực Chiến', icon: MessageSquare },
@@ -365,20 +365,20 @@ export default function LandingHeroStudio({ onStartLearning, scrollToSection, is
                   <button
                     key={tab.id}
                     onClick={() => setActiveStudioTab(tab.id)}
-                    className={`px-3 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                    className={`px-2.5 sm:px-3 py-2 sm:py-2.5 rounded-xl text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1.5 min-w-0 transition-all cursor-pointer ${
                       active
                         ? 'bg-[#0071e3] text-white shadow-[0_4px_12px_rgba(0,113,227,0.3)]'
                         : 'text-slate-600 dark:text-slate-400 hover:bg-white/80 dark:hover:bg-slate-800/70'
                     }`}
                   >
-                    <Icon size={14} />
-                    <span>{tab.label}</span>
+                    <Icon size={13} className="shrink-0" />
+                    <span className="truncate">{tab.label}</span>
                   </button>
                 );
               })}
             </div>
 
-            <div className="p-5 sm:p-6 min-h-[390px] flex flex-col justify-between">
+            <div className="p-4 sm:p-6 min-h-[370px] sm:min-h-[390px] flex flex-col justify-between">
               <AnimatePresence mode="wait">
                 {activeStudioTab === 'reflex' && (
                   <motion.div
@@ -389,11 +389,11 @@ export default function LandingHeroStudio({ onStartLearning, scrollToSection, is
                     transition={{ duration: 0.2 }}
                     className="space-y-4 flex-1 flex flex-col justify-between"
                   >
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-500/10 px-3 py-1 rounded-full">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <span className="text-[11px] sm:text-xs font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-500/10 px-2.5 sm:px-3 py-1 rounded-full">
                         {currentReflex.topic}
                       </span>
-                      <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 dark:text-slate-400">
+                      <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 dark:text-slate-400 shrink-0">
                         <span>Câu {reflexIndex + 1}/{REFLEX_SAMPLES.length}</span>
                         <button
                           onClick={nextReflexSample}
@@ -405,18 +405,18 @@ export default function LandingHeroStudio({ onStartLearning, scrollToSection, is
                       </div>
                     </div>
 
-                    <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 space-y-2">
+                    <div className="p-3.5 sm:p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 space-y-2">
                       <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
                         Thử thách: Hãy bật ra câu tiếng Anh trong 3 giây
                       </div>
-                      <p className="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-snug">
+                      <p className="text-sm sm:text-lg font-bold text-slate-900 dark:text-white leading-snug">
                         “{currentReflex.vi}”
                       </p>
                     </div>
 
                     <div className="space-y-1.5">
                       <div className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-                        <Sparkles size={12} className="text-[#0071e3]" />
+                        <Sparkles size={12} className="text-[#0071e3] shrink-0" />
                         <span>Gợi ý tư duy theo cụm từ (Chunking):</span>
                       </div>
                       <div className="flex flex-wrap gap-1.5">
@@ -431,12 +431,12 @@ export default function LandingHeroStudio({ onStartLearning, scrollToSection, is
                       </div>
                     </div>
 
-                    <div className="p-4 rounded-2xl bg-gradient-to-br from-[#0071e3]/8 via-indigo-500/5 to-transparent border border-[#0071e3]/25 dark:border-sky-500/25">
+                    <div className="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-br from-[#0071e3]/8 via-indigo-500/5 to-transparent border border-[#0071e3]/25 dark:border-sky-500/25">
                       {!reflexRevealed ? (
-                        <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+                        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
                           <div className="flex items-center gap-3">
                             <div
-                              className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-xl ${
+                              className={`w-11 h-11 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center font-black text-lg sm:text-xl shrink-0 ${
                                 reflexCounting
                                   ? 'bg-amber-500 text-white animate-pulse'
                                   : 'bg-[#0071e3]/15 text-[#0071e3] dark:text-sky-400'
@@ -444,7 +444,7 @@ export default function LandingHeroStudio({ onStartLearning, scrollToSection, is
                             >
                               {reflexTimeLeft}s
                             </div>
-                            <div className="text-left">
+                            <div className="text-left min-w-0">
                               <div className="text-xs font-bold text-slate-800 dark:text-slate-100">
                                 {reflexCounting
                                   ? 'Đếm ngược! Bật câu bằng miệng ngay...'
@@ -459,7 +459,7 @@ export default function LandingHeroStudio({ onStartLearning, scrollToSection, is
                           <button
                             onClick={startReflexChallenge}
                             disabled={reflexCounting}
-                            className="w-full sm:w-auto px-5 py-2.5 bg-[#0071e3] hover:bg-[#0077ED] text-white text-xs font-bold rounded-xl shadow-md transition-colors disabled:opacity-50 cursor-pointer"
+                            className="w-full sm:w-auto px-5 py-2.5 bg-[#0071e3] hover:bg-[#0077ED] text-white text-xs font-bold rounded-xl shadow-md transition-colors disabled:opacity-50 cursor-pointer shrink-0"
                           >
                             {reflexCounting ? 'Đang đếm...' : 'Bắt đầu 3 giây'}
                           </button>
@@ -467,15 +467,15 @@ export default function LandingHeroStudio({ onStartLearning, scrollToSection, is
                       ) : (
                         <div className="space-y-3">
                           <div className="flex items-start justify-between gap-2">
-                            <div>
+                            <div className="min-w-0">
                               <div className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wide flex items-center gap-1">
-                                <CheckCircle2 size={13} />
+                                <CheckCircle2 size={13} className="shrink-0" />
                                 <span>Đáp án bản xứ chuẩn:</span>
                               </div>
-                              <p className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white mt-1">
+                              <p className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white mt-1 break-words">
                                 {currentReflex.en}
                               </p>
-                              <div className="text-xs text-slate-500 dark:text-slate-400 font-mono mt-0.5">
+                              <div className="text-xs text-slate-500 dark:text-slate-400 font-mono mt-0.5 break-words">
                                 {currentReflex.ipa}
                               </div>
                             </div>
@@ -505,8 +505,8 @@ export default function LandingHeroStudio({ onStartLearning, scrollToSection, is
                     transition={{ duration: 0.2 }}
                     className="space-y-4 flex-1 flex flex-col justify-between"
                   >
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-xs font-bold text-[#0071e3] dark:text-sky-400 bg-[#0071e3]/10 px-3 py-1 rounded-full">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <span className="text-[11px] sm:text-xs font-bold text-[#0071e3] dark:text-sky-400 bg-[#0071e3]/10 px-2.5 sm:px-3 py-1 rounded-full">
                         {BINO_SUBSTITUTION_DATA.chapter}
                       </span>
                       <button
@@ -517,7 +517,7 @@ export default function LandingHeroStudio({ onStartLearning, scrollToSection, is
                             speakEnglish(currentVariation.fullEn);
                           }
                         }}
-                        className={`px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer ${
+                        className={`px-3 py-1 rounded-full text-[11px] sm:text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer shrink-0 ${
                           isPassivePlaying
                             ? 'bg-emerald-500 text-white'
                             : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200'
@@ -528,17 +528,17 @@ export default function LandingHeroStudio({ onStartLearning, scrollToSection, is
                       </button>
                     </div>
 
-                    <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 space-y-2">
+                    <div className="p-3 sm:p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 space-y-2">
                       <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wide">
                         Ngữ cảnh hội thoại 2 nhân vật
                       </div>
                       <div className="space-y-2 text-xs">
                         {BINO_SUBSTITUTION_DATA.dialogueContext.map((line, idx) => (
                           <div key={idx} className="flex items-start gap-2">
-                            <span className="font-extrabold text-[#0071e3] dark:text-sky-400 w-12 shrink-0">
+                            <span className="font-extrabold text-[#0071e3] dark:text-sky-400 w-11 sm:w-12 shrink-0">
                               {line.speaker}:
                             </span>
-                            <div>
+                            <div className="min-w-0">
                               <div className="font-semibold text-slate-800 dark:text-slate-100">
                                 {line.en}
                               </div>
@@ -553,10 +553,10 @@ export default function LandingHeroStudio({ onStartLearning, scrollToSection, is
 
                     <div className="space-y-2">
                       <div className="text-[11px] font-bold text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
-                        <Repeat size={13} className="text-[#0071e3]" />
+                        <Repeat size={13} className="text-[#0071e3] shrink-0" />
                         <span>Chọn cụm từ để biến hóa câu nói (Substitution Drilling):</span>
                       </div>
-                      <div className="grid grid-cols-2 gap-1.5">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
                         {BINO_SUBSTITUTION_DATA.variations.map((v) => {
                           const isSel = v.id === selectedVariationId;
                           return (
@@ -566,13 +566,13 @@ export default function LandingHeroStudio({ onStartLearning, scrollToSection, is
                                 setSelectedVariationId(v.id);
                                 speakEnglish(v.fullEn);
                               }}
-                              className={`p-2.5 rounded-xl text-left border transition-all cursor-pointer ${
+                              className={`p-2.5 rounded-xl text-left border transition-all cursor-pointer min-w-0 ${
                                 isSel
                                   ? 'bg-[#0071e3]/12 border-[#0071e3] text-slate-900 dark:text-white'
                                   : 'bg-white dark:bg-slate-900 border-slate-200/80 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:border-[#0071e3]/40'
                               }`}
                             >
-                              <div className="text-xs font-bold text-[#0071e3] dark:text-sky-400">
+                              <div className="text-xs font-bold text-[#0071e3] dark:text-sky-400 truncate">
                                 + {v.chip}
                               </div>
                               <div className="text-[10px] text-slate-500 dark:text-slate-400 truncate">
@@ -584,9 +584,9 @@ export default function LandingHeroStudio({ onStartLearning, scrollToSection, is
                       </div>
                     </div>
 
-                    <div className="p-3.5 rounded-2xl bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border border-blue-500/20 flex items-center justify-between gap-3">
-                      <div>
-                        <div className="text-xs font-bold text-slate-900 dark:text-white">
+                    <div className="p-3 sm:p-3.5 rounded-2xl bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border border-blue-500/20 flex items-center justify-between gap-3">
+                      <div className="min-w-0">
+                        <div className="text-xs font-bold text-slate-900 dark:text-white break-words">
                           "{currentVariation.fullEn}"
                         </div>
                         <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
@@ -612,11 +612,11 @@ export default function LandingHeroStudio({ onStartLearning, scrollToSection, is
                     transition={{ duration: 0.2 }}
                     className="space-y-4 flex-1 flex flex-col justify-between"
                   >
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <span className="text-[11px] sm:text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 sm:px-3 py-1 rounded-full">
                         {currentCard.topic}
                       </span>
-                      <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                      <div className="flex items-center gap-1.5 text-xs text-slate-500 shrink-0">
                         <span>{cardIndex + 1}/{OXFORD_CARDS.length}</span>
                         <button
                           onClick={() => {
@@ -632,7 +632,7 @@ export default function LandingHeroStudio({ onStartLearning, scrollToSection, is
 
                     <div
                       onClick={() => setIsCardFlipped(!isCardFlipped)}
-                      className="p-6 rounded-2xl bg-gradient-to-br from-white to-slate-50 dark:from-[#0d1424] dark:to-slate-900 border border-slate-200 dark:border-slate-800 shadow-md cursor-pointer hover:border-emerald-500/50 transition-all min-h-[170px] flex flex-col justify-center text-center space-y-2 relative"
+                      className="p-5 sm:p-6 pt-9 sm:pt-6 rounded-2xl bg-gradient-to-br from-white to-slate-50 dark:from-[#0d1424] dark:to-slate-900 border border-slate-200 dark:border-slate-800 shadow-md cursor-pointer hover:border-emerald-500/50 transition-all min-h-[170px] flex flex-col justify-center text-center space-y-2 relative"
                     >
                       <div className="absolute top-3 right-3 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md">
                         {isCardFlipped ? 'Mặt sau (Nghĩa)' : 'Mặt trước (Bấm lật)'}
@@ -652,7 +652,7 @@ export default function LandingHeroStudio({ onStartLearning, scrollToSection, is
                         </>
                       ) : (
                         <>
-                          <div className="text-base font-extrabold text-slate-900 dark:text-white">
+                          <div className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white">
                             {currentCard.meaning}
                           </div>
                           <div className="text-xs text-slate-600 dark:text-slate-300 italic">
@@ -665,7 +665,7 @@ export default function LandingHeroStudio({ onStartLearning, scrollToSection, is
                       )}
                     </div>
 
-                    <div className="grid grid-cols-4 gap-2">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                       {[
                         { label: 'Quên (1)', time: 'Ngay', color: 'bg-rose-500/10 text-rose-600' },
                         { label: 'Khó (2)', time: '1 ngày', color: 'bg-amber-500/10 text-amber-600' },

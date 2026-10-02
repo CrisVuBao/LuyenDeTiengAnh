@@ -235,8 +235,8 @@ export default function ReflexStudyMode({
                     </div>
                   </div>
 
-                  {/* Right Action Buttons - Clean single row on mobile */}
-                  <div className="flex lg:flex-col items-center lg:items-end justify-between gap-1.5 sm:gap-2 pt-2 lg:pt-0 border-t lg:border-t-0 border-slate-100 dark:border-slate-800/80 shrink-0">
+                  {/* Right Action Buttons - Clean wrapping row on mobile */}
+                  <div className="flex flex-wrap lg:flex-col items-center lg:items-end justify-between gap-1.5 sm:gap-2 pt-2 lg:pt-0 border-t lg:border-t-0 border-slate-100 dark:border-slate-800/80 shrink-0">
                     <div className="flex items-center gap-1.5">
                       <button
                         onClick={() => {
@@ -246,7 +246,7 @@ export default function ReflexStudyMode({
                           }
                           speakSentence(s, playbackSpeed);
                         }}
-                        className={`px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-extrabold flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 ${
+                        className={`px-2 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-extrabold flex items-center gap-1 sm:gap-1.5 transition-all cursor-pointer active:scale-95 ${
                           isPlayingThis
                             ? 'bg-rose-600 hover:bg-rose-700 text-white shadow-md shadow-rose-500/30 ring-2 ring-rose-300 dark:ring-rose-800'
                             : 'bg-blue-50 dark:bg-slate-800 text-[#0071e3] dark:text-sky-400 hover:bg-blue-100'
@@ -268,7 +268,7 @@ export default function ReflexStudyMode({
 
                       <button
                         onClick={() => speakSentence(s, 0.7)}
-                        className="px-2 sm:px-2.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer"
+                        className="px-2 sm:px-2.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 text-[11px] sm:text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer"
                         title="Nghe chậm rãi 0.7x để bắt rõ từng âm"
                       >
                         <Headphones size={13} />
@@ -287,7 +287,7 @@ export default function ReflexStudyMode({
                             setInlineResult(null);
                           }
                         }}
-                        className={`px-2.5 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer ${
+                        className={`px-2 sm:px-2.5 py-1.5 rounded-xl text-[11px] sm:text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer ${
                           isInlineOpen
                             ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900'
                             : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
@@ -312,7 +312,7 @@ export default function ReflexStudyMode({
 
                       <button
                         onClick={() => toggleMastered(s.id)}
-                        className={`px-2.5 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1 border transition-all cursor-pointer ${
+                        className={`px-2 sm:px-2.5 py-1.5 rounded-xl text-[11px] sm:text-xs font-semibold flex items-center gap-1 border transition-all cursor-pointer ${
                           isMastered
                             ? 'bg-emerald-500 border-emerald-500 text-white'
                             : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-emerald-400'

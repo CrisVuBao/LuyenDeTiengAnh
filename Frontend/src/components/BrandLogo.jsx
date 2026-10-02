@@ -65,7 +65,7 @@ export default function BrandLogo({
   const sc = sizeClasses[size] || sizeClasses.md;
 
   return (
-    <div className={`flex items-center gap-2.5 sm:gap-3 shrink-0 ${className}`}>
+    <div className={`flex items-center gap-2 sm:gap-3 min-w-0 shrink-0 ${className}`}>
       {/* 1. Logo Container (Image or Gradient Squircle) */}
       {effectiveLogoUrl && !imageError ? (
         <div className={`flex items-center justify-center shrink-0 ${iconClassName}`}>
@@ -91,7 +91,7 @@ export default function BrandLogo({
             {titleText}
           </span>
           {showTagline && taglineText && (
-            <span className={`${sc.tagline} text-slate-500 dark:text-slate-400 tracking-tight mt-0.5 block truncate`}>
+            <span className={`${sc.tagline} text-slate-500 dark:text-slate-400 tracking-tight mt-0.5 ${size === 'sm' ? 'hidden sm:block' : 'block'} truncate`}>
               {taglineText}
             </span>
           )}

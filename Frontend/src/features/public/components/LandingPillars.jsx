@@ -116,16 +116,16 @@ export default function LandingPillars({ onStartLearning, isAuthenticated }) {
   return (
     <section
       id="four-pillars"
-      className="py-20 lg:py-24 border-t border-slate-200/70 dark:border-slate-800/80 bg-white/50 dark:bg-slate-950/40"
+      className="py-14 sm:py-20 lg:py-24 border-t border-slate-200/70 dark:border-slate-800/80 bg-white/50 dark:bg-slate-950/40"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 space-y-10 sm:space-y-12">
         {/* Section Header */}
         <div className="max-w-3xl mx-auto text-center space-y-3">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#0071e3]/10 text-[#0071e3] dark:text-sky-400 text-xs font-bold uppercase tracking-wider">
             <BookOpen size={13} />
             <span>Hệ Sinh Thái Học Tập Toàn Diện</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 dark:text-white">
+          <h2 className="text-2xl sm:text-4xl font-black tracking-tight text-slate-900 dark:text-white">
             4 Trụ Cột Cốt Lõi Giúp Bạn Làm Chủ Tiếng Anh
           </h2>
           <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed">
@@ -134,7 +134,7 @@ export default function LandingPillars({ onStartLearning, isAuthenticated }) {
         </div>
 
         {/* 2x2 Architectural Bento Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6 lg:gap-8">
           {PILLARS.map((pillar, index) => (
             <motion.div
               key={pillar.id}
@@ -142,20 +142,20 @@ export default function LandingPillars({ onStartLearning, isAuthenticated }) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-60px' }}
               transition={{ duration: 0.45, delay: index * 0.06 }}
-              className={`group rounded-[28px] bg-white dark:bg-[#0d1424] border border-slate-200/90 dark:border-slate-800/90 ${pillar.borderHover} p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(0,113,227,0.08)] transition-all flex flex-col justify-between space-y-6`}
+              className={`group rounded-[24px] sm:rounded-[28px] bg-white dark:bg-[#0d1424] border border-slate-200/90 dark:border-slate-800/90 ${pillar.borderHover} p-5 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(0,113,227,0.08)] transition-all flex flex-col justify-between space-y-5 sm:space-y-6 min-w-0`}
             >
               <div className="space-y-4">
-                <div className="flex items-center justify-between gap-2">
-                  <span className={`px-3 py-1 rounded-full text-xs font-extrabold ${pillar.lightBg}`}>
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <span className={`px-3 py-1 rounded-full text-[11px] sm:text-xs font-extrabold ${pillar.lightBg}`}>
                     {pillar.badge}
                   </span>
-                  <span className="text-xs font-black text-slate-400 dark:text-slate-600">
+                  <span className="text-xs font-black text-slate-400 dark:text-slate-600 shrink-0">
                     0{index + 1} / 04
                   </span>
                 </div>
 
                 <div className="space-y-1.5">
-                  <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                  <h3 className="text-lg sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
                     {pillar.title}
                   </h3>
                   <p className="text-xs sm:text-sm font-bold text-[#0071e3] dark:text-sky-400">
@@ -167,16 +167,16 @@ export default function LandingPillars({ onStartLearning, isAuthenticated }) {
                   {pillar.description}
                 </p>
 
-                <div className="grid grid-cols-4 gap-2 pt-1">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
                   {pillar.stats.map((st, i) => (
                     <div
                       key={i}
-                      className="p-2.5 rounded-2xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200/70 dark:border-slate-800 text-center"
+                      className="p-2.5 rounded-2xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200/70 dark:border-slate-800 text-center min-w-0"
                     >
-                      <div className="text-sm sm:text-base font-black text-slate-900 dark:text-white">
+                      <div className="text-sm sm:text-base font-black text-slate-900 dark:text-white truncate">
                         {st.value}
                       </div>
-                      <div className="text-[10px] sm:text-[11px] font-medium text-slate-500 dark:text-slate-400">
+                      <div className="text-[10px] sm:text-[11px] font-medium text-slate-500 dark:text-slate-400 truncate">
                         {st.label}
                       </div>
                     </div>
@@ -195,13 +195,13 @@ export default function LandingPillars({ onStartLearning, isAuthenticated }) {
                 </ul>
               </div>
 
-              <div className="pt-4 border-t border-slate-200/70 dark:border-slate-800/80 flex items-center justify-between">
+              <div className="pt-4 border-t border-slate-200/70 dark:border-slate-800/80 flex flex-wrap items-center justify-between gap-2">
                 <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
                   Tích hợp sẵn trong tài khoản học viên
                 </span>
                 <button
                   onClick={() => handlePillarClick(pillar.route)}
-                  className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-[#0071e3] dark:text-sky-400 group-hover:translate-x-1 transition-transform cursor-pointer"
+                  className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-[#0071e3] dark:text-sky-400 group-hover:translate-x-1 transition-transform cursor-pointer shrink-0"
                 >
                   <span>Vào học thôi</span>
                   <ChevronRight size={16} />

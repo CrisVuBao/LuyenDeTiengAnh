@@ -158,15 +158,15 @@ export default function StudentNavbar() {
       {/* ======================================================== */}
       {/* 1. TOP STICKY NAVBAR (Clean, Single Row, Apple Glassmorphic) */}
       {/* ======================================================== */}
-      <header className="sticky top-0 z-40 bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl border-b border-slate-200/70 dark:border-slate-800/80 transition-colors">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-15 flex items-center justify-between gap-2 sm:gap-4">
+      <header className="sticky top-0 z-40 w-full max-w-full bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl border-b border-slate-200/70 dark:border-slate-800/80 transition-colors">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-14 sm:h-15 flex items-center justify-between gap-1.5 sm:gap-4 min-w-0">
           
           {/* Zone 1: Brand Logo (Left) */}
-          <div className="flex items-center shrink-0">
+          <div className="flex items-center min-w-0 shrink">
             <NavLink 
               to="/home" 
               onMouseEnter={() => prefetchRoute('home')} 
-              className="flex items-center group shrink-0"
+              className="flex items-center group min-w-0"
             >
               <BrandLogo size="sm" />
             </NavLink>
