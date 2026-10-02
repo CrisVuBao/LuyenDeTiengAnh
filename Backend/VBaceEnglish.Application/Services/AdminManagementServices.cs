@@ -627,9 +627,12 @@ public class SystemSettingsService : ISystemSettingsService
         var slogan = await GetSettingValueAsync("brand.slogan", "Giao Tiếp Thực Chiến & Luyện Đề TOEIC Chuẩn ETS");
         var description = await GetSettingValueAsync("brand.description", "Nền tảng học tiếng Anh giao tiếp & luyện thi TOEIC, THPT, IELTS thông minh với công nghệ phản xạ và FSRS.");
         var companyName = await GetSettingValueAsync("brand.company_name", "Vũ Bảo Software");
-        var logoUrl = await GetSettingValueAsync("brand.logo_url", "");
-        var logoDarkUrl = await GetSettingValueAsync("brand.logo_dark_url", "");
+        var logoUrl = await GetSettingValueAsync("brand.logo_url", "/favicon.svg");
+        if (string.IsNullOrWhiteSpace(logoUrl)) logoUrl = "/favicon.svg";
+        var logoDarkUrl = await GetSettingValueAsync("brand.logo_dark_url", "/favicon.svg");
+        if (string.IsNullOrWhiteSpace(logoDarkUrl)) logoDarkUrl = "/favicon.svg";
         var faviconUrl = await GetSettingValueAsync("brand.favicon_url", "/favicon.svg");
+        if (string.IsNullOrWhiteSpace(faviconUrl)) faviconUrl = "/favicon.svg";
         var copyright = await GetSettingValueAsync("brand.copyright", $"© {DateTime.UtcNow.Year} {brandName} — By {companyName}. Tất cả quyền được bảo lưu.");
         var supportEmail = await GetSettingValueAsync("brand.support_email", "support@vbaceenglish.com");
         var hotline = await GetSettingValueAsync("brand.hotline", "0988.xxx.xxx");

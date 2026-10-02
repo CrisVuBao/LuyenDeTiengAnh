@@ -449,31 +449,31 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
     const remainingUnmastered = words.filter((w) => !masteredWords[w.id]).length;
 
     return (
-      <div className="max-w-lg mx-auto p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xl text-center space-y-6">
-        <div className="w-20 h-20 mx-auto rounded-3xl bg-gradient-to-tr from-amber-400 to-yellow-300 flex items-center justify-center text-white shadow-lg shadow-amber-500/20 animate-bounce">
+      <div className="max-w-lg mx-auto p-6 sm:p-8 rounded-3xl duo-card text-center space-y-6">
+        <div className="w-20 h-20 mx-auto rounded-3xl bg-gradient-to-tr from-amber-400 to-yellow-300 flex items-center justify-center text-slate-900 shadow-lg shadow-amber-500/20 animate-duo-bounce">
           <Trophy size={40} className="text-slate-900" />
         </div>
         <div>
-          <h3 className="text-2xl font-black text-slate-900 dark:text-white">
+          <h3 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-wide">
             Hoàn Thành Phiên Ôn Tập!
           </h3>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             Bạn vừa luyện xong {totalInDeck} thẻ từ vựng chủ đề <strong>{topic.title}</strong>
           </p>
-          <div className="mt-2.5 inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-blue-50 dark:bg-blue-950/50 border border-blue-200/60 dark:border-blue-900/60 text-[#0071e3] dark:text-sky-400 font-bold text-xs">
-            <Sparkles size={13} />
+          <div className="mt-3 inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full duo-pill-xp text-xs font-black">
+            <Sparkles size={14} className="animate-duo-pop" />
             <span>+{Math.max(10, (learnedCount * 3) + (reviewCount * 1))} XP Thưởng Hoàn Thành</span>
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-3 max-w-xs mx-auto">
-          <div className="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200/60 dark:border-emerald-800/40">
-            <span className="text-xs text-emerald-600 dark:text-emerald-400 font-bold block">Đã ghi nhớ</span>
-            <span className="text-2xl font-black text-emerald-700 dark:text-emerald-300">{learnedCount} từ</span>
+          <div className="p-4 rounded-2xl duo-card-green text-center">
+            <span className="text-xs text-[#58cc02] dark:text-[#58cc02] font-black block uppercase tracking-wider">Đã ghi nhớ</span>
+            <span className="text-2xl font-black text-[#46a302] dark:text-[#58cc02]">{learnedCount} từ</span>
           </div>
-          <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200/60 dark:border-amber-800/40">
-            <span className="text-xs text-amber-600 dark:text-amber-400 font-bold block">Cần ôn lại</span>
-            <span className="text-2xl font-black text-amber-700 dark:text-amber-300">{reviewCount} từ</span>
+          <div className="p-4 rounded-2xl duo-card-orange text-center">
+            <span className="text-xs text-[#ff9600] dark:text-[#ff9600] font-black block uppercase tracking-wider">Cần ôn lại</span>
+            <span className="text-2xl font-black text-[#e08500] dark:text-[#ff9600]">{reviewCount} từ</span>
           </div>
         </div>
 
@@ -481,7 +481,7 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
           {remainingUnmastered > 0 ? (
             <button
               onClick={() => handleSwitchFilter('unmastered')}
-              className="flex-1 min-w-[140px] py-3 px-4 rounded-xl bg-[#0071e3] hover:bg-[#0077ED] text-white font-bold text-xs transition-colors flex items-center justify-center gap-2 shadow-lg shadow-blue-500/25 cursor-pointer"
+              className="duo-btn duo-btn-blue flex-1 min-w-[140px] py-3 px-4 flex items-center justify-center gap-2"
             >
               <RotateCw size={15} />
               <span>Tiếp Tục Học ({remainingUnmastered} từ)</span>
@@ -489,7 +489,7 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
           ) : (
             <button
               onClick={() => setShowResetConfirmModal(true)}
-              className="flex-1 min-w-[140px] py-3 px-4 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs transition-colors flex items-center justify-center gap-2 shadow-lg shadow-amber-500/25 cursor-pointer"
+              className="duo-btn duo-btn-yellow flex-1 min-w-[140px] py-3 px-4 flex items-center justify-center gap-2"
             >
               <RotateCcw size={15} />
               <span>Học Lại Chủ Đề Từ Đầu</span>
@@ -498,7 +498,7 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
 
           <button
             onClick={handleRestart}
-            className="flex-1 min-w-[140px] py-3 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
+            className="duo-btn duo-btn-white flex-1 min-w-[140px] py-3 px-4 flex items-center justify-center gap-2"
           >
             <RotateCw size={15} />
             <span>Luyện Lại Bộ Thẻ Này</span>
@@ -507,18 +507,18 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
           {remainingUnmastered > 0 && (
             <button
               onClick={() => setShowResetConfirmModal(true)}
-              className="py-3 px-3 rounded-xl bg-amber-50 dark:bg-amber-950/40 hover:bg-amber-100 dark:hover:bg-amber-900/50 text-amber-700 dark:text-amber-300 font-bold text-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer border border-amber-200/60 dark:border-amber-800/40"
+              className="duo-btn duo-btn-white py-3 px-3 flex items-center justify-center gap-1.5 text-amber-600 dark:text-amber-400"
               title="Đặt lại toàn bộ tiến độ chủ đề này để học lại từ đầu"
             >
               <RotateCcw size={14} />
-              <span>Reset từ đầu</span>
+              <span>Reset</span>
             </button>
           )}
 
           {onSwitchToQuiz && (
             <button
               onClick={onSwitchToQuiz}
-              className="flex-1 min-w-[140px] py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-colors flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20 cursor-pointer"
+              className="duo-btn duo-btn-green flex-1 min-w-[140px] py-3 px-4 flex items-center justify-center gap-2"
             >
               <Sparkles size={15} />
               <span>Thử Thách Trắc Nghiệm</span>
@@ -833,43 +833,43 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
       </div>
 
       {/* 4. FSRS 4-Grade Decision Buttons with Live Next-Interval Previews */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
         <button
           onClick={() => handleFsrsGrade(0)}
-          className="py-2.5 sm:py-3 px-3 rounded-2xl bg-red-50 hover:bg-red-100 dark:bg-red-950/40 border border-red-200 dark:border-red-900/60 text-red-700 dark:text-red-300 text-xs font-bold flex flex-col items-center gap-0.5 transition-all shadow-sm hover:scale-[1.02] active:scale-95 cursor-pointer"
+          className="duo-btn duo-btn-red py-2.5 sm:py-3.5 px-2 rounded-2xl flex flex-col items-center gap-1 shadow-sm"
         >
-          <span className="font-black text-xs sm:text-sm">Quên hẳn</span>
-          <span className="text-[10px] px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-900/50 font-extrabold">
+          <span className="font-black text-xs sm:text-sm tracking-wide">Quên hẳn</span>
+          <span className="text-[10px] px-2 py-0.5 rounded-full bg-black/20 font-black">
             {fsrsPreviews[0]} [1/←]
           </span>
         </button>
 
         <button
           onClick={() => handleFsrsGrade(1)}
-          className="py-2.5 sm:py-3 px-3 rounded-2xl bg-orange-50 hover:bg-orange-100 dark:bg-orange-950/40 border border-orange-200 dark:border-orange-900/60 text-orange-700 dark:text-orange-300 text-xs font-bold flex flex-col items-center gap-0.5 transition-all shadow-sm hover:scale-[1.02] active:scale-95 cursor-pointer"
+          className="duo-btn duo-btn-orange py-2.5 sm:py-3.5 px-2 rounded-2xl flex flex-col items-center gap-1 shadow-sm"
         >
-          <span className="font-black text-xs sm:text-sm">Thấy khó</span>
-          <span className="text-[10px] px-2 py-0.5 rounded-full bg-orange-100 dark:bg-orange-900/50 font-extrabold">
+          <span className="font-black text-xs sm:text-sm tracking-wide">Thấy khó</span>
+          <span className="text-[10px] px-2 py-0.5 rounded-full bg-black/20 font-black">
             {fsrsPreviews[1]} [2]
           </span>
         </button>
 
         <button
           onClick={() => handleFsrsGrade(2)}
-          className="py-2.5 sm:py-3 px-3 rounded-2xl bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900/60 text-blue-700 dark:text-blue-300 text-xs font-bold flex flex-col items-center gap-0.5 transition-all shadow-sm hover:scale-[1.02] active:scale-95 cursor-pointer"
+          className="duo-btn duo-btn-blue py-2.5 sm:py-3.5 px-2 rounded-2xl flex flex-col items-center gap-1 shadow-sm"
         >
-          <span className="font-black text-xs sm:text-sm">Nhớ tốt ✓</span>
-          <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/50 font-extrabold">
+          <span className="font-black text-xs sm:text-sm tracking-wide">Nhớ tốt ✓</span>
+          <span className="text-[10px] px-2 py-0.5 rounded-full bg-black/20 font-black">
             {fsrsPreviews[2]} [3/→]
           </span>
         </button>
 
         <button
           onClick={() => handleFsrsGrade(3)}
-          className="py-2.5 sm:py-3 px-3 rounded-2xl bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/60 text-emerald-700 dark:text-emerald-300 text-xs font-bold flex flex-col items-center gap-0.5 transition-all shadow-sm hover:scale-[1.02] active:scale-95 cursor-pointer"
+          className="duo-btn duo-btn-green py-2.5 sm:py-3.5 px-2 rounded-2xl flex flex-col items-center gap-1 shadow-sm"
         >
-          <span className="font-black text-xs sm:text-sm">Quá dễ ⚡</span>
-          <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/50 font-extrabold">
+          <span className="font-black text-xs sm:text-sm tracking-wide">Quá dễ ⚡</span>
+          <span className="text-[10px] px-2 py-0.5 rounded-full bg-black/20 font-black">
             {fsrsPreviews[3]} [4]
           </span>
         </button>

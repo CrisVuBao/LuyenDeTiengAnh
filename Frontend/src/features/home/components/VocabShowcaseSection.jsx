@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Layers, ArrowRight, ChevronRight, Sparkles } from 'lucide-react';
+import { Layers, ArrowRight, ChevronRight, Sparkles, CheckCircle2, Play } from 'lucide-react';
 import useVocabStore from '../../vocab/store/useVocabStore';
 
 function VocabShowcaseSection({ sectionRevealVariants }) {
@@ -43,47 +43,66 @@ function VocabShowcaseSection({ sectionRevealVariants }) {
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, margin: '-40px' }}
-      className="relative overflow-hidden p-4 sm:p-8 rounded-[24px] sm:rounded-[32px] bg-white dark:bg-slate-900/95 border border-slate-200/85 dark:border-white/[0.08] shadow-[0_6px_28px_rgba(0,0,0,0.03)] space-y-5 sm:space-y-6 w-full min-w-0 max-w-full"
+      className="duo-card p-4 sm:p-7 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-emerald-50/95 via-teal-50/70 to-green-50/85 dark:from-[#062419] dark:via-[#093322] dark:to-[#041a12] border-2 border-emerald-200 dark:border-emerald-800/80 border-b-6 border-b-[#10b981] dark:border-b-[#059669] space-y-5 sm:space-y-6 w-full min-w-0 max-w-full shadow-md relative overflow-hidden"
     >
-      {/* Top Specular Hairline */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#0071e3]/30 to-transparent" />
+      {/* Soft Ambient Glows & Top Gloss Shimmer */}
+      <div className="pointer-events-none absolute -right-16 -top-16 w-64 h-64 bg-gradient-to-br from-[#10b981]/20 to-teal-400/15 rounded-full blur-2xl" />
+      <div className="pointer-events-none absolute -left-16 -bottom-16 w-64 h-64 bg-gradient-to-tr from-emerald-500/15 to-green-400/15 rounded-full blur-2xl" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#10b981]/60 to-transparent" />
 
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6 min-w-0">
-        <div className="space-y-2 max-w-2xl min-w-0">
-          <div className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 rounded-full bg-[#0071e3]/10 dark:bg-sky-500/15 text-[#0071e3] dark:text-sky-400 text-[10px] sm:text-xs font-bold border border-[#0071e3]/20 max-w-full">
-            <Layers size={12} className="shrink-0" />
-            <span className="truncate">KHO TỪ VỰNG TOÀN DIỆN • 3000 TỪ OXFORD • 60 CHỦ ĐỀ</span>
+      <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6 min-w-0">
+        <div className="space-y-2 sm:space-y-2.5 max-w-2xl min-w-0 flex-1">
+          {/* Duolingo Ribbon Pills */}
+          <div className="flex items-center justify-between sm:justify-start gap-1.5 sm:gap-2 flex-wrap min-w-0">
+            <div className="duo-pill duo-pill-green text-[10px] sm:text-xs font-black uppercase tracking-wider shrink-0">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-duo-pulse" />
+              <span className="truncate">3000 TỪ OXFORD • FLASHCARD 3D • 60 CHỦ ĐỀ</span>
+            </div>
+
+            <div className="duo-pill duo-pill-xp text-[10px] sm:text-xs font-black shrink-0">
+              <CheckCircle2 size={13} className="text-amber-600 dark:text-amber-400" />
+              <span>{masteredCount}/{totalWords || 1760} từ • {vocabPercent}%</span>
+            </div>
           </div>
-          <h2 className="text-lg sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-            3000 Từ Vựng Tiếng Anh Cốt Lõi Oxford (60 Chủ Đề)
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-            Phương pháp học Flashcard 3D thông minh, luyện phát âm chuẩn bản xứ, kiểm tra trắc nghiệm phản xạ 2 chiều và thử thách gõ chính tả giúp nhớ sâu từ vựng nhanh gấp 3 lần.
-          </p>
+
+          {/* Duolingo Chunky Headline */}
+          <div className="space-y-1">
+            <h2 className="text-xl sm:text-2xl lg:text-[28px] font-black tracking-tight leading-snug">
+              <span className="text-slate-900 dark:text-white">
+                3000 Từ Vựng Tiếng Anh
+              </span>{' '}
+              <span className="text-[#059669] dark:text-[#34d399]">
+                Theo 60 Chủ Đề.
+              </span>
+            </h2>
+            <p className="line-clamp-1 sm:line-clamp-none text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-semibold max-w-xl">
+              Phương pháp học Flashcard 3D thông minh, phản xạ 2 chiều và thử thách gõ chính tả giúp bạn ghi nhớ từ vựng sâu gấp 3 lần!
+            </p>
+          </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-2 sm:gap-2.5 w-full sm:w-auto min-w-0 shrink-0">
-          <motion.button
-            whileHover={{ y: -2 }}
+        {/* Tactile Duolingo Action Buttons (2-col grid on mobile, row on tablet/desktop) */}
+        <div className="grid grid-cols-2 sm:flex sm:flex-row items-stretch sm:items-center gap-2 sm:gap-2.5 w-full sm:w-auto min-w-0 shrink-0">
+          <button
             onClick={() => navigate(`/vocab/${activeTopic.id}`)}
-            className="w-full sm:w-auto justify-center px-4 sm:px-5 py-2.5 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer shadow-[0_6px_18px_rgba(0,113,227,0.26)] min-w-0"
+            className="duo-btn duo-btn-green duo-btn-sm sm:duo-btn-md font-black shadow-md w-full sm:w-auto flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer"
           >
-            <span className="truncate">Học Chủ đề {activeTopic.id}: {activeTopic.title}</span>
-            <ArrowRight size={15} className="shrink-0" />
-          </motion.button>
-          <motion.button
-            whileHover={{ y: -2 }}
+            <Play size={15} fill="currentColor" className="shrink-0" />
+            <span className="truncate">Học Chủ Đề #{activeTopic.id}</span>
+            <ArrowRight size={15} className="shrink-0 hidden xs:inline" />
+          </button>
+          <button
             onClick={() => navigate('/vocab')}
-            className="w-full sm:w-auto justify-center px-4 py-2.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200/80 text-slate-800 dark:text-slate-200 text-xs sm:text-sm font-semibold transition-colors cursor-pointer text-center truncate"
+            className="duo-btn duo-btn-white duo-btn-sm sm:duo-btn-md font-black text-xs sm:text-sm w-full sm:w-auto text-[#059669] dark:text-[#34d399] cursor-pointer shadow-xs whitespace-nowrap"
           >
-            Xem đủ 60 Chủ đề ({masteredCount}/{totalWords || 1760} từ • {vocabPercent}%)
-          </motion.button>
+            <span className="truncate">Đủ 60 Chủ Đề</span>
+          </button>
         </div>
       </div>
 
       {/* 5 Topic Cards Preview (Horizontal Swipe Shelf on Mobile, 5-Col Grid on Desktop) */}
       <div
-        className="flex lg:grid lg:grid-cols-5 gap-3.5 overflow-x-auto snap-x snap-mandatory pb-2 lg:pb-0 no-scrollbar"
+        className="flex lg:grid lg:grid-cols-5 gap-3 sm:gap-3.5 overflow-x-auto snap-x snap-mandatory pb-2 lg:pb-0 no-scrollbar"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         {previewTopics.map((top) => {
@@ -92,46 +111,44 @@ function VocabShowcaseSection({ sectionRevealVariants }) {
           const topPercent = topWords.length > 0 ? Math.round((topMastered / topWords.length) * 100) : 0;
 
           return (
-            <motion.div
+            <div
               key={top.id}
-              whileHover={{ y: -4 }}
-              transition={{ type: 'spring', stiffness: 340, damping: 24 }}
               onClick={() => navigate(`/vocab/${top.id}`)}
-              className="w-[240px] sm:w-[260px] lg:w-auto shrink-0 snap-start p-4 rounded-2xl bg-slate-50/90 dark:bg-slate-800/50 border border-slate-200/70 dark:border-slate-800 hover:border-[#0071e3]/50 hover:shadow-[0_10px_24px_rgba(0,113,227,0.08)] transition-all cursor-pointer group flex flex-col justify-between gap-3"
+              className="w-[240px] sm:w-[260px] lg:w-auto shrink-0 snap-start p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-slate-800/80 border-2 border-emerald-200/80 dark:border-emerald-800/60 border-b-4 border-b-emerald-400 dark:border-b-emerald-900 hover:scale-[1.03] transition-all cursor-pointer group flex flex-col justify-between gap-3 shadow-xs"
             >
               <div>
-                <div className="flex items-center justify-between text-[11px] font-bold text-[#0071e3] dark:text-sky-400">
+                <div className="flex items-center justify-between text-[11px] font-black text-[#059669] dark:text-[#34d399]">
                   <span className="flex items-center gap-1.5">
-                    <span>{top.icon || '📖'}</span>
+                    <span className="text-lg group-hover:scale-125 transition-transform">{top.icon || '📖'}</span>
                     <span>Chủ đề {top.id}</span>
                   </span>
-                  <span className="text-slate-400">{topWords.length} từ</span>
+                  <span className="text-slate-400 font-extrabold">{topWords.length} từ</span>
                 </div>
-                <h3 className="text-sm font-bold text-slate-900 dark:text-white mt-1.5 group-hover:text-[#0071e3] dark:group-hover:text-sky-400 transition-colors">
+                <h3 className="text-sm font-black text-slate-900 dark:text-white mt-2 group-hover:text-[#059669] dark:group-hover:text-[#34d399] transition-colors line-clamp-1">
                   {top.title}
                 </h3>
                 {top.titleVi && (
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5 font-bold">
                     {top.titleVi}
                   </p>
                 )}
               </div>
 
               <div className="space-y-1.5 pt-1">
-                <div className="w-full h-1.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
+                <div className="w-full h-2.5 rounded-full bg-slate-100 dark:bg-slate-700 overflow-hidden p-0.5 border border-slate-200 dark:border-slate-600">
                   <div
-                    className="h-full rounded-full bg-gradient-to-r from-[#0071e3] to-sky-400 transition-all duration-500"
+                    className="h-full rounded-full bg-[#10b981] dark:bg-[#34d399] transition-all duration-500"
                     style={{ width: `${Math.max(4, topPercent)}%` }}
                   />
                 </div>
-                <div className="flex items-center justify-between text-[10px] text-slate-400">
+                <div className="flex items-center justify-between text-[10px] text-slate-400 font-bold">
                   <span>Đã thuộc: {topMastered}/{topWords.length}</span>
-                  <span className="font-bold text-[#0071e3] dark:text-sky-400 group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5">
-                    Học ngay <ChevronRight size={11} />
+                  <span className="font-black text-[#059669] dark:text-[#34d399] group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5">
+                    HỌC NGAY <ChevronRight size={12} />
                   </span>
                 </div>
               </div>
-            </motion.div>
+            </div>
           );
         })}
       </div>

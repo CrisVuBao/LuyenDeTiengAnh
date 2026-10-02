@@ -221,11 +221,11 @@ export default function Reflex50UnitStudyPage() {
   return (
     <div className="max-w-6xl mx-auto space-y-3.5 sm:space-y-6 pb-12 sm:pb-16">
       {/* 1. TOP HEADER & UNIT NAVIGATION */}
-      <div className="rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-3.5 sm:p-6 shadow-2xs space-y-3.5 sm:space-y-5">
+      <div className="duo-card p-3.5 sm:p-6 rounded-3xl space-y-3.5 sm:space-y-5">
         <div className="flex items-center justify-between gap-1.5 sm:gap-3">
           <button
             onClick={() => navigate('/reflex-50')}
-            className="inline-flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200/80 text-xs font-semibold transition-colors shrink-0 cursor-pointer"
+            className="duo-btn duo-btn-white duo-btn-xs inline-flex items-center gap-1.5 shrink-0"
           >
             <ArrowLeft size={14} />
             <span className="hidden sm:inline">50 Chủ Đề Phản Xạ</span>
@@ -235,18 +235,18 @@ export default function Reflex50UnitStudyPage() {
           <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto whitespace-nowrap hide-scrollbar">
             <button
               onClick={() => setIsMethodModalOpen(true)}
-              className="px-2.5 sm:px-3.5 py-1.5 rounded-full bg-blue-50 dark:bg-blue-950/50 text-[#0071e3] dark:text-sky-400 border border-blue-200/70 dark:border-blue-800/60 text-[11px] sm:text-xs font-semibold flex items-center gap-1 hover:bg-blue-100 transition-colors shrink-0 cursor-pointer"
+              className="duo-btn duo-btn-blue duo-btn-xs inline-flex items-center gap-1 shrink-0"
             >
               <Sparkles size={12} />
-              <span className="hidden sm:inline">Phương pháp học & làm bài</span>
+              <span className="hidden sm:inline">Phương pháp học</span>
               <span className="sm:hidden">Cách học</span>
             </button>
 
             <button
               onClick={() => setIsVoiceModalOpen(true)}
-              className="px-2.5 sm:px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-[11px] sm:text-xs font-semibold flex items-center gap-1 hover:bg-slate-200/70 transition-colors shrink-0 cursor-pointer"
+              className="duo-btn duo-btn-white duo-btn-xs inline-flex items-center gap-1 shrink-0"
             >
-              <Headphones size={12} className="text-[#0071e3]" />
+              <Headphones size={12} className="text-[#1cb0f6]" />
               <span className="hidden sm:inline">Cài đặt Giọng AI</span>
               <span className="sm:hidden">Giọng AI</span>
             </button>
@@ -256,18 +256,18 @@ export default function Reflex50UnitStudyPage() {
               <button
                 disabled={uNum <= 1}
                 onClick={() => navigate(`/reflex-50/unit/${uNum - 1}?mode=${activeMode}`)}
-                className="p-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 disabled:opacity-40 hover:bg-slate-200 cursor-pointer"
+                className="duo-btn duo-btn-white p-1.5 rounded-full disabled:opacity-40"
                 title="Unit trước"
               >
                 <ChevronLeft size={15} />
               </button>
-              <span className="text-[11px] sm:text-xs font-bold px-1.5 sm:px-2 text-slate-700 dark:text-slate-200">
+              <span className="text-[11px] sm:text-xs font-black px-1.5 sm:px-2 text-slate-700 dark:text-slate-200">
                 U{uNum}/50
               </span>
               <button
                 disabled={uNum >= 50}
                 onClick={() => navigate(`/reflex-50/unit/${uNum + 1}?mode=${activeMode}`)}
-                className="p-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 disabled:opacity-40 hover:bg-slate-200 cursor-pointer"
+                className="duo-btn duo-btn-white p-1.5 rounded-full disabled:opacity-40"
                 title="Unit tiếp theo"
               >
                 <ChevronRight size={15} />
@@ -280,27 +280,27 @@ export default function Reflex50UnitStudyPage() {
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 sm:gap-4">
           <div className="space-y-1">
             <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-              <span className="px-2.5 py-0.5 rounded-full bg-[#0071e3] text-white text-[11px] sm:text-xs font-bold">
+              <span className="px-3 py-1 rounded-full duo-btn-purple text-white text-[11px] sm:text-xs font-black uppercase tracking-wider">
                 UNIT {uNum < 10 ? `0${uNum}` : uNum}
               </span>
               {category && (
-                <span className="px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[11px] sm:text-xs font-medium truncate max-w-[240px] sm:max-w-none">
+                <span className="px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[11px] sm:text-xs font-bold truncate max-w-[240px] sm:max-w-none">
                   Nhóm {category.order}: {category.titleVi}
                 </span>
               )}
             </div>
-            <h1 className="text-lg sm:text-2xl font-bold text-slate-900 dark:text-white leading-snug">
-              {unit.titleEn} — <span className="text-[#0071e3]">{unit.titleVi}</span>
+            <h1 className="text-lg sm:text-2xl font-black text-slate-900 dark:text-white leading-snug tracking-tight">
+              {unit.titleEn} — <span className="text-[#ce82ff]">{unit.titleVi}</span>
             </h1>
           </div>
 
           {/* Unit Mastery Actions */}
-          <div className="flex items-center justify-between sm:justify-start gap-2.5 px-3 sm:px-4 py-2 rounded-xl sm:rounded-2xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200/70 dark:border-slate-700/70">
+          <div className="flex items-center justify-between sm:justify-start gap-2.5 px-3 sm:px-4 py-2 rounded-2xl duo-card text-left">
             <div>
-              <div className="text-[10px] uppercase tracking-wider font-semibold text-slate-400">
+              <div className="text-[10px] uppercase tracking-wider font-black text-slate-400">
                 Tiến độ Unit {uNum}
               </div>
-              <div className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">
+              <div className="text-xs sm:text-sm font-black text-slate-900 dark:text-white">
                 Đã thuộc {unitStats.masteredCount}/30 câu ({unitStats.percent}%)
               </div>
             </div>
@@ -314,10 +314,10 @@ export default function Reflex50UnitStudyPage() {
                     : `Đã bỏ đánh dấu thuộc Unit ${uNum}`
                 );
               }}
-              className={`px-2.5 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-semibold flex items-center gap-1.5 transition-colors shrink-0 cursor-pointer ${
+              className={`shrink-0 flex items-center gap-1.5 ${
                 unitStats.isCompleted
-                  ? 'bg-emerald-500 text-white'
-                  : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-[#0071e3]'
+                  ? 'duo-btn duo-btn-green duo-btn-xs'
+                  : 'duo-btn duo-btn-white duo-btn-xs'
               }`}
             >
               <CheckCircle2 size={13} />
@@ -342,10 +342,10 @@ export default function Reflex50UnitStudyPage() {
               <button
                 key={tab.id}
                 onClick={() => handleModeChange(tab.id)}
-                className={`flex items-center gap-1.5 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl text-xs font-semibold transition-all shrink-0 cursor-pointer ${
+                className={`flex items-center gap-1.5 shrink-0 ${
                   active
-                    ? 'bg-[#0071e3] text-white shadow-xs'
-                    : 'bg-slate-100/90 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 hover:bg-slate-200/70 dark:hover:bg-slate-700'
+                    ? 'duo-btn duo-btn-purple duo-btn-sm'
+                    : 'duo-btn duo-btn-white duo-btn-sm text-slate-600 dark:text-slate-300'
                 }`}
               >
                 <Icon size={14} className="shrink-0" />
@@ -353,10 +353,10 @@ export default function Reflex50UnitStudyPage() {
                 <span className="sm:hidden">{tab.shortLabel}</span>
                 {tab.badge !== undefined && (
                   <span
-                    className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                    className={`px-1.5 py-0.2 rounded-full text-[10px] font-black ${
                       active
-                        ? 'bg-white/20 text-white'
-                        : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
+                        ? 'bg-black/20 text-white'
+                        : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
                     }`}
                   >
                     {tab.badge}

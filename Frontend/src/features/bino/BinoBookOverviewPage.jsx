@@ -72,100 +72,105 @@ export default function BinoBookOverviewPage() {
       {/* 1. HAUTE COUTURE HERO PAVILION — GLACIER SAPPHIRE PEARL × ROYAL SAPPHIRE  */}
       {/*    Mobile-First Ultra-Compact Layout + Full Desktop Grandeur              */}
       {/* ========================================================================= */}
+      {/* ========================================================================= */}
+      {/* 1. DUOLINGO 3D CHUNKY HERO CARD — SAPPHIRE BLUE THEME                    */}
+      {/*    Sleek, Compact, Tactile & Responsive                                   */}
+      {/* ========================================================================= */}
       <div
-        className="relative overflow-hidden rounded-[24px] sm:rounded-[38px] p-4 sm:p-9 lg:p-10 bg-gradient-to-br from-[#e9f3ff] via-[#f4f9ff] to-[#ddeeff] dark:from-[#071529] dark:via-[#0b1f3b] dark:to-[#0d284c] border border-[#0071e3]/25 dark:border-sky-400/25 shadow-[0_14px_42px_rgba(0,113,227,0.10),inset_0_1px_0_rgba(255,255,255,0.9)] dark:shadow-[0_22px_60px_rgba(0,0,0,0.55)] mb-1 sm:mb-2 w-full min-w-0 max-w-full"
+        className="relative overflow-hidden rounded-3xl sm:rounded-[36px] p-4 sm:p-7 lg:p-8 bg-[#f0f7ff] dark:bg-[#07162b] border-2 border-[#1cb0f6]/40 dark:border-blue-700/50 border-b-6 border-b-[#0071e3] dark:border-b-[#1e40af] shadow-[0_14px_40px_rgba(0,113,227,0.12)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.6)] mb-3 sm:mb-4 w-full min-w-0 max-w-full"
       >
-        {/* Top Specular Sapphire-Diamond Rim */}
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#0071e3]/65 dark:via-sky-400/60 to-transparent" />
+        {/* Top Diamond Rim */}
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#0071e3] to-transparent" />
 
-        {/* Ambient Glacier & Azure Silk Orbs */}
-        <div className="pointer-events-none absolute -top-28 -right-20 w-80 sm:w-96 h-80 sm:h-96 bg-gradient-to-br from-[#0071e3]/20 via-sky-400/15 to-transparent rounded-full blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-28 -left-20 w-72 sm:w-80 h-72 sm:h-80 bg-gradient-to-tr from-cyan-400/20 via-blue-500/12 to-transparent rounded-full blur-3xl" />
+        {/* Subtle Ambient Orbs */}
+        <div className="pointer-events-none absolute -top-24 -right-16 w-72 h-72 rounded-full bg-[#1cb0f6]/10 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-24 -left-16 w-64 h-64 rounded-full bg-[#0071e3]/10 blur-3xl" />
 
-        <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3.5 sm:gap-8 relative z-10 min-w-0">
-          <div className="space-y-2.5 sm:space-y-4 max-w-2xl w-full min-w-0">
+        <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 sm:gap-6 relative z-10 min-w-0">
+          <div className="space-y-3 sm:space-y-3.5 max-w-2xl w-full min-w-0">
             
-            {/* Single-Row Atelier Monogram Ribbon Badges on Mobile */}
-            <div className="flex items-center justify-between sm:justify-start sm:flex-wrap gap-1.5 sm:gap-2 min-w-0">
-              <div className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-full bg-gradient-to-r from-[#0062cc] to-[#0077ed] text-white text-xs font-extrabold shadow-[0_4px_14px_rgba(0,113,227,0.26)] shrink-0">
-                <span className="text-cyan-200 font-serif">✦</span>
-                <span className="tracking-[0.18em] text-[10px] uppercase font-extrabold text-white">
-                  ENGLISH
-                </span>
-                <span className="text-white/40">•</span>
-                <span className="text-[10px] sm:text-xs font-semibold text-sky-100">Edition</span>
+            {/* Badges Ribbon */}
+            <div className="flex items-center justify-between sm:justify-start sm:flex-wrap gap-2 min-w-0">
+              <div className="duo-pill duo-pill-gem text-[10px] sm:text-xs font-black uppercase tracking-wider shrink-0">
+                <Sparkles size={12} className="text-[#0071e3] dark:text-sky-400" />
+                <span>SPEAKING • 12 CHƯƠNG</span>
               </div>
 
-              <span className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-bold bg-white/90 dark:bg-white/[0.08] text-[#005bb5] dark:text-sky-300 border border-[#0071e3]/20 dark:border-white/15 shadow-2xs shrink-0">
-                {book?.totalChapters || 12} Chương • {book?.totalLessonsCount || 72} Bài
-              </span>
+              <div className="duo-pill duo-pill-xp text-[10px] sm:text-xs font-black shrink-0">
+                <CheckCircle2 size={13} className="text-amber-600 dark:text-amber-400" />
+                <span>{book?.totalLessonsCount || 72} Bài Luyện Phản Xạ</span>
+              </div>
 
-              <span className="px-3 py-1.5 rounded-full text-xs font-bold bg-[#0071e3]/12 text-[#0062cc] dark:text-sky-300 border border-[#0071e3]/25 hidden sm:inline-flex">
+              <span className="hidden sm:inline-flex px-2.5 py-1 rounded-full text-[11px] font-black bg-blue-100 dark:bg-blue-950 text-[#0062cc] dark:text-sky-300 border border-blue-200 dark:border-blue-900">
                 Mục B, C &amp; Mindset
               </span>
             </div>
 
-            {/* Sculptural Glacier & Royal Sapphire Typography */}
-            <h1 className="text-[20px] sm:text-3xl md:text-4xl lg:text-[42px] font-black tracking-tight leading-[1.18]">
-              <span className="text-[#06182c] dark:text-white">
-                Giao Tiếp Thực Chiến:
-              </span>{' '}
-              <span className="bg-gradient-to-r from-[#0058b8] via-[#0071e3] to-[#06b6d4] dark:from-sky-300 dark:via-sky-400 dark:to-cyan-300 bg-clip-text text-transparent font-black">
-                Phản Xạ Tiếng Anh Tức Thì.
-              </span>
-            </h1>
+            {/* Duolingo Chunky Headline & Concise Description */}
+            <div className="space-y-1">
+              <h1 className="text-xl sm:text-2xl lg:text-[32px] font-black tracking-tight leading-snug">
+                <span className="text-slate-900 dark:text-white">
+                  Giao Tiếp Thực Chiến:
+                </span>{' '}
+                <span className="text-[#0071e3] dark:text-[#1cb0f6]">
+                  Phản Xạ Tiếng Anh Tức Thì.
+                </span>
+              </h1>
 
-            <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-medium max-w-xl line-clamp-2 sm:line-clamp-none">
-              Phương pháp phản xạ ngôn ngữ tự nhiên: Học từ vựng theo giấy note ghim, luyện nói 1:1 nhập vai với Leo, vận dụng đổi từ Substitution Drilling, kèm đầy đủ Mẫu câu mở rộng (Section B) &amp; VBaceEnglish Mindset cuối mỗi chương.
-            </p>
+              <p className="line-clamp-1 sm:line-clamp-none text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-semibold leading-relaxed max-w-xl">
+                Phương pháp phản xạ ngôn ngữ tự nhiên: Học từ vựng theo giấy note ghim, luyện nói 1:1 nhập vai với Leo, đổi ruột câu thông minh &amp; nắm vững trọn bộ mẫu câu giao tiếp đời thực.
+              </p>
+            </div>
 
-            {/* Mobile-Only Compact 1-Line Royal Sapphire Progress Strip (< lg) */}
-            <div className="flex lg:hidden items-center justify-between gap-2.5 sm:gap-3 px-3 sm:px-3.5 py-2.5 rounded-2xl bg-gradient-to-r from-[#0055b3] via-[#0071e3] to-[#0284c7] text-white border border-sky-300/35 shadow-[0_8px_22px_rgba(0,113,227,0.22)] min-w-0">
-              <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-                <CheckCircle2 size={14} className="text-cyan-200 shrink-0" />
-                <span className="text-[11px] font-extrabold tracking-wide">
-                  Tiến độ: {book?.completedLessonsCount || 0}/{book?.totalLessonsCount || 72} bài
+            {/* Mobile-Only Compact Duolingo Progress Card (< lg) */}
+            <div className="flex lg:hidden items-center justify-between gap-3 p-3 rounded-2xl bg-white dark:bg-[#0c182c] border-2 border-blue-200 dark:border-blue-900 border-b-4 border-b-blue-300 dark:border-b-blue-950 shadow-xs min-w-0">
+              <div className="flex items-center gap-1.5 shrink-0">
+                <CheckCircle2 size={15} className="text-[#0071e3] dark:text-sky-400 shrink-0" />
+                <span className="text-xs font-black text-slate-800 dark:text-slate-200">
+                  {book?.completedLessonsCount || 0}/{book?.totalLessonsCount || 72} bài
                 </span>
               </div>
 
-              <div className="flex-1 max-w-[140px] bg-white/20 h-2 rounded-full overflow-hidden p-0.5 min-w-[40px]">
-                <div
-                  style={{ width: `${Math.max(6, book?.progressPercentage || 0)}%` }}
-                  className="bg-gradient-to-r from-white via-sky-100 to-cyan-200 h-full rounded-full transition-all duration-700"
+              <div className="flex-1 max-w-[150px] bg-slate-100 dark:bg-slate-800 h-3 rounded-full overflow-hidden p-0.5 border border-slate-200 dark:border-slate-700 min-w-[50px]">
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${Math.max(6, book?.progressPercentage || 0)}%` }}
+                  className="bg-[#0071e3] dark:bg-sky-400 h-full rounded-full"
                 />
               </div>
 
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-extrabold bg-white text-[#0055b3] shrink-0">
+              <span className="duo-pill duo-pill-xp text-[10px] font-black shrink-0">
                 {book?.progressPercentage || 0}%
               </span>
             </div>
 
-            {/* Tactile Button Rows (1-Row Primary Pair + 1-Row Swipe Strip on Mobile) */}
-            <div className="space-y-2 sm:space-y-3 pt-0.5 sm:pt-1 min-w-0">
-              {/* Primary Action Row: Side-by-side on Mobile, Wrapped on Desktop */}
-              <div className="flex items-center sm:flex-wrap gap-2 sm:gap-2.5 min-w-0">
-                {/* Nút Nghe Toàn Bộ - Royal Sapphire */}
+            {/* Tactile 3D Action Buttons */}
+            <div className="space-y-2 pt-0.5 min-w-0">
+              {/* Primary Action Row: 2-col on mobile, side-by-side on sm+ */}
+              <div className="grid grid-cols-2 sm:flex sm:flex-row items-stretch sm:items-center sm:flex-wrap gap-2 min-w-0">
+                {/* Nút Nghe Toàn Bộ - Sapphire 3D Push Button */}
                 <button
                   onClick={() => openPlaylistWith(null, true)}
-                  className="flex-1 sm:flex-none justify-center px-3 sm:px-5 py-2.5 sm:py-3 rounded-full bg-gradient-to-r from-[#0062cc] to-[#0077ed] hover:from-[#0058b8] hover:to-[#006be0] text-white font-bold text-xs sm:text-sm shadow-[0_8px_22px_rgba(0,113,227,0.32)] border border-white/25 flex items-center gap-1.5 sm:gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer min-w-0"
+                  className="duo-btn duo-btn-sapphire duo-btn-sm sm:duo-btn-md font-black flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer shadow-md w-full sm:w-auto min-w-0"
                 >
                   <ListMusic size={15} className="shrink-0" />
-                  <span className="truncate">Nghe Toàn Bộ ({book?.totalLessonsCount || 72} Bài)</span>
+                  <span className="truncate sm:hidden">Nghe Toàn Bộ</span>
+                  <span className="truncate hidden sm:inline">Nghe Toàn Bộ ({book?.totalLessonsCount || 72} Bài)</span>
                 </button>
 
-                {/* Nút Hướng Dẫn - Frosted Sapphire Capsule */}
+                {/* Nút Hướng Dẫn - White 3D Push Button */}
                 <button
                   onClick={() => setIsGuideModalOpen(true)}
-                  className="shrink-0 justify-center px-3 sm:px-4 py-2.5 sm:py-3 rounded-full bg-white/90 hover:bg-white dark:bg-white/10 dark:hover:bg-white/15 text-[#005bb5] dark:text-sky-300 border border-[#0071e3]/25 dark:border-white/20 font-bold text-xs sm:text-sm shadow-2xs flex items-center gap-1.5 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer whitespace-nowrap"
+                  className="duo-btn duo-btn-white duo-btn-sm sm:duo-btn-md font-black flex items-center justify-center gap-1.5 text-[#0071e3] dark:text-sky-400 cursor-pointer shadow-xs whitespace-nowrap w-full sm:w-auto shrink-0"
                 >
-                  <Lightbulb size={14} className="text-[#0071e3] dark:text-sky-400 fill-current shrink-0" />
+                  <Lightbulb size={15} className="shrink-0" />
                   <span>Cách Học</span>
                 </button>
 
-                {/* Desktop Secondary Pill Buttons */}
+                {/* Desktop Secondary Buttons */}
                 <button
                   onClick={() => openPlaylistWith(null, false)}
-                  className="hidden sm:inline-flex px-4 py-3 rounded-full bg-white/85 dark:bg-white/[0.08] hover:bg-white dark:hover:bg-white/[0.14] text-slate-800 dark:text-slate-200 font-semibold text-xs sm:text-sm border border-[#0071e3]/20 dark:border-white/15 shadow-2xs transition-all cursor-pointer items-center gap-1.5"
+                  className="hidden sm:inline-flex duo-btn duo-btn-white duo-btn-md font-black items-center gap-1.5 text-slate-700 dark:text-slate-200 cursor-pointer"
                 >
                   <ListMusic size={14} className="shrink-0 text-[#0071e3] dark:text-sky-400" />
                   <span>Chọn Bài Nghe</span>
@@ -173,7 +178,7 @@ export default function BinoBookOverviewPage() {
 
                 <button
                   onClick={() => navigate('/communication/flashcards')}
-                  className="hidden sm:inline-flex px-4 py-3 rounded-full bg-white/85 dark:bg-white/[0.08] hover:bg-white dark:hover:bg-white/[0.14] text-slate-800 dark:text-slate-200 font-semibold text-xs sm:text-sm border border-[#0071e3]/20 dark:border-white/15 shadow-2xs transition-all cursor-pointer items-center gap-1.5"
+                  className="hidden sm:inline-flex duo-btn duo-btn-white duo-btn-md font-black items-center gap-1.5 text-slate-700 dark:text-slate-200 cursor-pointer"
                 >
                   <Layers size={14} className="text-[#0071e3] dark:text-sky-400" />
                   <span>Ôn Từ Vựng (SRS)</span>
@@ -181,76 +186,47 @@ export default function BinoBookOverviewPage() {
 
                 <button
                   onClick={() => navigate('/communication/dialogue/3')}
-                  className="hidden sm:inline-flex px-4 py-3 rounded-full bg-white/85 dark:bg-white/[0.08] hover:bg-white dark:hover:bg-white/[0.14] text-slate-800 dark:text-slate-200 font-semibold text-xs sm:text-sm border border-[#0071e3]/20 dark:border-white/15 shadow-2xs transition-all cursor-pointer items-center gap-1.5"
+                  className="hidden sm:inline-flex duo-btn duo-btn-white duo-btn-md font-black items-center gap-1.5 text-slate-700 dark:text-slate-200 cursor-pointer"
                 >
                   <Play size={13} fill="currentColor" className="text-[#0071e3] dark:text-sky-400" />
-                  <span>Bài Mẫu #3</span>
-                </button>
-              </div>
-
-              {/* Mobile Single-Line Swipe Strip for Secondary Actions (< sm) */}
-              <div className="flex sm:hidden items-center gap-1.5 overflow-x-auto whitespace-nowrap hide-scrollbar pb-0.5 w-full max-w-full">
-                <button
-                  onClick={() => openPlaylistWith(null, false)}
-                  className="px-3 py-1.5 rounded-full bg-white/90 dark:bg-white/[0.08] text-slate-800 dark:text-slate-200 font-semibold text-[11px] border border-[#0071e3]/20 dark:border-white/15 flex items-center gap-1 shrink-0"
-                >
-                  <ListMusic size={11} className="text-[#0071e3] dark:text-sky-400" />
-                  <span>Chọn Bài Nghe</span>
-                </button>
-                <button
-                  onClick={() => navigate('/communication/flashcards')}
-                  className="px-3 py-1.5 rounded-full bg-white/90 dark:bg-white/[0.08] text-slate-800 dark:text-slate-200 font-semibold text-[11px] border border-[#0071e3]/20 dark:border-white/15 flex items-center gap-1 shrink-0"
-                >
-                  <Layers size={11} className="text-[#0071e3] dark:text-sky-400" />
-                  <span>Ôn Từ Vựng SRS</span>
-                </button>
-                <button
-                  onClick={() => navigate('/communication/dialogue/3')}
-                  className="px-3 py-1.5 rounded-full bg-white/90 dark:bg-white/[0.08] text-slate-800 dark:text-slate-200 font-semibold text-[11px] border border-[#0071e3]/20 dark:border-white/15 flex items-center gap-1 shrink-0"
-                >
-                  <Play size={11} fill="currentColor" className="text-[#0071e3] dark:text-sky-400" />
                   <span>Bài Mẫu #3</span>
                 </button>
               </div>
             </div>
           </div>
 
-          {/* Right (Desktop lg: only): Jewel Royal Sapphire & Frosted Crystal Progress Capsule */}
-          <div className="hidden lg:flex w-76 rounded-[28px] bg-gradient-to-br from-[#0055b3] via-[#0071e3] to-[#0284c7] text-white p-6 border border-sky-300/35 shadow-[0_14px_36px_rgba(0,113,227,0.28)] flex-col justify-between space-y-4 shrink-0 relative overflow-hidden">
-            <div className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-white/60 to-transparent" />
-
+          {/* Right (Desktop lg: only): Compact Duolingo 3D Progress Card */}
+          <div className="hidden lg:flex w-72 rounded-2xl bg-white dark:bg-[#0c182c] border-2 border-blue-200 dark:border-blue-900 border-b-6 border-b-blue-400 dark:border-b-blue-950 p-5 flex-col justify-between space-y-3.5 shrink-0 shadow-sm relative overflow-hidden">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-extrabold tracking-wider text-cyan-100 uppercase">
+              <span className="text-xs font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Tiến độ lộ trình
               </span>
-              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-extrabold bg-white text-[#0055b3] shadow-2xs">
+              <span className="duo-pill duo-pill-xp text-xs font-black">
                 {book?.progressPercentage || 0}%
               </span>
             </div>
 
             <div className="flex items-baseline gap-2">
-              <span className="text-4xl font-black text-white tracking-tight">
+              <span className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
                 <AnimatedCounter value={book?.completedLessonsCount || 0} />
               </span>
-              <span className="text-xs text-sky-100 font-semibold">
+              <span className="text-xs text-slate-500 dark:text-slate-400 font-bold">
                 / {book?.totalLessonsCount || 72} bài hoàn tất
               </span>
             </div>
 
-            {/* Pearl Crystal Progress Bar */}
-            <div className="space-y-1.5">
-              <div className="w-full bg-white/20 h-2.5 rounded-full overflow-hidden p-0.5">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${Math.max(5, book?.progressPercentage || 0)}%` }}
-                  transition={{ duration: 0.9, ease: 'easeOut' }}
-                  className="bg-gradient-to-r from-white via-sky-100 to-cyan-200 h-full rounded-full"
-                />
-              </div>
+            {/* Chunky Duolingo Progress Bar */}
+            <div className="w-full bg-slate-100 dark:bg-slate-800 h-3 rounded-full overflow-hidden p-0.5 border border-slate-200 dark:border-slate-700">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${Math.max(5, book?.progressPercentage || 0)}%` }}
+                transition={{ duration: 0.9, ease: 'easeOut' }}
+                className="bg-[#0071e3] dark:bg-sky-400 h-full rounded-full"
+              />
             </div>
 
-            <div className="flex text-[11px] text-sky-100 items-center gap-1.5 pt-2.5 border-t border-white/20 font-semibold">
-              <CheckCircle2 size={13} className="text-cyan-200 shrink-0" />
+            <div className="flex text-xs text-slate-600 dark:text-slate-400 items-center gap-1.5 pt-2 border-t border-slate-200 dark:border-slate-800 font-bold">
+              <CheckCircle2 size={14} className="text-[#0071e3] dark:text-sky-400 shrink-0" />
               <span>12 Chương • 72 Bài Chuẩn Thực Chiến</span>
             </div>
           </div>

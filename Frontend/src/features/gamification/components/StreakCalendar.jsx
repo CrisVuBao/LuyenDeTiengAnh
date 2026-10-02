@@ -130,103 +130,95 @@ export default function StreakCalendar() {
         </motion.div>
       )}
       
-      {/* 3 Metric Cards */}
+      {/* 3 Metric Cards (Duolingo 3D Chunky Stat Cards) */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         
         {/* Current Streak */}
-        <div className={`p-5 rounded-2xl border flex items-center justify-between ${
-          currentStreak > 0
-            ? 'bg-gradient-to-br from-orange-500/10 via-amber-500/5 to-transparent border-orange-200/80 dark:border-orange-900/50'
-            : 'bg-slate-50 dark:bg-slate-800/40 border-slate-200/80 dark:border-slate-800'
-        }`}>
+        <div className="p-5 rounded-3xl duo-card-orange flex items-center justify-between">
           <div className="space-y-1">
-            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+            <span className="text-xs font-black text-[#ff9600] uppercase tracking-wider">
               Chuỗi hiện tại
             </span>
             <div className="flex items-baseline gap-1.5">
-              <span className={`text-3xl font-black ${currentStreak > 0 ? 'text-orange-500' : 'text-slate-400 dark:text-slate-500'}`}>
+              <span className="text-4xl font-black text-[#e08500]">
                 {currentStreak}
               </span>
-              <span className="text-xs font-semibold text-slate-400">ngày</span>
+              <span className="text-xs font-black text-[#ff9600]">ngày</span>
             </div>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400">
+            <p className="text-[11px] font-bold text-slate-600 dark:text-slate-300">
               {currentStreak > 0
-                ? (hasStudiedToday ? 'Đã duy trì hôm nay' : 'Cần học hôm nay để duy trì')
-                : 'Bắt đầu học để thắp lửa'}
+                ? (hasStudiedToday ? 'Đã thắp lửa hôm nay 🔥' : 'Cần học hôm nay để giữ lửa')
+                : 'Học ngay để thắp lửa'}
             </p>
           </div>
-          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
-            currentStreak > 0
-              ? 'bg-orange-100 dark:bg-orange-950/60 text-orange-500'
-              : 'bg-slate-100 dark:bg-slate-800 text-slate-400'
-          }`}>
-            <Flame size={24} className={currentStreak > 0 ? 'fill-orange-500' : ''} />
+          <div className="w-14 h-14 rounded-2xl bg-white/30 dark:bg-black/20 flex items-center justify-center text-3xl animate-duo-wiggle">
+            🔥
           </div>
         </div>
 
         {/* Longest Streak */}
-        <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 flex items-center justify-between">
+        <div className="p-5 rounded-3xl duo-card-purple flex items-center justify-between">
           <div className="space-y-1">
-            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+            <span className="text-xs font-black text-[#ce82ff] uppercase tracking-wider">
               Kỷ lục chuỗi dài nhất
             </span>
             <div className="flex items-baseline gap-1.5">
-              <span className="text-3xl font-black text-slate-900 dark:text-white">
+              <span className="text-4xl font-black text-[#a855f7]">
                 {longestStreak}
               </span>
-              <span className="text-xs font-semibold text-slate-400">ngày</span>
+              <span className="text-xs font-black text-[#ce82ff]">ngày</span>
             </div>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400">
-              Kỷ lục cá nhân cao nhất
+            <p className="text-[11px] font-bold text-slate-600 dark:text-slate-300">
+              Kỷ lục cá nhân cao nhất 🏆
             </p>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-blue-100 dark:bg-blue-950/60 text-[#0071e3] dark:text-sky-400 flex items-center justify-center">
-            <Trophy size={24} />
+          <div className="w-14 h-14 rounded-2xl bg-white/30 dark:bg-black/20 flex items-center justify-center text-3xl animate-duo-bounce">
+            👑
           </div>
         </div>
 
         {/* Streak Freeze */}
-        <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 flex items-center justify-between">
+        <div className="p-5 rounded-3xl duo-card-blue flex items-center justify-between">
           <div className="space-y-1">
-            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+            <span className="text-xs font-black text-[#1cb0f6] uppercase tracking-wider">
               Bảo vệ chuỗi (Freeze)
             </span>
             <div className="flex items-baseline gap-1.5">
-              <span className="text-3xl font-black text-sky-500">
+              <span className="text-4xl font-black text-[#1899d6]">
                 {freezeCount}
               </span>
-              <span className="text-xs font-semibold text-slate-400">lượt</span>
+              <span className="text-xs font-black text-[#1cb0f6]">lượt</span>
             </div>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400">
-              Tự động giữ chuỗi nếu lỡ 1 ngày
+            <p className="text-[11px] font-bold text-slate-600 dark:text-slate-300">
+              Tự động giữ lửa nếu lỡ 1 ngày 🛡️
             </p>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-sky-100 dark:bg-sky-950/60 text-sky-500 flex items-center justify-center">
-            <Shield size={24} />
+          <div className="w-14 h-14 rounded-2xl bg-white/30 dark:bg-black/20 flex items-center justify-center text-3xl">
+            🛡️
           </div>
         </div>
 
       </div>
 
       {/* GitHub-style Heatmap */}
-      <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-4">
+      <div className="p-6 rounded-3xl duo-card space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
-            <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-              <Calendar size={18} className="text-[#0071e3] dark:text-sky-400" />
+            <h3 className="text-base font-black text-slate-900 dark:text-white flex items-center gap-2 uppercase tracking-wide">
+              <Calendar size={18} className="text-[#1cb0f6]" />
               Lịch Hoạt Động 10 Tuần Qua (70 Ngày)
             </h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              Mỗi ô vuông đại diện cho 1 ngày học tập. Màu xanh càng đậm thể hiện cường độ học càng cao.
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-medium">
+              Mỗi ô vuông đại diện cho 1 ngày thắp lửa. Màu xanh càng đậm thể hiện cường độ học càng cao.
             </p>
           </div>
 
-          <div className="flex items-center gap-1.5 text-xs text-slate-400">
+          <div className="flex items-center gap-1.5 text-xs text-slate-400 font-bold">
             <span>Ít</span>
-            <div className="w-3 h-3 rounded-sm bg-slate-100 dark:bg-slate-800" />
-            <div className="w-3 h-3 rounded-sm bg-emerald-200 dark:bg-emerald-900" />
-            <div className="w-3 h-3 rounded-sm bg-emerald-400 dark:bg-emerald-600" />
-            <div className="w-3 h-3 rounded-sm bg-emerald-600 dark:bg-emerald-400" />
+            <div className="w-3.5 h-3.5 rounded-md bg-slate-100 dark:bg-slate-800" />
+            <div className="w-3.5 h-3.5 rounded-md bg-[#bbf7d0] dark:bg-emerald-900" />
+            <div className="w-3.5 h-3.5 rounded-md bg-[#86efac] dark:bg-emerald-600" />
+            <div className="w-3.5 h-3.5 rounded-md bg-[#58cc02] dark:bg-[#58cc02]" />
             <span>Nhiều</span>
           </div>
         </div>
@@ -236,16 +228,16 @@ export default function StreakCalendar() {
           <div className="grid grid-flow-col grid-rows-7 gap-1.5 min-w-[380px]">
             {heatmapDays.map((d) => {
               let bgClass = 'bg-slate-100 dark:bg-slate-800/80';
-              if (d.intensity === 1) bgClass = 'bg-emerald-200 dark:bg-emerald-900/60';
-              if (d.intensity === 2) bgClass = 'bg-emerald-400 dark:bg-emerald-600';
-              if (d.intensity >= 3) bgClass = 'bg-emerald-600 dark:bg-emerald-400';
+              if (d.intensity === 1) bgClass = 'bg-[#bbf7d0] dark:bg-emerald-900/60';
+              if (d.intensity === 2) bgClass = 'bg-[#86efac] dark:bg-emerald-600';
+              if (d.intensity >= 3) bgClass = 'bg-[#58cc02] dark:bg-[#58cc02]';
 
               return (
                 <div
                   key={d.date}
                   title={`${d.date}: ${d.isActive ? 'Đã học' : 'Chưa học'}`}
-                  className={`w-4 h-4 rounded-[4px] ${bgClass} ${
-                    d.isToday ? 'ring-2 ring-[#0071e3] dark:ring-sky-400' : ''
+                  className={`w-4 h-4 rounded-[5px] ${bgClass} ${
+                    d.isToday ? 'ring-2 ring-[#ff9600]' : ''
                   } transition-transform hover:scale-125 cursor-pointer`}
                 />
               );
@@ -255,9 +247,9 @@ export default function StreakCalendar() {
       </div>
 
       {/* Streak Milestones */}
-      <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-4">
-        <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-          <Sparkles size={18} className="text-amber-500" />
+      <div className="p-6 rounded-3xl duo-card space-y-4">
+        <h3 className="text-base font-black text-slate-900 dark:text-white flex items-center gap-2 uppercase tracking-wide">
+          <Sparkles size={18} className="text-[#ff9600]" />
           Các Mốc Chuỗi Ngày Thưởng Lớn
         </h3>
 
@@ -267,28 +259,28 @@ export default function StreakCalendar() {
             return (
               <div
                 key={m.days}
-                className={`p-4 rounded-xl border flex items-center justify-between gap-3 transition-all ${
+                className={`p-4 rounded-2xl flex items-center justify-between gap-3 transition-all ${
                   isReached
-                    ? 'bg-emerald-50/60 dark:bg-emerald-950/20 border-emerald-300 dark:border-emerald-800'
-                    : 'bg-slate-50/50 dark:bg-slate-800/30 border-slate-200/60 dark:border-slate-800 opacity-70'
+                    ? 'duo-card-green'
+                    : 'duo-card opacity-60'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <span className="text-2xl">{m.icon}</span>
+                  <span className="text-3xl animate-duo-bounce">{m.icon}</span>
                   <div>
-                    <h4 className="font-bold text-xs text-slate-900 dark:text-white">
+                    <h4 className="font-black text-xs text-slate-900 dark:text-white">
                       {m.title} ({m.days} ngày)
                     </h4>
-                    <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
+                    <span className="text-[11px] font-black text-[#58cc02] dark:text-[#58cc02]">
                       {m.reward}
                     </span>
                   </div>
                 </div>
 
                 {isReached ? (
-                  <CheckCircle2 size={18} className="text-emerald-500 shrink-0" />
+                  <CheckCircle2 size={20} className="text-[#58cc02] shrink-0" />
                 ) : (
-                  <span className="text-[11px] text-slate-400 shrink-0">
+                  <span className="text-[11px] text-slate-400 font-bold shrink-0">
                     {Math.max(0, m.days - currentStreak)} ngày nữa
                   </span>
                 )}

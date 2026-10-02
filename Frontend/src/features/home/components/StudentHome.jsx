@@ -11,7 +11,9 @@ import {
   Zap,
   Compass,
   FileCheck2,
-  Activity
+  Activity,
+  Play,
+  CheckCircle2
 } from 'lucide-react';
 import { dashboardApi } from '../../../api/dashboardAndAiApi';
 import binoApi from '../../../api/binoApi';
@@ -204,6 +206,7 @@ export default function StudentHome() {
         description="Luyện phản xạ giao tiếp tiếng Anh thực chiến, 3000 từ vựng Oxford FSRS và rèn luyện kỹ năng nói tiếng Anh tự nhiên mỗi ngày cùng VBaceEnglish."
       />
 
+
       {/* ===================================================================== */}
       {/* 1. APPLE FLAGSHIP HERO PAVILION & TRI-PILLAR MASTERY ENGINE SLIDER    */}
       {/* ===================================================================== */}
@@ -247,14 +250,14 @@ export default function StudentHome() {
         variants={sectionRevealVariants}
         className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 px-0.5 sm:px-1 w-full min-w-0 max-w-full"
       >
-        <div className="flex items-center gap-2 text-xs font-bold text-slate-500 dark:text-slate-400">
-          <Compass size={15} className="text-[#0071e3] dark:text-sky-400 shrink-0" />
-          <span>Không gian học tập trọng tâm:</span>
+        <div className="flex items-center gap-2 text-xs font-black text-slate-600 dark:text-slate-300">
+          <Compass size={16} className="text-[#1cb0f6] animate-duo-bounce shrink-0" />
+          <span>KHÔNG GIAN HỌC TẬP TRỌNG TÂM:</span>
         </div>
 
         <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto min-w-0 max-w-full">
           <div
-            className="flex items-center gap-1 p-1 rounded-full bg-white dark:bg-slate-900 border border-slate-200/85 dark:border-white/10 shadow-2xs overflow-x-auto w-full sm:w-auto max-w-full no-scrollbar"
+            className="flex items-center gap-1.5 p-1 rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 border-b-4 border-b-slate-300 dark:border-b-slate-950 overflow-x-auto w-full sm:w-auto max-w-full no-scrollbar shadow-xs"
             style={{ scrollbarWidth: 'none' }}
           >
             {[
@@ -268,20 +271,13 @@ export default function StudentHome() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveFilter(tab.id)}
-                  className={`relative px-2.5 sm:px-3.5 py-1.5 rounded-full text-[11px] sm:text-xs font-bold whitespace-nowrap transition-colors cursor-pointer shrink-0 ${
+                  className={`duo-btn duo-btn-xs font-black transition-all ${
                     isActive
-                      ? 'text-white'
-                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                      ? 'duo-btn-blue'
+                      : 'duo-btn-white'
                   }`}
                 >
-                  {isActive && (
-                    <motion.div
-                      layoutId="homeWorkspaceFilterPill"
-                      transition={{ type: 'spring', stiffness: 420, damping: 28 }}
-                      className="absolute inset-0 rounded-full bg-[#0071e3] shadow-[0_4px_14px_rgba(0,113,227,0.3)]"
-                    />
-                  )}
-                  <span className="relative z-10">{tab.label}</span>
+                  <span>{tab.label}</span>
                 </button>
               );
             })}
@@ -291,16 +287,12 @@ export default function StudentHome() {
             <button
               type="button"
               onClick={() => setIsRadarOpen((prev) => !prev)}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-bold border flex items-center gap-1.5 transition-all cursor-pointer ${
-                isRadarOpen
-                  ? 'bg-slate-900 text-white border-slate-900 dark:bg-white dark:text-slate-900'
-                  : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200/85 dark:border-white/10 hover:border-[#0071e3]/40'
-              }`}
+              className="duo-btn duo-btn-white duo-btn-xs font-black flex items-center gap-1.5"
             >
-              <Activity size={13} className="text-[#0071e3] dark:text-sky-400" />
-              <span>{isRadarOpen ? 'Ẩn Radar Thế Giới' : 'Mở Radar Thế Giới'}</span>
+              <Activity size={14} className="text-[#1cb0f6]" />
+              <span>{isRadarOpen ? 'Ẩn Radar' : 'Mở Radar'}</span>
               <ChevronDown
-                size={13}
+                size={14}
                 className={`transition-transform duration-300 ${isRadarOpen ? 'rotate-180' : ''}`}
               />
             </button>
@@ -375,83 +367,97 @@ export default function StudentHome() {
           return (
             <motion.section
               variants={sectionRevealVariants}
-              className="relative overflow-hidden p-4 sm:p-8 rounded-[24px] sm:rounded-[32px] bg-white dark:bg-slate-900/95 border border-slate-200/85 dark:border-white/[0.08] shadow-[0_6px_28px_rgb(0,0,0,0.03)] space-y-4 sm:space-y-5 w-full min-w-0 max-w-full"
+              className="duo-card p-4 sm:p-7 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-purple-50/95 via-fuchsia-50/70 to-indigo-50/85 dark:from-[#1a0c30] dark:via-[#150a26] dark:to-[#0c0517] border-2 border-purple-200 dark:border-purple-800/80 border-b-6 border-b-[#8b5cf6] dark:border-b-[#6d28d9] space-y-4 sm:space-y-6 w-full min-w-0 max-w-full shadow-md relative overflow-hidden"
             >
-              <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#0071e3]/30 to-transparent" />
+              {/* Soft Ambient Glows & Top Gloss Shimmer */}
+              <div className="pointer-events-none absolute -right-16 -top-16 w-64 h-64 bg-gradient-to-br from-[#8b5cf6]/20 to-fuchsia-400/15 rounded-full blur-2xl" />
+              <div className="pointer-events-none absolute -left-16 -bottom-16 w-64 h-64 bg-gradient-to-tr from-indigo-500/15 to-purple-400/15 rounded-full blur-2xl" />
+              <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#8b5cf6]/60 to-transparent" />
 
-              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3.5 sm:gap-4 min-w-0">
-                <div className="space-y-1.5 max-w-2xl min-w-0">
-                  <div className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/50 text-[#0071e3] dark:text-sky-400 text-[10px] sm:text-xs font-bold border border-[#0071e3]/20 max-w-full">
-                    <Zap size={12} className="shrink-0" />
-                    <span className="truncate">TRỤ CỘT 02 • 50 CHỦ ĐỀ • 1.500 CÂU PHẢN XẠ 3 GIÂY</span>
+              <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6 min-w-0">
+                <div className="space-y-2 sm:space-y-2.5 max-w-2xl min-w-0 flex-1">
+                  {/* Duolingo Ribbon Pills */}
+                  <div className="flex items-center justify-between sm:justify-start gap-1.5 sm:gap-2 flex-wrap min-w-0">
+                    <div className="duo-pill duo-pill-purple text-[10px] sm:text-xs font-black uppercase tracking-wider shrink-0">
+                      <Zap size={13} className="text-[#8b5cf6] dark:text-[#c084fc] shrink-0" />
+                      <span className="sm:hidden">50 CHỦ ĐỀ • 1.500 CÂU PHẢN XẠ 3S</span>
+                      <span className="hidden sm:inline">TRỤ CỘT 02 • 50 CHỦ ĐỀ • 1.500 CÂU PHẢN XẠ 3 GIÂY</span>
+                    </div>
+
+                    <div className="duo-pill duo-pill-xp text-[10px] sm:text-xs font-black shrink-0">
+                      <CheckCircle2 size={13} className="text-amber-600 dark:text-amber-400" />
+                      <span>{reflexStats.totalMastered}/1500 câu ({reflexStats.percent}%)</span>
+                    </div>
                   </div>
-                  <h2 className="text-lg sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-                    Phản Xạ Nói – Viết 50 Chủ Đề ({reflexStats.totalMastered}/1500 câu)
-                  </h2>
-                  <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-                    Bật câu tiếng Anh trong <strong>3 giây</strong>, luyện viết chấm điểm từng từ và
-                    nắm vững <strong>3.400+ cụm Collocations bản xứ</strong> chia theo 5 cấp độ.
-                  </p>
+
+                  {/* Duolingo Chunky Headline */}
+                  <div className="space-y-1">
+                    <h2 className="text-xl sm:text-2xl lg:text-[28px] font-black tracking-tight leading-snug">
+                      <span className="text-slate-900 dark:text-white">
+                        Phản Xạ Nói – Viết
+                      </span>{' '}
+                      <span className="text-[#7c3aed] dark:text-[#c084fc]">
+                        50 Chủ Đề Tiếng Anh Thông Dụng.
+                      </span>
+                    </h2>
+                    <p className="line-clamp-1 sm:line-clamp-none text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-semibold max-w-xl">
+                      Bật câu tiếng Anh trong <strong>3 giây</strong>, luyện viết chấm điểm từng từ và nắm vững <strong>3.400+ cụm Collocations bản xứ</strong> chia theo 5 cấp độ.
+                    </p>
+                  </div>
                 </div>
 
-                <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-2 sm:gap-2.5 w-full sm:w-auto min-w-0 shrink-0">
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.97 }}
+                {/* Tactile Duolingo Action Buttons (2-col grid on mobile, row on tablet/desktop) */}
+                <div className="grid grid-cols-2 sm:flex sm:flex-row items-stretch sm:items-center gap-2 sm:gap-2.5 w-full sm:w-auto min-w-0 shrink-0">
+                  <button
                     onMouseEnter={() => loadReflex50FullData()}
                     onClick={() => navigate(`/reflex-50/unit/${activeUnitObj.unitNumber}`)}
-                    className="w-full sm:w-auto justify-center px-4 sm:px-5 py-2.5 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer shadow-[0_6px_18px_rgba(0,113,227,0.26)] min-w-0"
+                    className="duo-btn duo-btn-purple duo-btn-sm sm:duo-btn-md font-black shadow-md w-full sm:w-auto flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer"
                   >
-                    <span className="truncate">
-                      Học Unit {activeUnitObj.unitNumber}: {activeUnitObj.titleEn}
-                    </span>
-                    <ArrowRight size={15} className="shrink-0" />
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.97 }}
+                    <Play size={15} fill="currentColor" className="shrink-0" />
+                    <span className="truncate">Học Unit #{activeUnitObj.unitNumber}</span>
+                    <ArrowRight size={15} className="shrink-0 hidden xs:inline" />
+                  </button>
+                  <button
                     onMouseEnter={() => loadReflex50FullData()}
                     onClick={() => navigate('/reflex-50')}
-                    className="w-full sm:w-auto justify-center px-4 py-2.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200/80 text-slate-800 dark:text-slate-200 text-xs sm:text-sm font-semibold transition-colors cursor-pointer text-center"
+                    className="duo-btn duo-btn-white duo-btn-sm sm:duo-btn-md font-black text-xs sm:text-sm w-full sm:w-auto text-[#7c3aed] dark:text-[#c084fc] cursor-pointer shadow-xs whitespace-nowrap"
                   >
-                    Xem đủ 50 Chủ đề
-                  </motion.button>
+                    <span className="truncate">Đủ 50 Chủ Đề</span>
+                  </button>
                 </div>
               </div>
 
-              {/* 5 Category Cards Preview */}
+              {/* 5 Category Cards Preview (Duolingo 3D Chunky Cards) */}
               <div
-                className="flex lg:grid lg:grid-cols-5 gap-3.5 overflow-x-auto snap-x snap-mandatory pb-1 lg:pb-0 no-scrollbar"
+                className="flex lg:grid lg:grid-cols-5 gap-3 sm:gap-3.5 overflow-x-auto snap-x snap-mandatory pb-1 lg:pb-0 no-scrollbar relative z-10"
                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
               >
                 {reflex50Meta.categories.map((cat) => (
-                  <motion.div
+                  <div
                     key={cat.id}
-                    whileHover={{ y: -3 }}
-                    transition={{ duration: 0.2, ease: 'easeOut' }}
                     onMouseEnter={() => loadReflex50FullData()}
                     onClick={() => navigate(`/reflex-50/unit/${cat.unitRange[0]}`)}
-                    className="w-[235px] sm:w-[255px] lg:w-auto shrink-0 snap-start p-4 rounded-2xl bg-slate-50/90 dark:bg-slate-800/50 border border-slate-200/70 dark:border-slate-800 hover:border-[#0071e3]/50 hover:bg-white dark:hover:bg-slate-800 hover:shadow-[0_10px_24px_rgba(0,113,227,0.08)] transition-all cursor-pointer group flex flex-col justify-between gap-2.5"
+                    className="w-[240px] sm:w-[260px] lg:w-auto shrink-0 snap-start p-3.5 sm:p-4 rounded-2xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border-2 border-purple-200/80 dark:border-purple-800/60 border-b-4 border-b-purple-400 dark:border-b-purple-900 hover:scale-[1.03] transition-all cursor-pointer group flex flex-col justify-between gap-3 shadow-xs"
                   >
                     <div>
-                      <div className="flex items-center justify-between text-[11px] font-bold text-[#0071e3] dark:text-sky-400">
+                      <div className="flex items-center justify-between text-[11px] font-black text-[#7c3aed] dark:text-[#c084fc]">
                         <span>
                           UNIT {cat.unitRange[0]} – {cat.unitRange[1]}
                         </span>
-                        <span>300 câu</span>
+                        <span className="text-slate-400 font-extrabold">300 câu</span>
                       </div>
-                      <h3 className="text-sm font-bold text-slate-900 dark:text-white mt-1.5 group-hover:text-[#0071e3] dark:group-hover:text-sky-400 transition-colors">
+                      <h3 className="text-sm font-black text-slate-900 dark:text-white mt-1.5 group-hover:text-[#7c3aed] dark:group-hover:text-[#c084fc] transition-colors line-clamp-1">
                         {cat.titleVi}
                       </h3>
-                      <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2 mt-1">
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2 mt-1 font-medium">
                         {cat.description}
                       </p>
                     </div>
-                    <div className="text-[11px] font-bold text-[#0071e3] dark:text-sky-400 group-hover:translate-x-0.5 transition-transform flex items-center gap-1 pt-1">
+                    <div className="text-[11px] font-black text-[#7c3aed] dark:text-[#c084fc] group-hover:translate-x-0.5 transition-transform flex items-center gap-1 pt-1 border-t border-slate-100 dark:border-slate-800">
                       <span>Vào luyện phản xạ</span>
                       <ChevronRight size={13} />
                     </div>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
             </motion.section>

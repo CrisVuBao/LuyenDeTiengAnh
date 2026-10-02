@@ -97,6 +97,396 @@ button, input, select, textarea {
   .rotate-y-180 {
     transform: rotateY(180deg);
   }
+
+  /* ========================================================
+     DUOLINGO CARTOON DESIGN SYSTEM (Feather 3D Push & Juicy UI)
+     ======================================================== */
+  
+  /* Duo Base 3D Push Button */
+  .duo-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border-radius: 1rem;
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    border-style: solid;
+    border-top-width: 0px;
+    border-left-width: 0px;
+    border-right-width: 0px;
+    border-bottom-width: 4px;
+    transition: transform 0.08s ease-in-out, border-bottom-width 0.08s ease-in-out, filter 0.15s ease, background-color 0.15s ease;
+    text-decoration: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+  }
+
+  .duo-btn:active {
+    transform: translateY(3px) !important;
+    border-bottom-width: 1px !important;
+  }
+
+  /* Duo Button Sizes */
+  .duo-btn-xs {
+    padding: 0.25rem 0.6rem;
+    font-size: 0.7rem;
+    border-radius: 0.75rem;
+    border-bottom-width: 3px;
+  }
+  .duo-btn-xs:active {
+    transform: translateY(2px) !important;
+    border-bottom-width: 1px !important;
+  }
+
+  .duo-btn-sm {
+    padding: 0.35rem 0.85rem;
+    font-size: 0.75rem;
+    border-radius: 0.875rem;
+    border-bottom-width: 3px;
+  }
+  .duo-btn-sm:active {
+    transform: translateY(2px) !important;
+    border-bottom-width: 1px !important;
+  }
+
+  .duo-btn-md {
+    padding: 0.6rem 1.25rem;
+    font-size: 0.875rem;
+    border-radius: 1rem;
+    border-bottom-width: 4px;
+  }
+
+  .duo-btn-lg {
+    padding: 0.85rem 1.75rem;
+    font-size: 1rem;
+    border-radius: 1.25rem;
+    border-bottom-width: 5px;
+  }
+  .duo-btn-lg:active {
+    transform: translateY(3px) !important;
+    border-bottom-width: 2px !important;
+  }
+
+  /* Duo Button Color Variants */
+  .duo-btn-green {
+    background-color: #58cc02;
+    border-color: #46a302;
+    color: #ffffff;
+  }
+  .duo-btn-green:hover {
+    background-color: #61e002;
+    filter: brightness(1.04);
+  }
+
+  .duo-btn-blue {
+    background-color: #1cb0f6;
+    border-color: #1899d6;
+    color: #ffffff;
+  }
+  .duo-btn-blue:hover {
+    background-color: #2ec5ff;
+    filter: brightness(1.04);
+  }
+
+  .duo-btn-sapphire {
+    background-color: #0071e3;
+    border-color: #005bb5;
+    color: #ffffff;
+  }
+  .duo-btn-sapphire:hover {
+    background-color: #0077ed;
+    filter: brightness(1.04);
+  }
+
+  .duo-btn-yellow {
+    background-color: #ffc800;
+    border-color: #e5a500;
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  }
+  .duo-btn-yellow:hover {
+    background-color: #ffd428;
+    filter: brightness(1.03);
+  }
+
+  .duo-btn-orange {
+    background-color: #ff9600;
+    border-color: #e07700;
+    color: #ffffff;
+  }
+  .duo-btn-orange:hover {
+    background-color: #ffa51f;
+    filter: brightness(1.04);
+  }
+
+  .duo-btn-red {
+    background-color: #ff4b4b;
+    border-color: #ea2b2b;
+    color: #ffffff;
+  }
+  .duo-btn-red:hover {
+    background-color: #ff6161;
+    filter: brightness(1.04);
+  }
+
+  .duo-btn-purple {
+    background-color: #8b5cf6;
+    border-color: #6d28d9;
+    color: #ffffff;
+  }
+  .duo-btn-purple:hover {
+    background-color: #9d71f7;
+    filter: brightness(1.05);
+  }
+
+  .duo-btn-white,
+  .duo-btn-neutral {
+    background-color: #ffffff;
+    border-width: 2px;
+    border-bottom-width: 4px;
+    border-color: #e5e5e5;
+    border-bottom-color: #d4d4d4;
+    color: #4b4b4b;
+  }
+  .duo-btn-white:hover,
+  .duo-btn-neutral:hover {
+    background-color: #f7f7f7;
+    border-color: #d4d4d4;
+    border-bottom-color: #c4c4c4;
+    color: #18181b;
+  }
+  .duo-btn-white:active,
+  .duo-btn-neutral:active {
+    transform: translateY(2px) !important;
+    border-bottom-width: 2px !important;
+  }
+
+  html.dark .duo-btn-white,
+  html.dark .duo-btn-neutral {
+    background-color: #1e293b;
+    border-color: #334155;
+    border-bottom-color: #0f172a;
+    color: #f1f5f9;
+  }
+  html.dark .duo-btn-white:hover,
+  html.dark .duo-btn-neutral:hover {
+    background-color: #334155;
+    border-color: #475569;
+    border-bottom-color: #1e293b;
+  }
+
+  /* Duo 3D Chunky Card */
+  .duo-card {
+    border: 2px solid #e5e7eb;
+    border-bottom-width: 4px;
+    border-bottom-color: #d1d5db;
+    border-radius: 1.25rem;
+    background-color: #ffffff;
+    transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .duo-card:hover {
+    border-color: #cbd5e1;
+    transform: translateY(-2px);
+  }
+  html.dark .duo-card {
+    background-color: #0f172a;
+    border-color: #334155;
+    border-bottom-color: #020617;
+  }
+  html.dark .duo-card:hover {
+    border-color: #475569;
+  }
+
+  /* Duo Card Color Accents */
+  .duo-card-green {
+    border: 2px solid #86efac;
+    border-bottom-width: 4px;
+    border-bottom-color: #22c55e;
+    background-color: #f0fdf4;
+  }
+  html.dark .duo-card-green {
+    border-color: #166534;
+    border-bottom-color: #14532d;
+    background-color: rgba(5, 46, 22, 0.4);
+  }
+
+  .duo-card-blue {
+    border: 2px solid #7dd3fc;
+    border-bottom-width: 4px;
+    border-bottom-color: #0284c7;
+    background-color: #f0f9ff;
+  }
+  html.dark .duo-card-blue {
+    border-color: #075985;
+    border-bottom-color: #0c4a6e;
+    background-color: rgba(8, 47, 73, 0.4);
+  }
+
+  .duo-card-sapphire {
+    border: 2px solid #93c5fd;
+    border-bottom-width: 5px;
+    border-bottom-color: #0071e3;
+    background-color: #f4f9ff;
+  }
+  html.dark .duo-card-sapphire {
+    border-color: #1d4ed8;
+    border-bottom-color: #172554;
+    background-color: #08162b;
+  }
+
+  .duo-card-orange {
+    border: 2px solid #fdba74;
+    border-bottom-width: 4px;
+    border-bottom-color: #ea580c;
+    background-color: #fff7ed;
+  }
+  html.dark .duo-card-orange {
+    border-color: #9a3412;
+    border-bottom-color: #7c2d12;
+    background-color: rgba(67, 20, 7, 0.4);
+  }
+
+  .duo-card-purple {
+    border: 2px solid #d8b4fe;
+    border-bottom-width: 4px;
+    border-bottom-color: #a855f7;
+    background-color: #faf5ff;
+  }
+  html.dark .duo-card-purple {
+    border-color: #6b21a8;
+    border-bottom-color: #581c87;
+    background-color: rgba(59, 7, 100, 0.4);
+  }
+
+  .duo-card-red {
+    border: 2px solid #fca5a5;
+    border-bottom-width: 4px;
+    border-bottom-color: #ef4444;
+    background-color: #fef2f2;
+  }
+  html.dark .duo-card-red {
+    border-color: #991b1b;
+    border-bottom-color: #7f1d1d;
+    background-color: rgba(69, 10, 10, 0.4);
+  }
+
+  /* Duo Gamified Stat Pills */
+  .duo-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.65rem;
+    border-radius: 9999px;
+    font-weight: 800;
+    font-size: 0.75rem;
+    border-width: 2px;
+    border-bottom-width: 3px;
+    transition: transform 0.1s ease;
+    user-select: none;
+  }
+  .duo-pill:active {
+    transform: translateY(1px);
+    border-bottom-width: 2px;
+  }
+
+  .duo-pill-streak {
+    background-color: #fff7ed;
+    border-color: #fdba74;
+    border-bottom-color: #ea580c;
+    color: #c2410c;
+  }
+  html.dark .duo-pill-streak {
+    background-color: rgba(124, 45, 18, 0.3);
+    border-color: #9a3412;
+    border-bottom-color: #7c2d12;
+    color: #fb923c;
+  }
+
+  .duo-pill-xp {
+    background-color: #fefce8;
+    border-color: #fde047;
+    border-bottom-color: #ca8a04;
+    color: #a16207;
+  }
+  html.dark .duo-pill-xp {
+    background-color: rgba(113, 63, 18, 0.3);
+    border-color: #854d0e;
+    border-bottom-color: #713f12;
+    color: #facc15;
+  }
+
+  .duo-pill-gem {
+    background-color: #f0f9ff;
+    border-color: #7dd3fc;
+    border-bottom-color: #0284c7;
+    color: #0369a1;
+  }
+  html.dark .duo-pill-gem {
+    background-color: rgba(12, 74, 110, 0.3);
+    border-color: #0369a1;
+    border-bottom-color: #075985;
+    color: #38bdf8;
+  }
+
+  .duo-pill-purple {
+    background-color: #faf5ff;
+    border-color: #d8b4fe;
+    border-bottom-color: #a855f7;
+    color: #7e22ce;
+  }
+  html.dark .duo-pill-purple {
+    background-color: rgba(88, 28, 135, 0.35);
+    border-color: #7e22ce;
+    border-bottom-color: #6b21a8;
+    color: #c084fc;
+  }
+
+  .duo-pill-green {
+    background-color: #f0fdf4;
+    border-color: #86efac;
+    border-bottom-color: #22c55e;
+    color: #15803d;
+  }
+  html.dark .duo-pill-green {
+    background-color: rgba(20, 83, 45, 0.35);
+    border-color: #15803d;
+    border-bottom-color: #166534;
+    color: #4ade80;
+  }
+
+  .duo-pill-heart {
+    background-color: #fef2f2;
+    border-color: #fca5a5;
+    border-bottom-color: #dc2626;
+    color: #b91c1c;
+  }
+  html.dark .duo-pill-heart {
+    background-color: rgba(127, 29, 29, 0.3);
+    border-color: #991b1b;
+    border-bottom-color: #7f1d1d;
+    color: #f87171;
+  }
+
+  /* Duo Cartoon Speech Bubble */
+  .duo-bubble {
+    position: relative;
+    background: #ffffff;
+    border: 2px solid #e5e7eb;
+    border-bottom-width: 4px;
+    border-bottom-color: #d1d5db;
+    border-radius: 1.25rem;
+    padding: 0.75rem 1.25rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  }
+  html.dark .duo-bubble {
+    background: #1e293b;
+    border-color: #334155;
+    border-bottom-color: #0f172a;
+  }
 }
 
 /* Kết thúc animation trả về transform: none để trình duyệt hủy lớp bitmap GPU và vẽ chữ Vector sắc nét 100% */
@@ -175,6 +565,72 @@ button, input, select, textarea {
 
 .animate-radar {
   animation: radarWave 2s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+
+/* Duolingo Mascot & Gamified Keyframe Animations */
+@keyframes duoBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes duoWiggle {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-6deg);
+  }
+  75% {
+    transform: rotate(6deg);
+  }
+}
+
+@keyframes duoPop {
+  0% {
+    transform: scale(0.92);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes duoPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+
+.animate-duo-bounce {
+  animation: duoBounce 2s ease-in-out infinite;
+}
+
+.animate-duo-wiggle {
+  animation: duoWiggle 1.5s ease-in-out infinite;
+}
+
+.hover-duo-wiggle:hover {
+  animation: duoWiggle 0.4s ease-in-out;
+}
+
+.animate-duo-pop {
+  animation: duoPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.animate-duo-pulse {
+  animation: duoPulse 1.8s ease-in-out infinite;
 }
 
 /* Equalizer bar dùng transform: scaleY thay vì height để không gây reflow layout */

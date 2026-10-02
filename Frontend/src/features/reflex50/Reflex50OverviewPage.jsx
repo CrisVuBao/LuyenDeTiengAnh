@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   Sparkles, Search, BookOpen, Headphones, Mic, PenTool, CheckCircle2,
-  Star, AlertCircle, ArrowRight, Layers, Volume2, Zap,
+  Star, AlertCircle, ArrowRight, Layers, Volume2, Zap, Play,
   MessageCircle, Users, Briefcase, HeartPulse, HelpCircle, RotateCcw, X
 } from 'lucide-react';
 import reflex50Meta from './data/reflex50Meta.json';
@@ -164,79 +164,107 @@ export default function Reflex50OverviewPage() {
         description="Luyện phản xạ 1500 câu tiếng Anh theo 50 chủ đề thông dụng, kỹ thuật Chunking và Collocations bản xứ."
       />
       {/* ===================================================================== */}
-      {/* 1. APPLE STUDIO HERO BANNER                                           */}
+      {/* 1. ULTRA-TACTILE DUOLINGO 3D HERO BANNER (ĐẸP HƠN CẢ DUOLINGO)        */}
       {/* ===================================================================== */}
       <motion.section
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-4 sm:p-8 shadow-xs w-full min-w-0 max-w-full"
+        className="duo-card p-4 sm:p-7 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-purple-50/95 via-fuchsia-50/70 to-indigo-50/85 dark:from-[#1a0c30] dark:via-[#150a26] dark:to-[#0c0517] border-2 border-purple-200 dark:border-purple-800/80 border-b-6 border-b-[#8b5cf6] dark:border-b-[#6d28d9] shadow-md w-full min-w-0 max-w-full relative overflow-hidden space-y-4 sm:space-y-6"
       >
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-8 min-w-0">
+        {/* Soft Ambient Glows & Top Gloss Shimmer */}
+        <div className="pointer-events-none absolute -right-16 -top-16 w-64 h-64 bg-gradient-to-br from-[#8b5cf6]/20 to-fuchsia-400/15 rounded-full blur-2xl" />
+        <div className="pointer-events-none absolute -left-16 -bottom-16 w-64 h-64 bg-gradient-to-tr from-indigo-500/15 to-purple-400/15 rounded-full blur-2xl" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#8b5cf6]/60 to-transparent" />
+
+        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-8 min-w-0">
           {/* Left Content */}
-          <div className="space-y-2.5 sm:space-y-4 max-w-2xl min-w-0">
-            <div className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/50 border border-blue-200/70 dark:border-blue-800/70 text-[#0071e3] dark:text-sky-400 text-[10px] sm:text-xs font-semibold max-w-full">
-              <Sparkles size={12} className="shrink-0" />
-              <span className="truncate">50 Chủ Đề Giao Tiếp • 1.500 Câu Phản Xạ Nói - Viết</span>
+          <div className="space-y-2.5 sm:space-y-3.5 max-w-2xl min-w-0 flex-1">
+            {/* Duolingo Ribbon Pills */}
+            <div className="flex items-center justify-between sm:justify-start gap-1.5 sm:gap-2 flex-wrap min-w-0">
+              <div className="duo-pill duo-pill-purple text-[10px] sm:text-xs font-black uppercase tracking-wider shrink-0">
+                <Zap size={13} className="text-[#8b5cf6] dark:text-[#c084fc] shrink-0" />
+                <span className="sm:hidden">50 CHỦ ĐỀ • 1.500 CÂU PHẢN XẠ 3S</span>
+                <span className="hidden sm:inline">TRỤ CỘT 02 • 50 CHỦ ĐỀ • 1.500 CÂU PHẢN XẠ 3 GIÂY</span>
+              </div>
+
+              <div className="duo-pill duo-pill-xp text-[10px] sm:text-xs font-black shrink-0">
+                <CheckCircle2 size={13} className="text-amber-600 dark:text-amber-400" />
+                <span>{overall.totalMastered}/1500 câu ({overall.overallPercent}%)</span>
+              </div>
             </div>
 
-            <h1 className="text-xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900 dark:text-white leading-tight">
-              Phản Xạ Nói – Viết <span className="text-[#0071e3]">50 Chủ Đề</span> Tiếng Anh Thông Dụng
-            </h1>
+            {/* Duolingo Chunky Headline */}
+            <div className="space-y-1">
+              <h1 className="text-xl sm:text-2xl lg:text-[28px] font-black tracking-tight leading-snug">
+                <span className="text-slate-900 dark:text-white">
+                  Phản Xạ Nói – Viết
+                </span>{' '}
+                <span className="text-[#7c3aed] dark:text-[#c084fc]">
+                  50 Chủ Đề Tiếng Anh Thông Dụng.
+                </span>
+              </h1>
 
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed line-clamp-2 sm:line-clamp-none">
-              Làm chủ trọn bộ <strong>1.500 câu giao tiếp từ Cơ bản đến Chuyên sâu</strong> (30 câu/chủ đề) kết hợp <strong>3.400+ cụm từ gợi ý</strong> và <strong>Collocations bản xứ</strong>. Học theo phương pháp Tư duy Cụm từ (Chunking), Phản xạ Nói 3 Giây và Làm bài Viết chấm điểm từng từ.
-            </p>
+              <p className="line-clamp-1 sm:line-clamp-none text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-semibold leading-relaxed max-w-xl">
+                Bật câu tiếng Anh trong <strong>3 giây</strong>, luyện viết chấm điểm từng từ và làm chủ <strong>3.400+ cụm Collocations bản xứ</strong> chia theo 5 cấp độ.
+              </p>
+            </div>
 
-            {/* Primary CTA Buttons */}
-            <div className="flex flex-wrap items-center gap-2 pt-1 min-w-0">
+            {/* Tactile Duolingo Action Buttons (Responsive row on mobile) */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 pt-1 min-w-0">
               <button
+                type="button"
                 onClick={() => navigate(`/reflex-50/unit/${lastUnitObj.unitNumber}`)}
-                className="w-full sm:w-auto justify-center px-4 sm:px-5 py-2.5 rounded-xl sm:rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white text-xs sm:text-sm font-semibold shadow-sm transition-all flex items-center gap-2 cursor-pointer min-w-0"
+                className="duo-btn duo-btn-purple duo-btn-sm sm:duo-btn-md font-black shadow-md w-full sm:w-auto flex items-center justify-center gap-2 cursor-pointer"
               >
+                <Play size={15} fill="currentColor" className="shrink-0" />
                 <span className="truncate">
                   Học tiếp Unit {lastUnitObj.unitNumber}: {lastUnitObj.titleEn}
                 </span>
-                <ArrowRight size={15} className="shrink-0" />
+                <ArrowRight size={15} className="shrink-0 hidden xs:inline" />
               </button>
 
-              <button
-                onClick={() => setIsMethodModalOpen(true)}
-                className="flex-1 sm:flex-initial justify-center px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl sm:rounded-full bg-slate-900 text-white dark:bg-white dark:text-slate-900 hover:opacity-90 text-xs sm:text-sm font-semibold transition-all flex items-center gap-1.5 cursor-pointer"
-              >
-                <Zap size={14} className="text-amber-400 dark:text-[#0071e3] shrink-0" />
-                <span className="hidden sm:inline">Phương Pháp Học & Làm Bài Hiệu Quả</span>
-                <span className="sm:hidden">Phương Pháp Học</span>
-              </button>
+              <div className="grid grid-cols-2 sm:flex sm:flex-row items-center gap-2 w-full sm:w-auto">
+                <button
+                  type="button"
+                  onClick={() => setIsMethodModalOpen(true)}
+                  className="duo-btn duo-btn-white duo-btn-sm sm:duo-btn-md font-black text-[#7c3aed] dark:text-[#c084fc] shadow-xs flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap"
+                >
+                  <Zap size={14} className="text-[#7c3aed] dark:text-[#c084fc] shrink-0" />
+                  <span className="sm:hidden">Phương Pháp</span>
+                  <span className="hidden sm:inline">Phương Pháp Học</span>
+                </button>
 
-              <button
-                onClick={() => setIsVoiceModalOpen(true)}
-                className="px-3 sm:px-3.5 py-2 sm:py-2.5 rounded-xl sm:rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200/80 dark:hover:bg-slate-700 text-xs font-medium transition-colors flex items-center justify-center gap-1.5 cursor-pointer shrink-0"
-                title="Cài đặt giọng đọc AI Studio & tốc độ đọc"
-              >
-                <Headphones size={14} className="text-[#0071e3]" />
-                <span>Giọng AI</span>
-              </button>
+                <button
+                  type="button"
+                  onClick={() => setIsVoiceModalOpen(true)}
+                  className="duo-btn duo-btn-white duo-btn-sm sm:duo-btn-md font-black text-slate-700 dark:text-slate-200 shadow-xs flex items-center justify-center gap-1.5 cursor-pointer shrink-0 whitespace-nowrap"
+                  title="Cài đặt giọng đọc AI Studio & tốc độ đọc"
+                >
+                  <Headphones size={14} className="text-[#7c3aed] dark:text-[#c084fc] shrink-0" />
+                  <span>Giọng AI</span>
+                </button>
+              </div>
             </div>
           </div>
 
-          {/* Right Stats Card */}
-          <div className="shrink-0 w-full lg:w-80 p-3.5 sm:p-5 rounded-2xl bg-slate-50/90 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-800 space-y-2.5 sm:space-y-4">
+          {/* Right Stats Card: Duolingo 3D Chunky Capsule */}
+          <div className="shrink-0 w-full lg:w-80 p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm border-2 border-purple-200 dark:border-purple-900/80 border-b-6 border-b-purple-400 dark:border-b-purple-950 shadow-sm space-y-3.5 relative overflow-hidden">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <div className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                <div className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   Tiến độ làm chủ 1.500 câu
                 </div>
-                <div className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mt-0.5">
-                  {overall.totalMastered} <span className="text-xs sm:text-sm font-normal text-slate-400">/ 1500 câu</span>
+                <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight mt-0.5">
+                  {overall.totalMastered} <span className="text-xs font-bold text-slate-400">/ 1500</span>
                 </div>
-                <div className="text-[11px] sm:text-xs text-[#0071e3] dark:text-sky-400 font-medium mt-0.5">
+                <div className="text-xs font-black text-[#7c3aed] dark:text-[#c084fc] mt-0.5">
                   Đã hoàn thành {overall.completedUnits}/50 Unit
                 </div>
               </div>
 
               {/* SVG Progress Ring */}
-              <div className="relative w-14 h-14 sm:w-18 sm:h-18 flex items-center justify-center shrink-0">
-                <svg className="w-14 h-14 sm:w-18 sm:h-18 -rotate-90" viewBox="0 0 72 72">
+              <div className="relative w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center shrink-0">
+                <svg className="w-14 h-14 sm:w-16 sm:h-16 -rotate-90" viewBox="0 0 72 72">
                   <circle
                     cx="36"
                     cy="36"
@@ -244,14 +272,14 @@ export default function Reflex50OverviewPage() {
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="6"
-                    className="text-slate-200 dark:text-slate-700"
+                    className="text-slate-200 dark:text-slate-800"
                   />
                   <circle
                     cx="36"
                     cy="36"
                     r={ringRadius}
                     fill="none"
-                    stroke="#0071e3"
+                    stroke="#8b5cf6"
                     strokeWidth="6"
                     strokeLinecap="round"
                     strokeDasharray={ringCircumference}
@@ -259,43 +287,43 @@ export default function Reflex50OverviewPage() {
                     className="transition-all duration-700"
                   />
                 </svg>
-                <span className="absolute text-[11px] sm:text-xs font-bold text-slate-900 dark:text-white">
+                <span className="absolute text-xs font-black text-slate-900 dark:text-white">
                   {overall.overallPercent}%
                 </span>
               </div>
             </div>
 
             {/* Mini breakdown */}
-            <div className="grid grid-cols-3 gap-1.5 sm:gap-2 pt-2 border-t border-slate-200/70 dark:border-slate-700/70 text-center">
-              <div className="p-1.5 sm:p-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800">
-                <div className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">{overall.totalWritten}</div>
-                <div className="text-[10px] text-slate-500">Đã viết</div>
+            <div className="grid grid-cols-3 gap-1.5 sm:gap-2 pt-2 border-t border-slate-200/80 dark:border-slate-800 text-center">
+              <div className="p-1.5 sm:p-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700">
+                <div className="text-xs sm:text-sm font-black text-slate-900 dark:text-white">{overall.totalWritten}</div>
+                <div className="text-[10px] font-bold text-slate-500">Đã viết</div>
               </div>
-              <div className="p-1.5 sm:p-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800">
-                <div className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">{overall.totalSpoken}</div>
-                <div className="text-[10px] text-slate-500">Đã nói</div>
+              <div className="p-1.5 sm:p-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700">
+                <div className="text-xs sm:text-sm font-black text-slate-900 dark:text-white">{overall.totalSpoken}</div>
+                <div className="text-[10px] font-bold text-slate-500">Đã nói</div>
               </div>
-              <div className="p-1.5 sm:p-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800">
-                <div className="text-xs sm:text-sm font-bold text-amber-600 dark:text-amber-400">
+              <div className="p-1.5 sm:p-2 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/50">
+                <div className="text-xs sm:text-sm font-black text-amber-600 dark:text-amber-400">
                   {overall.totalStarred + overall.totalWeak}
                 </div>
-                <div className="text-[10px] text-slate-500">Cần ôn</div>
+                <div className="text-[10px] font-bold text-amber-700 dark:text-amber-300">Cần ôn</div>
               </div>
             </div>
 
             {/* Daily target bar */}
             <div className="space-y-1">
-              <div className="flex items-center justify-between text-[11px]">
-                <span className="font-medium text-slate-600 dark:text-slate-300">
+              <div className="flex items-center justify-between text-[11px] font-bold">
+                <span className="text-slate-600 dark:text-slate-400">
                   Mục tiêu hôm nay (30 câu)
                 </span>
-                <span className="font-bold text-[#0071e3] dark:text-sky-400">
+                <span className="text-[#7c3aed] dark:text-[#c084fc] font-black">
                   {overall.todayCount}/{overall.dailyGoal} câu
                 </span>
               </div>
-              <div className="w-full h-1.5 sm:h-2 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
+              <div className="w-full h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden p-0.5 border border-slate-200 dark:border-slate-700">
                 <div
-                  className="h-full rounded-full bg-[#0071e3] transition-all duration-500"
+                  className="h-full rounded-full bg-[#8b5cf6] transition-all duration-500"
                   style={{ width: `${Math.min(100, Math.round((overall.todayCount / overall.dailyGoal) * 100))}%` }}
                 />
               </div>

@@ -85,80 +85,84 @@ function LuxuryChapterCarousel({
     <div className="space-y-6 w-full min-w-0 max-w-full">
       {/* =================================================================== */}
       {/* 1. THẺ "GIAO TIẾP THỰC CHIẾN: PHẢN XẠ TIẾNG ANH TỨC THÌ."          */}
-      {/*    (Glacier Sapphire Pearl Silk × Royal Sapphire Jewel Console)     */}
-      {/*    Mobile-First Ultra-Compact Layout + Full Desktop Grandeur        */}
+      {/*    Duolingo Tactile 3D Chunky Card × Project Sapphire Blue Theme    */}
       {/* =================================================================== */}
-      <div className="relative overflow-hidden p-4 sm:p-8 rounded-[24px] sm:rounded-[34px] bg-gradient-to-br from-[#e9f3ff] via-[#f4f9ff] to-[#ddeeff] dark:from-[#071529] dark:via-[#0b1f3b] dark:to-[#0d284c] border border-[#0071e3]/25 dark:border-sky-400/25 shadow-[0_14px_40px_rgba(0,113,227,0.10),inset_0_1px_0_rgba(255,255,255,0.9)] dark:shadow-[0_22px_55px_rgba(0,0,0,0.55)] w-full min-w-0 max-w-full">
-        {/* Top Specular Sapphire-Diamond Rim */}
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#0071e3]/65 dark:via-sky-400/60 to-transparent" />
+      <div className="relative overflow-hidden p-4 sm:p-7 lg:p-8 rounded-3xl sm:rounded-[36px] bg-[#f0f7ff] dark:bg-[#07162b] border-2 border-[#1cb0f6]/40 dark:border-blue-700/50 border-b-6 border-b-[#0071e3] dark:border-b-[#1e40af] shadow-[0_14px_40px_rgba(0,113,227,0.12)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.6)] w-full min-w-0 max-w-full">
+        {/* Specular Top Rim */}
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#0071e3] to-transparent" />
 
-        {/* Ambient Glacier & Azure Silk Orbs */}
-        <div className="pointer-events-none absolute -top-28 -right-20 w-80 sm:w-96 h-80 sm:h-96 rounded-full bg-gradient-to-br from-[#0071e3]/20 via-sky-400/15 to-transparent blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-28 -left-20 w-72 sm:w-80 h-72 sm:h-80 rounded-full bg-gradient-to-tr from-cyan-400/20 via-blue-500/12 to-transparent blur-3xl" />
+        {/* Subtle Ambient Orbs */}
+        <div className="pointer-events-none absolute -top-24 -right-16 w-72 h-72 rounded-full bg-[#1cb0f6]/10 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-24 -left-16 w-64 h-64 rounded-full bg-[#0071e3]/10 blur-3xl" />
 
-        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-3.5 sm:gap-6 min-w-0">
-          {/* Left: Glacier Pearl Editorial & Royal Sapphire Substitution Console */}
-          <div className="space-y-2.5 sm:space-y-4 max-w-2xl flex-1 min-w-0">
-            {/* Single-Row Status Ribbon on Mobile */}
-            <div className="flex items-center justify-between sm:justify-start gap-1.5 sm:gap-2 min-w-0">
-              <span className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1 rounded-full bg-gradient-to-r from-[#0062cc] to-[#0077ed] text-white text-[10px] sm:text-[11px] font-extrabold tracking-wider uppercase shadow-[0_4px_14px_rgba(0,113,227,0.26)] min-w-0 truncate">
-                <span className="inline-flex items-end gap-0.5 h-2.5 text-cyan-200 shrink-0">
-                  <span className="w-0.5 h-1.5 bg-current rounded-full animate-pulse" />
-                  <span className="w-0.5 h-2.5 bg-current rounded-full animate-pulse" />
-                  <span className="w-0.5 h-2 bg-current rounded-full animate-pulse" />
-                </span>
-                <span className="sm:hidden truncate">SPEAKING STUDIO • 12 CHƯƠNG</span>
-                <span className="hidden sm:inline">SPEAKING STUDIO • 12 CHƯƠNG • {totalLessons} BÀI</span>
-              </span>
+        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6 min-w-0">
+          {/* Left Column: Duolingo Pills, Chunky Headline & Tactile Substitution Console */}
+          <div className="space-y-3 sm:space-y-3.5 max-w-2xl flex-1 min-w-0">
+            {/* Status Pills Ribbon */}
+            <div className="flex items-center justify-between sm:justify-start gap-1.5 sm:gap-2 min-w-0 flex-wrap">
+              <div className="duo-pill duo-pill-gem text-[10px] sm:text-xs font-black uppercase tracking-wider shrink-0">
+                <span className="w-2 h-2 rounded-full bg-[#0071e3] dark:bg-sky-400 animate-duo-pulse" />
+                <span className="sm:hidden">SPEAKING • 12 CHƯƠNG</span>
+                <span className="hidden sm:inline">SPEAKING STUDIO • 12 CHƯƠNG</span>
+              </div>
 
-              <span className="px-2.5 sm:px-3 py-1 rounded-full bg-white/90 dark:bg-white/10 backdrop-blur-md text-[#005bb5] dark:text-sky-300 text-[10px] sm:text-[11px] font-extrabold border border-[#0071e3]/20 dark:border-white/15 shadow-2xs shrink-0">
-                {completedLessons}/{totalLessons} bài
-              </span>
+              <div className="duo-pill duo-pill-xp text-[10px] sm:text-xs font-black shrink-0">
+                <CheckCircle2 size={13} className="text-amber-600 dark:text-amber-400" />
+                <span>{completedLessons}/{totalLessons} bài hoàn thành</span>
+              </div>
             </div>
 
-            {/* Sculptural Sapphire Headline */}
-            <h2 className="text-[19px] sm:text-3xl font-black tracking-tight leading-[1.2]">
-              <span className="text-[#06182c] dark:text-white">
-                Giao Tiếp Thực Chiến:
-              </span>{' '}
-              <span className="bg-gradient-to-r from-[#0058b8] via-[#0071e3] to-[#06b6d4] dark:from-sky-300 dark:via-sky-400 dark:to-cyan-300 bg-clip-text text-transparent">
-                Phản Xạ Tiếng Anh Tức Thì.
-              </span>
-            </h2>
+            {/* Duolingo Chunky Headline */}
+            <div className="space-y-1">
+              <h2 className="text-xl sm:text-2xl lg:text-[28px] font-black tracking-tight leading-snug">
+                <span className="text-slate-900 dark:text-white">
+                  Giao Tiếp Thực Chiến:
+                </span>{' '}
+                <span className="text-[#0071e3] dark:text-[#1cb0f6]">
+                  Phản Xạ Tiếng Anh Tức Thì.
+                </span>
+              </h2>
+              <p className="line-clamp-1 sm:line-clamp-none text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-semibold leading-relaxed max-w-xl">
+                Luyện nói hội thoại tình huống thực tế, đổi ruột câu phản xạ 3 giây và ghi nhớ sâu ngữ điệu bản xứ.
+              </p>
+            </div>
 
-            {/* Jewel Royal Sapphire Interactive Substitution Drilling Console (Compact 2-line layout on mobile) */}
-            <div className="p-3 sm:p-4 rounded-2xl bg-gradient-to-r from-[#0055b3] via-[#0071e3] to-[#0284c7] text-white border border-sky-300/35 shadow-[0_10px_28px_rgba(0,113,227,0.22)] space-y-1.5 sm:space-y-0 sm:flex sm:items-center sm:justify-between sm:gap-3.5 min-w-0">
-              <div className="min-w-0 space-y-1 flex-1">
-                {/* Top Header Row inside Console (Includes controls inline on mobile!) */}
+            {/* Tactile Duolingo 3D Substitution Console */}
+            <div className="p-3 sm:p-4 rounded-2xl bg-white dark:bg-[#0c182c] border-2 border-blue-200 dark:border-blue-900 border-b-4 border-b-blue-300 dark:border-b-blue-950 shadow-sm space-y-2.5 sm:space-y-0 sm:flex sm:items-center sm:justify-between sm:gap-4 min-w-0">
+              <div className="min-w-0 space-y-1.5 flex-1">
+                {/* Console Header Row */}
                 <div className="flex items-center justify-between gap-2 min-w-0">
-                  <div className="flex items-center gap-1 text-[10px] font-extrabold uppercase tracking-wider text-cyan-100 min-w-0 truncate">
-                    <Sparkles size={11} className="text-white shrink-0" />
-                    <span className="truncate">Đổi ruột câu • {activeSlot.slotVi}</span>
+                  <div className="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider text-[#0071e3] dark:text-sky-400 min-w-0 truncate">
+                    <Sparkles size={13} className="text-[#0071e3] dark:text-sky-400 shrink-0" />
+                    <span className="truncate">
+                      Đổi ruột câu • <span className="text-slate-600 dark:text-slate-300 font-bold lowercase">{activeSlot.slotVi}</span>
+                    </span>
                   </div>
 
-                  {/* Mobile Inline Audio & Refresh Controls */}
-                  <div className="flex sm:hidden items-center gap-1 shrink-0">
+                  {/* Mobile Controls */}
+                  <div className="flex sm:hidden items-center gap-1.5 shrink-0">
                     <button
                       type="button"
                       onClick={handleSpeakSlot}
-                      className="px-2.5 py-1 rounded-full bg-white text-[#0055b3] text-[10px] font-extrabold flex items-center gap-1 shadow-2xs cursor-pointer"
+                      className="duo-btn duo-btn-sapphire duo-btn-xs flex items-center gap-1 font-black cursor-pointer"
                       title="Nghe câu mẫu"
                     >
-                      <Volume2 size={11} className={isSpeaking ? 'animate-bounce' : ''} />
+                      <Volume2 size={12} className={isSpeaking ? 'animate-bounce' : ''} />
                       <span>Nghe</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => setSlotIdx((prev) => (prev + 1) % QUICK_DRILL_SLOTS.length)}
-                      className="p-1 rounded-full bg-white/20 text-white border border-white/25 cursor-pointer"
+                      className="duo-btn duo-btn-white duo-btn-xs p-1.5 flex items-center justify-center cursor-pointer"
                       title="Đổi cụm từ khác"
                     >
-                      <RefreshCw size={11} />
+                      <RefreshCw size={12} />
                     </button>
                   </div>
                 </div>
 
-                <p className="text-xs sm:text-sm font-bold text-white leading-snug break-words">
+                {/* Interactive Sentence */}
+                <p className="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200 leading-snug break-words">
                   &ldquo;It&apos;s been pretty good. I&apos;m still getting used to{' '}
                   <AnimatePresence mode="wait">
                     <motion.span
@@ -167,7 +171,7 @@ function LuxuryChapterCarousel({
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -3 }}
                       transition={{ duration: 0.15 }}
-                      className="inline-block px-2 py-0.5 rounded-md bg-white text-[#0055b3] font-extrabold shadow-2xs"
+                      className="inline-block px-2.5 py-0.5 rounded-xl bg-[#0071e3] text-white font-black shadow-xs"
                     >
                       {activeSlot.slotEn}
                     </motion.span>
@@ -176,31 +180,31 @@ function LuxuryChapterCarousel({
                 </p>
               </div>
 
-              {/* Desktop Audio & Refresh Controls */}
-              <div className="hidden sm:flex items-center gap-1.5 shrink-0">
+              {/* Desktop Controls */}
+              <div className="hidden sm:flex items-center gap-2 shrink-0">
                 <button
                   type="button"
                   onClick={handleSpeakSlot}
-                  className="px-3.5 py-1.5 rounded-full bg-white hover:bg-sky-50 text-[#0055b3] text-[11px] font-extrabold flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer"
+                  className="duo-btn duo-btn-sapphire duo-btn-sm flex items-center gap-1.5 font-black cursor-pointer"
                   title="Nghe câu mẫu"
                 >
-                  <Volume2 size={13} className={isSpeaking ? 'animate-bounce' : ''} />
+                  <Volume2 size={14} className={isSpeaking ? 'animate-bounce' : ''} />
                   <span>Nghe thử</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => setSlotIdx((prev) => (prev + 1) % QUICK_DRILL_SLOTS.length)}
-                  className="p-2 rounded-full bg-white/18 hover:bg-white/28 text-white border border-white/25 transition-colors cursor-pointer"
+                  className="duo-btn duo-btn-white duo-btn-sm p-2 flex items-center justify-center cursor-pointer"
                   title="Đổi cụm từ khác"
                 >
-                  <RefreshCw size={12} />
+                  <RefreshCw size={14} />
                 </button>
               </div>
             </div>
           </div>
 
-          {/* Right: 1-Row Side-by-Side Ergonomic Buttons on Mobile, Stacked on Desktop */}
-          <div className="flex flex-row lg:flex-col items-center lg:items-end justify-between sm:justify-start gap-2 sm:gap-2.5 w-full lg:w-auto min-w-0 shrink-0">
+          {/* Right Column: Tactile Duolingo 3D Action Buttons (2-col grid on mobile, row on tablet, column on desktop) */}
+          <div className="grid grid-cols-2 sm:flex sm:flex-row lg:flex-col items-stretch lg:items-end justify-center gap-2 sm:gap-3 w-full lg:w-auto min-w-0 shrink-0">
             <button
               onClick={() => {
                 if (nextDialogue?.id) {
@@ -209,23 +213,23 @@ function LuxuryChapterCarousel({
                   onNavigateAll();
                 }
               }}
-              className="flex-1 sm:flex-none justify-center px-3 sm:px-6 py-2.5 sm:py-3.5 rounded-full bg-gradient-to-r from-[#0062cc] to-[#0077ed] hover:from-[#0058b8] hover:to-[#006be0] text-white text-xs sm:text-sm font-extrabold flex items-center gap-1.5 sm:gap-2 shadow-[0_8px_22px_rgba(0,113,227,0.30)] transition-all hover:-translate-y-0.5 cursor-pointer min-w-0"
+              className="duo-btn duo-btn-sapphire duo-btn-sm sm:duo-btn-lg flex items-center justify-center gap-1.5 sm:gap-2 w-full lg:w-auto font-black cursor-pointer shadow-md"
             >
-              <Play size={13} fill="currentColor" className="shrink-0" />
+              <Play size={15} fill="currentColor" className="shrink-0" />
               <span className="truncate">
                 {nextDialogue
-                  ? `Học tiếp Chương ${nextDialogue.chapterNumber}`
-                  : 'Vào học Giao Tiếp'}
+                  ? `Học tiếp Ch.${nextDialogue.chapterNumber}`
+                  : 'Vào học'}
               </span>
-              <ArrowRight size={14} className="shrink-0" />
+              <ArrowRight size={15} className="shrink-0 hidden xs:inline" />
             </button>
 
             <button
               onClick={onNavigateAll}
-              className="shrink-0 justify-center px-3 sm:px-5 py-2.5 sm:py-3 rounded-full bg-white/90 hover:bg-white dark:bg-white/10 dark:hover:bg-white/15 text-[#005bb5] dark:text-sky-300 border border-[#0071e3]/25 dark:border-white/20 shadow-2xs text-xs sm:text-sm font-bold transition-all cursor-pointer whitespace-nowrap"
+              className="duo-btn duo-btn-white duo-btn-sm sm:duo-btn-lg flex items-center justify-center gap-1.5 sm:gap-2 w-full lg:w-auto font-black text-[#0071e3] dark:text-sky-400 cursor-pointer whitespace-nowrap shadow-xs"
             >
-              <span className="sm:hidden">Đủ 12 Chương</span>
-              <span className="hidden sm:inline">Khám phá trọn bộ 12 Chương</span>
+              <span className="truncate">Đủ 12 chương</span>
+              <ChevronRight size={15} className="shrink-0 opacity-70 hidden xs:inline" />
             </button>
           </div>
         </div>

@@ -87,9 +87,11 @@ export default function FsrsMemoryShieldCard({
 
   return (
     <div
-      className={`relative overflow-hidden rounded-2xl sm:rounded-[28px] bg-white dark:bg-slate-900 border ${shieldTheme.border} ${
+      className={`relative overflow-hidden duo-card ${
+        isPristine ? 'duo-card-green' : isStable ? 'duo-card-orange' : 'duo-card-red'
+      } ${
         isBodyExpanded ? 'p-4 sm:p-7' : 'p-3 sm:p-4'
-      } shadow-[0_4px_24px_rgba(0,0,0,0.03)] dark:shadow-none transition-all w-full min-w-0 max-w-full ${className}`}
+      } shadow-lg transition-all w-full min-w-0 max-w-full ${className}`}
     >
       {/* Background Decorative Ambient Radial Glow */}
       <div
@@ -177,23 +179,23 @@ export default function FsrsMemoryShieldCard({
                   <button
                     type="button"
                     onClick={() => handleStartReview(shield.criticalWords)}
-                    className="flex-1 sm:flex-none px-3 sm:px-3.5 py-2 rounded-full bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white font-bold text-xs shadow-sm shadow-rose-500/20 flex items-center justify-center gap-1.5 cursor-pointer transition-all min-w-0"
+                    className="duo-btn duo-btn-red duo-btn-xs font-black animate-duo-pulse min-w-0"
                   >
-                    <Shield size={13} className="shrink-0" />
-                    <span className="truncate">Ôn ngay {shield.criticalCount} từ đỏ (~{shield.estimatedReviewMinutes}p)</span>
+                    <Shield size={13} className="shrink-0 animate-duo-wiggle" />
+                    <span className="truncate">ÔN NGAY {shield.criticalCount} TỪ ĐỎ (~{shield.estimatedReviewMinutes}p)</span>
                   </button>
                 ) : shield.fadingCount > 0 ? (
                   <button
                     type="button"
                     onClick={() => handleStartReview(shield.fadingWords)}
-                    className="flex-1 sm:flex-none px-3 sm:px-3.5 py-2 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white font-bold text-xs shadow-sm flex items-center justify-center gap-1.5 cursor-pointer transition-all min-w-0"
+                    className="duo-btn duo-btn-blue duo-btn-xs font-black min-w-0"
                   >
-                    <Zap size={13} className="shrink-0" />
-                    <span className="truncate">Củng cố {shield.fadingCount} từ</span>
+                    <Zap size={13} className="shrink-0 animate-duo-bounce" />
+                    <span className="truncate">CỦNG CỐ {shield.fadingCount} TỪ</span>
                   </button>
                 ) : (
-                  <span className="px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold border border-emerald-500/20 truncate">
-                    ✓ Độ bền tối đa 100%
+                  <span className="duo-pill duo-pill-streak text-[11px] truncate">
+                    ✓ ĐỘ BỀN TỐI ĐA 100%
                   </span>
                 )}
               </>
@@ -203,7 +205,7 @@ export default function FsrsMemoryShieldCard({
               <button
                 type="button"
                 onClick={() => setIsBodyExpanded((prev) => !prev)}
-                className="px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200/80 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center gap-1 transition-colors cursor-pointer"
+                className="duo-btn duo-btn-white duo-btn-xs font-black"
               >
                 <span>{isBodyExpanded ? 'Thu gọn' : 'Chi tiết'}</span>
                 {isBodyExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
@@ -212,7 +214,7 @@ export default function FsrsMemoryShieldCard({
               <button
                 type="button"
                 onClick={() => setShowInfoModal(true)}
-                className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 flex items-center justify-center transition-colors cursor-pointer"
+                className="duo-btn duo-btn-white w-8 h-8 rounded-xl p-0 font-black"
                 title="Tìm hiểu về cơ chế Lá Chắn Trí Nhớ"
               >
                 <Info size={14} />
@@ -307,8 +309,8 @@ export default function FsrsMemoryShieldCard({
         {/* Right: 3 Tier Breakdown Cards + Loss Aversion Alert + Action CTA (8 Cols) */}
         <div className="lg:col-span-8 space-y-4">
           
-          {/* 3 Tier Status Cards (Endowment Effect) */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+          {/* 3 Tier Status Cards (Duolingo 3D Chunky Tier Cards) */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 select-none">
             
             {/* Green Tier: Solid */}
             <div
@@ -316,22 +318,20 @@ export default function FsrsMemoryShieldCard({
                 setPreviewFilter('solid');
                 setExpandedPreview(true);
               }}
-              className={`p-3 rounded-2xl border transition-all cursor-pointer ${
-                previewFilter === 'solid' && expandedPreview
-                  ? 'bg-emerald-500/10 border-emerald-500/40 ring-1 ring-emerald-500/30'
-                  : 'bg-slate-50 dark:bg-slate-800/60 border-slate-200/80 dark:border-slate-800 hover:border-emerald-500/30'
+              className={`p-3.5 duo-card duo-card-green cursor-pointer transition-transform hover:scale-[1.02] ${
+                previewFilter === 'solid' && expandedPreview ? 'ring-2 ring-[#58cc02]' : ''
               }`}
             >
               <div className="flex items-center justify-between">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">
-                  {shield.solidCount} từ
+                <span className="w-3 h-3 rounded-full bg-[#58cc02] shadow-xs" />
+                <span className="duo-pill text-[10px] bg-emerald-100 text-[#46a302] dark:bg-emerald-950 dark:text-[#89e219] border-emerald-300">
+                  {shield.solidCount} TỪ
                 </span>
               </div>
-              <p className="text-xs font-bold text-slate-800 dark:text-slate-100 mt-2">
+              <p className="text-xs font-black text-slate-800 dark:text-slate-100 mt-2">
                 Nhớ Vững Chắc
               </p>
-              <p className="text-[11px] text-slate-400 leading-tight mt-0.5">
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight mt-0.5 font-bold">
                 Xác suất nhớ &gt; 85%, độ bền an toàn cao
               </p>
             </div>
@@ -342,22 +342,20 @@ export default function FsrsMemoryShieldCard({
                 setPreviewFilter('fading');
                 setExpandedPreview(true);
               }}
-              className={`p-3 rounded-2xl border transition-all cursor-pointer ${
-                previewFilter === 'fading' && expandedPreview
-                  ? 'bg-amber-500/10 border-amber-500/40 ring-1 ring-amber-500/30'
-                  : 'bg-slate-50 dark:bg-slate-800/60 border-slate-200/80 dark:border-slate-800 hover:border-amber-500/30'
+              className={`p-3.5 duo-card duo-card-orange cursor-pointer transition-transform hover:scale-[1.02] ${
+                previewFilter === 'fading' && expandedPreview ? 'ring-2 ring-[#ff9600]' : ''
               }`}
             >
               <div className="flex items-center justify-between">
-                <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
-                <span className="text-xs font-bold text-amber-600 dark:text-amber-400">
-                  {shield.fadingCount} từ
+                <span className="w-3 h-3 rounded-full bg-[#ff9600] shadow-xs" />
+                <span className="duo-pill text-[10px] bg-orange-100 text-[#c2410c] dark:bg-orange-950 dark:text-orange-400 border-orange-300">
+                  {shield.fadingCount} TỪ
                 </span>
               </div>
-              <p className="text-xs font-bold text-slate-800 dark:text-slate-100 mt-2">
+              <p className="text-xs font-black text-slate-800 dark:text-slate-100 mt-2">
                 Đến Hạn Ôn Tập
               </p>
-              <p className="text-[11px] text-slate-400 leading-tight mt-0.5">
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight mt-0.5 font-bold">
                 Đến lịch ôn định kỳ hoặc đang mờ dần (70–85%)
               </p>
             </div>
@@ -368,94 +366,92 @@ export default function FsrsMemoryShieldCard({
                 setPreviewFilter('critical');
                 setExpandedPreview(true);
               }}
-              className={`p-3 rounded-2xl border transition-all cursor-pointer ${
-                previewFilter === 'critical' && expandedPreview
-                  ? 'bg-rose-500/10 border-rose-500/40 ring-1 ring-rose-500/30'
-                  : 'bg-slate-50 dark:bg-slate-800/60 border-slate-200/80 dark:border-slate-800 hover:border-rose-500/30'
+              className={`p-3.5 duo-card duo-card-red cursor-pointer transition-transform hover:scale-[1.02] ${
+                previewFilter === 'critical' && expandedPreview ? 'ring-2 ring-[#ff4b4b]' : ''
               }`}
             >
               <div className="flex items-center justify-between">
-                <span className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse" />
-                <span className="text-xs font-bold text-rose-600 dark:text-rose-400">
-                  {shield.criticalCount} từ
+                <span className="w-3 h-3 rounded-full bg-[#ff4b4b] animate-pulse shadow-xs" />
+                <span className="duo-pill text-[10px] bg-rose-100 text-[#b91c1c] dark:bg-rose-950 dark:text-rose-400 border-rose-300">
+                  {shield.criticalCount} TỪ
                 </span>
               </div>
-              <p className="text-xs font-bold text-slate-800 dark:text-slate-100 mt-2">
+              <p className="text-xs font-black text-slate-800 dark:text-slate-100 mt-2">
                 Nguy Cơ Quên Sạch
               </p>
-              <p className="text-[11px] text-slate-400 leading-tight mt-0.5">
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight mt-0.5 font-bold">
                 Suy giảm sâu (&lt; 70%) hoặc vừa quên, cần cứu ngay!
               </p>
             </div>
 
           </div>
 
-          {/* Loss Aversion Warning Banner */}
-          <div className="p-3 sm:p-3.5 rounded-2xl bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/25 flex items-center justify-between gap-3 text-xs">
-            <div className="flex items-center gap-2.5 text-amber-800 dark:text-amber-300 font-medium">
-              <AlertTriangle size={16} className="shrink-0 text-amber-600 dark:text-amber-400" />
+          {/* Loss Aversion Warning Banner (Duolingo Cute Alert Pill) */}
+          <div className="p-3.5 rounded-2xl border-2 border-amber-300 dark:border-amber-800 border-b-4 border-b-amber-400 dark:border-b-amber-950 bg-amber-50 dark:bg-amber-950/40 flex items-center justify-between gap-3 text-xs">
+            <div className="flex items-center gap-2.5 text-amber-900 dark:text-amber-200 font-extrabold">
+              <AlertTriangle size={18} className="shrink-0 text-amber-600 dark:text-amber-400 animate-duo-bounce" />
               <span>{shield.warningBanner}</span>
             </div>
             {shield.criticalCount > 0 && (
-              <span className="shrink-0 font-bold text-amber-700 dark:text-amber-300 hidden sm:inline">
+              <span className="shrink-0 font-black text-amber-700 dark:text-amber-300 hidden sm:inline">
                 Ước tính ~{shield.estimatedReviewMinutes} phút
               </span>
             )}
           </div>
 
-          {/* CTA Actions */}
+          {/* CTA Actions (Duolingo 3D Chunky Push Buttons) */}
           <div className="flex flex-wrap items-center gap-3 pt-1">
             {shield.criticalCount > 0 ? (
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.97 }}
+              <button
+                type="button"
                 onClick={() => handleStartReview(shield.criticalWords, shield.healthPercentage)}
-                className="flex-1 sm:flex-none px-6 py-3.5 rounded-full bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white font-bold text-xs sm:text-sm shadow-md shadow-rose-500/25 flex items-center justify-center gap-2 cursor-pointer transition-all"
+                className="duo-btn duo-btn-red duo-btn-md font-black shadow-md animate-duo-pulse flex-1 sm:flex-none"
               >
-                <Shield size={16} />
-                <span>Bảo Vệ Lá Chắn — Ôn ngay {shield.criticalCount} từ đỏ (~{shield.estimatedReviewMinutes}&apos;)</span>
-              </motion.button>
+                <Shield size={16} className="animate-duo-wiggle" />
+                <span>BẢO VỆ LÁ CHẮN — ÔN NGAY {shield.criticalCount} TỪ ĐỎ (~{shield.estimatedReviewMinutes}&apos;)</span>
+              </button>
             ) : shield.fadingCount > 0 ? (
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.97 }}
+              <button
+                type="button"
                 onClick={() => handleStartReview(shield.fadingWords, shield.healthPercentage)}
-                className="flex-1 sm:flex-none px-6 py-3.5 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white font-bold text-xs sm:text-sm shadow-md shadow-blue-500/25 flex items-center justify-center gap-2 cursor-pointer transition-all"
+                className="duo-btn duo-btn-blue duo-btn-md font-black shadow-md flex-1 sm:flex-none"
               >
-                <Zap size={16} />
-                <span>Củng Cố Lá Chắn — Ôn {shield.fadingCount} từ mờ nhạt</span>
-              </motion.button>
+                <Zap size={16} className="animate-duo-bounce" />
+                <span>CỦNG CỐ LÁ CHẮN — ÔN {shield.fadingCount} TỪ MỜ NHẠT</span>
+              </button>
             ) : (
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.97 }}
+              <button
+                type="button"
                 onClick={() => navigate('/vocab')}
-                className="flex-1 sm:flex-none px-6 py-3.5 rounded-full bg-[#0071e3] hover:bg-[#0077ED] text-white font-bold text-xs sm:text-sm shadow-md shadow-blue-500/25 flex items-center justify-center gap-2 cursor-pointer transition-all"
+                className="duo-btn duo-btn-green duo-btn-md font-black shadow-md flex-1 sm:flex-none"
               >
-                <Sparkles size={16} />
-                <span>Lá Chắn Đạt 100% — Học Thêm Từ Mới</span>
-              </motion.button>
+                <Sparkles size={16} className="animate-duo-wiggle" />
+                <span>LÁ CHẮN 100% — HỌC TIẾP TỪ MỚI</span>
+              </button>
             )}
 
             <button
+              type="button"
               onClick={() => setExpandedPreview((prev) => !prev)}
-              className="px-4 py-3 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 font-semibold text-xs transition-colors flex items-center gap-1.5 cursor-pointer"
+              className="duo-btn duo-btn-white duo-btn-md font-black text-xs"
             >
               <span>{expandedPreview ? 'Thu gọn danh sách' : 'Xem chi tiết các từ'}</span>
-              {expandedPreview ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+              {expandedPreview ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
             </button>
           </div>
         </div>
       </div>
 
-      {/* 3. Mascot Bino Coaching Message */}
-      <div className="relative z-10 mt-5 pt-4 border-t border-slate-200/70 dark:border-slate-800 flex items-start gap-3">
-        <div className="w-8 h-8 rounded-full bg-amber-400 text-slate-950 flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
-          🐱
+      {/* 3. Duolingo Cartoon Mascot Coaching Speech Bubble */}
+      <div className="relative z-10 mt-5 pt-4 border-t border-slate-200/70 dark:border-slate-800 flex items-center gap-3">
+        <div className="w-11 h-11 rounded-2xl bg-amber-400 border-2 border-amber-300 border-b-4 border-b-amber-600 flex items-center justify-center text-xl shrink-0 shadow-sm animate-duo-bounce">
+          🦉
         </div>
-        <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed italic my-auto">
-          <strong>Bino nhắc nhở:</strong> &ldquo;{shield.tier.mascotMessage}&rdquo;
-        </p>
+        <div className="duo-bubble flex-1 py-2 px-3.5">
+          <p className="text-xs text-slate-700 dark:text-slate-200 leading-relaxed font-bold">
+            <strong className="text-[#58cc02] dark:text-[#89e219]">Duo Nhắc Nhở:</strong> &ldquo;{shield.tier.mascotMessage}&rdquo;
+          </p>
+        </div>
       </div>
 
       {/* 4. Expandable Word Preview Drawer */}

@@ -201,14 +201,14 @@ export default function BinoFlashcardReviewPage() {
         <motion.div 
           initial={{ opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="glass-card p-7 sm:p-10 rounded-3xl border border-slate-200 dark:border-slate-800 text-center space-y-6 shadow-2xl bg-white dark:bg-slate-900"
+          className="duo-card p-7 sm:p-10 rounded-3xl text-center space-y-6"
         >
-          <div className="w-20 h-20 rounded-3xl bg-gradient-to-tr from-amber-500 to-orange-500 text-white flex items-center justify-center mx-auto shadow-xl shadow-orange-500/25">
+          <div className="w-20 h-20 rounded-3xl bg-gradient-to-tr from-amber-400 to-yellow-400 text-slate-900 flex items-center justify-center mx-auto shadow-xl shadow-amber-400/25 animate-duo-bounce">
             {totalSavedCount === 0 ? <BookOpen size={38} /> : <Award size={42} />}
           </div>
 
           <div className="space-y-2.5">
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white uppercase tracking-wide">
               {totalSavedCount === 0 
                 ? 'Chưa Có Từ Vựng Nào Trong Bộ Flashcard!' 
                 : 'Đã Hoàn Thành Buổi Ôn Tập Hôm Nay! 🎉'}
@@ -224,39 +224,35 @@ export default function BinoFlashcardReviewPage() {
 
           {/* Statistics summary card when user has saved words */}
           {totalSavedCount > 0 && (
-            <div className="grid grid-cols-2 gap-3 max-w-sm mx-auto p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/70 text-left">
+            <div className="grid grid-cols-2 gap-3 max-w-sm mx-auto p-4 rounded-2xl duo-card-green text-left">
               <div>
-                <span className="text-[11px] font-semibold text-slate-400">Tổng từ đã lưu:</span>
+                <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Tổng từ đã lưu:</span>
                 <p className="text-lg font-black text-slate-800 dark:text-slate-100">{totalSavedCount} từ</p>
               </div>
               <div>
-                <span className="text-[11px] font-semibold text-slate-400">Trạng thái trí nhớ:</span>
-                <p className="text-lg font-black text-emerald-600 dark:text-emerald-400">Đạt chuẩn 90%</p>
+                <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Trạng thái trí nhớ:</span>
+                <p className="text-lg font-black text-[#58cc02] dark:text-[#58cc02]">Đạt chuẩn 90%</p>
               </div>
             </div>
           )}
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
             {totalSavedCount > 0 && (
-              <motion.button
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
+              <button
                 onClick={handleStartCramMode}
-                className="w-full sm:w-auto px-5 py-3 rounded-2xl border border-amber-300 dark:border-amber-700 bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/50 text-amber-900 dark:text-amber-200 font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer"
+                className="duo-btn duo-btn-white w-full sm:w-auto px-5 py-3 text-xs sm:text-sm flex items-center justify-center gap-2"
               >
                 <RefreshCw size={15} />
                 <span>Ôn tập tự do ({totalSavedCount} thẻ)</span>
-              </motion.button>
+              </button>
             )}
 
-            <motion.button
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
+            <button
               onClick={() => navigate('/communication')}
-              className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 text-white font-extrabold rounded-2xl text-xs sm:text-sm shadow-lg shadow-blue-500/25 transition-all cursor-pointer"
+              className="duo-btn duo-btn-green w-full sm:w-auto px-6 py-3 text-xs sm:text-sm flex items-center justify-center gap-2"
             >
-              Vào Học Tiếp 72 Bài Hội Thoại
-            </motion.button>
+              <span>Vào Học Tiếp 72 Bài Hội Thoại</span>
+            </button>
           </div>
         </motion.div>
       ) : (
@@ -423,55 +419,47 @@ export default function BinoFlashcardReviewPage() {
             <motion.div 
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="grid grid-cols-2 sm:grid-cols-4 gap-2.5"
+              className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3"
             >
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.94 }}
+              <button
                 onClick={() => handleGrade(0)}
-                className="p-3 sm:p-3.5 bg-red-50 hover:bg-red-100 dark:bg-red-950/40 text-red-700 dark:text-red-300 rounded-2xl border border-red-200 dark:border-red-900/60 text-xs font-bold flex flex-col items-center gap-1 transition-all shadow-sm cursor-pointer"
+                className="duo-btn duo-btn-red py-2.5 sm:py-3.5 px-2 rounded-2xl flex flex-col items-center gap-1 shadow-sm"
               >
-                <span className="font-black text-sm">Quên hẳn</span>
-                <span className="text-[11px] px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-900/50 font-extrabold">
+                <span className="font-black text-xs sm:text-sm tracking-wide">Quên hẳn</span>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-black/20 font-black">
                   {fsrsPreviews[0]}
                 </span>
-              </motion.button>
+              </button>
 
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.94 }}
+              <button
                 onClick={() => handleGrade(1)}
-                className="p-3 sm:p-3.5 bg-orange-50 hover:bg-orange-100 dark:bg-orange-950/40 text-orange-700 dark:text-orange-300 rounded-2xl border border-orange-200 dark:border-orange-900/60 text-xs font-bold flex flex-col items-center gap-1 transition-all shadow-sm cursor-pointer"
+                className="duo-btn duo-btn-orange py-2.5 sm:py-3.5 px-2 rounded-2xl flex flex-col items-center gap-1 shadow-sm"
               >
-                <span className="font-black text-sm">Thấy khó</span>
-                <span className="text-[11px] px-2 py-0.5 rounded-full bg-orange-100 dark:bg-orange-900/50 font-extrabold">
+                <span className="font-black text-xs sm:text-sm tracking-wide">Thấy khó</span>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-black/20 font-black">
                   {fsrsPreviews[1]}
                 </span>
-              </motion.button>
+              </button>
 
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.94 }}
+              <button
                 onClick={() => handleGrade(2)}
-                className="p-3 sm:p-3.5 bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 rounded-2xl border border-blue-200 dark:border-blue-900/60 text-xs font-bold flex flex-col items-center gap-1 transition-all shadow-sm cursor-pointer"
+                className="duo-btn duo-btn-blue py-2.5 sm:py-3.5 px-2 rounded-2xl flex flex-col items-center gap-1 shadow-sm"
               >
-                <span className="font-black text-sm">Nhớ tốt</span>
-                <span className="text-[11px] px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/50 font-extrabold">
+                <span className="font-black text-xs sm:text-sm tracking-wide">Nhớ tốt ✓</span>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-black/20 font-black">
                   {fsrsPreviews[2]}
                 </span>
-              </motion.button>
+              </button>
 
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.94 }}
+              <button
                 onClick={() => handleGrade(3)}
-                className="p-3 sm:p-3.5 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 rounded-2xl border border-emerald-200 dark:border-emerald-900/60 text-xs font-bold flex flex-col items-center gap-1 transition-all shadow-sm cursor-pointer"
+                className="duo-btn duo-btn-green py-2.5 sm:py-3.5 px-2 rounded-2xl flex flex-col items-center gap-1 shadow-sm"
               >
-                <span className="font-black text-sm">Quá dễ</span>
-                <span className="text-[11px] px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/50 font-extrabold">
+                <span className="font-black text-xs sm:text-sm tracking-wide">Quá dễ ⚡</span>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-black/20 font-black">
                   {fsrsPreviews[3]}
                 </span>
-              </motion.button>
+              </button>
             </motion.div>
           ) : (
             <div className="p-4 text-center text-xs font-bold text-slate-400 bg-slate-50 dark:bg-slate-850 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800">

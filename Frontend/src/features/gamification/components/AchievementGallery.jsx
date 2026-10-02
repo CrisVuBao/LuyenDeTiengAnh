@@ -108,28 +108,28 @@ export default function AchievementGallery() {
     <div className="space-y-6">
       
       {/* Banner Summary */}
-      <div className="p-6 rounded-2xl bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-transparent border border-amber-200/80 dark:border-amber-900/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="p-6 rounded-3xl duo-card-yellow flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1">
-          <span className="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
-            <Trophy size={14} /> Huy hiệu vinh danh
+          <span className="text-xs font-black uppercase tracking-wider text-[#8a5800] flex items-center gap-1.5">
+            <Trophy size={16} className="animate-duo-bounce" /> Bộ Sưu Tập Huy Hiệu Vinh Danh
           </span>
-          <h3 className="text-xl font-black text-slate-900 dark:text-white">
-            Bộ Sưu Tập Thành Tựu ({totalUnlocked}/{displayList.length})
+          <h3 className="text-xl sm:text-2xl font-black text-[#5c3a00] uppercase tracking-tight">
+            Thành Tựu Đã Đạt ({totalUnlocked}/{displayList.length})
           </h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
-            Chinh phục các thử thách để mở khóa huy hiệu độc quyền và nhận thêm điểm thưởng XP.
+          <p className="text-xs text-[#8a5800] font-bold">
+            Chinh phục các thử thách để mở khóa huy hiệu độc quyền và nhận thêm điểm thưởng XP!
           </p>
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="w-28 sm:w-36 space-y-1">
-            <div className="flex justify-between text-xs font-bold text-slate-700 dark:text-slate-300">
+          <div className="w-28 sm:w-36 space-y-1.5">
+            <div className="flex justify-between text-xs font-black text-[#5c3a00]">
               <span>Đã mở</span>
               <span>{progressPercent}%</span>
             </div>
-            <div className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+            <div className="w-full h-3 bg-black/15 rounded-full overflow-hidden p-0.5">
               <div 
-                className="h-full bg-gradient-to-r from-amber-500 to-orange-500 rounded-full transition-all duration-800"
+                className="h-full bg-[#58cc02] rounded-full transition-all duration-800"
                 style={{ width: `${progressPercent}%` }}
               />
             </div>
@@ -150,10 +150,10 @@ export default function AchievementGallery() {
           <button
             key={cat.id}
             onClick={() => setSelectedCategory(cat.id)}
-            className={`px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+            className={`px-4 py-2 text-xs font-black uppercase tracking-wider ${
               selectedCategory === cat.id
-                ? 'bg-[#0071e3] text-white shadow-sm'
-                : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200/80 dark:hover:bg-slate-700'
+                ? 'duo-btn duo-btn-purple duo-btn-xs'
+                : 'duo-btn duo-btn-white duo-btn-xs text-slate-600 dark:text-slate-300'
             }`}
           >
             {cat.label}
@@ -167,17 +167,17 @@ export default function AchievementGallery() {
           <motion.div
             key={b.badgeId}
             whileHover={{ y: -3 }}
-            className={`p-4 rounded-2xl border transition-all flex items-start gap-3.5 ${
+            className={`p-4 rounded-2xl flex items-start gap-3.5 transition-all ${
               b.isUnlocked
-                ? 'bg-white dark:bg-slate-900 border-amber-300/80 dark:border-amber-700/60 shadow-[0_4px_20px_rgb(245,158,11,0.08)]'
-                : 'bg-slate-50/60 dark:bg-slate-800/30 border-slate-200/60 dark:border-slate-800 opacity-60'
+                ? 'duo-card border-b-4 border-amber-400'
+                : 'duo-card opacity-50 grayscale'
             }`}
           >
             {/* Icon */}
-            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shrink-0 ${
+            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-3xl shrink-0 ${
               b.isUnlocked
-                ? 'bg-amber-100/80 dark:bg-amber-950/60 ring-2 ring-amber-400/40'
-                : 'bg-slate-200/80 dark:bg-slate-800 grayscale'
+                ? 'bg-amber-100 dark:bg-amber-950/60 animate-duo-bounce'
+                : 'bg-slate-200/80 dark:bg-slate-800'
             }`}>
               {b.icon}
             </div>
@@ -185,29 +185,29 @@ export default function AchievementGallery() {
             {/* Info */}
             <div className="space-y-1 flex-1 min-w-0">
               <div className="flex items-center justify-between gap-2">
-                <h4 className={`text-xs font-bold truncate ${
+                <h4 className={`text-xs font-black truncate ${
                   b.isUnlocked ? 'text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400'
                 }`}>
                   {b.title}
                 </h4>
                 {b.isUnlocked ? (
-                  <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/50 px-2 py-0.5 rounded-full shrink-0 flex items-center gap-1">
+                  <span className="duo-pill-streak text-[10px] font-black px-2 py-0.5 shrink-0 flex items-center gap-1">
                     <CheckCircle2 size={11} /> Đã mở
                   </span>
                 ) : (
-                  <span className="text-[10px] font-semibold text-slate-400 flex items-center gap-0.5 shrink-0">
+                  <span className="text-[10px] font-bold text-slate-400 flex items-center gap-0.5 shrink-0">
                     <Lock size={10} /> Khóa
                   </span>
                 )}
               </div>
 
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed font-medium">
                 {b.description}
               </p>
 
               <div className="pt-1 flex items-center justify-between text-[10px]">
-                <span className="font-bold text-[#0071e3] dark:text-sky-400">
-                  +{b.xp} XP
+                <span className="font-black text-[#1cb0f6] dark:text-[#1cb0f6]">
+                  +{b.xp} XP Thưởng
                 </span>
               </div>
             </div>

@@ -27,32 +27,32 @@ export default function LeaderboardPanel() {
   return (
     <div className="space-y-8">
       
-      {/* Top Banner */}
-      <div className="p-6 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-lg shadow-blue-500/20">
+      {/* Top Banner (Duolingo League Banner) */}
+      <div className="p-6 rounded-3xl duo-card-blue flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1 max-w-xl">
-          <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-white/20 text-white text-xs font-semibold">
-            <Sparkles size={13} />
-            <span>Thi đua tuần này • Reset vào 23:59 Chủ Nhật</span>
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 text-white text-xs font-black uppercase tracking-wider">
+            <Sparkles size={14} className="animate-duo-bounce" />
+            <span>Đấu Trường Kim Cương • Reset 23:59 CN</span>
           </div>
-          <h3 className="text-xl sm:text-2xl font-black">
+          <h3 className="text-xl sm:text-2xl font-black text-white uppercase tracking-tight">
             Bảng Xếp Hạng Cao Thủ {brandName}
           </h3>
-          <p className="text-xs sm:text-sm text-white/80">
-            Học tập, hoàn thành nhiệm vụ và luyện phản xạ mỗi ngày để tích lũy XP leo đỉnh vinh quang.
+          <p className="text-xs sm:text-sm text-white/90 font-medium">
+            Học tập, hoàn thành nhiệm vụ và luyện phản xạ mỗi ngày để tích lũy XP leo đỉnh vinh quang!
           </p>
         </div>
 
         {profile && (
-          <div className="p-3.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 text-center shrink-0">
-            <span className="text-[11px] font-semibold text-white/80 block">
-              {currentUser?.role === 'Admin' || !profile.leaderboardRank ? 'Trạng thái xếp hạng' : 'Hạng của bạn'}
+          <div className="p-4 rounded-2xl duo-card-yellow text-center shrink-0">
+            <span className="text-[11px] font-black text-[#8a5800] uppercase tracking-wider block">
+              {currentUser?.role === 'Admin' || !profile.leaderboardRank ? 'Trạng thái' : 'Hạng của bạn'}
             </span>
-            <span className="text-xl sm:text-2xl font-black text-amber-300">
+            <span className="text-2xl sm:text-3xl font-black text-[#e08500]">
               {currentUser?.role === 'Admin' || !profile.leaderboardRank ? 'Quản Trị Viên' : `#${profile.leaderboardRank}`}
             </span>
-            <span className="text-[11px] text-white/80 block mt-0.5">
+            <span className="text-[11px] font-bold text-[#8a5800] block mt-0.5">
               {currentUser?.role === 'Admin' || !profile.leaderboardRank 
-                ? '(Không tham gia BXH học viên)' 
+                ? '(Không tham gia BXH)' 
                 : `${profile.weeklyXP || profile.totalXP || 0} XP tuần này`}
             </span>
           </div>
@@ -155,8 +155,8 @@ export default function LeaderboardPanel() {
       )}
 
       {/* Ranks 4 to 20 Table */}
-      <div className="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 overflow-hidden shadow-xs">
-        <div className="p-4 border-b border-slate-100 dark:border-slate-800 font-bold text-xs text-slate-400 uppercase tracking-wider flex items-center justify-between">
+      <div className="duo-card overflow-hidden">
+        <div className="p-4 border-b border-slate-200 dark:border-slate-800 font-black text-xs text-slate-400 uppercase tracking-wider flex items-center justify-between">
           <span>Hạng & Học viên</span>
           <span>Điểm tuần</span>
         </div>
@@ -171,7 +171,7 @@ export default function LeaderboardPanel() {
                 key={entry.userId || idx}
                 className={`p-3.5 sm:p-4 flex items-center justify-between gap-3 transition-colors ${
                   isMe
-                    ? 'bg-blue-50/80 dark:bg-blue-950/40 ring-1 ring-blue-500/50'
+                    ? 'bg-blue-500/10 dark:bg-blue-500/15 border-l-4 border-l-[#1cb0f6]'
                     : 'hover:bg-slate-50/80 dark:hover:bg-slate-800/40'
                 }`}
               >
@@ -185,29 +185,29 @@ export default function LeaderboardPanel() {
                     #{rank}
                   </span>
 
-                  <div className="w-9 h-9 rounded-full bg-[#0071e3] text-white flex items-center justify-center font-bold text-xs shrink-0">
+                  <div className="w-10 h-10 rounded-2xl bg-[#1cb0f6] text-white flex items-center justify-center font-black text-sm shadow-sm shrink-0 border-b-2 border-[#1899d6]">
                     {entry.fullName?.charAt(0) || 'U'}
                   </div>
 
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                      <p className="font-bold text-xs sm:text-sm text-slate-800 dark:text-slate-200 truncate">
+                      <p className="font-black text-xs sm:text-sm text-slate-800 dark:text-slate-100 truncate">
                         {entry.fullName}
                       </p>
                       {isMe && (
-                        <span className="px-2 py-0.5 rounded-full bg-[#0071e3] text-white text-[10px] font-black shrink-0">
-                          Bạn
+                        <span className="px-2 py-0.5 rounded-full duo-pill-xp text-[10px] font-black shrink-0">
+                          BẠN
                         </span>
                       )}
                     </div>
                     <div className="flex items-center gap-2 text-[11px] text-slate-400 mt-0.5">
-                      <span className="text-[#0071e3] dark:text-sky-400 font-semibold">
+                      <span className="text-[#1cb0f6] dark:text-[#1cb0f6] font-bold">
                         Lv.{entry.currentLevel || 1} {entry.levelTitle || ''}
                       </span>
                       {entry.currentStreak > 0 && (
                         <>
                           <span>•</span>
-                          <span className="text-orange-500 font-semibold flex items-center gap-0.5">
+                          <span className="text-orange-500 font-bold flex items-center gap-0.5">
                             <Flame size={12} className="fill-orange-500" />
                             {entry.currentStreak} ngày
                           </span>
@@ -218,10 +218,10 @@ export default function LeaderboardPanel() {
                 </div>
 
                 <div className="text-right shrink-0">
-                  <span className="text-sm sm:text-base font-black text-[#0071e3] dark:text-sky-400">
+                  <span className="text-sm sm:text-base font-black text-[#1cb0f6] dark:text-[#1cb0f6]">
                     {entry.weeklyXP || entry.totalXP || 0}
                   </span>
-                  <span className="text-[11px] text-slate-400 font-semibold block">
+                  <span className="text-[10px] text-slate-400 font-black uppercase tracking-wider block">
                     XP
                   </span>
                 </div>

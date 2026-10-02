@@ -6,12 +6,12 @@ import AnimatedCounter from './AnimatedCounter';
  * LuxuryTripleActivityRing - Inspired by Apple Watch Ultra & Haute Horlogerie.
  * Supports interactive ring focus (`activeRingIndex`) and click-to-select pillar.
  * 1. Outer Ring (index 0): Giao Tiếp Thực Chiến (Electric Sapphire #0071E3)
- * 2. Middle Ring (index 1): Phản Xạ 50 Chủ Đề (Sky Sapphire #38BDF8)
+ * 2. Middle Ring (index 1): Phản Xạ 50 Chủ Đề (Electric Violet #8B5CF6)
  * 3. Inner Ring (index 2): 3000 Từ Vựng FSRS (Emerald Diamond #10B981)
  */
 export default function LuxuryTripleActivityRing({
   ring1 = { label: 'Hội Thoại', percent: 0, color: '#0071E3' },
-  ring2 = { label: 'Phản Xạ', percent: 0, color: '#38BDF8' },
+  ring2 = { label: 'Phản Xạ', percent: 0, color: '#8B5CF6' },
   ring3 = { label: 'Từ Vựng', percent: 0, color: '#10B981' },
   overallScore = 0,
   activeRingIndex = null, // null = overall, 0 = ring1, 1 = ring2, 2 = ring3
@@ -132,7 +132,7 @@ export default function LuxuryTripleActivityRing({
           }}
         />
 
-        {/* Animated Progress 2 (Middle - Sky Blue) */}
+        {/* Animated Progress 2 (Middle - Electric Violet) */}
         <motion.circle
           cx={center}
           cy={center}

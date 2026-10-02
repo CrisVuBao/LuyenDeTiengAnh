@@ -45,46 +45,50 @@ export default function GamificationHubPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 min-w-0">
         <button
           onClick={() => navigate('/home')}
-          className="inline-flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors cursor-pointer self-start"
+          className="duo-btn duo-btn-white duo-btn-xs inline-flex items-center gap-2 self-start"
         >
           <ArrowLeft size={16} />
           <span>Quay lại Trang chủ</span>
         </button>
 
         {profile && (
-          <div className="inline-flex flex-wrap items-center gap-2 sm:gap-3 px-3.5 sm:px-4 py-1.5 rounded-2xl sm:rounded-full bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-xs font-bold shadow-xs max-w-full">
-            <span className="text-[#0071e3] dark:text-sky-400 truncate">
+          <div className="flex flex-wrap items-center gap-2 max-w-full">
+            <span className="px-3.5 py-1.5 rounded-full duo-card text-xs font-black text-[#1cb0f6] dark:text-[#1cb0f6]">
               Lv.{profile.currentLevel || 1} {profile.levelTitle || 'Tân binh'}
             </span>
-            <span className="text-slate-300 dark:text-slate-600">•</span>
-            <span className="text-amber-500 shrink-0">
-              {profile.totalXP || 0} Total XP
+            <span className="duo-pill-xp text-xs font-black">
+              ⚡ {profile.totalXP || 0} XP
             </span>
-            <span className="text-slate-300 dark:text-slate-600">•</span>
-            <span className="text-orange-500 flex items-center gap-1 shrink-0">
-              <Flame size={13} className="fill-orange-500" />
-              {profile.currentStreak || 0} ngày
+            <span className="duo-pill-streak text-xs font-black">
+              🔥 {profile.currentStreak || 0} ngày
             </span>
           </div>
         )}
       </div>
 
-      {/* Main Tab Pills */}
-      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar sm:flex-wrap border-b border-slate-200 dark:border-slate-800 pb-3 w-full max-w-full">
+      {/* Main Tab Pills (Duolingo 3D Feather Tabs) */}
+      <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto no-scrollbar sm:flex-wrap pb-2 w-full max-w-full">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
+          
+          let activeClass = 'duo-btn-blue';
+          if (tab.id === 'leaderboard') activeClass = 'duo-btn-yellow';
+          if (tab.id === 'achievements') activeClass = 'duo-btn-purple';
+          if (tab.id === 'streak') activeClass = 'duo-btn-orange';
+          if (tab.id === 'quests') activeClass = 'duo-btn-green';
+
           return (
             <button
               key={tab.id}
               onClick={() => handleTabChange(tab.id)}
-              className={`flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs font-bold whitespace-nowrap shrink-0 transition-all cursor-pointer ${
+              className={`flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-black whitespace-nowrap shrink-0 uppercase tracking-wide ${
                 isActive
-                  ? 'bg-[#0071e3] text-white shadow-md shadow-blue-500/25'
-                  : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800'
+                  ? `duo-btn ${activeClass}`
+                  : 'duo-btn duo-btn-white text-slate-600 dark:text-slate-300'
               }`}
             >
-              <Icon size={15} className="shrink-0" />
+              <Icon size={16} className={`shrink-0 ${isActive ? 'animate-duo-bounce' : ''}`} />
               <span>{tab.label}</span>
             </button>
           );

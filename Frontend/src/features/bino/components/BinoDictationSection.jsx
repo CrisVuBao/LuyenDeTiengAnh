@@ -26,11 +26,11 @@ export default function BinoDictationSection({
     <motion.div 
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      className="glass-card p-5 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-6 shadow-xl"
+      className="duo-card p-5 sm:p-8 rounded-3xl space-y-6"
     >
       <div>
         <h3 className="text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
-          <FileText size={20} className="text-emerald-500" />
+          <FileText size={20} className="text-[#58cc02]" />
           <span>Luyện Nghe & Chép Chính Tả (Dictation)</span>
         </h3>
         <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 font-normal">
@@ -38,26 +38,26 @@ export default function BinoDictationSection({
         </p>
       </div>
 
-      <div className="p-5 sm:p-6 rounded-2xl bg-slate-50 dark:bg-slate-850 border border-slate-200 dark:border-slate-700 space-y-4">
+      <div className="p-5 sm:p-6 rounded-2xl duo-card text-left space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-2.5">
-          <span className="text-xs font-bold text-slate-400">
+          <span className="text-xs font-black text-slate-400 uppercase tracking-wider">
             Câu {dictationIndex + 1} / {lesson.dialogueLines.length}
           </span>
 
           <div className="flex flex-wrap items-center gap-2">
             <button
               onClick={() => speakText(currentDictationLine.englishText, currentDictationLine.characterName, 0.95)}
-              className="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-md shadow-blue-500/20 active:scale-95 transition-all cursor-pointer"
+              className="duo-btn duo-btn-blue duo-btn-sm flex items-center gap-1.5"
             >
               <Volume2 size={15} /> Nghe Tự Nhiên (0.95x)
             </button>
 
             <button
               onClick={() => speakText(currentDictationLine.englishText, currentDictationLine.characterName, 0.75)}
-              className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-md shadow-emerald-500/20 active:scale-95 transition-all cursor-pointer"
+              className="duo-btn duo-btn-yellow duo-btn-sm flex items-center gap-1.5"
             >
               <Headphones size={15} />
-              <span>Nghe Chậm Rãi (0.75x)</span>
+              <span>Nghe Chậm Rãi 🐢 (0.75x)</span>
             </button>
 
             <button
@@ -118,7 +118,7 @@ export default function BinoDictationSection({
                 }
               }).catch(() => {});
             }}
-            className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-md shadow-emerald-500/20 active:scale-95 cursor-pointer"
+            className="duo-btn duo-btn-green py-2.5 sm:py-3 px-5 sm:px-6 text-xs sm:text-sm uppercase tracking-wider"
           >
             Kiểm Tra Đáp Án
           </button>
@@ -132,7 +132,7 @@ export default function BinoDictationSection({
               }
             }}
             disabled={dictationIndex >= lesson.dialogueLines.length - 1}
-            className="px-4 py-2.5 rounded-xl bg-slate-200 dark:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 disabled:opacity-40 cursor-pointer"
+            className="duo-btn duo-btn-white py-2.5 sm:py-3 px-4 sm:px-5 text-xs sm:text-sm uppercase tracking-wider disabled:opacity-40"
           >
             Câu Kế Tiếp ➔
           </button>

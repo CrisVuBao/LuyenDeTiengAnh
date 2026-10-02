@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Sparkles, Search, BookOpen, Layers, CheckCircle2, 
+  Sparkles, Search, BookOpen, Layers, CheckCircle2, TrendingUp,
   Star, Trophy, ArrowRight, Play, Volume2, Filter, Zap, RotateCcw,
   Activity, Sun, Compass, Hash, ShoppingBag, Moon, HeartHandshake,
   UtensilsCrossed, TreePine, Sofa, Cross, Laptop, Home, Store,
@@ -112,66 +112,122 @@ export default function VocabOverviewPage() {
         description="Học 3000 từ vựng Oxford thông dụng nhất theo 60 chủ đề cốt lõi với flashcard tương tác và phát âm chuẩn."
       />
       
-      {/* 1. Compact Apple-Style Hero Banner */}
-      <div className="relative overflow-hidden rounded-2xl sm:rounded-[28px] bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white p-4 sm:p-6 lg:p-7 border border-slate-800 shadow-xl w-full min-w-0 max-w-full">
+      {/* 1. Tactile Duolingo 3D Chunky Hero Card with Rich Emerald Atmosphere */}
+      <div className="duo-card p-4 sm:p-7 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-emerald-50/95 via-teal-50/70 to-green-50/85 dark:from-[#062419] dark:via-[#093322] dark:to-[#041a12] border-2 border-emerald-200 dark:border-emerald-800/80 border-b-6 border-b-[#10b981] dark:border-b-[#059669] shadow-md w-full min-w-0 max-w-full relative overflow-hidden space-y-4 sm:space-y-5">
+        {/* Soft Ambient Glows & Top Gloss Shimmer */}
+        <div className="pointer-events-none absolute -right-16 -top-16 w-64 h-64 bg-gradient-to-br from-[#10b981]/20 to-teal-400/15 rounded-full blur-2xl" />
+        <div className="pointer-events-none absolute -left-16 -bottom-16 w-64 h-64 bg-gradient-to-tr from-emerald-500/15 to-green-400/15 rounded-full blur-2xl" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#10b981]/60 to-transparent" />
+
         <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6 min-w-0">
-          {/* Left: Title + Quick Resume CTA */}
-          <div className="space-y-2 sm:space-y-3 max-w-2xl min-w-0">
-            <div className="flex flex-wrap items-center gap-2 min-w-0">
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-500/20 text-sky-300 text-[11px] font-bold border border-blue-400/30 max-w-full">
-                <Sparkles size={12} className="shrink-0" />
-                <span className="truncate">Oxford &amp; Cambridge • 60 Chủ Đề Cốt Lõi</span>
+          {/* Left: Title + Description */}
+          <div className="space-y-2 sm:space-y-2.5 max-w-2xl min-w-0 flex-1">
+            <div className="flex items-center justify-between sm:justify-start gap-1.5 sm:gap-2 flex-wrap min-w-0">
+              <div className="duo-pill duo-pill-green text-[10px] sm:text-xs font-black uppercase tracking-wider shrink-0">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-duo-pulse" />
+                <span className="sm:hidden">OXFORD 3000 • 60 CHỦ ĐỀ</span>
+                <span className="hidden sm:inline">OXFORD 3000 CỐT LÕI • 60 CHỦ ĐỀ FLASHCARD 3D</span>
               </div>
-              <button
-                type="button"
-                onClick={() => navigate(`/vocab/${activeResumeTopic.id}`)}
-                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white text-[11px] font-bold shadow-sm transition-colors cursor-pointer max-w-full min-w-0"
-              >
-                <Play size={11} fill="currentColor" className="shrink-0" />
-                <span className="truncate">Học tiếp Chủ đề #{activeResumeTopic.id}: {activeResumeTopic.title}</span>
-              </button>
+
+              <div className="duo-pill duo-pill-xp text-[10px] sm:text-xs font-black shrink-0">
+                <CheckCircle2 size={13} className="text-amber-600 dark:text-amber-400" />
+                <span>{masteredCount}/{totalWords} từ đã thuộc</span>
+              </div>
             </div>
 
-            <h1 className="text-xl sm:text-3xl lg:text-4xl font-black tracking-tight leading-tight">
-              3000 Từ Vựng Tiếng Anh{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-[#0071e3]">
-                Theo 60 Chủ Đề
-              </span>
-            </h1>
+            <div className="space-y-1">
+              <h1 className="text-xl sm:text-2xl lg:text-[28px] font-black tracking-tight leading-snug">
+                <span className="text-slate-900 dark:text-white">
+                  3000 Từ Vựng Tiếng Anh
+                </span>{' '}
+                <span className="text-[#059669] dark:text-[#34d399]">
+                  Theo 60 Chủ Đề.
+                </span>
+              </h1>
 
-            <p className="text-xs sm:text-sm text-slate-300 font-normal leading-relaxed max-w-xl hidden sm:block">
-              Học nhanh nhớ lâu qua Flashcard 3D, Trắc nghiệm phản xạ 2 chiều, Luyện gõ chính tả và thuật toán lặp lại ngắt quãng FSRS.
-            </p>
+              <p className="line-clamp-1 sm:line-clamp-none text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-semibold leading-relaxed max-w-xl">
+                Học nhanh nhớ lâu qua Flashcard 3D, trắc nghiệm phản xạ 2 chiều, luyện gõ chính tả và thuật toán lặp lại ngắt quãng FSRS.
+              </p>
+            </div>
           </div>
 
-          {/* Right: Compact 4-Stat Strip */}
-          <div className="grid grid-cols-4 gap-1.5 sm:gap-2.5 lg:w-[420px] shrink-0 min-w-0">
-            <div className="p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 text-center sm:text-left min-w-0">
-              <span className="text-[10px] font-semibold text-slate-400 block truncate">Đã thuộc</span>
-              <span className="text-sm sm:text-xl font-black text-amber-300">
-                {masteredCount}
-                <span className="text-[10px] font-bold text-slate-400 hidden sm:inline">/{totalWords}</span>
+          {/* Right Column: Tactile Duolingo 3D Action Buttons (2-col grid on mobile, row on tablet, column on desktop) */}
+          <div className="grid grid-cols-2 sm:flex sm:flex-row lg:flex-col items-stretch lg:items-end justify-center gap-2 sm:gap-2.5 w-full lg:w-auto min-w-0 shrink-0">
+            <button
+              type="button"
+              onClick={() => navigate(`/vocab/${activeResumeTopic.id}`)}
+              className="duo-btn duo-btn-green duo-btn-sm sm:duo-btn-lg flex items-center justify-center gap-1.5 sm:gap-2 w-full lg:w-auto font-black cursor-pointer shadow-md"
+            >
+              <Play size={15} fill="currentColor" className="shrink-0" />
+              <span className="truncate">
+                Học tiếp Ch.{activeResumeTopic.id}
               </span>
-            </div>
-            <div className="p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 text-center sm:text-left min-w-0">
-              <span className="text-[10px] font-semibold text-slate-400 block truncate">Tiến độ</span>
-              <span className="text-sm sm:text-xl font-black text-sky-400">{totalProgressPercent}%</span>
-            </div>
-            <div className="p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 text-center sm:text-left min-w-0">
-              <span className="text-[10px] font-semibold text-slate-400 block truncate">Chủ đề xong</span>
-              <span className="text-sm sm:text-xl font-black text-emerald-400">
-                {completedTopicsCount}<span className="text-[10px] font-bold text-slate-400">/60</span>
-              </span>
-            </div>
-            <div className="p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 text-center sm:text-left min-w-0">
-              <span className="text-[10px] font-semibold text-slate-400 block truncate">Đánh dấu</span>
-              <span className="text-sm sm:text-xl font-black text-purple-400">{starredCount}</span>
-            </div>
+              <ArrowRight size={15} className="shrink-0 hidden xs:inline" />
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                const el = document.getElementById('vocab-topics-grid');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="duo-btn duo-btn-white duo-btn-sm sm:duo-btn-lg flex items-center justify-center gap-1.5 sm:gap-2 w-full lg:w-auto font-black text-[#059669] dark:text-[#34d399] cursor-pointer whitespace-nowrap shadow-xs"
+            >
+              <span className="truncate">Đủ 60 chủ đề</span>
+            </button>
           </div>
         </div>
 
-        {/* Decorative background glow */}
-        <div className="absolute -right-20 -top-20 w-72 h-72 bg-blue-500/20 rounded-full blur-3xl pointer-events-none" />
+        {/* Duolingo 4-Stat Strip */}
+        <div className="relative z-10 grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5 pt-1">
+          <div className="p-2.5 sm:p-3 rounded-2xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border-2 border-emerald-200 dark:border-emerald-900/60 border-b-4 border-b-emerald-400 dark:border-b-emerald-950 flex items-center gap-2.5 min-w-0 shadow-xs">
+            <div className="w-8 h-8 rounded-xl bg-emerald-500 text-white flex items-center justify-center font-black shrink-0">
+              <CheckCircle2 size={16} />
+            </div>
+            <div className="min-w-0">
+              <span className="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 block truncate">Đã thuộc</span>
+              <span className="text-sm sm:text-base font-black text-slate-900 dark:text-white truncate block">
+                {masteredCount} <span className="text-[10px] font-bold text-slate-400">/{totalWords}</span>
+              </span>
+            </div>
+          </div>
+
+          <div className="p-2.5 sm:p-3 rounded-2xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border-2 border-teal-200 dark:border-teal-900/60 border-b-4 border-b-teal-400 dark:border-b-teal-950 flex items-center gap-2.5 min-w-0 shadow-xs">
+            <div className="w-8 h-8 rounded-xl bg-teal-500 text-white flex items-center justify-center font-black shrink-0">
+              <TrendingUp size={16} />
+            </div>
+            <div className="min-w-0">
+              <span className="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 block truncate">Tiến độ</span>
+              <span className="text-sm sm:text-base font-black text-teal-600 dark:text-teal-400 truncate block">
+                {totalProgressPercent}%
+              </span>
+            </div>
+          </div>
+
+          <div className="p-2.5 sm:p-3 rounded-2xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border-2 border-amber-200 dark:border-amber-900/60 border-b-4 border-b-amber-400 dark:border-b-amber-950 flex items-center gap-2.5 min-w-0 shadow-xs">
+            <div className="w-8 h-8 rounded-xl bg-amber-500 text-white flex items-center justify-center font-black shrink-0">
+              <Sparkles size={16} />
+            </div>
+            <div className="min-w-0">
+              <span className="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 block truncate">Chủ đề xong</span>
+              <span className="text-sm sm:text-base font-black text-amber-600 dark:text-amber-400 truncate block">
+                {completedTopicsCount} <span className="text-[10px] font-bold text-slate-400">/60</span>
+              </span>
+            </div>
+          </div>
+
+          <div className="p-2.5 sm:p-3 rounded-2xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border-2 border-purple-200 dark:border-purple-900/60 border-b-4 border-b-purple-400 dark:border-b-purple-950 flex items-center gap-2.5 min-w-0 shadow-xs">
+            <div className="w-8 h-8 rounded-xl bg-purple-500 text-white flex items-center justify-center font-black shrink-0">
+              <Star size={16} className="fill-white" />
+            </div>
+            <div className="min-w-0">
+              <span className="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 block truncate">Đánh dấu</span>
+              <span className="text-sm sm:text-base font-black text-purple-600 dark:text-purple-400 truncate block">
+                {starredCount} <span className="text-[10px] font-bold text-slate-400">từ</span>
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* F5. LÁ CHẮN TRÍ NHỚ FSRS — Chế độ Thanh Gọn Thông Minh (Bấm Chi Tiết để mở rộng) */}
@@ -275,7 +331,7 @@ export default function VocabOverviewPage() {
       )}
 
       {/* 4. Topics 60 Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-4">
+      <div id="vocab-topics-grid" className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-4">
         {filteredTopics.map((topic) => {
           const words = topic.words || [];
           const mCount = words.filter((w) => masteredWords[w.id]).length;

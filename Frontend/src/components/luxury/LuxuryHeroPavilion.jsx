@@ -28,6 +28,7 @@ import {
   BarChart3
 } from 'lucide-react';
 import LuxuryTripleActivityRing from './LuxuryTripleActivityRing';
+import { BrandFaviconSvg } from '../BrandLogo';
 import AnimatedCounter from './AnimatedCounter';
 import binoApi from '../../api/binoApi';
 import { loadReflex50FullData } from '../../features/reflex50/store/useReflex50Store';
@@ -191,7 +192,7 @@ function LuxuryHeroPavilion({
         percent: reflexPercent,
         countText: `${reflexCompletedCount}/1500 câu`,
         weight: '35%',
-        color: '#38BDF8',
+        color: '#8B5CF6',
         advice:
           'Dành 15–20 phút ép xung phản xạ nói – viết 3 giây để xóa bỏ hoàn toàn thói quen dịch ngầm.',
         actionLabel: activeReflexUnit
@@ -308,199 +309,150 @@ function LuxuryHeroPavilion({
       ref={pavilionRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="group/pavilion relative overflow-hidden rounded-[24px] sm:rounded-[40px] bg-gradient-to-br from-white via-[#f9fbff] to-blue-50/35 dark:from-[#070b14] dark:via-[#0b101d] dark:to-[#080c17] border border-slate-200/85 dark:border-white/[0.09] p-4 sm:p-9 lg:p-11 shadow-[0_16px_55px_rgba(0,113,227,0.06)] dark:shadow-[0_24px_70px_rgba(0,0,0,0.65)]"
+      className="group/pavilion relative overflow-hidden rounded-3xl sm:rounded-[36px] bg-[#f0f7ff] dark:bg-[#07162b] border-2 border-[#1cb0f6]/40 dark:border-blue-700/50 border-b-6 border-b-[#0071e3] dark:border-b-[#1e40af] p-4 sm:p-6 lg:p-7 shadow-[0_14px_40px_rgba(0,113,227,0.12)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.6)]"
     >
-      {/* 1. Dynamic Cursor-Tracking Specular Spotlight (0 React Re-renders) */}
+      {/* Dynamic Cursor-Tracking Specular Spotlight */}
       <motion.div
         className="pointer-events-none absolute inset-0 z-0 opacity-0 group-hover/pavilion:opacity-100 transition-opacity duration-500"
         style={{ background: ambientFollowGlow }}
       />
 
-      {/* Interactive Border Rim Glow */}
-      <motion.div
-        className="pointer-events-none absolute inset-0 z-0 rounded-[inherit] opacity-0 group-hover/pavilion:opacity-100 transition-opacity duration-500"
-        style={{
-          boxShadow: 'inset 0 0 0 1px transparent',
-          background: borderFollowGlow,
-          mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-          WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-          WebkitMaskComposite: 'xor',
-          maskComposite: 'exclude',
-          padding: '1px'
-        }}
-      />
-
-      {/* 2. Ambient Silk Breathing Orbs */}
-      <div className="pointer-events-none absolute -top-36 -right-24 w-[420px] h-[420px] rounded-full bg-gradient-to-br from-[#0071e3]/[0.09] via-sky-400/[0.06] to-transparent blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-40 left-1/4 w-[380px] h-[380px] rounded-full bg-gradient-to-tr from-sky-500/[0.06] via-blue-500/[0.04] to-transparent blur-3xl" />
-
-      {/* Top Specular Diamond Rim */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#0071e3]/45 dark:via-sky-400/35 to-transparent" />
+      {/* Top Diamond Rim */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#0071e3] to-transparent" />
 
       {/* =================================================================== */}
-      {/* MAIN HERO 2-COLUMN ARCHITECTURAL SPLIT                              */}
+      {/* MAIN HERO 2-COLUMN ARCHITECTURAL SPLIT (COMPACT & SLEEK)           */}
       {/* =================================================================== */}
-      <div className="relative z-10 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-5 sm:gap-8 lg:gap-10">
+      <div className="relative z-10 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 sm:gap-6 lg:gap-8">
         
         {/* ================================================================= */}
-        {/* LEFT COLUMN: KINETIC APPLE FLAGSHIP HEADLINE & COMMAND BUTTONS    */}
+        {/* LEFT COLUMN: COMPACT HEADLINE, MASCOT, PILLS & TACTILE BUTTONS    */}
         {/* ================================================================= */}
-        <div className="flex-1 max-w-2xl space-y-3.5 sm:space-y-6 min-w-0">
+        <div className="flex-1 max-w-2xl space-y-3 sm:space-y-3.5 min-w-0">
           
-          {/* Top Luxury Status Ribbon (Single-row swipeable on mobile, wrapped on desktop) */}
-          <div className="flex items-center sm:flex-wrap gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar pb-0.5 sm:pb-0">
-            {/* Apple Studio Badge */}
-            <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 text-xs font-semibold border border-slate-200/90 dark:border-white/10 shadow-2xs shrink-0">
-              {/* <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#0071e3] opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#0071e3]" />
-              </span> */}
-              <span className="tracking-[0.14em] text-[10px] sm:text-[10.5px] uppercase font-extrabold text-[#0071e3] dark:text-sky-400">
-                HOME STUDIO
-              </span>
-              <span className="hidden sm:inline text-slate-300 dark:text-slate-700">•</span>
-              <span className="hidden sm:inline text-[11px] font-semibold text-slate-500 dark:text-slate-400">
-                Edition
-              </span>
+          {/* Top Status & Companion Bar: Mascot Bubble + Fixed Level & Streak Pills */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 min-w-0">
+            {/* Mascot + Motivation Speech Bubble */}
+            <div className="flex items-center gap-2 min-w-0 flex-1">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-white dark:bg-slate-900 border-2 border-[#1cb0f6] border-b-4 border-b-[#0071e3] flex items-center justify-center p-1.5 shadow-xs shrink-0 animate-duo-bounce">
+                <BrandFaviconSvg className="w-full h-full rounded-xl drop-shadow-xs" />
+              </div>
+              <div className="duo-bubble text-xs font-bold text-slate-800 dark:text-slate-100 py-1 px-3 min-w-0 flex-1 truncate shadow-2xs">
+                {profile?.currentStreak > 0
+                  ? (profile?.hasStudiedToday 
+                      ? `Tuyệt đỉnh! Chuỗi ${profile.currentStreak} ngày đã thắp lửa an toàn. 🔥` 
+                      : `Chuỗi ${profile.currentStreak} ngày đang chờ bạn ôn bài để giữ lửa! ⚡`)
+                  : 'Học ngay hôm nay để thắp lửa chuỗi phản xạ nào! 🚀'}
+              </div>
             </div>
 
-            {/* XP & Level Pill — Apple Midnight Titanium & Champagne Gold Trophy */}
-            <button
-              onClick={() => onNavigate('/leaderboard')}
-              className="inline-flex items-center gap-1.5 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 text-xs font-extrabold border border-slate-800 dark:border-white/20 transition-all cursor-pointer shadow-2xs shrink-0"
-              title="Xem Bảng Xếp Hạng & Thành Tích"
-            >
-              <Trophy size={13} className="text-amber-400 dark:text-amber-500 fill-amber-400/20 shrink-0" />
-              <span>Cấp {profile?.currentLevel ?? 1}</span>
-              <span className="text-slate-500 dark:text-slate-400">•</span>
-              <span className="text-amber-300 dark:text-amber-600">
-                <AnimatedCounter value={profile?.totalXP ?? 0} suffix=" XP" />
-              </span>
-              <ChevronRight size={12} className="opacity-70" />
-            </button>
+            {/* Level & Streak Gamified Pills (Always side-by-side, perfectly balanced on mobile) */}
+            <div className="grid grid-cols-2 sm:flex sm:items-center gap-1.5 sm:gap-2 w-full sm:w-auto shrink-0">
+              {/* Level & XP Pill */}
+              <button
+                type="button"
+                onClick={() => onNavigate('/leaderboard')}
+                className="duo-pill duo-pill-xp text-[11px] sm:text-xs font-black shrink-0 cursor-pointer flex items-center justify-center gap-1.5 whitespace-nowrap py-1 sm:py-1.5"
+                title="Xem Bảng Xếp Hạng & Cấp Độ"
+              >
+                <Trophy size={13} className="text-amber-500 fill-amber-500 shrink-0" />
+                <span>Cấp {profile?.currentLevel ?? 1}</span>
+                <span className="text-amber-400 opacity-60">|</span>
+                <span>
+                  <AnimatedCounter value={profile?.totalXP ?? 0} suffix=" XP" />
+                </span>
+                <ChevronRight size={12} className="opacity-70 shrink-0" />
+              </button>
 
-            {/* Streak Pill — Warm Amber-Orange Flame (Chỉ rực sáng khi hôm nay đã học) */}
-            <div className={`inline-flex items-center gap-1.5 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full text-xs font-bold border shadow-2xs shrink-0 transition-all ${
-              profile?.hasStudiedToday
-                ? 'bg-orange-500/15 dark:bg-orange-500/25 text-orange-700 dark:text-orange-300 border-orange-500/35'
-                : 'bg-amber-500/10 dark:bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/25'
-            }`}>
-              <Flame 
-                size={13} 
-                className={profile?.hasStudiedToday ? "fill-orange-500 text-orange-500 animate-pulse" : "text-amber-500"} 
-              />
-              <span>
-                <AnimatedCounter
-                  value={profile?.currentStreak ?? stats?.currentStreakDays ?? 0}
-                  suffix=" ngày chuỗi"
+              {/* Streak Pill */}
+              <div
+                className="duo-pill duo-pill-streak text-[11px] sm:text-xs font-black shrink-0 flex items-center justify-center gap-1.5 whitespace-nowrap py-1 sm:py-1.5"
+                title={profile?.hasStudiedToday ? 'Đã học hôm nay - Ngọn lửa an toàn' : 'Chưa học hôm nay - Cần vào học để giữ chuỗi'}
+              >
+                <Flame 
+                  size={14} 
+                  className={profile?.hasStudiedToday ? "fill-orange-500 text-orange-500 animate-duo-wiggle shrink-0" : "text-amber-500 shrink-0"} 
                 />
-              </span>
-              <span className="hidden sm:inline text-amber-400/70">•</span>
-              <span className={`hidden sm:inline text-[11px] font-semibold ${
-                profile?.hasStudiedToday ? 'text-emerald-700 dark:text-emerald-300' : 'text-amber-700 dark:text-amber-200'
-              }`}>
-                {profile?.hasStudiedToday ? '✓ Đã giữ chuỗi hôm nay' : '⚠️ Cần học bài để giữ chuỗi'}
-              </span>
+                <span>
+                  <AnimatedCounter
+                    value={profile?.currentStreak ?? stats?.currentStreakDays ?? 0}
+                    suffix=" ngày"
+                  />
+                </span>
+                <span className={`text-[10px] font-black px-1.5 py-0.5 rounded-full ${
+                  profile?.hasStudiedToday 
+                    ? 'bg-orange-200/80 dark:bg-orange-950/80 text-orange-700 dark:text-orange-300' 
+                    : 'bg-amber-200/80 dark:bg-amber-950/80 text-amber-700 dark:text-amber-300'
+                }`}>
+                  {profile?.hasStudiedToday ? 'Đã giữ' : 'Cần giữ'}
+                </span>
+              </div>
             </div>
-
-            {/* Quick Jump to Daily Quests Pill — Synchronized Apple Slate & Sapphire */}
-            <button
-              onClick={() => {
-                const el = document.getElementById('daily-quests-section');
-                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              }}
-              className="inline-flex items-center gap-1.5 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-slate-100 hover:bg-slate-200/80 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold border border-slate-200/90 dark:border-slate-700 transition-colors cursor-pointer shadow-2xs shrink-0"
-              title="Di chuyển tới Nhiệm Vụ Hàng Ngày"
-            >
-              <Target size={13} className="text-[#0071e3] dark:text-sky-400" />
-              <span>Nhiệm vụ hôm nay</span>
-            </button>
           </div>
 
-          {/* Sculptural Apple Display Headline (100% Vector ClearType Sharp) */}
-          <div className="space-y-2 sm:space-y-3.5">
-            <div className="flex items-center gap-2 text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.16em] text-[#0071e3] dark:text-sky-400">
-              <span>Hệ Sinh Thái Phản Xạ Thực Chiến</span>
-            </div>
-
-            <h1 className="text-xl sm:text-4xl lg:text-[40px] font-extrabold tracking-tight leading-[1.22]">
+          {/* Duolingo Chunky Headline & Subtitle */}
+          <div className="space-y-1">
+            <h1 className="text-xl sm:text-2xl lg:text-[28px] font-black tracking-tight leading-tight">
               <span className="text-slate-900 dark:text-white">
                 {timeGreeting.title},
               </span>{' '}
-              <span className="bg-gradient-to-r from-[#0071e3] to-sky-500 dark:from-sky-400 dark:to-blue-400 bg-clip-text text-transparent font-bold">
+              <span className="text-[#0071e3] dark:text-[#1cb0f6]">
                 bật phản xạ Tiếng Anh tự nhiên.
               </span>
             </h1>
 
-            <p className="text-xs sm:text-[15px] text-slate-600 dark:text-slate-400 leading-relaxed font-normal max-w-xl line-clamp-2 sm:line-clamp-none">
-              {timeGreeting.subtitle} Kết hợp đồng bộ{' '}
-              <strong className="text-slate-900 dark:text-slate-200 font-semibold">
-                72 Bài Giao Tiếp Thực Chiến
-              </strong>
-              ,{' '}
-              <strong className="text-slate-900 dark:text-slate-200 font-semibold">
-                1.500 Câu Phản Xạ 3 Giây
-              </strong>{' '}
-              và{' '}
-              <strong className="text-slate-900 dark:text-slate-200 font-semibold">
-                3.000 Từ Vựng Oxford FSRS
-              </strong>
-              .
+            <p className="text-xs sm:text-[13px] text-slate-600 dark:text-slate-400 font-semibold leading-relaxed max-w-xl">
+              Đồng bộ <strong className="text-[#0071e3] dark:text-sky-400 font-black">72 Bài Giao Tiếp</strong>, <strong className="text-[#0071e3] dark:text-sky-400 font-black">1.500 Câu Phản Xạ 3s</strong> &amp; <strong className="text-[#0071e3] dark:text-sky-400 font-black">3.000 Từ Oxford FSRS</strong>.
             </p>
           </div>
 
-          {/* Smart Next-Lesson Resume Bar (Clean, zero duplication with Right Tri-Pillar Card) */}
+          {/* Smart Next-Lesson Resume Bar */}
           {nextDialogue && (
             <div
               onClick={() => onNavigate(`/communication/dialogue/${nextDialogue.id}`)}
-              className="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-2xl bg-slate-50/90 hover:bg-blue-50/60 dark:bg-slate-900/90 dark:hover:bg-slate-800/90 border border-slate-200/80 dark:border-white/[0.08] hover:border-[#0071e3]/40 transition-all cursor-pointer group max-w-full"
+              className="duo-card p-2 sm:p-2.5 rounded-xl flex items-center gap-2 cursor-pointer hover:border-[#0071e3] transition-all group max-w-full"
             >
-              <span className="px-2 py-0.5 rounded-lg bg-[#0071e3]/10 dark:bg-sky-500/20 text-[#0071e3] dark:text-sky-400 text-[10px] font-extrabold uppercase tracking-wider shrink-0">
-                Học tiếp Chương {nextDialogue.chapterNumber}
+              <span className="px-2 py-0.5 rounded-lg bg-[#0071e3] text-white text-[10px] font-black uppercase tracking-wider shrink-0">
+                Học tiếp Ch.{nextDialogue.chapterNumber}
               </span>
-              <span className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate group-hover:text-[#0071e3] dark:group-hover:text-sky-400 transition-colors">
+              <span className="text-xs font-black text-slate-800 dark:text-slate-200 truncate group-hover:text-[#0071e3] dark:group-hover:text-sky-400 transition-colors">
                 {nextDialogue.title}
               </span>
               <ChevronRight
                 size={14}
-                className="text-slate-400 group-hover:text-[#0071e3] group-hover:translate-x-0.5 transition-all shrink-0"
+                className="text-slate-400 group-hover:text-[#0071e3] group-hover:translate-x-0.5 transition-all shrink-0 ml-auto"
               />
             </div>
           )}
 
-          {/* Tactile Apple Command Buttons (Ergonomic Mobile Layout + Desktop Row) */}
-          <div className="pt-0.5 sm:pt-1 flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-2 sm:gap-3 w-full min-w-0">
-            {/* Primary Sapphire Button (Full-width on mobile for 1-thumb tap) */}
+          {/* Tactile Duolingo Command Buttons */}
+          <div className="pt-0.5 flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-2 sm:gap-2.5 w-full min-w-0">
+            {/* Primary Sapphire 3D Push Button */}
             <button
               onMouseEnter={() => binoApi.prefetchBookOverview()}
               onClick={() => onNavigate('/communication')}
-              className="w-full sm:w-auto justify-center relative px-4 sm:px-7 py-3 sm:py-3.5 bg-[#0071e3] hover:bg-[#0077ed] hover:-translate-y-0.5 text-white font-bold rounded-full shadow-[0_10px_28px_rgba(0,113,227,0.34)] flex items-center gap-2 transition-all text-xs sm:text-sm cursor-pointer group overflow-hidden min-w-0"
+              className="duo-btn duo-btn-sapphire duo-btn-md flex items-center justify-center gap-2 w-full sm:w-auto font-black shadow-md cursor-pointer"
             >
-              <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-white/35" />
-              <Play
-                size={15}
-                fill="currentColor"
-                className="group-hover:translate-x-0.5 transition-transform shrink-0"
-              />
-              <span className="truncate">Vào luyện Giao Tiếp Thực Chiến</span>
+              <Play size={15} fill="currentColor" className="shrink-0" />
+              <span>Vào Luyện Giao Tiếp Thực Chiến</span>
             </button>
 
-            {/* Secondary 3-Button Grid on Mobile / Inline Flex on Desktop */}
-            <div className="grid grid-cols-3 sm:flex items-center gap-1.5 sm:gap-3 w-full sm:w-auto min-w-0">
-              {/* Secondary Sky-Sapphire Pill Button */}
+            {/* Secondary 3-Button Row */}
+            <div className="grid grid-cols-3 sm:flex items-center gap-1.5 sm:gap-2 w-full sm:w-auto min-w-0">
+              {/* Secondary Reflex Button */}
               <button
                 onMouseEnter={() => loadReflex50FullData()}
                 onClick={() => onNavigate('/reflex-50')}
-                className="justify-center px-2.5 sm:px-5 py-2.5 sm:py-3.5 bg-[#0071e3]/10 hover:bg-[#0071e3]/18 hover:-translate-y-0.5 text-[#0071e3] dark:text-sky-400 border border-[#0071e3]/25 font-bold rounded-full flex items-center gap-1 sm:gap-2 transition-all text-[11px] sm:text-sm cursor-pointer shadow-2xs min-w-0"
+                className="duo-btn duo-btn-white duo-btn-md font-black flex items-center justify-center gap-1.5 text-[#0071e3] dark:text-sky-400 cursor-pointer"
               >
-                <Zap size={13} className="text-[#0071e3] dark:text-sky-400 shrink-0" />
+                <Zap size={14} className="shrink-0 text-[#0071e3] dark:text-sky-400" />
                 <span className="truncate">Phản Xạ 50</span>
               </button>
 
-              {/* Passive Audio 24/7 Pill */}
+              {/* Passive Audio 24/7 Button */}
               <button
                 onClick={onOpenPlaylist}
-                className="justify-center px-2.5 sm:px-5 py-2.5 sm:py-3.5 bg-slate-100 hover:bg-slate-200/80 dark:bg-slate-800 dark:hover:bg-slate-700 hover:-translate-y-0.5 text-slate-800 dark:text-slate-200 border border-slate-200/80 dark:border-white/10 font-semibold rounded-full flex items-center gap-1 sm:gap-2 transition-all text-[11px] sm:text-sm cursor-pointer min-w-0"
+                className="duo-btn duo-btn-white duo-btn-md font-black flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 {isGlobalPlaying ? (
                   <span className="inline-flex items-end gap-0.5 h-3.5 text-[#0071e3] dark:text-sky-400 shrink-0">
@@ -509,25 +461,22 @@ function LuxuryHeroPavilion({
                     <span className="equalizer-bar" />
                   </span>
                 ) : (
-                  <Headphones size={13} className="text-[#0071e3] dark:text-sky-400 shrink-0" />
+                  <Headphones size={14} className="text-[#0071e3] dark:text-sky-400 shrink-0" />
                 )}
                 <span className="truncate">Đài nghe</span>
               </button>
 
-              {/* Expandable Deep Tri-Pillar Diagnostic Toggle */}
+              {/* Deep Analysis Toggle Button */}
               <button
                 onClick={() => setIsDeepAnalysisOpen((prev) => !prev)}
-                className={`px-2.5 sm:px-4 py-2.5 sm:py-3.5 rounded-full font-bold text-[11px] sm:text-sm flex items-center justify-center gap-1 sm:gap-1.5 transition-all cursor-pointer border min-w-0 ${
-                  isDeepAnalysisOpen
-                    ? 'bg-[#0071e3] text-white border-[#0071e3] shadow-md shadow-blue-500/25'
-                    : 'bg-white dark:bg-slate-900 text-[#0071e3] dark:text-sky-400 border-[#0071e3]/25 hover:border-[#0071e3]/50'
+                className={`duo-btn duo-btn-md font-black flex items-center justify-center gap-1.5 cursor-pointer ${
+                  isDeepAnalysisOpen ? 'duo-btn-blue' : 'duo-btn-white'
                 }`}
               >
-                <BarChart3 size={13} className="shrink-0" />
-                <span className="hidden sm:inline">Phân tích 3 Trụ Cột</span>
-                <span className="sm:hidden truncate">Phân tích</span>
+                <BarChart3 size={14} className="shrink-0" />
+                <span className="truncate">Phân tích</span>
                 <ChevronDown
-                  size={12}
+                  size={13}
                   className={`shrink-0 transition-transform duration-300 ${
                     isDeepAnalysisOpen ? 'rotate-180' : ''
                   }`}
@@ -538,78 +487,90 @@ function LuxuryHeroPavilion({
         </div>
 
         {/* ================================================================= */}
-        {/* RIGHT COLUMN: INTERACTIVE 4-SLIDE TRI-PILLAR MASTERY ENGINE       */}
+        {/* RIGHT COLUMN: DUOLINGO 3D TRI-PILLAR MASTERY ENGINE (COMPACT)     */}
         {/* ================================================================= */}
         <div
           onMouseEnter={() => setIsSliderHovered(true)}
           onMouseLeave={() => setIsSliderHovered(false)}
-          className="w-full min-w-0 max-w-full lg:w-[440px] xl:w-[465px] shrink-0 rounded-[22px] sm:rounded-[30px] bg-white dark:bg-[#0d1322] border border-slate-200/90 dark:border-white/[0.1] shadow-[0_12px_40px_rgba(0,113,227,0.08)] dark:shadow-[0_16px_50px_rgba(0,0,0,0.6)] p-3.5 sm:p-6 flex flex-col justify-between gap-3 sm:gap-4 relative overflow-hidden"
+          className="w-full min-w-0 max-w-full lg:w-[370px] xl:w-[390px] shrink-0 duo-card p-3 sm:p-4 rounded-3xl border-2 border-blue-200 dark:border-blue-900 border-b-6 border-b-[#0071e3] dark:border-b-[#1e40af] flex flex-col justify-between gap-2.5 relative overflow-hidden bg-white dark:bg-[#0c182c] shadow-sm"
         >
-          {/* Subtle Top Rim */}
-          <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-[#0071e3]/40 to-transparent" />
+          {/* Top Diamond Rim */}
+          <div className="pointer-events-none absolute inset-x-8 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#0071e3] to-transparent" />
 
-          {/* Top Bar of Tri-Pillar Card: Segmented Tabs + Play/Pause & Arrows */}
-          <div className="flex items-center justify-between gap-1.5 sm:gap-2 min-w-0">
-            {/* 4 Segmented Pillar Pills */}
-            <div className="flex-1 sm:flex-none grid grid-cols-4 sm:flex items-center gap-0.5 sm:gap-1 p-1 rounded-full bg-slate-100 dark:bg-slate-800/90 border border-slate-200/70 dark:border-slate-700/70 min-w-0">
-              {[
-                { idx: 0, label: 'Tổng hợp' },
-                { idx: 1, label: 'Hội thoại' },
-                { idx: 2, label: 'Phản xạ' },
-                { idx: 3, label: 'Từ FSRS' }
-              ].map((tab) => {
-                const isActive = pillarSlide === tab.idx;
-                return (
-                  <button
-                    key={tab.idx}
-                    onClick={() => goToPillarSlide(tab.idx)}
-                    className={`relative px-1.5 sm:px-2.5 py-1 rounded-full text-[10px] sm:text-[11px] font-bold transition-colors cursor-pointer text-center truncate min-w-0 ${
-                      isActive
-                        ? 'text-white'
-                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                    }`}
-                  >
-                    {isActive && (
-                      <motion.div
-                        layoutId="triPillarSliderTab"
-                        transition={{ type: 'spring', stiffness: 420, damping: 28 }}
-                        className="absolute inset-0 rounded-full bg-[#0071e3] shadow-2xs"
-                      />
-                    )}
-                    <span className="relative z-10 truncate block">{tab.label}</span>
-                  </button>
-                );
-              })}
+          {/* Header Row 1: Title Badge & Duolingo 3D Prev/Next Controls */}
+          <div className="flex items-center justify-between gap-2 min-w-0">
+            <div className="flex items-center gap-1.5 min-w-0">
+              <span className="w-2 h-2 rounded-full bg-[#0071e3] dark:bg-sky-400 animate-duo-pulse shrink-0" />
+              <span className="text-[11px] sm:text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 truncate">
+                Chỉ số 3 Trụ Cột
+              </span>
             </div>
 
-            {/* Auto-Play & Prev/Next Controls */}
+            {/* Duolingo 3D Tactile Prev/Next Controls (Fully visible, zero cut-off) */}
             <div className="flex items-center gap-1 shrink-0">
               <button
+                type="button"
                 onClick={() => setIsSliderAuto((prev) => !prev)}
-                className="hidden sm:flex w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-[#0071e3] items-center justify-center transition-colors cursor-pointer"
-                title={isSliderAuto ? 'Tạm dừng chuyển slide' : 'Tự động chuyển slide'}
+                className="duo-btn duo-btn-white duo-btn-xs p-1 rounded-lg flex items-center justify-center text-slate-500 hover:text-[#0071e3] cursor-pointer"
+                title={isSliderAuto ? 'Tạm dừng tự chuyển' : 'Bật tự chuyển'}
               >
                 {isSliderAuto ? <Pause size={11} /> : <Play size={11} className="ml-0.5" />}
               </button>
               <button
+                type="button"
                 onClick={() => paginatePillar(-1)}
-                className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-[#0071e3] hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+                className="duo-btn duo-btn-white duo-btn-xs p-1 rounded-lg flex items-center justify-center text-slate-700 dark:text-slate-200 cursor-pointer"
                 aria-label="Trụ cột trước"
+                title="Trụ cột trước"
               >
                 <ChevronLeft size={13} />
               </button>
               <button
+                type="button"
                 onClick={() => paginatePillar(1)}
-                className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-[#0071e3] hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+                className="duo-btn duo-btn-sapphire duo-btn-xs p-1 rounded-lg flex items-center justify-center text-white cursor-pointer"
                 aria-label="Trụ cột tiếp theo"
+                title="Trụ cột tiếp theo"
               >
                 <ChevronRight size={13} />
               </button>
             </div>
           </div>
 
+          {/* Header Row 2: Full-width Segmented Duolingo Pills */}
+          <div className="grid grid-cols-4 gap-1 p-0.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 w-full">
+            {[
+              { idx: 0, label: 'Tổng quan' },
+              { idx: 1, label: 'Hội thoại' },
+              { idx: 2, label: 'Phản xạ' },
+              { idx: 3, label: 'Từ vựng' }
+            ].map((tab) => {
+              const isActive = pillarSlide === tab.idx;
+              return (
+                <button
+                  key={tab.idx}
+                  onClick={() => goToPillarSlide(tab.idx)}
+                  className={`relative py-1 px-0.5 rounded-lg text-[10px] sm:text-[11px] font-black transition-all cursor-pointer text-center truncate ${
+                    isActive
+                      ? 'text-white'
+                      : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  {isActive && (
+                    <motion.div
+                      layoutId="triPillarSliderTab"
+                      transition={{ type: 'spring', stiffness: 450, damping: 30 }}
+                      className="absolute inset-0 rounded-lg bg-[#0071e3] shadow-xs"
+                    />
+                  )}
+                  <span className="relative z-10 truncate block">{tab.label}</span>
+                </button>
+              );
+            })}
+          </div>
+
           {/* Middle Section: Interactive Triple Ring + Dynamic Slide Content */}
-          <div className="flex items-center justify-between gap-2.5 sm:gap-4 pt-1 min-w-0">
+          <div className="flex items-center justify-between gap-2.5 sm:gap-3 py-0.5 min-w-0">
             {/* Left of Card: Dynamic Slide Info (Swipeable) */}
             <div className="flex-1 min-w-0">
               <AnimatePresence mode="wait" custom={slideDir}>
@@ -627,28 +588,20 @@ function LuxuryHeroPavilion({
                     if (offset.x < -40) paginatePillar(1);
                     else if (offset.x > 40) paginatePillar(-1);
                   }}
-                  className="space-y-2.5"
+                  className="space-y-1 sm:space-y-1.5"
                 >
                   {/* SLIDE 0: TỔNG HỢP 3 TRỤ CỘT */}
                   {pillarSlide === 0 && (
                     <>
-                      <div className="inline-flex items-center gap-1.5 text-[10px] font-extrabold text-[#0071e3] dark:text-sky-400 tracking-[0.16em] uppercase">
-                        <Activity size={12} />
-                        <span>CHỈ SỐ ĐỒNG BỘ 3 TRỤ CỘT</span>
+                      <div className="duo-pill duo-pill-gem text-[10px] font-black uppercase tracking-wider">
+                        <Activity size={11} className="text-[#0071e3] dark:text-sky-400 shrink-0" />
+                        <span>ĐỒNG BỘ 3 TRỤ CỘT</span>
                       </div>
-                      <h3 className="text-lg font-extrabold text-slate-900 dark:text-white leading-snug">
-                        Tiến Độ 3 Trụ Cột
+                      <h3 className="text-sm sm:text-base font-black text-slate-900 dark:text-white leading-tight">
+                        Cân bằng: <span className="text-[#0071e3] dark:text-sky-400">{aiDiagnosis.balanceScore}%</span>
                       </h3>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                        Độ cân bằng hệ thống:{' '}
-                        <strong className="text-[#0071e3] dark:text-sky-400">
-                          {aiDiagnosis.balanceScore}%
-                        </strong>
-                        . Ưu tiên bồi đắp{' '}
-                        <strong className="text-slate-800 dark:text-slate-200">
-                          {aiDiagnosis.bottleneck.shortName}
-                        </strong>{' '}
-                        để tối ưu tốc độ phản xạ.
+                      <p className="text-[11px] sm:text-xs text-slate-600 dark:text-slate-400 font-semibold leading-relaxed line-clamp-2">
+                        Ưu tiên bồi đắp <strong className="text-slate-900 dark:text-white font-black">{aiDiagnosis.bottleneck.shortName}</strong> để bứt phá phản xạ tự nhiên.
                       </p>
                     </>
                   )}
@@ -656,19 +609,15 @@ function LuxuryHeroPavilion({
                   {/* SLIDE 1: TRỤ CỘT 1 - GIAO TIẾP THỰC CHIẾN */}
                   {pillarSlide === 1 && (
                     <>
-                      <div className="inline-flex items-center gap-1.5 text-[10px] font-extrabold text-[#0071e3] dark:text-sky-400 tracking-[0.16em] uppercase">
-                        <MessageSquare size={12} />
-                        <span>TRỤ CỘT 01 • TỶ TRỌNG 45%</span>
+                      <div className="duo-pill duo-pill-gem text-[10px] font-black uppercase tracking-wider">
+                        <MessageSquare size={11} className="text-[#0071e3] dark:text-sky-400 shrink-0" />
+                        <span>TRỤ CỘT 1 • 45%</span>
                       </div>
-                      <h3 className="text-lg font-extrabold text-slate-900 dark:text-white leading-snug">
-                        Hội Thoại Thực Chiến
+                      <h3 className="text-sm sm:text-base font-black text-slate-900 dark:text-white leading-tight">
+                        {completedBinoLessons}/{totalBinoLessons} bài học
                       </h3>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                        Đã chinh phục{' '}
-                        <strong className="text-[#0071e3] dark:text-sky-400">
-                          {completedBinoLessons}/{totalBinoLessons} bài
-                        </strong>{' '}
-                        (~{completedBinoLessons * 6} mẫu câu đổi ruột & ngữ cảnh bản xứ).
+                      <p className="text-[11px] sm:text-xs text-slate-600 dark:text-slate-400 font-semibold leading-relaxed line-clamp-2">
+                        Làm chủ ~{completedBinoLessons * 6} mẫu câu đổi ruột trong ngữ cảnh bản xứ 12 chương.
                       </p>
                     </>
                   )}
@@ -676,19 +625,15 @@ function LuxuryHeroPavilion({
                   {/* SLIDE 2: TRỤ CỘT 2 - PHẢN XẠ 50 CHỦ ĐỀ */}
                   {pillarSlide === 2 && (
                     <>
-                      <div className="inline-flex items-center gap-1.5 text-[10px] font-extrabold text-sky-500 dark:text-sky-400 tracking-[0.16em] uppercase">
-                        <Zap size={12} />
-                        <span>TRỤ CỘT 02 • TỶ TRỌNG 35%</span>
+                      <div className="duo-pill duo-pill-gem text-[10px] font-black uppercase tracking-wider">
+                        <Zap size={11} className="text-[#0071e3] dark:text-sky-400 shrink-0" />
+                        <span>TRỤ CỘT 2 • 35%</span>
                       </div>
-                      <h3 className="text-lg font-extrabold text-slate-900 dark:text-white leading-snug">
-                        Phản Xạ Câu 3 Giây
+                      <h3 className="text-sm sm:text-base font-black text-slate-900 dark:text-white leading-tight">
+                        {reflexCompletedCount}/1500 câu
                       </h3>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                        Làm chủ{' '}
-                        <strong className="text-sky-600 dark:text-sky-400">
-                          {reflexCompletedCount}/1500 câu
-                        </strong>{' '}
-                        nói – viết tức thì cùng ~{reflexCompletedCount * 2} cụm Collocations.
+                      <p className="text-[11px] sm:text-xs text-slate-600 dark:text-slate-400 font-semibold leading-relaxed line-clamp-2">
+                        Tốc độ bật nói &amp; viết 3 giây cùng ~{reflexCompletedCount * 2} cụm Collocations.
                       </p>
                     </>
                   )}
@@ -696,19 +641,15 @@ function LuxuryHeroPavilion({
                   {/* SLIDE 3: TRỤ CỘT 3 - 3000 TỪ VỰNG FSRS */}
                   {pillarSlide === 3 && (
                     <>
-                      <div className="inline-flex items-center gap-1.5 text-[10px] font-extrabold text-emerald-600 dark:text-emerald-400 tracking-[0.16em] uppercase">
-                        <Layers size={12} />
-                        <span>TRỤ CỘT 03 • TỶ TRỌNG 20%</span>
+                      <div className="duo-pill duo-pill-gem text-[10px] font-black uppercase tracking-wider">
+                        <Layers size={11} className="text-[#0071e3] dark:text-sky-400 shrink-0" />
+                        <span>TRỤ CỘT 3 • 20%</span>
                       </div>
-                      <h3 className="text-lg font-extrabold text-slate-900 dark:text-white leading-snug">
-                        3000 Từ Vựng FSRS
+                      <h3 className="text-sm sm:text-base font-black text-slate-900 dark:text-white leading-tight">
+                        {vocabMasteredCount}/1760 từ FSRS
                       </h3>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                        Đã ghi nhớ dài hạn{' '}
-                        <strong className="text-emerald-600 dark:text-emerald-400">
-                          {vocabMasteredCount}/1760 từ
-                        </strong>{' '}
-                        cốt lõi Oxford qua 60 chủ đề thực tế.
+                      <p className="text-[11px] sm:text-xs text-slate-600 dark:text-slate-400 font-semibold leading-relaxed line-clamp-2">
+                        Ghi nhớ dài hạn từ vựng Oxford cốt lõi qua 60 chủ đề đời sống.
                       </p>
                     </>
                   )}
@@ -716,8 +657,8 @@ function LuxuryHeroPavilion({
               </AnimatePresence>
             </div>
 
-            {/* Right of Card: Interactive Triple Activity Ring (Click ring to switch slide!) */}
-            <div className="shrink-0 max-sm:scale-90 max-sm:origin-right">
+            {/* Right of Card: Interactive Triple Activity Ring */}
+            <div className="shrink-0 scale-90 sm:scale-100 origin-right">
               <LuxuryTripleActivityRing
                 ring1={{ label: 'Hội Thoại', percent: binoProgressPercent, color: '#0071E3' }}
                 ring2={{ label: 'Phản Xạ', percent: reflexPercent, color: '#38BDF8' }}
@@ -728,124 +669,60 @@ function LuxuryHeroPavilion({
                   if (ringIdx === null) goToPillarSlide(0);
                   else goToPillarSlide(ringIdx + 1);
                 }}
-                size={118}
+                size={102}
               />
             </div>
           </div>
 
-          {/* Interactive 3-Pillar Progress Strip (Click any pillar to inspect its slide) */}
-          <div className="grid grid-cols-3 gap-1.5 sm:gap-2 pt-3 border-t border-slate-200/70 dark:border-slate-800/80 text-[11px]">
-            {aiDiagnosis.pillars.map((p, idx) => {
-              const isFocused = pillarSlide === idx + 1;
-              return (
-                <button
-                  key={p.id}
-                  onClick={() => goToPillarSlide(isFocused ? 0 : idx + 1)}
-                  className={`p-2 rounded-xl text-left transition-all cursor-pointer border min-w-0 ${
-                    isFocused
-                      ? 'bg-[#0071e3]/10 dark:bg-[#0071e3]/20 border-[#0071e3]/40'
-                      : 'bg-slate-50/70 dark:bg-slate-800/40 border-transparent hover:border-slate-200 dark:hover:border-slate-700'
-                  }`}
-                >
-                  <div className="flex items-center justify-between text-slate-400 min-w-0">
-                    <span className="flex items-center gap-1 min-w-0">
-                      <span
-                        className="w-2 h-2 rounded-full shrink-0"
-                        style={{ backgroundColor: p.color }}
-                      />
-                      <span className="truncate font-semibold">{p.shortName}</span>
-                    </span>
-                  </div>
-                  <p className="font-extrabold text-slate-800 dark:text-slate-100 mt-0.5 truncate">
-                    {p.countText}
-                  </p>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Dynamic Context Action Bar at Bottom of Slider Card */}
-          <div className="pt-3 border-t border-slate-200/70 dark:border-slate-800/80 flex items-center justify-between gap-3">
+          {/* Dynamic Context Action Bar at Bottom of Slider Card (Compact) */}
+          <div className="pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between gap-2">
             <AnimatePresence mode="wait">
               <motion.div
                 key={pillarSlide}
-                initial={{ opacity: 0, y: 5 }}
+                initial={{ opacity: 0, y: 3 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -5 }}
-                transition={{ duration: 0.16 }}
+                exit={{ opacity: 0, y: -3 }}
+                transition={{ duration: 0.12 }}
                 className="min-w-0 flex-1"
               >
                 {pillarSlide === 0 && (
-                  <div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="w-2 h-2 rounded-full bg-[#0071e3] animate-pulse" />
-                      <p className="text-[10px] font-extrabold text-[#0071e3] dark:text-sky-400 uppercase tracking-wider">
-                        Đề xuất AI • Ưu tiên {aiDiagnosis.bottleneck.shortName}
-                      </p>
-                    </div>
-                    <p className="text-xs font-bold text-slate-800 dark:text-slate-100 truncate mt-0.5">
-                      {nextDialogue
-                        ? `Chương ${nextDialogue.chapterNumber}: ${nextDialogue.title}`
-                        : aiDiagnosis.bottleneck.advice}
-                    </p>
-                  </div>
+                  <p className="text-xs font-black text-slate-800 dark:text-slate-100 truncate">
+                    Đề xuất: {nextDialogue ? `Ch.${nextDialogue.chapterNumber}: ${nextDialogue.title}` : aiDiagnosis.bottleneck.advice}
+                  </p>
                 )}
 
                 {pillarSlide === 1 && (
-                  <div>
-                    <p className="text-[10px] font-extrabold text-[#0071e3] dark:text-sky-400 uppercase tracking-wider">
-                      {nextDialogue
-                        ? `Bài tiếp theo • Chương ${nextDialogue.chapterNumber}`
-                        : 'Lộ trình 12 Chương Giao Tiếp'}
-                    </p>
-                    <p className="text-xs font-bold text-slate-800 dark:text-slate-100 truncate mt-0.5">
-                      {nextDialogue ? nextDialogue.title : 'Khám phá trọn bộ 72 bài hội thoại'}
-                    </p>
-                  </div>
+                  <p className="text-xs font-black text-slate-800 dark:text-slate-100 truncate">
+                    {nextDialogue ? `Bài tiếp: ${nextDialogue.title}` : 'Khám phá 72 bài hội thoại'}
+                  </p>
                 )}
 
                 {pillarSlide === 2 && (
-                  <div>
-                    <p className="text-[10px] font-extrabold text-sky-600 dark:text-sky-400 uppercase tracking-wider">
-                      {activeReflexUnit
-                        ? `Đang luyện • Unit ${activeReflexUnit.unitNumber}`
-                        : 'Phản Xạ 50 Chủ Đề'}
-                    </p>
-                    <p className="text-xs font-bold text-slate-800 dark:text-slate-100 truncate mt-0.5">
-                      {activeReflexUnit
-                        ? `${activeReflexUnit.titleEn} (${activeReflexUnit.titleVi})`
-                        : 'Rèn tốc độ bật câu trong 3 giây'}
-                    </p>
-                  </div>
+                  <p className="text-xs font-black text-slate-800 dark:text-slate-100 truncate">
+                    {activeReflexUnit ? `Đang luyện: Unit ${activeReflexUnit.unitNumber}` : 'Phản Xạ 50 Chủ Đề'}
+                  </p>
                 )}
 
                 {pillarSlide === 3 && (
-                  <div>
-                    <p className="text-[10px] font-extrabold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">
-                      Kho Từ Vựng Oxford • 60 Chủ Đề
-                    </p>
-                    <p className="text-xs font-bold text-slate-800 dark:text-slate-100 truncate mt-0.5">
-                      Ôn tập Flashcard 3D & Bảo vệ trí nhớ FSRS
-                    </p>
-                  </div>
+                  <p className="text-xs font-black text-slate-800 dark:text-slate-100 truncate">
+                    3000 Từ Oxford • Ôn Flashcard FSRS
+                  </p>
                 )}
               </motion.div>
             </AnimatePresence>
 
             <div className="flex items-center gap-1.5 shrink-0">
-              <motion.button
-                whileHover={{ scale: 1.06 }}
-                whileTap={{ scale: 0.94 }}
+              <button
+                type="button"
                 onClick={() => setIsDeepAnalysisOpen((prev) => !prev)}
-                className="px-2.5 py-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-[#0071e3] text-[11px] font-bold cursor-pointer"
-                title="Mở bảng phân tích & giả lập tốc độ chinh phục"
+                className="duo-btn duo-btn-white duo-btn-xs font-black text-slate-700 dark:text-slate-200 cursor-pointer py-1 px-2"
+                title="Xem chi tiết phân tích"
               >
                 Chi tiết
-              </motion.button>
+              </button>
 
-              <motion.button
-                whileHover={{ scale: 1.08, x: 1 }}
-                whileTap={{ scale: 0.94 }}
+              <button
+                type="button"
                 onClick={() => {
                   if (pillarSlide === 0 || pillarSlide === 1) {
                     aiDiagnosis.pillars[0].onAction();
@@ -855,11 +732,11 @@ function LuxuryHeroPavilion({
                     aiDiagnosis.pillars[2].onAction();
                   }
                 }}
-                className="w-9 h-9 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white flex items-center justify-center shadow-sm shadow-blue-500/30 cursor-pointer"
+                className="duo-btn duo-btn-sapphire duo-btn-xs p-1.5 rounded-xl flex items-center justify-center text-white cursor-pointer shadow-xs"
                 title="Vào học ngay"
               >
-                <ArrowRight size={15} />
-              </motion.button>
+                <ArrowRight size={13} />
+              </button>
             </div>
           </div>
         </div>
