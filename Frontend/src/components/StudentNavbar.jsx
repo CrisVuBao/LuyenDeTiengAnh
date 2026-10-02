@@ -109,8 +109,19 @@ export default function StudentNavbar() {
     }
   };
 
-  // 4 Primary Learning Programs
+  // 5 Primary Learning Programs (Include Home + 4 Pillars)
   const learningPrograms = [
+    {
+      to: '/home',
+      prefetch: 'home',
+      title: 'Trang Chủ',
+      shortTitle: 'Trang Chủ',
+      desc: 'Bảng điều khiển học tập, 3 trụ cột & nhiệm vụ hàng ngày',
+      icon: Home,
+      color: 'from-[#0071e3] to-sky-500',
+      activeBg: 'bg-[#0071e3] border-b-4 border-[#0055b3] text-white',
+      badge: 'Tổng Quan'
+    },
     {
       to: '/communication',
       prefetch: 'communication',
@@ -118,7 +129,8 @@ export default function StudentNavbar() {
       shortTitle: 'Hội Thoại',
       desc: '12 chương hội thoại thực chiến, phản xạ 1:1 & Ebook',
       icon: Sparkles,
-      color: 'from-blue-500 to-indigo-600',
+      color: 'from-[#0071e3] to-indigo-600',
+      activeBg: 'bg-[#0071e3] border-b-4 border-[#0055b3] text-white',
       badge: '12 Chương'
     },
     {
@@ -128,7 +140,8 @@ export default function StudentNavbar() {
       shortTitle: 'Phản Xạ 50',
       desc: '1500 câu nói - viết phản xạ tức thì theo ngữ cảnh',
       icon: Zap,
-      color: 'from-amber-500 to-orange-600',
+      color: 'from-amber-500/85 to-yellow-600/85',
+      activeBg: 'bg-[#d9822b] border-b-4 border-[#b46312] text-white',
       badge: '1500 Câu'
     },
     {
@@ -138,7 +151,8 @@ export default function StudentNavbar() {
       shortTitle: '3000 Từ',
       desc: 'Oxford 3000 theo 60 chủ đề Flashcard 3D & Quiz',
       icon: Layers,
-      color: 'from-emerald-500 to-teal-600',
+      color: 'from-lime-400 to-lime-600',
+      activeBg: 'bg-[#7acc15] border-b-4 border-[#5ea810] text-white',
       badge: '60 Chủ Đề'
     },
     {
@@ -148,7 +162,8 @@ export default function StudentNavbar() {
       shortTitle: 'TOEIC',
       desc: 'Kho đề thi chuẩn ETS, giải thích chi tiết & chấm điểm',
       icon: BookOpen,
-      color: 'from-purple-500 to-pink-600',
+      color: 'from-rose-500 to-pink-600',
+      activeBg: 'bg-[#ff4b4b] border-b-4 border-[#ea2b2b] text-white',
       badge: 'Full ETS'
     }
   ];
@@ -162,28 +177,28 @@ export default function StudentNavbar() {
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-14 sm:h-15 flex items-center justify-between gap-1.5 sm:gap-4 min-w-0">
           
           {/* Zone 1: Brand Logo (Left) - Fixed shrink-0 with safe right margin */}
-          <div className="flex items-center shrink-0 mr-2 xl:mr-4">
+          <div className="flex items-center shrink-0 mr-1 sm:mr-4">
             <NavLink 
               to="/home" 
               onMouseEnter={() => prefetchRoute('home')} 
               className="flex items-center group shrink-0"
               title="Về Trang chủ"
             >
-              <BrandLogo size="sm" />
+              <BrandLogo size="sm" showTagline={true} />
             </NavLink>
           </div>
 
           {/* Zone 2: Desktop Navigation Links (Duolingo 3D Chunky Tabs) */}
           <nav className="hidden lg:flex items-center gap-1.5 xl:gap-2 shrink-0 min-w-0 select-none">
-            {/* Home Tab */}
+            {/* Home Tab (Sapphire Blue - Đồng bộ màu nút vào luyện giao tiếp) */}
             <NavLink
               to="/home"
               onMouseEnter={() => prefetchRoute('home')}
               className={({ isActive }) =>
                 `hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-2xl text-xs font-black transition-all shrink-0 ${
                   isActive
-                    ? 'bg-[#1cb0f6] border-b-4 border-[#1899d6] text-white shadow-sm'
-                    : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/80 border-b-2 border-transparent hover:border-slate-300 dark:hover:border-slate-700'
+                    ? 'bg-[#0071e3] border-b-4 border-[#0055b3] text-white shadow-md shadow-blue-500/20'
+                    : 'text-slate-600 dark:text-slate-300 hover:text-[#0071e3] dark:hover:text-sky-400 hover:bg-blue-50 dark:hover:bg-blue-950/40 border-b-2 border-transparent hover:border-blue-400 dark:hover:border-blue-600'
                 }`
               }
             >
@@ -191,53 +206,53 @@ export default function StudentNavbar() {
               <span>Trang chủ</span>
             </NavLink>
 
-            {/* Giao Tiếp Thực Chiến (Duolingo Blue) */}
+            {/* Giao Tiếp Thực Chiến (Sapphire Blue - Đồng bộ màu nút vào luyện giao tiếp) */}
             <NavLink
               to="/communication"
               onMouseEnter={() => prefetchRoute('communication')}
               className={({ isActive }) =>
                 `flex items-center gap-1.5 px-3 py-1.5 rounded-2xl text-xs font-black transition-all ${
                   isActive
-                    ? 'bg-[#1cb0f6] border-b-4 border-[#1899d6] text-white shadow-sm'
-                    : 'text-slate-600 dark:text-slate-300 hover:text-[#1cb0f6] dark:hover:text-[#1cb0f6] hover:bg-sky-50 dark:hover:bg-sky-950/40 border-b-2 border-transparent hover:border-sky-300 dark:hover:border-sky-700'
+                    ? 'bg-[#0071e3] border-b-4 border-[#0055b3] text-white shadow-md shadow-blue-500/20'
+                    : 'text-slate-600 dark:text-slate-300 hover:text-[#0071e3] dark:hover:text-sky-400 hover:bg-blue-50 dark:hover:bg-blue-950/40 border-b-2 border-transparent hover:border-blue-400 dark:hover:border-blue-600'
                 }`
               }
             >
-              <Sparkles size={15} className="shrink-0 text-amber-300 animate-duo-wiggle" />
+              <Sparkles size={15} className="shrink-0 text-amber-300" />
               <span className="xl:hidden">Giao Tiếp</span>
               <span className="hidden xl:inline">Giao Tiếp Thực Chiến</span>
             </NavLink>
 
-            {/* Phản Xạ 50 Chủ Đề (Duolingo Purple) */}
+            {/* Phản Xạ 50 Chủ Đề (Soft Warm Amber - Dịu mắt, tập trung học tập) */}
             <NavLink
               to="/reflex-50"
               onMouseEnter={() => prefetchRoute('reflex50')}
               className={({ isActive }) =>
                 `flex items-center gap-1.5 px-3 py-1.5 rounded-2xl text-xs font-black transition-all ${
                   isActive
-                    ? 'bg-[#ce82ff] border-b-4 border-[#a54bf2] text-white shadow-sm'
-                    : 'text-slate-600 dark:text-slate-300 hover:text-[#ce82ff] dark:hover:text-[#ce82ff] hover:bg-purple-50 dark:hover:bg-purple-950/40 border-b-2 border-transparent hover:border-purple-300 dark:hover:border-purple-700'
+                    ? 'bg-[#d9822b] border-b-4 border-[#b46312] text-white shadow-sm'
+                    : 'text-slate-600 dark:text-slate-300 hover:text-[#d9822b] dark:hover:text-[#f59e0b] hover:bg-amber-50/70 dark:hover:bg-amber-950/30 border-b-2 border-transparent hover:border-amber-400/70 dark:hover:border-amber-600/70'
                 }`
               }
             >
-              <Zap size={15} className="shrink-0 text-amber-300" />
+              <Zap size={15} className="shrink-0 text-amber-200" />
               <span className="xl:hidden">Phản Xạ</span>
               <span className="hidden xl:inline">Phản Xạ 50 Chủ Đề</span>
             </NavLink>
 
-            {/* Học Từ Vựng 3000 (Duolingo Signature Green) */}
+            {/* Học Từ Vựng 3000 (Xanh Nõn Chuối Tươi Mát & Trẻ Trung) */}
             <NavLink
               to="/vocab"
               onMouseEnter={() => prefetchRoute('vocab')}
               className={({ isActive }) =>
                 `flex items-center gap-1.5 px-3 py-1.5 rounded-2xl text-xs font-black transition-all ${
                   isActive
-                    ? 'bg-[#58cc02] border-b-4 border-[#46a302] text-white shadow-sm'
-                    : 'text-slate-600 dark:text-slate-300 hover:text-[#58cc02] dark:hover:text-[#58cc02] hover:bg-emerald-50 dark:hover:bg-emerald-950/40 border-b-2 border-transparent hover:border-emerald-300 dark:hover:border-emerald-700'
+                    ? 'bg-[#7acc15] border-b-4 border-[#5ea810] text-white shadow-sm'
+                    : 'text-slate-600 dark:text-slate-300 hover:text-[#65a30d] dark:hover:text-[#a3e635] hover:bg-lime-50 dark:hover:bg-lime-950/30 border-b-2 border-transparent hover:border-lime-300 dark:hover:border-lime-700'
                 }`
               }
             >
-              <Layers size={15} className="shrink-0 text-emerald-200" />
+              <Layers size={15} className="shrink-0 text-lime-100" />
               <span className="xl:hidden">Từ Vựng</span>
               <span className="hidden xl:inline">Học Từ Vựng</span>
             </NavLink>
@@ -275,10 +290,10 @@ export default function StudentNavbar() {
             {/* Theme Toggle (Duolingo 3D Chunky Round Button) */}
             <button
               onClick={toggleTheme}
-              className="w-9 h-9 rounded-2xl bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 border-b-4 border-b-slate-300 dark:border-b-slate-900 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-750 flex items-center justify-center transition-all cursor-pointer active:translate-y-0.5 active:border-b-2"
+              className="hidden min-[440px]:flex sm:flex w-8 h-8 sm:w-9 sm:h-9 rounded-xl sm:rounded-2xl duo-btn duo-btn-white duo-btn-xs sm:duo-btn-sm p-0 items-center justify-center shrink-0 cursor-pointer"
               title={mode === 'light' ? 'Chế độ tối' : 'Chế độ sáng'}
             >
-              {mode === 'light' ? <Moon size={16} /> : <Sun size={16} className="text-amber-400 animate-duo-wiggle" />}
+              {mode === 'light' ? <Moon size={15} /> : <Sun size={15} className="text-amber-400" />}
             </button>
 
             {/* Desktop User Avatar & Dropdown Menu (>= 1024px) */}
@@ -348,7 +363,7 @@ export default function StudentNavbar() {
                         onClick={() => navigate('/leaderboard')}
                         className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-amber-50 dark:hover:bg-amber-950/40 hover:text-amber-600 rounded-xl transition-colors text-left cursor-pointer"
                       >
-                        <Trophy size={15} className="text-amber-500 animate-duo-wiggle" />
+                        <Trophy size={15} className="text-amber-500" />
                         <span>Bảng xếp hạng & Huy hiệu</span>
                       </button>
 
@@ -402,13 +417,13 @@ export default function StudentNavbar() {
               </AnimatePresence>
             </div>
 
-            {/* Mobile / Tablet Hamburger Button (< 1024px) */}
+            {/* Mobile / Tablet Hamburger Button (< 1024px) — Strictly hidden on desktop >= 1024px */}
             <button
               onClick={() => setDrawerOpen(true)}
-              className="lg:hidden w-9 h-9 rounded-2xl bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 border-b-4 border-b-slate-300 dark:border-b-slate-900 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-750 flex items-center justify-center transition-all cursor-pointer active:translate-y-0.5 active:border-b-2"
+              className="flex lg:!hidden w-8 h-8 sm:w-9 sm:h-9 rounded-xl sm:rounded-2xl duo-btn duo-btn-white duo-btn-xs sm:duo-btn-sm p-0 items-center justify-center shrink-0 cursor-pointer shadow-xs"
               title="Mở menu điều hướng"
             >
-              <Menu size={18} />
+              <Menu size={17} />
             </button>
 
           </div>
@@ -428,28 +443,28 @@ export default function StudentNavbar() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setDrawerOpen(false)}
-              className="fixed inset-0 bg-slate-950/50 backdrop-blur-sm"
+              className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm"
             />
 
-            {/* Drawer Panel */}
+            {/* Drawer Panel — Tactile Duolingo 3D Container */}
             <motion.div
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 28, stiffness: 300 }}
-              className="relative w-full max-w-sm bg-white dark:bg-slate-900 border-l border-slate-200/80 dark:border-slate-800 shadow-2xl flex flex-col h-full z-10 overflow-hidden"
+              className="relative w-full max-w-sm bg-white dark:bg-slate-900 border-l-2 border-slate-200 dark:border-slate-800 shadow-2xl flex flex-col h-full z-10 overflow-hidden"
             >
               {/* Drawer Header */}
-              <div className="p-5 border-b border-slate-100 dark:border-slate-800/80 flex items-center justify-between bg-slate-50/60 dark:bg-slate-800/40">
+              <div className="p-4 sm:p-5 border-b-2 border-slate-200/80 dark:border-slate-800 flex items-center justify-between bg-slate-50/90 dark:bg-slate-900/90 backdrop-blur-md">
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#0071e3] to-sky-400 text-white font-bold flex items-center justify-center text-sm shadow-md shadow-blue-500/20 shrink-0">
+                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#0071e3] to-sky-400 border-b-4 border-[#0055b3] text-white font-black flex items-center justify-center text-base shadow-md shadow-blue-500/25 shrink-0">
                     {user?.fullName?.charAt(0) || 'U'}
                   </div>
                   <div className="min-w-0">
-                    <p className="font-extrabold text-sm text-slate-900 dark:text-white truncate">
+                    <p className="font-black text-sm text-slate-900 dark:text-white truncate">
                       {user?.fullName || 'Học viên'}
                     </p>
-                    <p className="text-xs text-slate-400 truncate">
+                    <p className="text-xs text-slate-400 font-bold truncate">
                       {user?.email || ''}
                     </p>
                   </div>
@@ -457,70 +472,74 @@ export default function StudentNavbar() {
 
                 <button
                   onClick={() => setDrawerOpen(false)}
-                  className="p-2 rounded-xl bg-slate-200/70 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors cursor-pointer"
+                  className="duo-btn duo-btn-white duo-btn-xs p-2 rounded-xl flex items-center justify-center cursor-pointer shadow-xs"
                   title="Đóng menu"
                 >
-                  <X size={18} />
+                  <X size={16} />
                 </button>
               </div>
 
               {/* Drawer Scrollable Content */}
-              <div className="flex-1 overflow-y-auto p-5 space-y-6">
+              <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-5">
                 
-                {/* Master Learning Guide Trigger */}
+                {/* Master Learning Guide Trigger — Duolingo 3D Card */}
                 <button
                   onClick={() => {
                     setDrawerOpen(false);
                     setGuideModalOpen(true);
                   }}
-                  className="w-full p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/15 via-orange-500/15 to-amber-500/10 border border-amber-500/30 text-amber-900 dark:text-amber-200 flex items-center justify-between text-left cursor-pointer transition-all hover:scale-[1.01]"
+                  className="w-full p-3.5 rounded-2xl bg-gradient-to-r from-amber-50 via-yellow-50 to-orange-50 dark:from-amber-950/40 dark:via-yellow-950/30 dark:to-orange-950/40 border-2 border-amber-300 dark:border-amber-700/70 border-b-4 border-b-amber-500 text-amber-900 dark:text-amber-200 flex items-center justify-between text-left cursor-pointer transition-all hover:scale-[1.01] shadow-xs active:translate-y-0.5 active:border-b-2"
                 >
                   <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-xs">
-                      <Lightbulb size={16} />
+                    <div className="w-9 h-9 rounded-xl bg-amber-400 text-white flex items-center justify-center shrink-0 border-b-2 border-amber-600 shadow-xs">
+                      <Lightbulb size={18} />
                     </div>
                     <div>
-                      <p className="text-xs font-bold">Hướng Dẫn Học Hiệu Quả 💡</p>
-                      <p className="text-[10px] text-amber-700/80 dark:text-amber-300/80">Tam giác vàng 45–60 phút/ngày</p>
+                      <p className="text-xs font-black">Hướng Dẫn Học Hiệu Quả 💡</p>
+                      <p className="text-[10px] text-amber-700/90 dark:text-amber-300/80 font-bold">Tam giác vàng 45–60 phút/ngày</p>
                     </div>
                   </div>
-                  <ChevronRight size={15} className="text-amber-600 dark:text-amber-400" />
+                  <ChevronRight size={16} className="text-amber-600 dark:text-amber-400 shrink-0" />
                 </button>
 
-                {/* 4 Main Learning Programs */}
+                {/* 5 Primary Learning Programs (Duolingo 3D Chunky Cards) */}
                 <div>
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 block mb-2.5">
+                  <span className="text-[11px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500 block mb-2.5">
                     Chương trình học tập
                   </span>
-                  <div className="space-y-2">
+                  <div className="space-y-2.5">
                     {learningPrograms.map((prog) => {
                       const Icon = prog.icon;
-                      const isActive = location.pathname.startsWith(prog.to);
+                      const isActive = location.pathname.startsWith(prog.to) || (prog.to === '/home' && location.pathname === '/');
                       return (
                         <NavLink
                           key={prog.to}
                           to={prog.to}
                           onMouseEnter={() => prefetchRoute(prog.prefetch)}
                           onClick={() => setDrawerOpen(false)}
-                          className={`flex items-center gap-3 p-3 rounded-2xl border transition-all ${
+                          className={`flex items-center gap-3 p-3 rounded-2xl border-2 border-b-4 transition-all ${
                             isActive
-                              ? 'bg-blue-50 dark:bg-blue-950/40 border-[#0071e3]/40 text-[#0071e3] dark:text-sky-400 shadow-sm'
-                              : 'bg-white dark:bg-slate-800/60 border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200'
+                              ? `${prog.activeBg} shadow-md scale-[1.01]`
+                              : 'bg-white dark:bg-slate-800/90 border-slate-200 dark:border-slate-700/80 border-b-slate-300 dark:border-b-slate-900 hover:bg-slate-50 dark:hover:bg-slate-750 text-slate-800 dark:text-slate-200 shadow-xs'
                           }`}
                         >
-                          <div className={`w-9 h-9 rounded-xl bg-gradient-to-tr ${prog.color} text-white flex items-center justify-center shrink-0 shadow-sm`}>
+                          <div className={`w-10 h-10 rounded-xl bg-gradient-to-tr ${prog.color} text-white flex items-center justify-center shrink-0 border-b-2 border-black/20 shadow-xs`}>
                             <Icon size={18} />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <div className="flex items-center justify-between">
-                              <span className="font-bold text-xs text-slate-900 dark:text-white">
+                            <div className="flex items-center justify-between gap-1">
+                              <span className="font-black text-xs sm:text-sm truncate">
                                 {prog.title}
                               </span>
-                              <span className="text-[10px] font-bold px-1.5 py-0.2 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">
+                              <span className={`text-[10px] font-black px-2 py-0.5 rounded-lg border uppercase tracking-wider shrink-0 ${
+                                isActive
+                                  ? 'bg-white/20 border-white/40 text-white'
+                                  : 'bg-slate-100 dark:bg-slate-700/80 border-slate-200/80 dark:border-slate-600 text-slate-600 dark:text-slate-300'
+                              }`}>
                                 {prog.badge}
                               </span>
                             </div>
-                            <p className="text-[11px] text-slate-400 truncate mt-0.5">
+                            <p className={`text-[11px] truncate mt-0.5 font-medium ${isActive ? 'text-white/85' : 'text-slate-400 dark:text-slate-400'}`}>
                               {prog.desc}
                             </p>
                           </div>
@@ -530,21 +549,23 @@ export default function StudentNavbar() {
                   </div>
                 </div>
 
-                {/* Study Tools & Profile Links */}
+                {/* Study Tools & Profile Links (Duolingo 3D Chunky Action List) */}
                 <div>
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 block mb-2.5">
+                  <span className="text-[11px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500 block mb-2.5">
                     Tiện ích & Thành tích
                   </span>
-                  <div className="space-y-1">
+                  <div className="space-y-2">
                     <button
                       onClick={() => {
                         navigate('/leaderboard');
                         setDrawerOpen(false);
                       }}
-                      className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/70 text-slate-700 dark:text-slate-200 text-xs font-semibold transition-colors cursor-pointer"
+                      className="w-full flex items-center justify-between p-3 rounded-2xl bg-white dark:bg-slate-800/80 border-2 border-slate-200 dark:border-slate-700 border-b-4 border-b-slate-300 dark:border-b-slate-900 text-slate-800 dark:text-slate-200 text-xs font-black transition-all hover:scale-[1.01] active:translate-y-0.5 active:border-b-2 cursor-pointer shadow-xs"
                     >
                       <div className="flex items-center gap-2.5">
-                        <Trophy size={16} className="text-amber-500" />
+                        <div className="w-8 h-8 rounded-xl bg-amber-400 border-b-2 border-amber-600 text-white flex items-center justify-center shrink-0">
+                          <Trophy size={16} />
+                        </div>
                         <span>Bảng xếp hạng & Huy hiệu</span>
                       </div>
                       <ChevronRight size={14} className="text-slate-400" />
@@ -555,10 +576,12 @@ export default function StudentNavbar() {
                         navigate('/progress');
                         setDrawerOpen(false);
                       }}
-                      className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/70 text-slate-700 dark:text-slate-200 text-xs font-semibold transition-colors cursor-pointer"
+                      className="w-full flex items-center justify-between p-3 rounded-2xl bg-white dark:bg-slate-800/80 border-2 border-slate-200 dark:border-slate-700 border-b-4 border-b-slate-300 dark:border-b-slate-900 text-slate-800 dark:text-slate-200 text-xs font-black transition-all hover:scale-[1.01] active:translate-y-0.5 active:border-b-2 cursor-pointer shadow-xs"
                     >
                       <div className="flex items-center gap-2.5">
-                        <TrendingUp size={16} className="text-emerald-500" />
+                        <div className="w-8 h-8 rounded-xl bg-emerald-500 border-b-2 border-emerald-700 text-white flex items-center justify-center shrink-0">
+                          <TrendingUp size={16} />
+                        </div>
                         <span>Quá trình học tập chi tiết</span>
                       </div>
                       <ChevronRight size={14} className="text-slate-400" />
@@ -569,10 +592,12 @@ export default function StudentNavbar() {
                         navigate('/dashboard');
                         setDrawerOpen(false);
                       }}
-                      className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/70 text-slate-700 dark:text-slate-200 text-xs font-semibold transition-colors cursor-pointer"
+                      className="w-full flex items-center justify-between p-3 rounded-2xl bg-white dark:bg-slate-800/80 border-2 border-slate-200 dark:border-slate-700 border-b-4 border-b-slate-300 dark:border-b-slate-900 text-slate-800 dark:text-slate-200 text-xs font-black transition-all hover:scale-[1.01] active:translate-y-0.5 active:border-b-2 cursor-pointer shadow-xs"
                     >
                       <div className="flex items-center gap-2.5">
-                        <BarChart3 size={16} className="text-[#0071e3]" />
+                        <div className="w-8 h-8 rounded-xl bg-[#0071e3] border-b-2 border-[#0055b3] text-white flex items-center justify-center shrink-0">
+                          <BarChart3 size={16} />
+                        </div>
                         <span>Tổng quan điểm TOEIC</span>
                       </div>
                       <ChevronRight size={14} className="text-slate-400" />
@@ -583,10 +608,12 @@ export default function StudentNavbar() {
                         navigate('/profile');
                         setDrawerOpen(false);
                       }}
-                      className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/70 text-slate-700 dark:text-slate-200 text-xs font-semibold transition-colors cursor-pointer"
+                      className="w-full flex items-center justify-between p-3 rounded-2xl bg-white dark:bg-slate-800/80 border-2 border-slate-200 dark:border-slate-700 border-b-4 border-b-slate-300 dark:border-b-slate-900 text-slate-800 dark:text-slate-200 text-xs font-black transition-all hover:scale-[1.01] active:translate-y-0.5 active:border-b-2 cursor-pointer shadow-xs"
                     >
                       <div className="flex items-center gap-2.5">
-                        <User size={16} className="text-slate-500" />
+                        <div className="w-8 h-8 rounded-xl bg-slate-500 border-b-2 border-slate-700 text-white flex items-center justify-center shrink-0">
+                          <User size={16} />
+                        </div>
                         <span>Hồ sơ cá nhân & Bảo mật</span>
                       </div>
                       <ChevronRight size={14} className="text-slate-400" />
@@ -598,10 +625,12 @@ export default function StudentNavbar() {
                           navigate('/admin/dashboard');
                           setDrawerOpen(false);
                         }}
-                        className="w-full flex items-center justify-between p-2.5 rounded-xl bg-blue-50/70 dark:bg-blue-950/40 text-[#0071e3] dark:text-sky-400 text-xs font-bold transition-colors cursor-pointer"
+                        className="w-full flex items-center justify-between p-3 rounded-2xl bg-blue-50 dark:bg-blue-950/40 border-2 border-blue-200 dark:border-blue-800 border-b-4 border-b-blue-400 dark:border-b-blue-900 text-[#0071e3] dark:text-sky-400 text-xs font-black transition-all hover:scale-[1.01] active:translate-y-0.5 active:border-b-2 cursor-pointer shadow-xs"
                       >
                         <div className="flex items-center gap-2.5">
-                          <ShieldCheck size={16} />
+                          <div className="w-8 h-8 rounded-xl bg-[#0071e3] border-b-2 border-[#0055b3] text-white flex items-center justify-center shrink-0">
+                            <ShieldCheck size={16} />
+                          </div>
                           <span>Quản trị hệ thống</span>
                         </div>
                         <ChevronRight size={14} />
@@ -612,37 +641,31 @@ export default function StudentNavbar() {
 
               </div>
 
-              {/* Drawer Footer (Theme & Logout) */}
-              <div className="p-4 border-t border-slate-100 dark:border-slate-800/80 bg-slate-50/60 dark:bg-slate-800/40 space-y-2">
-                {/* <div className="flex items-center justify-between px-2 py-1">
-                  <span className="text-xs font-semibold text-slate-600 dark:text-slate-300">
-                    Ngôn ngữ
-                  </span>
-                  <LanguageSelector compact={false} />
-                </div> */}
-
-                <div className="flex items-center justify-between px-2 py-1">
-                  <span className="text-xs font-semibold text-slate-600 dark:text-slate-300">
+              {/* Drawer Footer (Theme & Logout) — Duolingo 3D Buttons */}
+              <div className="p-4 border-t-2 border-slate-200/80 dark:border-slate-800 bg-slate-50/90 dark:bg-slate-900/90 space-y-3">
+                <div className="flex items-center justify-between px-1">
+                  <span className="text-xs font-black text-slate-700 dark:text-slate-300">
                     Giao diện: {mode === 'light' ? 'Chế độ sáng' : 'Chế độ tối'}
                   </span>
                   <button
                     onClick={toggleTheme}
-                    className="p-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 transition-colors"
+                    className="duo-btn duo-btn-white duo-btn-xs p-2 flex items-center gap-1.5 cursor-pointer shadow-xs"
                   >
-                    {mode === 'light' ? <Moon size={14} /> : <Sun size={14} className="text-amber-400" />}
+                    {mode === 'light' ? <Moon size={14} /> : <Sun size={14} className="text-amber-500" />}
+                    <span className="text-[11px] font-black">{mode === 'light' ? 'Tối' : 'Sáng'}</span>
                   </button>
                 </div>
 
                 <button
                   onClick={handleLogout}
-                  className="w-full py-2.5 px-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 text-rose-600 font-bold text-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                  className="duo-btn duo-btn-red duo-btn-sm w-full font-black flex items-center justify-center gap-2 cursor-pointer shadow-xs"
                 >
                   <LogOut size={15} />
-                  <span>Đăng xuất tài khoản</span>
+                  <span>ĐĂNG XUẤT TÀI KHOẢN</span>
                 </button>
 
-                <div className="text-center pt-1">
-                  <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500">
+                <div className="text-center pt-0.5">
+                  <p className="text-[10px] font-black text-slate-400 dark:text-slate-500">
                     {branding.brandName} • {branding.companyName || branding.tagline}
                   </p>
                 </div>
@@ -654,19 +677,19 @@ export default function StudentNavbar() {
 
       {/* ======================================================== */}
       {/* 3. MOBILE BOTTOM NAVIGATION BAR (< 768px / md:hidden)     */}
-      {/* Native App-Style iOS TabBar at Bottom of Screen          */}
+      {/* Native Duolingo App-Style 3D TabBar at Bottom of Screen   */}
       {/* ======================================================== */}
       <nav 
         aria-label="Mobile Navigation" 
-        className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-t border-slate-200/80 dark:border-slate-800/80 shadow-[0_-4px_25px_rgba(0,0,0,0.06)] pb-[max(env(safe-area-inset-bottom),0.35rem)] pt-1"
+        className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-t-2 border-slate-200/90 dark:border-slate-800 shadow-[0_-4px_25px_rgba(0,0,0,0.08)] pb-[max(env(safe-area-inset-bottom),0.35rem)] pt-1.5"
       >
-        <div className="flex items-center justify-around px-1.5">
+        <div className="flex items-center justify-around px-2 gap-1">
           {[
-            { to: '/home', prefetch: 'home', label: 'Trang chủ', icon: Home },
-            { to: '/communication', prefetch: 'communication', label: 'Giao tiếp', icon: Sparkles },
-            { to: '/reflex-50', prefetch: 'reflex50', label: 'Phản xạ', icon: Zap },
-            { to: '/vocab', prefetch: 'vocab', label: 'Từ vựng', icon: Layers },
-            { to: '/toeic', prefetch: 'toeic', label: 'TOEIC', icon: BookOpen }
+            { to: '/home', prefetch: 'home', label: 'Trang chủ', icon: Home, activeColor: 'bg-[#0071e3] text-white border-b-3 border-[#0055b3] shadow-md shadow-blue-500/25' },
+            { to: '/communication', prefetch: 'communication', label: 'Giao tiếp', icon: Sparkles, activeColor: 'bg-[#0071e3] text-white border-b-3 border-[#0055b3] shadow-md shadow-blue-500/25' },
+            { to: '/reflex-50', prefetch: 'reflex50', label: 'Phản xạ', icon: Zap, activeColor: 'bg-[#d9822b] text-white border-b-3 border-[#b46312] shadow-sm' },
+            { to: '/vocab', prefetch: 'vocab', label: 'Từ vựng', icon: Layers, activeColor: 'bg-[#7acc15] text-white border-b-3 border-[#5ea810] shadow-sm' },
+            { to: '/toeic', prefetch: 'toeic', label: 'TOEIC', icon: BookOpen, activeColor: 'bg-[#ff4b4b] text-white border-b-3 border-[#ea2b2b] shadow-md shadow-rose-500/25' }
           ].map((item) => {
             const Icon = item.icon;
             return (
@@ -678,23 +701,29 @@ export default function StudentNavbar() {
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
                 className={({ isActive }) =>
-                  `flex-1 flex flex-col items-center justify-center py-1 min-h-[46px] rounded-xl transition-colors select-none ${
+                  `flex-1 flex flex-col items-center justify-center py-0.5 rounded-2xl transition-all select-none ${
                     isActive
-                      ? 'text-[#0071e3] dark:text-sky-400 font-bold'
-                      : 'text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-medium'
+                      ? 'scale-105'
+                      : 'text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
                   }`
                 }
               >
                 {({ isActive }) => (
                   <>
                     <div
-                      className={`px-3 py-0.5 rounded-full flex items-center justify-center transition-colors ${
-                        isActive ? 'bg-[#0071e3]/12 dark:bg-sky-500/20' : ''
+                      className={`px-3.5 py-1 rounded-2xl flex items-center justify-center transition-all ${
+                        isActive
+                          ? `${item.activeColor}`
+                          : 'hover:bg-slate-100 dark:hover:bg-slate-800'
                       }`}
                     >
-                      <Icon size={18} />
+                      <Icon size={19} />
                     </div>
-                    <span className="text-[10px] mt-0.5 leading-tight">{item.label}</span>
+                    <span className={`text-[10px] mt-0.5 leading-tight font-black tracking-tight ${
+                      isActive ? 'text-slate-900 dark:text-white' : 'font-bold text-slate-500 dark:text-slate-400'
+                    }`}>
+                      {item.label}
+                    </span>
                   </>
                 )}
               </NavLink>

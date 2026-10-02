@@ -156,7 +156,7 @@ export default function DailyQuestsPanel() {
       {isExpanded && (
         <>
           <div
-            className="flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-3 overflow-x-auto snap-x snap-mandatory pb-1 sm:pb-0 no-scrollbar"
+            className="flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-3.5 overflow-x-auto sm:overflow-visible snap-x snap-mandatory p-1.5 sm:p-2 -m-1.5 sm:-m-2 no-scrollbar"
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
             {sortedQuests.map((quest) => {
@@ -183,8 +183,8 @@ export default function DailyQuestsPanel() {
                 : isFlashcard
                 ? 'duo-card duo-card-green hover:scale-[1.02] cursor-pointer'
                 : isBino
-                ? 'duo-card duo-card-blue hover:scale-[1.02] cursor-pointer'
-                : 'duo-card duo-card-purple hover:scale-[1.02] cursor-pointer';
+                ? 'duo-card duo-card-sapphire hover:scale-[1.02] cursor-pointer'
+                : 'duo-card duo-card-amber hover:scale-[1.02] cursor-pointer';
 
               const iconBg = isCompleted
                 ? 'bg-[#58cc02] text-white border-b-2 border-[#46a302]'
@@ -193,8 +193,8 @@ export default function DailyQuestsPanel() {
                 : isFlashcard
                 ? 'bg-[#58cc02] text-white border-b-2 border-[#46a302]'
                 : isBino
-                ? 'bg-[#1cb0f6] text-white border-b-2 border-[#1899d6]'
-                : 'bg-[#ce82ff] text-white border-b-2 border-[#a54bf2]';
+                ? 'bg-[#0071e3] text-white border-b-2 border-[#0055b3]'
+                : 'bg-[#f59e0b] text-white border-b-2 border-[#d97706]';
 
               return (
                 <div
@@ -206,7 +206,7 @@ export default function DailyQuestsPanel() {
                       handleQuestAction(quest);
                     }
                   }}
-                  className={`w-[260px] sm:w-auto shrink-0 snap-start p-3.5 ${cardVariant} flex flex-col justify-between gap-3`}
+                  className={`w-[260px] sm:w-auto shrink-0 snap-start p-3.5 ${cardVariant} flex flex-col justify-between gap-3 transition-all duration-200`}
                 >
                   {/* Top Row: Icon + Category Badge + XP Reward */}
                   <div className="space-y-2">
@@ -215,7 +215,7 @@ export default function DailyQuestsPanel() {
                         <div
                           className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 shadow-xs ${iconBg}`}
                         >
-                          {isCompleted ? <CheckCircle2 size={18} /> : <IconComponent size={18} className="animate-duo-bounce" />}
+                          {isCompleted ? <CheckCircle2 size={18} /> : <IconComponent size={18} className="shrink-0" />}
                         </div>
                         <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-lg bg-white/80 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-200 truncate">
                           {categoryLabel}

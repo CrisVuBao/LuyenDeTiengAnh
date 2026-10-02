@@ -367,19 +367,19 @@ export default function StudentHome() {
           return (
             <motion.section
               variants={sectionRevealVariants}
-              className="duo-card p-4 sm:p-7 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-purple-50/95 via-fuchsia-50/70 to-indigo-50/85 dark:from-[#1a0c30] dark:via-[#150a26] dark:to-[#0c0517] border-2 border-purple-200 dark:border-purple-800/80 border-b-6 border-b-[#8b5cf6] dark:border-b-[#6d28d9] space-y-4 sm:space-y-6 w-full min-w-0 max-w-full shadow-md relative overflow-hidden"
+              className="duo-card p-4 sm:p-7 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-amber-50/95 via-yellow-50/70 to-orange-50/85 dark:from-[#261503] dark:via-[#201102] dark:to-[#120800] border-2 border-amber-200 dark:border-amber-800/80 border-b-6 border-b-[#f59e0b] dark:border-b-[#d97706] space-y-4 sm:space-y-6 w-full min-w-0 max-w-full shadow-md relative overflow-hidden"
             >
               {/* Soft Ambient Glows & Top Gloss Shimmer */}
-              <div className="pointer-events-none absolute -right-16 -top-16 w-64 h-64 bg-gradient-to-br from-[#8b5cf6]/20 to-fuchsia-400/15 rounded-full blur-2xl" />
-              <div className="pointer-events-none absolute -left-16 -bottom-16 w-64 h-64 bg-gradient-to-tr from-indigo-500/15 to-purple-400/15 rounded-full blur-2xl" />
-              <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#8b5cf6]/60 to-transparent" />
+              <div className="pointer-events-none absolute -right-16 -top-16 w-64 h-64 bg-gradient-to-br from-[#f59e0b]/20 to-orange-400/15 rounded-full blur-2xl" />
+              <div className="pointer-events-none absolute -left-16 -bottom-16 w-64 h-64 bg-gradient-to-tr from-yellow-500/15 to-amber-400/15 rounded-full blur-2xl" />
+              <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#f59e0b]/60 to-transparent" />
 
               <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6 min-w-0">
                 <div className="space-y-2 sm:space-y-2.5 max-w-2xl min-w-0 flex-1">
                   {/* Duolingo Ribbon Pills */}
                   <div className="flex items-center justify-between sm:justify-start gap-1.5 sm:gap-2 flex-wrap min-w-0">
-                    <div className="duo-pill duo-pill-purple text-[10px] sm:text-xs font-black uppercase tracking-wider shrink-0">
-                      <Zap size={13} className="text-[#8b5cf6] dark:text-[#c084fc] shrink-0" />
+                    <div className="duo-pill duo-pill-amber text-[10px] sm:text-xs font-black uppercase tracking-wider shrink-0">
+                      <Zap size={13} className="text-[#f59e0b] dark:text-[#fbbf24] shrink-0" />
                       <span className="sm:hidden">50 CHỦ ĐỀ • 1.500 CÂU PHẢN XẠ 3S</span>
                       <span className="hidden sm:inline">TRỤ CỘT 02 • 50 CHỦ ĐỀ • 1.500 CÂU PHẢN XẠ 3 GIÂY</span>
                     </div>
@@ -396,7 +396,7 @@ export default function StudentHome() {
                       <span className="text-slate-900 dark:text-white">
                         Phản Xạ Nói – Viết
                       </span>{' '}
-                      <span className="text-[#7c3aed] dark:text-[#c084fc]">
+                      <span className="text-[#d97706] dark:text-[#fbbf24]">
                         50 Chủ Đề Tiếng Anh Thông Dụng.
                       </span>
                     </h2>
@@ -411,7 +411,7 @@ export default function StudentHome() {
                   <button
                     onMouseEnter={() => loadReflex50FullData()}
                     onClick={() => navigate(`/reflex-50/unit/${activeUnitObj.unitNumber}`)}
-                    className="duo-btn duo-btn-purple duo-btn-sm sm:duo-btn-md font-black shadow-md w-full sm:w-auto flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer"
+                    className="duo-btn duo-btn-amber duo-btn-sm sm:duo-btn-md font-black shadow-md w-full sm:w-auto flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer"
                   >
                     <Play size={15} fill="currentColor" className="shrink-0" />
                     <span className="truncate">Học Unit #{activeUnitObj.unitNumber}</span>
@@ -420,7 +420,7 @@ export default function StudentHome() {
                   <button
                     onMouseEnter={() => loadReflex50FullData()}
                     onClick={() => navigate('/reflex-50')}
-                    className="duo-btn duo-btn-white duo-btn-sm sm:duo-btn-md font-black text-xs sm:text-sm w-full sm:w-auto text-[#7c3aed] dark:text-[#c084fc] cursor-pointer shadow-xs whitespace-nowrap"
+                    className="duo-btn duo-btn-white duo-btn-sm sm:duo-btn-md font-black text-xs sm:text-sm w-full sm:w-auto text-[#d97706] dark:text-[#fbbf24] cursor-pointer shadow-xs whitespace-nowrap"
                   >
                     <span className="truncate">Đủ 50 Chủ Đề</span>
                   </button>
@@ -437,23 +437,23 @@ export default function StudentHome() {
                     key={cat.id}
                     onMouseEnter={() => loadReflex50FullData()}
                     onClick={() => navigate(`/reflex-50/unit/${cat.unitRange[0]}`)}
-                    className="w-[240px] sm:w-[260px] lg:w-auto shrink-0 snap-start p-3.5 sm:p-4 rounded-2xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border-2 border-purple-200/80 dark:border-purple-800/60 border-b-4 border-b-purple-400 dark:border-b-purple-900 hover:scale-[1.03] transition-all cursor-pointer group flex flex-col justify-between gap-3 shadow-xs"
+                    className="w-[240px] sm:w-[260px] lg:w-auto shrink-0 snap-start p-3.5 sm:p-4 rounded-2xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border-2 border-amber-200/80 dark:border-amber-800/60 border-b-4 border-b-amber-400 dark:border-b-amber-900 hover:scale-[1.03] transition-all cursor-pointer group flex flex-col justify-between gap-3 shadow-xs"
                   >
                     <div>
-                      <div className="flex items-center justify-between text-[11px] font-black text-[#7c3aed] dark:text-[#c084fc]">
+                      <div className="flex items-center justify-between text-[11px] font-black text-[#d97706] dark:text-[#fbbf24]">
                         <span>
                           UNIT {cat.unitRange[0]} – {cat.unitRange[1]}
                         </span>
                         <span className="text-slate-400 font-extrabold">300 câu</span>
                       </div>
-                      <h3 className="text-sm font-black text-slate-900 dark:text-white mt-1.5 group-hover:text-[#7c3aed] dark:group-hover:text-[#c084fc] transition-colors line-clamp-1">
+                      <h3 className="text-sm font-black text-slate-900 dark:text-white mt-1.5 group-hover:text-[#d97706] dark:group-hover:text-[#fbbf24] transition-colors line-clamp-1">
                         {cat.titleVi}
                       </h3>
                       <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2 mt-1 font-medium">
                         {cat.description}
                       </p>
                     </div>
-                    <div className="text-[11px] font-black text-[#7c3aed] dark:text-[#c084fc] group-hover:translate-x-0.5 transition-transform flex items-center gap-1 pt-1 border-t border-slate-100 dark:border-slate-800">
+                    <div className="text-[11px] font-black text-[#d97706] dark:text-[#fbbf24] group-hover:translate-x-0.5 transition-transform flex items-center gap-1 pt-1 border-t border-slate-100 dark:border-slate-800">
                       <span>Vào luyện phản xạ</span>
                       <ChevronRight size={13} />
                     </div>

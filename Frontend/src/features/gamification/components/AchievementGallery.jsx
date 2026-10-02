@@ -110,13 +110,13 @@ export default function AchievementGallery() {
       {/* Banner Summary */}
       <div className="p-6 rounded-3xl duo-card-yellow flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1">
-          <span className="text-xs font-black uppercase tracking-wider text-[#8a5800] flex items-center gap-1.5">
+          <span className="text-xs font-black uppercase tracking-wider text-[#8a5800] dark:text-amber-400 flex items-center gap-1.5">
             <Trophy size={16} className="animate-duo-bounce" /> Bộ Sưu Tập Huy Hiệu Vinh Danh
           </span>
-          <h3 className="text-xl sm:text-2xl font-black text-[#5c3a00] uppercase tracking-tight">
+          <h3 className="text-xl sm:text-2xl font-black text-[#5c3a00] dark:text-white uppercase tracking-tight">
             Thành Tựu Đã Đạt ({totalUnlocked}/{displayList.length})
           </h3>
-          <p className="text-xs text-[#8a5800] font-bold">
+          <p className="text-xs text-[#8a5800] dark:text-amber-300/90 font-bold">
             Chinh phục các thử thách để mở khóa huy hiệu độc quyền và nhận thêm điểm thưởng XP!
           </p>
         </div>

@@ -112,19 +112,19 @@ export default function VocabOverviewPage() {
         description="Học 3000 từ vựng Oxford thông dụng nhất theo 60 chủ đề cốt lõi với flashcard tương tác và phát âm chuẩn."
       />
       
-      {/* 1. Tactile Duolingo 3D Chunky Hero Card with Rich Emerald Atmosphere */}
-      <div className="duo-card p-4 sm:p-7 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-emerald-50/95 via-teal-50/70 to-green-50/85 dark:from-[#062419] dark:via-[#093322] dark:to-[#041a12] border-2 border-emerald-200 dark:border-emerald-800/80 border-b-6 border-b-[#10b981] dark:border-b-[#059669] shadow-md w-full min-w-0 max-w-full relative overflow-hidden space-y-4 sm:space-y-5">
-        {/* Soft Ambient Glows & Top Gloss Shimmer */}
-        <div className="pointer-events-none absolute -right-16 -top-16 w-64 h-64 bg-gradient-to-br from-[#10b981]/20 to-teal-400/15 rounded-full blur-2xl" />
-        <div className="pointer-events-none absolute -left-16 -bottom-16 w-64 h-64 bg-gradient-to-tr from-emerald-500/15 to-green-400/15 rounded-full blur-2xl" />
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#10b981]/60 to-transparent" />
+      {/* 1. Tactile Duolingo 3D Chunky Hero Card with Fresh Banana Sprout Lime Atmosphere (Xanh Nõn Chuối Tươi Mát) */}
+      <div className="duo-card p-4 sm:p-7 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-[#f7fee7] via-[#f4fce3] to-[#edfbd8] dark:from-[#111827] dark:via-[#0f172a] dark:to-[#0f172a] border-2 border-lime-200/60 dark:border-slate-800 border-b-6 border-b-[#7acc15] dark:border-b-[#5ea810] shadow-sm w-full min-w-0 max-w-full relative overflow-hidden space-y-4 sm:space-y-5">
+        {/* Soft Ambient Glows & Top Gloss Shimmer (Xanh nõn chuối tươi mát, dịu êm) */}
+        <div className="pointer-events-none absolute -right-16 -top-16 w-64 h-64 bg-gradient-to-br from-[#7acc15]/10 to-lime-300/5 rounded-full blur-2xl" />
+        <div className="pointer-events-none absolute -left-16 -bottom-16 w-64 h-64 bg-gradient-to-tr from-lime-400/8 to-lime-300/5 rounded-full blur-2xl" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#7acc15]/40 to-transparent" />
 
         <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6 min-w-0">
           {/* Left: Title + Description */}
           <div className="space-y-2 sm:space-y-2.5 max-w-2xl min-w-0 flex-1">
             <div className="flex items-center justify-between sm:justify-start gap-1.5 sm:gap-2 flex-wrap min-w-0">
               <div className="duo-pill duo-pill-green text-[10px] sm:text-xs font-black uppercase tracking-wider shrink-0">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-duo-pulse" />
+                <span className="w-2 h-2 rounded-full bg-[#7acc15] dark:bg-lime-400 animate-duo-pulse" />
                 <span className="sm:hidden">OXFORD 3000 • 60 CHỦ ĐỀ</span>
                 <span className="hidden sm:inline">OXFORD 3000 CỐT LÕI • 60 CHỦ ĐỀ FLASHCARD 3D</span>
               </div>
@@ -140,7 +140,7 @@ export default function VocabOverviewPage() {
                 <span className="text-slate-900 dark:text-white">
                   3000 Từ Vựng Tiếng Anh
                 </span>{' '}
-                <span className="text-[#059669] dark:text-[#34d399]">
+                <span className="text-[#65a30d] dark:text-[#a3e635]">
                   Theo 60 Chủ Đề.
                 </span>
               </h1>
@@ -156,7 +156,7 @@ export default function VocabOverviewPage() {
             <button
               type="button"
               onClick={() => navigate(`/vocab/${activeResumeTopic.id}`)}
-              className="duo-btn duo-btn-green duo-btn-sm sm:duo-btn-lg flex items-center justify-center gap-1.5 sm:gap-2 w-full lg:w-auto font-black cursor-pointer shadow-md"
+              className="duo-btn duo-btn-green duo-btn-sm sm:duo-btn-lg flex items-center justify-center gap-1.5 sm:gap-2 w-full lg:w-auto font-black cursor-pointer shadow-sm"
             >
               <Play size={15} fill="currentColor" className="shrink-0" />
               <span className="truncate">
@@ -171,7 +171,7 @@ export default function VocabOverviewPage() {
                 const el = document.getElementById('vocab-topics-grid');
                 if (el) el.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="duo-btn duo-btn-white duo-btn-sm sm:duo-btn-lg flex items-center justify-center gap-1.5 sm:gap-2 w-full lg:w-auto font-black text-[#059669] dark:text-[#34d399] cursor-pointer whitespace-nowrap shadow-xs"
+              className="duo-btn duo-btn-white duo-btn-sm sm:duo-btn-lg flex items-center justify-center gap-1.5 sm:gap-2 w-full lg:w-auto font-black text-[#65a30d] dark:text-[#a3e635] cursor-pointer whitespace-nowrap shadow-xs"
             >
               <span className="truncate">Đủ 60 chủ đề</span>
             </button>
@@ -180,8 +180,8 @@ export default function VocabOverviewPage() {
 
         {/* Duolingo 4-Stat Strip */}
         <div className="relative z-10 grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5 pt-1">
-          <div className="p-2.5 sm:p-3 rounded-2xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border-2 border-emerald-200 dark:border-emerald-900/60 border-b-4 border-b-emerald-400 dark:border-b-emerald-950 flex items-center gap-2.5 min-w-0 shadow-xs">
-            <div className="w-8 h-8 rounded-xl bg-emerald-500 text-white flex items-center justify-center font-black shrink-0">
+          <div className="p-2.5 sm:p-3 rounded-2xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border-2 border-slate-200/80 dark:border-slate-800 border-b-4 border-b-lime-300/80 dark:border-b-lime-800/80 flex items-center gap-2.5 min-w-0 shadow-xs">
+            <div className="w-8 h-8 rounded-xl bg-[#7acc15] text-white flex items-center justify-center font-black shrink-0">
               <CheckCircle2 size={16} />
             </div>
             <div className="min-w-0">
@@ -192,8 +192,8 @@ export default function VocabOverviewPage() {
             </div>
           </div>
 
-          <div className="p-2.5 sm:p-3 rounded-2xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border-2 border-teal-200 dark:border-teal-900/60 border-b-4 border-b-teal-400 dark:border-b-teal-950 flex items-center gap-2.5 min-w-0 shadow-xs">
-            <div className="w-8 h-8 rounded-xl bg-teal-500 text-white flex items-center justify-center font-black shrink-0">
+          <div className="p-2.5 sm:p-3 rounded-2xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border-2 border-slate-200/80 dark:border-slate-800 border-b-4 border-b-teal-300/80 dark:border-b-teal-800/80 flex items-center gap-2.5 min-w-0 shadow-xs">
+            <div className="w-8 h-8 rounded-xl bg-teal-600 text-white flex items-center justify-center font-black shrink-0">
               <TrendingUp size={16} />
             </div>
             <div className="min-w-0">
@@ -204,7 +204,7 @@ export default function VocabOverviewPage() {
             </div>
           </div>
 
-          <div className="p-2.5 sm:p-3 rounded-2xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border-2 border-amber-200 dark:border-amber-900/60 border-b-4 border-b-amber-400 dark:border-b-amber-950 flex items-center gap-2.5 min-w-0 shadow-xs">
+          <div className="p-2.5 sm:p-3 rounded-2xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border-2 border-slate-200/80 dark:border-slate-800 border-b-4 border-b-amber-300/80 dark:border-b-amber-800/80 flex items-center gap-2.5 min-w-0 shadow-xs">
             <div className="w-8 h-8 rounded-xl bg-amber-500 text-white flex items-center justify-center font-black shrink-0">
               <Sparkles size={16} />
             </div>
@@ -216,7 +216,7 @@ export default function VocabOverviewPage() {
             </div>
           </div>
 
-          <div className="p-2.5 sm:p-3 rounded-2xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border-2 border-purple-200 dark:border-purple-900/60 border-b-4 border-b-purple-400 dark:border-b-purple-950 flex items-center gap-2.5 min-w-0 shadow-xs">
+          <div className="p-2.5 sm:p-3 rounded-2xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border-2 border-slate-200/80 dark:border-slate-800 border-b-4 border-b-purple-300/80 dark:border-b-purple-800/80 flex items-center gap-2.5 min-w-0 shadow-xs">
             <div className="w-8 h-8 rounded-xl bg-purple-500 text-white flex items-center justify-center font-black shrink-0">
               <Star size={16} className="fill-white" />
             </div>

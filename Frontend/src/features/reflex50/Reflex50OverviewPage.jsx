@@ -164,25 +164,25 @@ export default function Reflex50OverviewPage() {
         description="Luyện phản xạ 1500 câu tiếng Anh theo 50 chủ đề thông dụng, kỹ thuật Chunking và Collocations bản xứ."
       />
       {/* ===================================================================== */}
-      {/* 1. ULTRA-TACTILE DUOLINGO 3D HERO BANNER (ĐẸP HƠN CẢ DUOLINGO)        */}
+      {/* 1. ULTRA-TACTILE DUOLINGO 3D HERO BANNER (DỊU MẮT, TẬP TRUNG HỌC TẬP) */}
       {/* ===================================================================== */}
       <motion.section
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        className="duo-card p-4 sm:p-7 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-purple-50/95 via-fuchsia-50/70 to-indigo-50/85 dark:from-[#1a0c30] dark:via-[#150a26] dark:to-[#0c0517] border-2 border-purple-200 dark:border-purple-800/80 border-b-6 border-b-[#8b5cf6] dark:border-b-[#6d28d9] shadow-md w-full min-w-0 max-w-full relative overflow-hidden space-y-4 sm:space-y-6"
+        className="duo-card p-4 sm:p-7 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-[#fffdf9] via-[#fefbf6] to-[#fbf7f0] dark:from-[#111827] dark:via-[#0f172a] dark:to-[#0f172a] border-2 border-amber-200/50 dark:border-slate-800 border-b-6 border-b-[#d9822b]/80 dark:border-b-[#b46312]/70 shadow-sm w-full min-w-0 max-w-full relative overflow-hidden space-y-4 sm:space-y-6"
       >
-        {/* Soft Ambient Glows & Top Gloss Shimmer */}
-        <div className="pointer-events-none absolute -right-16 -top-16 w-64 h-64 bg-gradient-to-br from-[#8b5cf6]/20 to-fuchsia-400/15 rounded-full blur-2xl" />
-        <div className="pointer-events-none absolute -left-16 -bottom-16 w-64 h-64 bg-gradient-to-tr from-indigo-500/15 to-purple-400/15 rounded-full blur-2xl" />
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#8b5cf6]/60 to-transparent" />
+        {/* Soft Ambient Glows & Top Gloss Shimmer (Dịu nhẹ, không gây chói mắt) */}
+        <div className="pointer-events-none absolute -right-16 -top-16 w-64 h-64 bg-gradient-to-br from-[#d9822b]/8 to-amber-300/5 rounded-full blur-2xl" />
+        <div className="pointer-events-none absolute -left-16 -bottom-16 w-64 h-64 bg-gradient-to-tr from-amber-400/6 to-yellow-400/5 rounded-full blur-2xl" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#d9822b]/35 to-transparent" />
 
         <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-8 min-w-0">
           {/* Left Content */}
           <div className="space-y-2.5 sm:space-y-3.5 max-w-2xl min-w-0 flex-1">
             {/* Duolingo Ribbon Pills */}
             <div className="flex items-center justify-between sm:justify-start gap-1.5 sm:gap-2 flex-wrap min-w-0">
-              <div className="duo-pill duo-pill-purple text-[10px] sm:text-xs font-black uppercase tracking-wider shrink-0">
-                <Zap size={13} className="text-[#8b5cf6] dark:text-[#c084fc] shrink-0" />
+              <div className="duo-pill duo-pill-amber text-[10px] sm:text-xs font-black uppercase tracking-wider shrink-0">
+                <Zap size={13} className="text-[#d9822b] dark:text-[#fcd34d] shrink-0" />
                 <span className="sm:hidden">50 CHỦ ĐỀ • 1.500 CÂU PHẢN XẠ 3S</span>
                 <span className="hidden sm:inline">TRỤ CỘT 02 • 50 CHỦ ĐỀ • 1.500 CÂU PHẢN XẠ 3 GIÂY</span>
               </div>
@@ -199,7 +199,7 @@ export default function Reflex50OverviewPage() {
                 <span className="text-slate-900 dark:text-white">
                   Phản Xạ Nói – Viết
                 </span>{' '}
-                <span className="text-[#7c3aed] dark:text-[#c084fc]">
+                <span className="text-[#c2781a] dark:text-[#fcd34d]">
                   50 Chủ Đề Tiếng Anh Thông Dụng.
                 </span>
               </h1>
@@ -214,7 +214,7 @@ export default function Reflex50OverviewPage() {
               <button
                 type="button"
                 onClick={() => navigate(`/reflex-50/unit/${lastUnitObj.unitNumber}`)}
-                className="duo-btn duo-btn-purple duo-btn-sm sm:duo-btn-md font-black shadow-md w-full sm:w-auto flex items-center justify-center gap-2 cursor-pointer"
+                className="duo-btn duo-btn-amber duo-btn-sm sm:duo-btn-md font-black shadow-sm w-full sm:w-auto flex items-center justify-center gap-2 cursor-pointer"
               >
                 <Play size={15} fill="currentColor" className="shrink-0" />
                 <span className="truncate">
@@ -227,9 +227,9 @@ export default function Reflex50OverviewPage() {
                 <button
                   type="button"
                   onClick={() => setIsMethodModalOpen(true)}
-                  className="duo-btn duo-btn-white duo-btn-sm sm:duo-btn-md font-black text-[#7c3aed] dark:text-[#c084fc] shadow-xs flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap"
+                  className="duo-btn duo-btn-white duo-btn-sm sm:duo-btn-md font-black text-[#c2781a] dark:text-[#fcd34d] shadow-xs flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap"
                 >
-                  <Zap size={14} className="text-[#7c3aed] dark:text-[#c084fc] shrink-0" />
+                  <Zap size={14} className="text-[#c2781a] dark:text-[#fcd34d] shrink-0" />
                   <span className="sm:hidden">Phương Pháp</span>
                   <span className="hidden sm:inline">Phương Pháp Học</span>
                 </button>
@@ -240,15 +240,15 @@ export default function Reflex50OverviewPage() {
                   className="duo-btn duo-btn-white duo-btn-sm sm:duo-btn-md font-black text-slate-700 dark:text-slate-200 shadow-xs flex items-center justify-center gap-1.5 cursor-pointer shrink-0 whitespace-nowrap"
                   title="Cài đặt giọng đọc AI Studio & tốc độ đọc"
                 >
-                  <Headphones size={14} className="text-[#7c3aed] dark:text-[#c084fc] shrink-0" />
+                  <Headphones size={14} className="text-[#c2781a] dark:text-[#fcd34d] shrink-0" />
                   <span>Giọng AI</span>
                 </button>
               </div>
             </div>
           </div>
 
-          {/* Right Stats Card: Duolingo 3D Chunky Capsule */}
-          <div className="shrink-0 w-full lg:w-80 p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm border-2 border-purple-200 dark:border-purple-900/80 border-b-6 border-b-purple-400 dark:border-b-purple-950 shadow-sm space-y-3.5 relative overflow-hidden">
+          {/* Right Stats Card: Duolingo 3D Chunky Capsule (Màu sắc êm dịu) */}
+          <div className="shrink-0 w-full lg:w-80 p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm border-2 border-slate-200/80 dark:border-slate-800 border-b-4 border-b-amber-300/80 dark:border-b-amber-800/80 shadow-xs space-y-3.5 relative overflow-hidden">
             <div className="flex items-center justify-between gap-3">
               <div>
                 <div className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
@@ -257,7 +257,7 @@ export default function Reflex50OverviewPage() {
                 <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight mt-0.5">
                   {overall.totalMastered} <span className="text-xs font-bold text-slate-400">/ 1500</span>
                 </div>
-                <div className="text-xs font-black text-[#7c3aed] dark:text-[#c084fc] mt-0.5">
+                <div className="text-xs font-black text-[#c2781a] dark:text-[#fcd34d] mt-0.5">
                   Đã hoàn thành {overall.completedUnits}/50 Unit
                 </div>
               </div>
@@ -279,7 +279,7 @@ export default function Reflex50OverviewPage() {
                     cy="36"
                     r={ringRadius}
                     fill="none"
-                    stroke="#8b5cf6"
+                    stroke="#d9822b"
                     strokeWidth="6"
                     strokeLinecap="round"
                     strokeDasharray={ringCircumference}
@@ -303,7 +303,7 @@ export default function Reflex50OverviewPage() {
                 <div className="text-xs sm:text-sm font-black text-slate-900 dark:text-white">{overall.totalSpoken}</div>
                 <div className="text-[10px] font-bold text-slate-500">Đã nói</div>
               </div>
-              <div className="p-1.5 sm:p-2 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/50">
+              <div className="p-1.5 sm:p-2 rounded-xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200/70 dark:border-amber-900/40">
                 <div className="text-xs sm:text-sm font-black text-amber-600 dark:text-amber-400">
                   {overall.totalStarred + overall.totalWeak}
                 </div>
@@ -317,13 +317,13 @@ export default function Reflex50OverviewPage() {
                 <span className="text-slate-600 dark:text-slate-400">
                   Mục tiêu hôm nay (30 câu)
                 </span>
-                <span className="text-[#7c3aed] dark:text-[#c084fc] font-black">
+                <span className="text-[#c2781a] dark:text-[#fcd34d] font-black">
                   {overall.todayCount}/{overall.dailyGoal} câu
                 </span>
               </div>
               <div className="w-full h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden p-0.5 border border-slate-200 dark:border-slate-700">
                 <div
-                  className="h-full rounded-full bg-[#8b5cf6] transition-all duration-500"
+                  className="h-full rounded-full bg-[#d9822b] transition-all duration-500"
                   style={{ width: `${Math.min(100, Math.round((overall.todayCount / overall.dailyGoal) * 100))}%` }}
                 />
               </div>
@@ -671,7 +671,7 @@ export default function Reflex50OverviewPage() {
                     </div>
                     <div className="hidden sm:flex items-start justify-between gap-2">
                       <span className="text-slate-600 dark:text-slate-300 line-clamp-1">
-                        <strong className="text-purple-600 dark:text-purple-400">#30:</strong> {sample2.en}
+                        <strong className="text-amber-600 dark:text-amber-400">#30:</strong> {sample2.en}
                       </span>
                       <button
                         onClick={() => speechService.speak(sample2.en, { rate: 0.95 })}

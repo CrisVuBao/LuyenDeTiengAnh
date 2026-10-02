@@ -43,19 +43,19 @@ function VocabShowcaseSection({ sectionRevealVariants }) {
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, margin: '-40px' }}
-      className="duo-card p-4 sm:p-7 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-emerald-50/95 via-teal-50/70 to-green-50/85 dark:from-[#062419] dark:via-[#093322] dark:to-[#041a12] border-2 border-emerald-200 dark:border-emerald-800/80 border-b-6 border-b-[#10b981] dark:border-b-[#059669] space-y-5 sm:space-y-6 w-full min-w-0 max-w-full shadow-md relative overflow-hidden"
+      className="duo-card p-4 sm:p-7 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-[#f7fee7] via-[#f4fce3] to-[#edfbd8] dark:from-[#111827] dark:via-[#0f172a] dark:to-[#0f172a] border-2 border-lime-200/60 dark:border-slate-800 border-b-6 border-b-[#7acc15] dark:border-b-[#5ea810] space-y-5 sm:space-y-6 w-full min-w-0 max-w-full shadow-sm relative overflow-hidden"
     >
-      {/* Soft Ambient Glows & Top Gloss Shimmer */}
-      <div className="pointer-events-none absolute -right-16 -top-16 w-64 h-64 bg-gradient-to-br from-[#10b981]/20 to-teal-400/15 rounded-full blur-2xl" />
-      <div className="pointer-events-none absolute -left-16 -bottom-16 w-64 h-64 bg-gradient-to-tr from-emerald-500/15 to-green-400/15 rounded-full blur-2xl" />
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#10b981]/60 to-transparent" />
+      {/* Soft Ambient Glows & Top Gloss Shimmer (Xanh nõn chuối tươi mát, dịu êm) */}
+      <div className="pointer-events-none absolute -right-16 -top-16 w-64 h-64 bg-gradient-to-br from-[#7acc15]/10 to-lime-300/5 rounded-full blur-2xl" />
+      <div className="pointer-events-none absolute -left-16 -bottom-16 w-64 h-64 bg-gradient-to-tr from-lime-400/8 to-lime-300/5 rounded-full blur-2xl" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#7acc15]/40 to-transparent" />
 
       <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6 min-w-0">
         <div className="space-y-2 sm:space-y-2.5 max-w-2xl min-w-0 flex-1">
           {/* Duolingo Ribbon Pills */}
           <div className="flex items-center justify-between sm:justify-start gap-1.5 sm:gap-2 flex-wrap min-w-0">
             <div className="duo-pill duo-pill-green text-[10px] sm:text-xs font-black uppercase tracking-wider shrink-0">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-duo-pulse" />
+              <span className="w-2 h-2 rounded-full bg-[#7acc15] dark:bg-lime-400 animate-duo-pulse" />
               <span className="truncate">3000 TỪ OXFORD • FLASHCARD 3D • 60 CHỦ ĐỀ</span>
             </div>
 
@@ -71,7 +71,7 @@ function VocabShowcaseSection({ sectionRevealVariants }) {
               <span className="text-slate-900 dark:text-white">
                 3000 Từ Vựng Tiếng Anh
               </span>{' '}
-              <span className="text-[#059669] dark:text-[#34d399]">
+              <span className="text-[#65a30d] dark:text-[#a3e635]">
                 Theo 60 Chủ Đề.
               </span>
             </h2>
@@ -85,7 +85,7 @@ function VocabShowcaseSection({ sectionRevealVariants }) {
         <div className="grid grid-cols-2 sm:flex sm:flex-row items-stretch sm:items-center gap-2 sm:gap-2.5 w-full sm:w-auto min-w-0 shrink-0">
           <button
             onClick={() => navigate(`/vocab/${activeTopic.id}`)}
-            className="duo-btn duo-btn-green duo-btn-sm sm:duo-btn-md font-black shadow-md w-full sm:w-auto flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer"
+            className="duo-btn duo-btn-green duo-btn-sm sm:duo-btn-md font-black shadow-sm w-full sm:w-auto flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer"
           >
             <Play size={15} fill="currentColor" className="shrink-0" />
             <span className="truncate">Học Chủ Đề #{activeTopic.id}</span>
@@ -93,7 +93,7 @@ function VocabShowcaseSection({ sectionRevealVariants }) {
           </button>
           <button
             onClick={() => navigate('/vocab')}
-            className="duo-btn duo-btn-white duo-btn-sm sm:duo-btn-md font-black text-xs sm:text-sm w-full sm:w-auto text-[#059669] dark:text-[#34d399] cursor-pointer shadow-xs whitespace-nowrap"
+            className="duo-btn duo-btn-white duo-btn-sm sm:duo-btn-md font-black text-xs sm:text-sm w-full sm:w-auto text-[#65a30d] dark:text-[#a3e635] cursor-pointer shadow-xs whitespace-nowrap"
           >
             <span className="truncate">Đủ 60 Chủ Đề</span>
           </button>

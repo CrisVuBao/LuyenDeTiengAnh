@@ -132,7 +132,7 @@ export default function XPBar() {
             size={15} 
             className={`shrink-0 ${
               currentStreak > 0 
-                ? (hasStudiedToday ? 'fill-orange-500 text-orange-500 animate-duo-wiggle' : 'text-amber-500 fill-amber-500/50') 
+                ? (hasStudiedToday ? 'fill-orange-500 text-orange-500' : 'text-amber-500 fill-amber-500/50') 
                 : 'text-slate-400'
             }`} 
           />

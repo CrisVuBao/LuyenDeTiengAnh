@@ -28,29 +28,29 @@ export default function LeaderboardPanel() {
     <div className="space-y-8">
       
       {/* Top Banner (Duolingo League Banner) */}
-      <div className="p-6 rounded-3xl duo-card-blue flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="space-y-1 max-w-xl">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 text-white text-xs font-black uppercase tracking-wider">
+      <div className="p-6 rounded-3xl duo-card duo-card-blue bg-gradient-to-br from-[#f0f9ff] via-[#e0f2fe] to-[#bae6fd]/40 dark:from-[#082f49]/60 dark:via-[#0c4a6e]/40 dark:to-[#0f172a] flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm relative overflow-hidden">
+        <div className="space-y-1.5 max-w-xl">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-100/90 dark:bg-sky-950/80 text-[#0284c7] dark:text-[#38bdf8] text-xs font-black uppercase tracking-wider border border-sky-200 dark:border-sky-800/80">
             <Sparkles size={14} className="animate-duo-bounce" />
             <span>Đấu Trường Kim Cương • Reset 23:59 CN</span>
           </div>
-          <h3 className="text-xl sm:text-2xl font-black text-white uppercase tracking-tight">
-            Bảng Xếp Hạng Cao Thủ {brandName}
+          <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
+            Bảng Xếp Hạng Cao Thủ
           </h3>
-          <p className="text-xs sm:text-sm text-white/90 font-medium">
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium">
             Học tập, hoàn thành nhiệm vụ và luyện phản xạ mỗi ngày để tích lũy XP leo đỉnh vinh quang!
           </p>
         </div>
 
         {profile && (
-          <div className="p-4 rounded-2xl duo-card-yellow text-center shrink-0">
-            <span className="text-[11px] font-black text-[#8a5800] uppercase tracking-wider block">
+          <div className="p-4 rounded-2xl duo-card duo-card-yellow text-center shrink-0">
+            <span className="text-[11px] font-black text-[#8a5800] dark:text-amber-400 uppercase tracking-wider block">
               {currentUser?.role === 'Admin' || !profile.leaderboardRank ? 'Trạng thái' : 'Hạng của bạn'}
             </span>
-            <span className="text-2xl sm:text-3xl font-black text-[#e08500]">
+            <span className="text-2xl sm:text-3xl font-black text-[#d97706] dark:text-amber-300">
               {currentUser?.role === 'Admin' || !profile.leaderboardRank ? 'Quản Trị Viên' : `#${profile.leaderboardRank}`}
             </span>
-            <span className="text-[11px] font-bold text-[#8a5800] block mt-0.5">
+            <span className="text-[11px] font-bold text-[#8a5800] dark:text-amber-400/90 block mt-0.5">
               {currentUser?.role === 'Admin' || !profile.leaderboardRank 
                 ? '(Không tham gia BXH)' 
                 : `${profile.weeklyXP || profile.totalXP || 0} XP tuần này`}

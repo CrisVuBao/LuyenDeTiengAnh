@@ -280,7 +280,7 @@ export default function Reflex50UnitStudyPage() {
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 sm:gap-4">
           <div className="space-y-1">
             <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-              <span className="px-3 py-1 rounded-full duo-btn-purple text-white text-[11px] sm:text-xs font-black uppercase tracking-wider">
+              <span className="px-3 py-1 rounded-full duo-btn-amber text-white text-[11px] sm:text-xs font-black uppercase tracking-wider">
                 UNIT {uNum < 10 ? `0${uNum}` : uNum}
               </span>
               {category && (
@@ -290,7 +290,7 @@ export default function Reflex50UnitStudyPage() {
               )}
             </div>
             <h1 className="text-lg sm:text-2xl font-black text-slate-900 dark:text-white leading-snug tracking-tight">
-              {unit.titleEn} — <span className="text-[#ce82ff]">{unit.titleVi}</span>
+              {unit.titleEn} — <span className="text-[#d97706] dark:text-[#fbbf24]">{unit.titleVi}</span>
             </h1>
           </div>
 
@@ -344,7 +344,7 @@ export default function Reflex50UnitStudyPage() {
                 onClick={() => handleModeChange(tab.id)}
                 className={`flex items-center gap-1.5 shrink-0 ${
                   active
-                    ? 'duo-btn duo-btn-purple duo-btn-sm'
+                    ? 'duo-btn duo-btn-amber duo-btn-sm'
                     : 'duo-btn duo-btn-white duo-btn-sm text-slate-600 dark:text-slate-300'
                 }`}
               >

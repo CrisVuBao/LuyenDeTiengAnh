@@ -122,11 +122,11 @@ export default function BrandLogo({
 
   const sizeClasses = {
     sm: {
-      box: 'w-8 h-8 rounded-xl',
+      box: 'w-7.5 h-7.5 sm:w-8 sm:h-8 rounded-xl',
       icon: 16,
-      img: 'h-8 max-w-[120px]',
-      title: 'text-sm font-extrabold',
-      tagline: 'text-[9px] font-bold'
+      img: 'h-7 sm:h-8 max-w-[110px] sm:max-w-[120px]',
+      title: 'text-[13px] sm:text-sm font-black',
+      tagline: 'text-[8.5px] sm:text-[9.5px] font-bold'
     },
     md: {
       box: 'w-10 h-10 rounded-xl sm:rounded-2xl',
@@ -181,7 +181,7 @@ export default function BrandLogo({
             {titleText}
           </span>
           {showTagline && taglineText && (
-            <span className={`${sc.tagline} text-slate-500 dark:text-slate-400 tracking-tight mt-0.5 ${size === 'sm' ? 'hidden sm:block' : 'block'} truncate`}>
+            <span className={`${sc.tagline} text-slate-500 dark:text-slate-400 tracking-tight mt-0.5 block truncate max-w-[125px] sm:max-w-none`}>
               {taglineText}
             </span>
           )}

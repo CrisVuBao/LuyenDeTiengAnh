@@ -192,7 +192,7 @@ function LuxuryHeroPavilion({
         percent: reflexPercent,
         countText: `${reflexCompletedCount}/1500 câu`,
         weight: '35%',
-        color: '#8B5CF6',
+        color: '#d9822b',
         advice:
           'Dành 15–20 phút ép xung phản xạ nói – viết 3 giây để xóa bỏ hoàn toàn thói quen dịch ngầm.',
         actionLabel: activeReflexUnit
@@ -214,7 +214,7 @@ function LuxuryHeroPavilion({
         percent: vocabPercent,
         countText: `${vocabMasteredCount}/1760 từ`,
         weight: '20%',
-        color: '#10B981',
+        color: '#7acc15',
         advice:
           'Bổ sung nguyên liệu từ vựng cốt lõi Oxford và quét Lá Chắn FSRS để không bị bí từ khi nói.',
         actionLabel: 'Nạp từ vựng FSRS',
@@ -281,6 +281,43 @@ function LuxuryHeroPavilion({
   // Map slide index to ring index (null for Slide 0, 0 for Slide 1, 1 for Slide 2, 2 for Slide 3)
   const activeRingIndex = pillarSlide === 0 ? null : pillarSlide - 1;
 
+  // Dynamic color theme according to active pillar slide (0: Overview/Sapphire, 1: Communication/Sapphire, 2: Reflex50/Amber, 3: Vocab3000/Emerald)
+  const pillarSlideThemes = {
+    0: {
+      borderClass: 'border-blue-200 dark:border-blue-900 border-b-[#0071e3] dark:border-b-[#1e40af]',
+      topRim: 'via-[#0071e3]',
+      pulseDot: 'bg-[#0071e3] dark:bg-sky-400',
+      activeTabBg: 'bg-[#0071e3]',
+      actionBtn: 'duo-btn-sapphire',
+      activeText: 'text-[#0071e3] dark:text-sky-400'
+    },
+    1: {
+      borderClass: 'border-blue-200 dark:border-blue-900 border-b-[#0071e3] dark:border-b-[#1e40af]',
+      topRim: 'via-[#0071e3]',
+      pulseDot: 'bg-[#0071e3] dark:bg-sky-400',
+      activeTabBg: 'bg-[#0071e3]',
+      actionBtn: 'duo-btn-sapphire',
+      activeText: 'text-[#0071e3] dark:text-sky-400'
+    },
+    2: {
+      borderClass: 'border-amber-200/80 dark:border-amber-900/60 border-b-[#d9822b] dark:border-b-[#b46312]',
+      topRim: 'via-[#d9822b]',
+      pulseDot: 'bg-[#d9822b] dark:bg-amber-400',
+      activeTabBg: 'bg-[#d9822b]',
+      actionBtn: 'duo-btn-amber',
+      activeText: 'text-[#c2781a] dark:text-[#fbbf24]'
+    },
+    3: {
+      borderClass: 'border-lime-200/80 dark:border-lime-900/60 border-b-[#7acc15] dark:border-b-[#5ea810]',
+      topRim: 'via-[#7acc15]',
+      pulseDot: 'bg-[#7acc15] dark:bg-lime-400',
+      activeTabBg: 'bg-[#7acc15]',
+      actionBtn: 'duo-btn-green',
+      activeText: 'text-[#65a30d] dark:text-[#a3e635]'
+    }
+  };
+  const currentPillarTheme = pillarSlideThemes[pillarSlide] || pillarSlideThemes[0];
+
   const slideVariants = {
     enter: (dir) => ({
       x: dir > 0 ? 24 : -24,
@@ -334,7 +371,7 @@ function LuxuryHeroPavilion({
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 min-w-0">
             {/* Mascot + Motivation Speech Bubble */}
             <div className="flex items-center gap-2 min-w-0 flex-1">
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-white dark:bg-slate-900 border-2 border-[#1cb0f6] border-b-4 border-b-[#0071e3] flex items-center justify-center p-1.5 shadow-xs shrink-0 animate-duo-bounce">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-white dark:bg-slate-900 border-2 border-[#1cb0f6] border-b-4 border-b-[#0071e3] flex items-center justify-center p-1.5 shadow-xs shrink-0">
                 <BrandFaviconSvg className="w-full h-full rounded-xl drop-shadow-xs" />
               </div>
               <div className="duo-bubble text-xs font-bold text-slate-800 dark:text-slate-100 py-1 px-3 min-w-0 flex-1 truncate shadow-2xs">
@@ -492,15 +529,15 @@ function LuxuryHeroPavilion({
         <div
           onMouseEnter={() => setIsSliderHovered(true)}
           onMouseLeave={() => setIsSliderHovered(false)}
-          className="w-full min-w-0 max-w-full lg:w-[370px] xl:w-[390px] shrink-0 duo-card p-3 sm:p-4 rounded-3xl border-2 border-blue-200 dark:border-blue-900 border-b-6 border-b-[#0071e3] dark:border-b-[#1e40af] flex flex-col justify-between gap-2.5 relative overflow-hidden bg-white dark:bg-[#0c182c] shadow-sm"
+          className={`w-full min-w-0 max-w-full lg:w-[370px] xl:w-[390px] shrink-0 duo-card p-3 sm:p-4 rounded-3xl border-2 transition-all duration-300 ${currentPillarTheme.borderClass} flex flex-col justify-between gap-2.5 relative overflow-hidden bg-white dark:bg-[#0c182c] shadow-sm`}
         >
           {/* Top Diamond Rim */}
-          <div className="pointer-events-none absolute inset-x-8 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#0071e3] to-transparent" />
+          <div className={`pointer-events-none absolute inset-x-8 top-0 h-[2px] bg-gradient-to-r from-transparent ${currentPillarTheme.topRim} to-transparent transition-all duration-300`} />
 
           {/* Header Row 1: Title Badge & Duolingo 3D Prev/Next Controls */}
           <div className="flex items-center justify-between gap-2 min-w-0">
             <div className="flex items-center gap-1.5 min-w-0">
-              <span className="w-2 h-2 rounded-full bg-[#0071e3] dark:bg-sky-400 animate-duo-pulse shrink-0" />
+              <span className={`w-2 h-2 rounded-full ${currentPillarTheme.pulseDot} animate-duo-pulse shrink-0 transition-colors duration-300`} />
               <span className="text-[11px] sm:text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 truncate">
                 Chỉ số 3 Trụ Cột
               </span>
@@ -528,7 +565,7 @@ function LuxuryHeroPavilion({
               <button
                 type="button"
                 onClick={() => paginatePillar(1)}
-                className="duo-btn duo-btn-sapphire duo-btn-xs p-1 rounded-lg flex items-center justify-center text-white cursor-pointer"
+                className={`duo-btn ${currentPillarTheme.actionBtn} duo-btn-xs p-1 rounded-lg flex items-center justify-center text-white cursor-pointer transition-colors duration-300`}
                 aria-label="Trụ cột tiếp theo"
                 title="Trụ cột tiếp theo"
               >
@@ -546,6 +583,7 @@ function LuxuryHeroPavilion({
               { idx: 3, label: 'Từ vựng' }
             ].map((tab) => {
               const isActive = pillarSlide === tab.idx;
+              const tabTheme = pillarSlideThemes[tab.idx];
               return (
                 <button
                   key={tab.idx}
@@ -560,7 +598,7 @@ function LuxuryHeroPavilion({
                     <motion.div
                       layoutId="triPillarSliderTab"
                       transition={{ type: 'spring', stiffness: 450, damping: 30 }}
-                      className="absolute inset-0 rounded-lg bg-[#0071e3] shadow-xs"
+                      className={`absolute inset-0 rounded-lg ${tabTheme.activeTabBg} shadow-xs`}
                     />
                   )}
                   <span className="relative z-10 truncate block">{tab.label}</span>
@@ -625,8 +663,8 @@ function LuxuryHeroPavilion({
                   {/* SLIDE 2: TRỤ CỘT 2 - PHẢN XẠ 50 CHỦ ĐỀ */}
                   {pillarSlide === 2 && (
                     <>
-                      <div className="duo-pill duo-pill-gem text-[10px] font-black uppercase tracking-wider">
-                        <Zap size={11} className="text-[#0071e3] dark:text-sky-400 shrink-0" />
+                      <div className="duo-pill duo-pill-amber text-[10px] font-black uppercase tracking-wider">
+                        <Zap size={11} className="text-[#d97706] dark:text-[#fbbf24] shrink-0" />
                         <span>TRỤ CỘT 2 • 35%</span>
                       </div>
                       <h3 className="text-sm sm:text-base font-black text-slate-900 dark:text-white leading-tight">
@@ -641,12 +679,12 @@ function LuxuryHeroPavilion({
                   {/* SLIDE 3: TRỤ CỘT 3 - 3000 TỪ VỰNG FSRS */}
                   {pillarSlide === 3 && (
                     <>
-                      <div className="duo-pill duo-pill-gem text-[10px] font-black uppercase tracking-wider">
-                        <Layers size={11} className="text-[#0071e3] dark:text-sky-400 shrink-0" />
+                      <div className="duo-pill duo-pill-green text-[10px] font-black uppercase tracking-wider">
+                        <Layers size={11} className="text-[#16a34a] dark:text-[#4ade80] shrink-0" />
                         <span>TRỤ CỘT 3 • 20%</span>
                       </div>
                       <h3 className="text-sm sm:text-base font-black text-slate-900 dark:text-white leading-tight">
-                        {vocabMasteredCount}/1760 từ FSRS
+                        <span className="text-[#16a34a] dark:text-[#4ade80]">{vocabMasteredCount}</span>/1760 từ FSRS
                       </h3>
                       <p className="text-[11px] sm:text-xs text-slate-600 dark:text-slate-400 font-semibold leading-relaxed line-clamp-2">
                         Ghi nhớ dài hạn từ vựng Oxford cốt lõi qua 60 chủ đề đời sống.
@@ -661,7 +699,7 @@ function LuxuryHeroPavilion({
             <div className="shrink-0 scale-90 sm:scale-100 origin-right">
               <LuxuryTripleActivityRing
                 ring1={{ label: 'Hội Thoại', percent: binoProgressPercent, color: '#0071E3' }}
-                ring2={{ label: 'Phản Xạ', percent: reflexPercent, color: '#38BDF8' }}
+                ring2={{ label: 'Phản Xạ', percent: reflexPercent, color: '#F59E0B' }}
                 ring3={{ label: 'Từ Vựng', percent: vocabPercent, color: '#10B981' }}
                 overallScore={maisonMasteryScore}
                 activeRingIndex={activeRingIndex}
@@ -692,19 +730,19 @@ function LuxuryHeroPavilion({
                 )}
 
                 {pillarSlide === 1 && (
-                  <p className="text-xs font-black text-slate-800 dark:text-slate-100 truncate">
+                  <p className="text-xs font-black text-[#0071e3] dark:text-sky-400 truncate">
                     {nextDialogue ? `Bài tiếp: ${nextDialogue.title}` : 'Khám phá 72 bài hội thoại'}
                   </p>
                 )}
 
                 {pillarSlide === 2 && (
-                  <p className="text-xs font-black text-slate-800 dark:text-slate-100 truncate">
+                  <p className="text-xs font-black text-[#d97706] dark:text-[#fbbf24] truncate">
                     {activeReflexUnit ? `Đang luyện: Unit ${activeReflexUnit.unitNumber}` : 'Phản Xạ 50 Chủ Đề'}
                   </p>
                 )}
 
                 {pillarSlide === 3 && (
-                  <p className="text-xs font-black text-slate-800 dark:text-slate-100 truncate">
+                  <p className="text-xs font-black text-[#16a34a] dark:text-[#4ade80] truncate">
                     3000 Từ Oxford • Ôn Flashcard FSRS
                   </p>
                 )}
@@ -732,7 +770,7 @@ function LuxuryHeroPavilion({
                     aiDiagnosis.pillars[2].onAction();
                   }
                 }}
-                className="duo-btn duo-btn-sapphire duo-btn-xs p-1.5 rounded-xl flex items-center justify-center text-white cursor-pointer shadow-xs"
+                className={`duo-btn ${currentPillarTheme.actionBtn} duo-btn-xs p-1.5 rounded-xl flex items-center justify-center text-white cursor-pointer shadow-xs transition-colors duration-300`}
                 title="Vào học ngay"
               >
                 <ArrowRight size={13} />

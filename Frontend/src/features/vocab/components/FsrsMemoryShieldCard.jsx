@@ -22,6 +22,7 @@ import { useNavigate } from 'react-router-dom';
 import useVocabStore from '../store/useVocabStore';
 import { calculateMemoryShield } from '../../../utils/fsrsMemoryShieldEngine';
 import FsrsShieldRecoveryModal from './FsrsShieldRecoveryModal';
+import { BrandFaviconSvg } from '../../../components/BrandLogo';
 
 export default function FsrsMemoryShieldCard({
   className = '',
@@ -442,14 +443,14 @@ export default function FsrsMemoryShieldCard({
         </div>
       </div>
 
-      {/* 3. Duolingo Cartoon Mascot Coaching Speech Bubble */}
+      {/* 3. Assistant Coaching Speech Bubble */}
       <div className="relative z-10 mt-5 pt-4 border-t border-slate-200/70 dark:border-slate-800 flex items-center gap-3">
-        <div className="w-11 h-11 rounded-2xl bg-amber-400 border-2 border-amber-300 border-b-4 border-b-amber-600 flex items-center justify-center text-xl shrink-0 shadow-sm animate-duo-bounce">
-          🦉
+        <div className="w-11 h-11 rounded-2xl bg-white dark:bg-slate-900 border-2 border-lime-300 dark:border-lime-700/60 border-b-4 border-b-[#7acc15] dark:border-b-[#5ea810] flex items-center justify-center p-1.5 shrink-0 shadow-sm animate-duo-bounce">
+          <BrandFaviconSvg className="w-full h-full rounded-xl drop-shadow-xs" />
         </div>
         <div className="duo-bubble flex-1 py-2 px-3.5">
           <p className="text-xs text-slate-700 dark:text-slate-200 leading-relaxed font-bold">
-            <strong className="text-[#58cc02] dark:text-[#89e219]">Duo Nhắc Nhở:</strong> &ldquo;{shield.tier.mascotMessage}&rdquo;
+            <strong className="text-[#65a30d] dark:text-[#a3e635]">Hệ Thống Nhắc Nhở:</strong> &ldquo;{shield.tier.mascotMessage}&rdquo;
           </p>
         </div>
       </div>

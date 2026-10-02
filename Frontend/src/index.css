@@ -12,33 +12,55 @@
   --shadow-glass: 0 10px 30px -5px rgba(15, 23, 42, 0.06), 0 4px 12px -2px rgba(15, 23, 42, 0.03);
 }
 
-/* Siêu nét 100% Vector ClearType: Không dùng antialiased làm mờ chữ trên Windows, không ép negative tracking làm dính nét */
+/* ========================================================
+   ULTRA-CRISP VECTOR TYPOGRAPHY & SMOOTH FONT RENDERING
+   Khắc phục triệt để hiện tượng chữ mờ, vỡ nét, nhòe cạnh trên Windows & mọi màn hình
+   ======================================================== */
 html {
   font-family: var(--font-sans);
   scroll-behavior: smooth;
   text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: auto;
-  -moz-osx-font-smoothing: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11", "kern", "liga", "calt";
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
   overflow-x: clip;
   max-width: 100vw;
 }
 
 body, #root {
   font-family: var(--font-sans);
-  -webkit-font-smoothing: auto;
-  -moz-osx-font-smoothing: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
   overflow-x: clip;
   max-width: 100vw;
   width: 100%;
 }
 
-h1, h2, h3, .font-display {
-  font-family: var(--font-display);
-  letter-spacing: -0.015em;
+/* Khử triệt để hiện tượng vỡ nét, viền hạt màu subpixel RGB gây mỏi mắt trên Windows */
+*, *::before, *::after {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-button, input, select, textarea {
+/* Tiêu đề sắc nét, khoảng cách chữ thoáng tự nhiên cho dấu tiếng Việt */
+h1, h2, h3, h4, h5, h6, .font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+  text-rendering: optimizeLegibility;
+}
+
+p, span, a, label, button, input, select, textarea {
   font-family: inherit;
+  letter-spacing: normal;
+}
+
+/* Chống nhòe / rung giật mờ chữ khi hover hoặc animate 3D trên GPU */
+.duo-card, .duo-btn, .duo-pill, .glass-card, .glass-panel {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 @layer utilities {
@@ -97,7 +119,9 @@ button, input, select, textarea {
   .rotate-y-180 {
     transform: rotateY(180deg);
   }
+}
 
+@layer components {
   /* ========================================================
      DUOLINGO CARTOON DESIGN SYSTEM (Feather 3D Push & Juicy UI)
      ======================================================== */
@@ -171,15 +195,15 @@ button, input, select, textarea {
     border-bottom-width: 2px !important;
   }
 
-  /* Duo Button Color Variants */
+  /* Duo Button Color Variants (Calming, focus-friendly palettes) */
   .duo-btn-green {
-    background-color: #58cc02;
-    border-color: #46a302;
+    background-color: #7acc15;
+    border-color: #5ea810;
     color: #ffffff;
   }
   .duo-btn-green:hover {
-    background-color: #61e002;
-    filter: brightness(1.04);
+    background-color: #8ce022;
+    filter: brightness(1.03);
   }
 
   .duo-btn-blue {
@@ -221,6 +245,16 @@ button, input, select, textarea {
   .duo-btn-orange:hover {
     background-color: #ffa51f;
     filter: brightness(1.04);
+  }
+
+  .duo-btn-amber {
+    background-color: #d9822b;
+    border-color: #b46312;
+    color: #ffffff;
+  }
+  .duo-btn-amber:hover {
+    background-color: #e5933d;
+    filter: brightness(1.03);
   }
 
   .duo-btn-red {
@@ -288,8 +322,9 @@ button, input, select, textarea {
     background-color: #ffffff;
     transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
   }
-  .duo-card:hover {
+  .duo-card:not([class*="duo-card-"]):hover {
     border-color: #cbd5e1;
+    border-bottom-color: #94a3b8;
     transform: translateY(-2px);
   }
   html.dark .duo-card {
@@ -297,21 +332,30 @@ button, input, select, textarea {
     border-color: #334155;
     border-bottom-color: #020617;
   }
-  html.dark .duo-card:hover {
+  html.dark .duo-card:not([class*="duo-card-"]):hover {
     border-color: #475569;
+    border-bottom-color: #1e293b;
   }
 
-  /* Duo Card Color Accents */
+  /* Duo Card Color Accents (Giữ trọn vẹn và làm rực rỡ màu viền khi hover) */
   .duo-card-green {
-    border: 2px solid #86efac;
+    border: 2px solid #d9f99d;
     border-bottom-width: 4px;
-    border-bottom-color: #22c55e;
-    background-color: #f0fdf4;
+    border-bottom-color: #7acc15;
+    background-color: #f7fee7;
+  }
+  .duo-card-green:hover {
+    border-color: #bef264;
+    border-bottom-color: #5ea810;
   }
   html.dark .duo-card-green {
-    border-color: #166534;
-    border-bottom-color: #14532d;
-    background-color: rgba(5, 46, 22, 0.4);
+    border-color: #365314;
+    border-bottom-color: #1a2e05;
+    background-color: rgba(26, 46, 5, 0.25);
+  }
+  html.dark .duo-card-green:hover {
+    border-color: #4d7c0f;
+    border-bottom-color: #365314;
   }
 
   .duo-card-blue {
@@ -320,10 +364,18 @@ button, input, select, textarea {
     border-bottom-color: #0284c7;
     background-color: #f0f9ff;
   }
+  .duo-card-blue:hover {
+    border-color: #38bdf8;
+    border-bottom-color: #0369a1;
+  }
   html.dark .duo-card-blue {
     border-color: #075985;
     border-bottom-color: #0c4a6e;
     background-color: rgba(8, 47, 73, 0.4);
+  }
+  html.dark .duo-card-blue:hover {
+    border-color: #0284c7;
+    border-bottom-color: #075985;
   }
 
   .duo-card-sapphire {
@@ -332,10 +384,18 @@ button, input, select, textarea {
     border-bottom-color: #0071e3;
     background-color: #f4f9ff;
   }
+  .duo-card-sapphire:hover {
+    border-color: #60a5fa;
+    border-bottom-color: #0055b3;
+  }
   html.dark .duo-card-sapphire {
     border-color: #1d4ed8;
     border-bottom-color: #172554;
     background-color: #08162b;
+  }
+  html.dark .duo-card-sapphire:hover {
+    border-color: #3b82f6;
+    border-bottom-color: #1d4ed8;
   }
 
   .duo-card-orange {
@@ -344,10 +404,42 @@ button, input, select, textarea {
     border-bottom-color: #ea580c;
     background-color: #fff7ed;
   }
+  .duo-card-orange:hover {
+    border-color: #fb923c;
+    border-bottom-color: #c2410c;
+  }
   html.dark .duo-card-orange {
     border-color: #9a3412;
     border-bottom-color: #7c2d12;
     background-color: rgba(67, 20, 7, 0.4);
+  }
+  html.dark .duo-card-orange:hover {
+    border-color: #ea580c;
+    border-bottom-color: #9a3412;
+  }
+
+  .duo-card-amber,
+  .duo-card-yellow {
+    border: 2px solid #fed7aa;
+    border-bottom-width: 4px;
+    border-bottom-color: #d9822b;
+    background-color: #fffdfa;
+  }
+  .duo-card-amber:hover,
+  .duo-card-yellow:hover {
+    border-color: #fdba74;
+    border-bottom-color: #b46312;
+  }
+  html.dark .duo-card-amber,
+  html.dark .duo-card-yellow {
+    border-color: #78350f;
+    border-bottom-color: #451a03;
+    background-color: rgba(69, 36, 10, 0.25);
+  }
+  html.dark .duo-card-amber:hover,
+  html.dark .duo-card-yellow:hover {
+    border-color: #92400e;
+    border-bottom-color: #78350f;
   }
 
   .duo-card-purple {
@@ -356,10 +448,18 @@ button, input, select, textarea {
     border-bottom-color: #a855f7;
     background-color: #faf5ff;
   }
+  .duo-card-purple:hover {
+    border-color: #c084fc;
+    border-bottom-color: #9333ea;
+  }
   html.dark .duo-card-purple {
     border-color: #6b21a8;
     border-bottom-color: #581c87;
     background-color: rgba(59, 7, 100, 0.4);
+  }
+  html.dark .duo-card-purple:hover {
+    border-color: #a855f7;
+    border-bottom-color: #6b21a8;
   }
 
   .duo-card-red {
@@ -368,10 +468,18 @@ button, input, select, textarea {
     border-bottom-color: #ef4444;
     background-color: #fef2f2;
   }
+  .duo-card-red:hover {
+    border-color: #f87171;
+    border-bottom-color: #dc2626;
+  }
   html.dark .duo-card-red {
     border-color: #991b1b;
     border-bottom-color: #7f1d1d;
     background-color: rgba(69, 10, 10, 0.4);
+  }
+  html.dark .duo-card-red:hover {
+    border-color: #ef4444;
+    border-bottom-color: #991b1b;
   }
 
   /* Duo Gamified Stat Pills */
@@ -432,6 +540,19 @@ button, input, select, textarea {
     color: #38bdf8;
   }
 
+  .duo-pill-amber {
+    background-color: #fffdfa;
+    border-color: #fed7aa;
+    border-bottom-color: #d9822b;
+    color: #9a4c0a;
+  }
+  html.dark .duo-pill-amber {
+    background-color: rgba(120, 53, 15, 0.25);
+    border-color: #92400e;
+    border-bottom-color: #78350f;
+    color: #fcd34d;
+  }
+
   .duo-pill-purple {
     background-color: #faf5ff;
     border-color: #d8b4fe;
@@ -446,16 +567,16 @@ button, input, select, textarea {
   }
 
   .duo-pill-green {
-    background-color: #f0fdf4;
-    border-color: #86efac;
-    border-bottom-color: #22c55e;
-    color: #15803d;
+    background-color: #f7fee7;
+    border-color: #d9f99d;
+    border-bottom-color: #7acc15;
+    color: #4d7c0f;
   }
   html.dark .duo-pill-green {
-    background-color: rgba(20, 83, 45, 0.35);
-    border-color: #15803d;
-    border-bottom-color: #166534;
-    color: #4ade80;
+    background-color: rgba(26, 46, 5, 0.25);
+    border-color: #365314;
+    border-bottom-color: #1a2e05;
+    color: #bef264;
   }
 
   .duo-pill-heart {
