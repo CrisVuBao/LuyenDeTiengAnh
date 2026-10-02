@@ -101,46 +101,60 @@ export function scheduleFsrsReview(cardState = {}, grade = 2, isDayMinimum = fal
       ? cardState.stability
       : prevReviewCount === 0
       ? 0
-      : Math.max(0.5, prevInterval);
+      : Math.max(0.4, prevInterval);
   const prevDifficulty = clamp(cardState.difficulty || 5.0, 1.0, 10.0);
 
   let newDifficulty;
   let newStability;
 
   if (prevReviewCount === 0) {
-    newDifficulty = clamp(5.0 - 0.8 * (rating - 3), 1.0, 10.0);
-    const initialStabilities = { 1: 1.0, 2: 2.0, 3: 4.0, 4: 8.0 };
-    newStability = initialStabilities[rating] || 3.0;
+    // Initial state D_0(G) & S_0(G) chuẩn FSRS v4.5 / v5
+    newDifficulty = clamp(5.0 - 1.0 * (rating - 3), 1.0, 10.0);
+    // Again: ~9.6 giờ (0.4 ngày), Hard: 1.2 ngày, Good: 3.2 ngày, Easy: 8.0 ngày
+    const initialStabilities = { 1: 0.4, 2: 1.2, 3: 3.2, 4: 8.0 };
+    newStability = initialStabilities[rating] || 3.2;
   } else {
-    const deltaD = -0.9 * (rating - 3);
+    // Cập nhật độ khó nội tại D kèm hồi quy về trung bình D=5.0
+    const deltaD = -0.8 * (rating - 3);
     newDifficulty = clamp(0.9 * (prevDifficulty + deltaD) + 0.1 * 5.0, 1.0, 10.0);
 
     const lastMs = cardState.lastReviewedAt ? new Date(cardState.lastReviewedAt).getTime() : NaN;
     const elapsedDays = !isNaN(lastMs)
-      ? Math.max(0.1, (Date.now() - lastMs) / (1000 * 3600 * 24))
+      ? Math.max(0.0, (Date.now() - lastMs) / (1000 * 3600 * 24))
       : prevStability;
-    const r = Math.pow(1 + (19 / 81) * (elapsedDays / Math.max(0.5, prevStability)), -0.5);
-    const effectiveR = Math.min(0.9, clamp(r, 0.1, 0.99));
+    
+    // Retrievability thực tế tại thời điểm ôn
+    const rawR = Math.pow(1 + (19 / 81) * (elapsedDays / Math.max(0.4, prevStability)), -0.5);
+    const r = clamp(rawR, 0.05, 0.99);
 
     if (rating === 1) {
+      // Lapse (Quên hẳn): Độ bền giảm mạnh về vùng ngắn hạn nhưng bảo lưu phần nào nền tảng
       newStability = Math.max(
-        1.0,
-        1.8 *
-          Math.pow(newDifficulty, -0.2) *
-          (Math.pow(prevStability + 1.0, 0.2) - 1.0) *
-          Math.exp(0.2 * (1.0 - effectiveR))
+        0.4,
+        Math.min(
+          prevStability * 0.25,
+          0.4 * Math.pow(Math.max(1.0, prevStability), 0.3) * Math.pow(newDifficulty, -0.2)
+        )
       );
     } else {
-      const hardPenalty = rating === 2 ? 0.45 : 1.0;
-      const easyBonus = rating === 4 ? 1.35 : 1.0;
+      // Recall (Hard / Good / Easy): Hiệu ứng thực hành gợi nhớ (Retrieval Practice)
+      const hardPenalty = rating === 2 ? 0.5 : 1.0;
+      const easyBonus = rating === 4 ? 1.4 : 1.0;
+      // h(R): Ôn càng muộn mà vẫn nhớ được thì độ bền càng tăng mạnh (Spaced Effect)
+      // Ôn quá sớm (r ≈ 1) thì h(r) ≈ 0, độ bền hầu như không bị bơm ảo
+      const hR = Math.min(2.5, Math.exp(1.0 * (1.0 - r)) - 1.0);
+      const difficultyFactor = (11.0 - newDifficulty) / 6.0;
+      const stabilityDamping = Math.pow(Math.max(0.4, prevStability), -0.2);
+
       const growthFactor =
-        Math.exp(1.65) *
-        (11.0 - newDifficulty) *
-        Math.pow(prevStability, -0.18) *
-        (Math.exp(0.9 * (1.0 - effectiveR)) - 1.0) *
+        18.0 *
+        difficultyFactor *
+        stabilityDamping *
+        hR *
         hardPenalty *
         easyBonus;
-      newStability = prevStability * (1.0 + Math.max(0.15, growthFactor));
+
+      newStability = prevStability * (1.0 + Math.max(0.1, growthFactor));
     }
   }
 
@@ -155,14 +169,17 @@ export function scheduleFsrsReview(cardState = {}, grade = 2, isDayMinimum = fal
     const targetInterval = Math.round(newStability);
 
     if (rating === 2) {
+      // Hard: Giữ nhịp tăng vừa phải, không vượt quá 120% khoảng cách trước
       intervalDays =
         prevReviewCount === 0
-          ? 2
-          : Math.max(prevInterval + 1, Math.min(targetInterval, Math.ceil(prevInterval * 1.4)));
+          ? 1
+          : Math.max(1, Math.min(targetInterval, Math.round(prevInterval * 1.2)));
     } else if (rating === 3) {
-      intervalDays = prevReviewCount === 0 ? 4 : Math.max(prevInterval + 2, targetInterval);
+      // Good: Khoảng cách tăng tương ứng độ bền mục tiêu (90% retention)
+      intervalDays = prevReviewCount === 0 ? 3 : Math.max(prevInterval + 1, targetInterval);
     } else {
-      intervalDays = prevReviewCount === 0 ? 8 : Math.max(prevInterval + 4, targetInterval);
+      // Easy: Thưởng thêm khoảng cách ôn cho từ quá dễ
+      intervalDays = prevReviewCount === 0 ? 8 : Math.max(prevInterval + 2, Math.round(targetInterval * 1.15));
     }
     intervalDays = clamp(intervalDays, 1, 365);
   }
@@ -170,7 +187,7 @@ export function scheduleFsrsReview(cardState = {}, grade = 2, isDayMinimum = fal
   const now = Date.now();
   const nextReviewMs =
     rating === 1 && !isDayMinimum
-      ? now + 10 * 60 * 1000 // 10 minutes for immediate re-consolidation
+      ? now + 10 * 60 * 1000 // 10 phút để củng cố ngay trong ngày
       : now + intervalDays * 24 * 3600 * 1000;
 
   return {

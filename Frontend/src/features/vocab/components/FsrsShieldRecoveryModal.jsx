@@ -18,6 +18,7 @@ import {
 import useVocabStore from '../store/useVocabStore';
 import useGamificationStore from '../../gamification/store/useGamificationStore';
 import { getFsrsIntervalPreviews, formatFsrsInterval } from '../../../utils/fsrsScheduler';
+import { calculateMemoryShield } from '../../../utils/fsrsMemoryShieldEngine';
 import toast from 'react-hot-toast';
 
 export default function FsrsShieldRecoveryModal({
@@ -89,10 +90,18 @@ export default function FsrsShieldRecoveryModal({
     const nextReviewed = reviewedCount + 1;
     setReviewedCount(nextReviewed);
 
-    // Tính toán lại sức khỏe lá chắn tăng dần về 100%
-    const progressRatio = nextReviewed / Math.max(1, deck.length);
-    const nextHealth = Math.min(100, Math.round(initialHealth + (100 - initialHealth) * progressRatio));
-    setCurrentHealth(nextHealth);
+    // Tính toán lại sức khỏe lá chắn thực tế ngay sau khi ghi nhận điểm FSRS
+    try {
+      const updatedShield = calculateMemoryShield(
+        useVocabStore.getState().fsrsCards,
+        useVocabStore.getState().masteredWords
+      );
+      setCurrentHealth(updatedShield.healthPercentage);
+    } catch {
+      const progressRatio = nextReviewed / Math.max(1, deck.length);
+      const nextHealth = Math.min(100, Math.round(initialHealth + (100 - initialHealth) * progressRatio));
+      setCurrentHealth(nextHealth);
+    }
 
     // Chuyển thẻ tiếp theo
     if (currentIndex + 1 < deck.length) {
@@ -101,7 +110,7 @@ export default function FsrsShieldRecoveryModal({
       // Đã hoàn thành toàn bộ hàng đợi nguy cấp!
       setIsFinished(true);
       try {
-        earnXP(25, 'shield_defense', 'Hoàn thành Bảo Vệ Lá Chắn Trí Nhớ 100%');
+        earnXP(25, 'shield_defense', 'Hoàn thành Bảo Vệ Lá Chắn Trí Nhớ');
       } catch {}
       if (onSuccess) onSuccess();
     }
@@ -177,7 +186,7 @@ export default function FsrsShieldRecoveryModal({
                 </div>
                 <p className="text-xs text-slate-500 dark:text-slate-400">
                   {isFinished
-                    ? 'Lá chắn đã nạp đầy 100% năng lượng!'
+                    ? `Lá chắn đã hồi phục lên ${currentHealth}% năng lượng!`
                     : `Đang ôn từ ${currentIndex + 1}/${deck.length} • Ngăn ngừa phân rã trí nhớ`}
                 </p>
               </div>
@@ -223,10 +232,10 @@ export default function FsrsShieldRecoveryModal({
 
                 <div className="space-y-1.5">
                   <h4 className="text-2xl font-black text-slate-900 dark:text-white">
-                    Lá Chắn Trí Nhớ Đã Đạt 100%! 🛡️⚡
+                    Lá Chắn Trí Nhớ Đã Hồi Phục {currentHealth}%! 🛡️⚡
                   </h4>
                   <p className="text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto">
-                    Xuất sắc! Bạn vừa cứu thành công <strong>{reviewedCount} từ vựng</strong> khỏi nguy cơ bị lãng quên theo đường cong Ebbinghaus.
+                    Xuất sắc! Bạn vừa củng cố thành công <strong>{reviewedCount} từ vựng</strong> khỏi nguy cơ bị lãng quên theo đường cong Ebbinghaus.
                   </p>
                 </div>
 

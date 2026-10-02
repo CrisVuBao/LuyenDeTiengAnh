@@ -197,6 +197,14 @@ const useVocabStore = create((set, get) => ({
           const mergedMastered = { ...(remoteParsed.masteredWords || {}), ...(local.masteredWords || {}) };
           const mergedStarred = { ...(remoteParsed.starredWords || {}), ...(local.starredWords || {}) };
           const mergedFsrs = { ...(remoteParsed.fsrsCards || {}), ...(local.fsrsCards || {}) };
+
+          // Đồng bộ FSRS cho tất cả các từ đã thuộc để đảm bảo Lá Chắn Trí Nhớ tính toán chính xác
+          Object.keys(mergedMastered).forEach((wId) => {
+            if (mergedMastered[wId] && !mergedFsrs[wId]) {
+              mergedFsrs[wId] = scheduleFsrsReview({}, 2, false);
+            }
+          });
+
           const mergedScores = { ...(remoteParsed.topicScores || {}), ...(local.topicScores || {}) };
           const mergedLastIndex = { ...(remoteParsed.topicLastIndex || {}), ...(local.topicLastIndex || {}) };
           const mergedLastWordId = { ...(remoteParsed.topicLastWordId || {}), ...(local.topicLastWordId || {}) };
@@ -404,17 +412,22 @@ const useVocabStore = create((set, get) => ({
 
     set((state) => {
       const nextMastered = { ...state.masteredWords };
+      const nextFsrs = { ...state.fsrsCards };
       if (isMastered) {
         nextMastered[wordId] = true;
+        nextFsrs[wordId] = nextCard;
       } else {
         delete nextMastered[wordId];
+        // Nếu từ này chỉ vừa mới tick thử nghiệm mà chưa có chuỗi ôn tập dài hạn, dọn sạch khỏi fsrsCards
+        if (!prevCard.reviewCount || prevCard.reviewCount <= 1) {
+          delete nextFsrs[wordId];
+        } else {
+          nextFsrs[wordId] = nextCard;
+        }
       }
       return {
         masteredWords: nextMastered,
-        fsrsCards: {
-          ...state.fsrsCards,
-          [wordId]: nextCard
-        }
+        fsrsCards: nextFsrs
       };
     });
     get().saveProgress();

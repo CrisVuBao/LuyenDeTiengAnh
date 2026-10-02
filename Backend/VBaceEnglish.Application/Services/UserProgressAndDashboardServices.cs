@@ -654,16 +654,18 @@ public class UserProgressService : IUserProgressService
                 {
                     countCards++;
                     var card = prop.Value;
-                    double stability = 2.0;
+                    double stability = 3.2;
                     if (card.TryGetProperty("stability", out var stabElem) && stabElem.TryGetDouble(out var sVal))
                     {
-                        stability = Math.Max(0.5, sVal);
+                        stability = Math.Max(0.4, sVal);
                     }
 
                     DateTime lastReviewed = now;
+                    bool hasReviewed = false;
                     if (card.TryGetProperty("lastReviewedAt", out var lastElem) && lastElem.GetString() is string sDate && DateTime.TryParse(sDate, out var dt))
                     {
                         lastReviewed = dt;
+                        hasReviewed = true;
                     }
 
                     bool isDue = false;
@@ -672,22 +674,38 @@ public class UserProgressService : IUserProgressService
                         if (nDt <= now) isDue = true;
                     }
 
+                    int consecutiveCorrect = 1;
+                    if (card.TryGetProperty("consecutiveCorrect", out var consElem) && consElem.TryGetInt32(out var cVal))
+                    {
+                        consecutiveCorrect = cVal;
+                    }
+
+                    int reviewCount = 1;
+                    if (card.TryGetProperty("reviewCount", out var revElem) && revElem.TryGetInt32(out var rVal))
+                    {
+                        reviewCount = rVal;
+                    }
+
                     double elapsedDays = Math.Max(0, (now - lastReviewed).TotalDays);
                     // FSRS Retrievability R(t, S) = (1 + (19/81) * (t / S))^(-0.5)
-                    double r = Math.Pow(1.0 + (19.0 / 81.0) * (elapsedDays / stability), -0.5) * 100.0;
+                    double r = Math.Pow(1.0 + (19.0 / 81.0) * (elapsedDays / Math.Max(0.4, stability)), -0.5) * 100.0;
                     r = Math.Clamp(r, 5.0, 100.0);
 
-                    double rTomorrow = Math.Pow(1.0 + (19.0 / 81.0) * ((elapsedDays + 1.0) / stability), -0.5) * 100.0;
+                    double rTomorrow = Math.Pow(1.0 + (19.0 / 81.0) * ((elapsedDays + 1.0) / Math.Max(0.4, stability)), -0.5) * 100.0;
                     rTomorrow = Math.Clamp(rTomorrow, 5.0, 100.0);
 
                     sumR += r;
                     sumRTomorrow += rTomorrow;
 
-                    if (r < 65 || isDue)
+                    // 1. Critical: R < 70%, hoặc lapse (Again), hoặc quá hạn sâu > 2 * stability
+                    bool isLapsed = consecutiveCorrect == 0 && reviewCount > 0;
+                    bool isSeverelyOverdue = hasReviewed && elapsedDays > Math.Max(1.0, stability * 2.0);
+
+                    if (r < 70.0 || isLapsed || isSeverelyOverdue)
                     {
                         criticalCount++;
                     }
-                    else if (r < 85)
+                    else if (r < 85.0 || isDue)
                     {
                         fadingCount++;
                     }
@@ -706,42 +724,45 @@ public class UserProgressService : IUserProgressService
         if (countCards == 0)
         {
             solidCount = totalLearned;
-            sumR = totalLearned * 95.0;
-            sumRTomorrow = totalLearned * 90.0;
+            sumR = totalLearned * 90.0;
+            sumRTomorrow = totalLearned * 85.0;
             countCards = Math.Max(1, totalLearned);
         }
 
         double healthPct = Math.Round(Math.Clamp(sumR / countCards, 0.0, 100.0), 1);
         double tomorrowPct = Math.Round(Math.Clamp(sumRTomorrow / countCards, 0.0, 100.0), 1);
         double decayDelta = Math.Round(Math.Max(0.0, healthPct - tomorrowPct), 1);
-        int estMinutes = Math.Max(1, (int)Math.Ceiling((criticalCount * 9.0) / 60.0));
+        int reviewQueue = criticalCount > 0 ? criticalCount : fadingCount;
+        int estMinutes = Math.Max(1, (int)Math.Ceiling((reviewQueue * 8.0) / 60.0));
 
         string tierCode;
         string tierLabel;
         string statusMsg;
         string warningBanner;
 
-        if (healthPct >= 85)
+        if (healthPct >= 85 && criticalCount == 0)
         {
             tierCode = "Pristine";
             tierLabel = "Trí nhớ đang RẤT KHỎE";
-            statusMsg = "Trí nhớ của bạn đang như bàn thạch! Đa số từ vựng đã được khắc sâu vào trí nhớ dài hạn. 🛡️✨";
-            warningBanner = criticalCount > 0
-                ? $"Nếu không ôn hôm nay, lá chắn sẽ giảm xuống {tomorrowPct}% (-{decayDelta}%)"
+            statusMsg = fadingCount > 0
+                ? $"Trí nhớ của bạn rất vững chắc! Có {fadingCount} từ đến hạn ôn nhẹ để duy trì 100% lá chắn. 🛡️✨"
+                : "Trí nhớ của bạn đang như bàn thạch! Toàn bộ từ vựng đã được bảo vệ tối đa vào trí nhớ dài hạn. 🛡️✨";
+            warningBanner = fadingCount > 0
+                ? $"Lá chắn vững vàng ({healthPct}%). Có {fadingCount} từ đến hạn ôn tập hôm nay."
                 : "Lá chắn đang ở mức phòng thủ tối ưu! Duy trì học đều đặn mỗi ngày.";
         }
-        else if (healthPct >= 70)
+        else if (healthPct >= 70 && criticalCount <= Math.Max(1, (int)Math.Floor(countCards * 0.15)))
         {
             tierCode = "Stable";
             tierLabel = "Trí nhớ ĐANG ỔN ĐỊNH";
-            statusMsg = $"Lá chắn đang ở mức khá ({healthPct}%), nhưng một số từ vựng đang mờ dần. Hãy ôn tập để hồi phục 100%!";
+            statusMsg = $"Lá chắn đang ở mức khá ({healthPct}%). Có {(criticalCount > 0 ? $"{criticalCount} từ cần cứu và " : "")}{fadingCount} từ cần củng cố hôm nay để sạc đầy 100%!";
             warningBanner = $"⚠️ Nếu không ôn hôm nay, lá chắn sẽ giảm xuống {tomorrowPct}% (-{decayDelta}%) vào ngày mai!";
         }
         else
         {
             tierCode = "Decaying";
             tierLabel = "Lá Chắn ĐANG BỊ BÀO MÒN";
-            statusMsg = $"Cảnh báo đỏ! Đường cong lãng quên đang tấn công {criticalCount} từ vựng của bạn. Cần kích hoạt lá chắn bảo vệ ngay!";
+            statusMsg = $"Cảnh báo đỏ! Đường cong lãng quên đang tấn công {criticalCount} từ vựng của bạn ({healthPct}%). Cần kích hoạt lá chắn bảo vệ ngay!";
             warningBanner = $"🚨 Nguy cơ quên sạch {criticalCount} từ vựng nếu không ôn tập hôm nay!";
         }
 

@@ -86,14 +86,14 @@ export function calculateMemoryShield(fsrsCards = {}, masteredWords = {}) {
       ipa: ''
     };
 
-    let r = 95;
-    let rTomorrow = 90;
+    let r = 90;
+    let rTomorrow = 85;
     let isDue = false;
-    let stability = 2.0;
+    let stability = 3.2;
 
     if (card) {
       const metrics = getCardFsrsMetrics(card);
-      stability = metrics.stability || 2.0;
+      stability = metrics.stability || 3.2;
       r = metrics.retrievability;
       isDue = metrics.isDue;
 
@@ -103,10 +103,10 @@ export function calculateMemoryShield(fsrsCards = {}, masteredWords = {}) {
       const rTomRaw = Math.pow(1 + (19 / 81) * (elapsedDaysTomorrow / Math.max(0.4, stability)), -0.5);
       rTomorrow = Math.min(100, Math.max(1, Math.round(rTomRaw * 100)));
     } else {
-      // Từ đã tick thuộc nhưng chưa qua thẻ FSRS
-      r = 95;
-      rTomorrow = 90;
-      stability = 2.0;
+      // Từ đã tick thuộc nhưng chưa qua phiên thẻ FSRS
+      stability = 3.2;
+      r = 90;
+      rTomorrow = 85;
       isDue = false;
     }
 
@@ -123,10 +123,16 @@ export function calculateMemoryShield(fsrsCards = {}, masteredWords = {}) {
       cardState: card || null
     };
 
-    // Phân loại 3 tầng trí nhớ
-    if (r < 65 || isDue) {
+    // Phân loại 3 tầng trí nhớ theo tiêu chuẩn FSRS & Khoa học nhận thức:
+    // 1. Critical (Đỏ - Nguy cấp): Trí nhớ suy giảm nghiêm trọng (R < 70%), hoặc vừa bị đánh giá Quên hẳn (Lapse), hoặc quá hạn sâu (elapsed > 2 * stability)
+    // 2. Fading (Vàng - Mờ nhạt / Đến hạn): Cần củng cố trong 1-2 ngày tới (70% <= R < 85% hoặc đã đến hạn ôn tập isDue)
+    // 3. Solid (Xanh - Vững chắc): Độ bền an toàn cao (R >= 85% và chưa đến hạn ôn)
+    const isLapsed = card && card.consecutiveCorrect === 0 && (card.reviewCount || 0) > 0;
+    const isSeverelyOverdue = card && card.lastReviewedAt && ((now - new Date(card.lastReviewedAt).getTime()) / (1000 * 3600 * 24)) > Math.max(1.0, stability * 2.0);
+
+    if (r < 70 || isLapsed || isSeverelyOverdue) {
       criticalWords.push(item);
-    } else if (r < 85) {
+    } else if (r < 85 || isDue) {
       fadingWords.push(item);
     } else {
       solidWords.push(item);
@@ -144,12 +150,13 @@ export function calculateMemoryShield(fsrsCards = {}, masteredWords = {}) {
   const fadingCount = fadingWords.length;
   const solidCount = solidWords.length;
 
-  const estimatedMinutes = Math.max(1, Math.ceil((criticalCount * 9) / 60));
+  const reviewQueueCount = criticalCount > 0 ? criticalCount : fadingCount;
+  const estimatedMinutes = Math.max(1, Math.ceil((reviewQueueCount * 8) / 60));
 
   let tier;
   let warningBanner;
 
-  if (healthScore >= 85) {
+  if (healthScore >= 85 && criticalCount === 0) {
     tier = {
       code: 'pristine',
       label: 'Trí nhớ đang RẤT KHỎE',
@@ -158,12 +165,14 @@ export function calculateMemoryShield(fsrsCards = {}, masteredWords = {}) {
       bgBadge: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/30',
       glowColor: 'rgba(16, 185, 129, 0.28)',
       shieldBg: 'from-emerald-500/20 via-teal-500/10 to-slate-900',
-      mascotMessage: `Trí nhớ của bạn đang như bàn thạch! ${solidCount}/${totalLearned} từ vựng đã khắc sâu vào dài hạn.`
+      mascotMessage: fadingCount > 0
+        ? `Trí nhớ vững vàng! Có ${fadingCount} từ đến hạn ôn nhẹ để duy trì 100% sức mạnh lá chắn.`
+        : `Lá chắn kiên cố! Toàn bộ ${solidCount}/${totalLearned} từ vựng đã được bảo vệ tối đa.`
     };
-    warningBanner = criticalCount > 0
-      ? `⚠️ Nếu không ôn hôm nay, lá chắn sẽ giảm xuống ${projectedTomorrow}% (-${decayDelta}%)`
+    warningBanner = fadingCount > 0
+      ? `✨ Lá chắn vững vàng (${healthScore}%). Có ${fadingCount} từ đến hạn ôn nhẹ hôm nay.`
       : '✨ Lá chắn kiên cố! Tất cả từ vựng đang ở mức an toàn cao.';
-  } else if (healthScore >= 70) {
+  } else if (healthScore >= 70 && criticalCount <= Math.max(1, Math.floor(totalLearned * 0.15))) {
     tier = {
       code: 'stable',
       label: 'Trí nhớ ĐANG ỔN ĐỊNH',
@@ -172,7 +181,7 @@ export function calculateMemoryShield(fsrsCards = {}, masteredWords = {}) {
       bgBadge: 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/30',
       glowColor: 'rgba(245, 158, 11, 0.28)',
       shieldBg: 'from-amber-500/20 via-orange-500/10 to-slate-900',
-      mascotMessage: `Lá chắn đang ở mức khá (${healthScore}%), nhưng có ${criticalCount || fadingCount} từ đang mờ dần. Ôn ngay để sạc đầy 100%! 🛡️⚡`
+      mascotMessage: `Lá chắn đạt ${healthScore}%. Có ${criticalCount > 0 ? `${criticalCount} từ cần cứu và ` : ''}${fadingCount} từ cần củng cố hôm nay để sạc đầy 100%! 🛡️⚡`
     };
     warningBanner = `⚠️ Nếu không ôn hôm nay, lá chắn sẽ giảm xuống ${projectedTomorrow}% (-${decayDelta}%) vào ngày mai!`;
   } else {
@@ -184,9 +193,9 @@ export function calculateMemoryShield(fsrsCards = {}, masteredWords = {}) {
       bgBadge: 'bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/30',
       glowColor: 'rgba(244, 63, 94, 0.32)',
       shieldBg: 'from-rose-500/20 via-red-500/10 to-slate-900',
-      mascotMessage: `Cảnh báo đỏ! Đường cong lãng quên đang tấn công ${criticalCount} từ vựng của bạn. Hãy bảo vệ lá chắn ngay!`
+      mascotMessage: `Cảnh báo đỏ! Đường cong lãng quên đang tấn công ${criticalCount} từ vựng của bạn (${healthScore}%). Hãy bảo vệ lá chắn ngay!`
     };
-    warningBanner = `🚨 Nguy cơ quên sạch ${criticalCount} từ vựng nếu không kích hoạt lá chắn hôm nay!`;
+    warningBanner = `🚨 Nguy cơ suy giảm trí nhớ! Có ${criticalCount} từ đang ở mức nguy cấp nếu không kích hoạt lá chắn hôm nay!`;
   }
 
   return {
@@ -203,6 +212,6 @@ export function calculateMemoryShield(fsrsCards = {}, masteredWords = {}) {
     estimatedReviewMinutes: estimatedMinutes,
     tier,
     warningBanner,
-    hasDecayRisk: criticalCount > 0 || decayDelta > 0
+    hasDecayRisk: criticalCount > 0 || decayDelta > 0 || fadingCount > 0
   };
 }

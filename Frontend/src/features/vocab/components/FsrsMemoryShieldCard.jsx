@@ -332,7 +332,7 @@ export default function FsrsMemoryShieldCard({
                 Nhớ Vững Chắc
               </p>
               <p className="text-[11px] text-slate-400 leading-tight mt-0.5">
-                Độ bền &gt; 14 ngày, đã khắc sâu vào dài hạn
+                Xác suất nhớ &gt; 85%, độ bền an toàn cao
               </p>
             </div>
 
@@ -355,10 +355,10 @@ export default function FsrsMemoryShieldCard({
                 </span>
               </div>
               <p className="text-xs font-bold text-slate-800 dark:text-slate-100 mt-2">
-                Bắt Đầu Mờ Nhạt
+                Đến Hạn Ôn Tập
               </p>
               <p className="text-[11px] text-slate-400 leading-tight mt-0.5">
-                Cần ôn trong 2–3 ngày tới để duy trì
+                Đến lịch ôn định kỳ hoặc đang mờ dần (70–85%)
               </p>
             </div>
 
@@ -381,10 +381,10 @@ export default function FsrsMemoryShieldCard({
                 </span>
               </div>
               <p className="text-xs font-bold text-slate-800 dark:text-slate-100 mt-2">
-                Sắp Quên!
+                Nguy Cơ Quên Sạch
               </p>
               <p className="text-[11px] text-slate-400 leading-tight mt-0.5">
-                Cần kích hoạt lá chắn ôn tập HÔM NAY
+                Suy giảm sâu (&lt; 70%) hoặc vừa quên, cần cứu ngay!
               </p>
             </div>
 
