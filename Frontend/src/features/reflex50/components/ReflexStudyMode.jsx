@@ -39,8 +39,55 @@ export default function ReflexStudyMode({
 
   return (
     <div className="space-y-3.5 sm:space-y-5">
-      {/* Active Recall & Auto-Play Control Strip */}
-      <div className="p-3 sm:p-4 rounded-2xl bg-blue-50/70 dark:bg-slate-900 border border-blue-200/70 dark:border-slate-800 flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center justify-between gap-2.5 sm:gap-3">
+      {/* Mobile 1-Row Quick Control Bar (< sm) */}
+      <div className="sm:hidden flex items-center justify-between gap-1.5 p-2 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+        {/* Play/Pause loop button */}
+        <button
+          onClick={toggleAutoPlayLoop}
+          className={`flex-1 py-1.5 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-95 ${
+            isAutoPlaying
+              ? 'bg-rose-600 text-white shadow-sm animate-pulse'
+              : 'bg-[#0071e3] text-white shadow-2xs'
+          }`}
+        >
+          {isAutoPlaying ? <Pause size={13} /> : <Play size={13} fill="currentColor" />}
+          <span>{isAutoPlaying ? 'Dừng phát' : `Phát liên tục (${filteredSentences.length})`}</span>
+        </button>
+
+        {/* Hide English Toggle */}
+        <button
+          onClick={() => {
+            setHideEnglishGlobal((prev) => !prev);
+            setRevealedCardIds({});
+          }}
+          className={`py-1.5 px-2.5 rounded-xl text-xs font-bold flex items-center gap-1 transition-all cursor-pointer active:scale-95 shrink-0 ${
+            hideEnglishGlobal
+              ? 'bg-emerald-600 text-white'
+              : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200'
+          }`}
+          title="Tự nhẩm nói trước"
+        >
+          {hideEnglishGlobal ? <EyeOff size={13} /> : <Eye size={13} />}
+          <span>{hideEnglishGlobal ? 'Đang ẩn' : 'Ẩn T.Anh'}</span>
+        </button>
+
+        {/* Hide Hints Toggle */}
+        <button
+          onClick={() => setHideHintsGlobal((prev) => !prev)}
+          className={`py-1.5 px-2.5 rounded-xl text-xs font-bold flex items-center gap-1 transition-all cursor-pointer active:scale-95 shrink-0 ${
+            hideHintsGlobal
+              ? 'bg-indigo-600 text-white'
+              : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200'
+          }`}
+          title="Ẩn/Hiện gợi ý cụm từ"
+        >
+          <Layers size={13} />
+          <span>{hideHintsGlobal ? 'Ẩn gợi ý' : 'Gợi ý'}</span>
+        </button>
+      </div>
+
+      {/* Desktop Rich Active Recall & Auto-Play Control Strip (hidden sm:flex) */}
+      <div className="hidden sm:flex p-3 sm:p-4 rounded-2xl bg-blue-50/70 dark:bg-slate-900 border border-blue-200/70 dark:border-slate-800 flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center justify-between gap-2.5 sm:gap-3">
         <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2">
           <button
             onClick={() => {
@@ -141,7 +188,7 @@ export default function ReflexStudyMode({
               <div
                 key={s.id}
                 id={`reflex-card-${s.id}`}
-                className={`rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-900 border p-3.5 sm:p-5 transition-all ${
+                className={`rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-900 border p-3.5 sm:p-5 transition-all shadow-2xs ${
                   isPlayingThis
                     ? 'border-[#0071e3] ring-2 ring-[#0071e3]/20 shadow-md'
                     : isMastered
@@ -151,18 +198,47 @@ export default function ReflexStudyMode({
               >
                 <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-3 sm:gap-4">
                   {/* Left Content */}
-                  <div className="space-y-2.5 sm:space-y-3 flex-1">
-                    {/* Badges Row */}
-                    <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-                      <span className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg sm:rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-xs font-bold flex items-center justify-center shrink-0">
-                        {s.number}
-                      </span>
-                      <span className={`px-2 sm:px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-semibold ${tierBadge.cls}`}>
-                        {tierBadge.label}
-                      </span>
-                      <span className="px-2 sm:px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px] sm:text-[11px] font-medium">
-                        {s.grammarNote}
-                      </span>
+                  <div className="space-y-2 sm:space-y-3 flex-1 min-w-0">
+                    {/* Top Row: Number + Tier badge + Star & Mastered on Mobile! */}
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-1.5 sm:gap-2">
+                        <span className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg sm:rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-xs font-bold flex items-center justify-center shrink-0">
+                          {s.number < 10 ? `0${s.number}` : s.number}
+                        </span>
+                        <span className={`px-2 sm:px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-semibold ${tierBadge.cls}`}>
+                          {tierBadge.label}
+                        </span>
+                        <span className="hidden sm:inline px-2 sm:px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px] sm:text-[11px] font-medium">
+                          {s.grammarNote}
+                        </span>
+                      </div>
+
+                      {/* Mobile Top-Right Actions: Star & Mastered */}
+                      <div className="flex items-center gap-1 sm:hidden">
+                        <button
+                          onClick={() => toggleStarred(s.id)}
+                          className={`p-1.5 rounded-lg border transition-colors cursor-pointer active:scale-90 ${
+                            isStarred
+                              ? 'bg-amber-50 border-amber-300 text-amber-500 dark:bg-amber-950/40 dark:border-amber-700'
+                              : 'bg-slate-50 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 text-slate-400 hover:text-amber-500'
+                          }`}
+                          title="Lưu Sao"
+                        >
+                          <Star size={13} className={isStarred ? 'fill-amber-400' : ''} />
+                        </button>
+
+                        <button
+                          onClick={() => toggleMastered(s.id)}
+                          className={`px-2 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1 border transition-all cursor-pointer active:scale-95 ${
+                            isMastered
+                              ? 'bg-emerald-500 border-emerald-500 text-white'
+                              : 'bg-slate-50 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300'
+                          }`}
+                        >
+                          <CheckCircle2 size={12} />
+                          <span>{isMastered ? 'Đã thuộc' : 'Thuộc'}</span>
+                        </button>
+                      </div>
                     </div>
 
                     {/* Vietnamese Prompt */}
@@ -172,23 +248,17 @@ export default function ReflexStudyMode({
 
                     {/* Clickable Vocabulary & Phrase Hints */}
                     {!hideHintsGlobal && s.hints.length > 0 && (
-                      <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-                        <span className="text-[11px] font-semibold text-slate-400 hidden sm:inline">
-                          Cụm từ gợi ý (bấm để nghe):
-                        </span>
+                      <div className="flex flex-wrap items-center gap-1 sm:gap-1.5 pt-0.5">
                         {s.hints.map((h, hIdx) => (
                           <button
                             key={hIdx}
                             onClick={() => speechService.speak(h.term.split('/')[0].trim(), { rate: 0.88 })}
-                            className="inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 rounded-xl bg-slate-50 dark:bg-slate-800/90 hover:bg-blue-50 dark:hover:bg-blue-950/40 border border-slate-200/80 dark:border-slate-700 text-[11px] sm:text-xs transition-colors cursor-pointer group text-left"
-                            title="Bấm để nghe phát âm cụm từ gợi ý"
+                            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-slate-50 dark:bg-slate-800/90 hover:bg-blue-50 dark:hover:bg-blue-950/40 border border-slate-200/80 dark:border-slate-700 text-[11px] transition-colors cursor-pointer text-left"
+                            title="Bấm để nghe phát âm cụm từ"
                           >
-                            <Volume2 size={11} className="text-[#0071e3] opacity-80 group-hover:scale-110 transition-transform shrink-0" />
+                            <Volume2 size={11} className="text-[#0071e3] opacity-80 shrink-0" />
                             <span>
                               <strong className="font-bold text-[#0071e3] dark:text-sky-400">{h.term}</strong>
-                              {h.pos && (
-                                <span className="text-[10px] italic text-slate-400 ml-0.5">({h.pos})</span>
-                              )}
                               {h.meaning && (
                                 <span className="text-slate-600 dark:text-slate-300">: {h.meaning}</span>
                               )}
@@ -206,13 +276,13 @@ export default function ReflexStudyMode({
                             setRevealedCardIds((prev) => ({ ...prev, [s.id]: true }));
                             speakSentence(s, playbackSpeed);
                           }}
-                          className="w-full sm:w-auto px-3.5 sm:px-4 py-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-950/40 border border-dashed border-slate-300 dark:border-slate-700 text-xs font-semibold text-[#0071e3] dark:text-sky-400 flex items-center justify-center sm:justify-start gap-2 transition-all cursor-pointer"
+                          className="w-full sm:w-auto px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl sm:rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-950/40 border border-dashed border-slate-300 dark:border-slate-700 text-xs font-semibold text-[#0071e3] dark:text-sky-400 flex items-center justify-center sm:justify-start gap-1.5 transition-all cursor-pointer active:scale-98"
                         >
-                          <Eye size={14} className="shrink-0" />
-                          <span>Tự bật ra tiếng Anh trong 3s → Bấm mở đáp án</span>
+                          <Eye size={13} className="shrink-0" />
+                          <span>Tự nhẩm tiếng Anh trong 3s → Bấm mở đáp án</span>
                         </button>
                       ) : (
-                        <div className="p-3 sm:p-3.5 rounded-2xl bg-blue-50/50 dark:bg-slate-800/60 border border-blue-200/60 dark:border-slate-700/70 flex flex-wrap items-center justify-between gap-2 sm:gap-3">
+                        <div className="p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl bg-blue-50/50 dark:bg-slate-800/60 border border-blue-200/60 dark:border-slate-700/70 flex flex-wrap items-center justify-between gap-2 sm:gap-3">
                           <div className="text-sm sm:text-base font-bold text-[#0071e3] dark:text-sky-300">
                             → {s.en}
                           </div>
@@ -225,7 +295,7 @@ export default function ReflexStudyMode({
                                   return next;
                                 })
                               }
-                              className="text-[11px] text-slate-400 hover:text-slate-600 cursor-pointer"
+                              className="text-[10px] text-slate-400 hover:text-slate-600 cursor-pointer"
                             >
                               Ẩn lại
                             </button>
@@ -235,9 +305,10 @@ export default function ReflexStudyMode({
                     </div>
                   </div>
 
-                  {/* Right Action Buttons - Clean wrapping row on mobile */}
-                  <div className="flex flex-wrap lg:flex-col items-center lg:items-end justify-between gap-1.5 sm:gap-2 pt-2 lg:pt-0 border-t lg:border-t-0 border-slate-100 dark:border-slate-800/80 shrink-0">
-                    <div className="flex items-center gap-1.5">
+                  {/* Bottom / Right Action Toolbar */}
+                  <div className="flex items-center justify-between gap-1.5 sm:gap-2 pt-2 lg:pt-0 border-t lg:border-t-0 border-slate-100 dark:border-slate-800/80 shrink-0">
+                    {/* Left: Audio Buttons */}
+                    <div className="flex items-center gap-1 sm:gap-1.5">
                       <button
                         onClick={() => {
                           if (isPlayingThis) {
@@ -246,12 +317,12 @@ export default function ReflexStudyMode({
                           }
                           speakSentence(s, playbackSpeed);
                         }}
-                        className={`px-2 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-extrabold flex items-center gap-1 sm:gap-1.5 transition-all cursor-pointer active:scale-95 ${
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 sm:gap-1.5 transition-all cursor-pointer active:scale-95 ${
                           isPlayingThis
-                            ? 'bg-rose-600 hover:bg-rose-700 text-white shadow-md shadow-rose-500/30 ring-2 ring-rose-300 dark:ring-rose-800'
-                            : 'bg-blue-50 dark:bg-slate-800 text-[#0071e3] dark:text-sky-400 hover:bg-blue-100'
+                            ? 'bg-rose-600 hover:bg-rose-700 text-white shadow-md shadow-rose-500/30'
+                            : 'bg-[#0071e3] hover:bg-[#0077ed] text-white shadow-2xs'
                         }`}
-                        title={isPlayingThis ? 'Bấm để dừng phát ngay tại câu này' : 'Nghe câu chuẩn'}
+                        title={isPlayingThis ? 'Dừng phát' : 'Nghe câu chuẩn'}
                       >
                         {isPlayingThis ? (
                           <>
@@ -260,7 +331,7 @@ export default function ReflexStudyMode({
                           </>
                         ) : (
                           <>
-                            <Volume2 size={14} />
+                            <Volume2 size={13} />
                             <span>Nghe</span>
                           </>
                         )}
@@ -268,15 +339,22 @@ export default function ReflexStudyMode({
 
                       <button
                         onClick={() => speakSentence(s, 0.7)}
-                        className="px-2 sm:px-2.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 text-[11px] sm:text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer"
-                        title="Nghe chậm rãi 0.7x để bắt rõ từng âm"
+                        className="px-2 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer"
+                        title="Nghe chậm rãi 0.7x"
                       >
-                        <Headphones size={13} />
-                        <span>Chậm</span>
+                        <Headphones size={12} />
+                        <span>0.7x</span>
                       </button>
                     </div>
 
-                    <div className="flex items-center gap-1.5">
+                    {/* Right: Inline Practice & Desktop Star/Mastered */}
+                    <div className="flex items-center gap-1 sm:gap-1.5">
+                      {s.grammarNote && (
+                        <span className="sm:hidden text-[10px] font-medium text-slate-400 truncate max-w-[110px]">
+                          {s.grammarNote}
+                        </span>
+                      )}
+
                       <button
                         onClick={() => {
                           if (isInlineOpen) {
@@ -287,32 +365,33 @@ export default function ReflexStudyMode({
                             setInlineResult(null);
                           }
                         }}
-                        className={`px-2 sm:px-2.5 py-1.5 rounded-xl text-[11px] sm:text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer ${
+                        className={`px-2.5 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer ${
                           isInlineOpen
                             ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900'
                             : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
                         }`}
-                        title="Mở dòng viết thực hành ngay dưới câu này"
+                        title="Viết thực hành ngay dưới câu này"
                       >
-                        <PenTool size={12} />
+                        <PenTool size={11} />
                         <span>Viết thử</span>
                       </button>
 
+                      {/* Desktop Only Star & Mastered (Mobile already has them at top right) */}
                       <button
                         onClick={() => toggleStarred(s.id)}
-                        className={`p-1.5 rounded-xl border transition-colors cursor-pointer ${
+                        className={`hidden sm:inline-flex p-1.5 rounded-xl border transition-colors cursor-pointer ${
                           isStarred
                             ? 'bg-amber-50 border-amber-300 text-amber-500 dark:bg-amber-950/40 dark:border-amber-700'
                             : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-400 hover:text-amber-500'
                         }`}
-                        title="Đánh dấu Sao (Câu cần ôn kỹ)"
+                        title="Lưu Sao"
                       >
                         <Star size={14} className={isStarred ? 'fill-amber-400' : ''} />
                       </button>
 
                       <button
                         onClick={() => toggleMastered(s.id)}
-                        className={`px-2 sm:px-2.5 py-1.5 rounded-xl text-[11px] sm:text-xs font-semibold flex items-center gap-1 border transition-all cursor-pointer ${
+                        className={`hidden sm:inline-flex px-2.5 py-1.5 rounded-xl text-xs font-semibold items-center gap-1 border transition-all cursor-pointer ${
                           isMastered
                             ? 'bg-emerald-500 border-emerald-500 text-white'
                             : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-emerald-400'

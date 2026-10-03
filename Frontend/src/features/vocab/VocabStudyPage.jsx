@@ -63,28 +63,44 @@ export default function VocabStudyPage() {
   return (
     <div className="max-w-4xl mx-auto space-y-3 sm:space-y-6">
       
-      {/* Top Navigation & Breadcrumb */}
-      <div className="flex items-center justify-between gap-2 sm:gap-4">
+      {/* ========================================================
+          1A. MOBILE APP TOP HEADER PAVILION (sm:hidden)
+          ======================================================== */}
+      <div className="sm:hidden flex items-center justify-between gap-2 p-2 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
         <button
           onClick={() => navigate('/vocab')}
-          className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
+          className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 active:scale-95 transition-transform shrink-0"
+          title="Về danh sách 60 chủ đề"
         >
           <ArrowLeft size={16} />
-          <span>Tất Cả 60 Chủ Đề</span>
         </button>
 
-        <div className="flex items-center gap-1.5 sm:gap-2">
+        <div className="min-w-0 flex-1 px-1">
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <span className="text-[10px] font-black uppercase text-blue-600 dark:text-sky-400">
+              Chủ đề {topic.id}/60
+            </span>
+            <span className="text-[10px] text-slate-300 dark:text-slate-700">•</span>
+            <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 truncate">
+              {masteredCount}/{words.length} ({progressPercent}%)
+            </span>
+          </div>
+          <h2 className="text-[13.5px] font-black text-slate-900 dark:text-white truncate leading-tight">
+            {topic.title}
+          </h2>
+        </div>
+
+        <div className="flex items-center gap-1 shrink-0">
           {prevTopic && (
             <button
               onClick={() => {
                 navigate(`/vocab/${prevTopic.id}`);
                 setActiveTab('flashcard');
               }}
-              className="px-2.5 py-1.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer"
+              className="w-7 h-7 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 active:scale-95"
               title={`Chủ đề trước: ${prevTopic.title}`}
             >
-              <ChevronLeft size={15} />
-              <span className="hidden sm:inline">Chủ đề {prevTopic.id}</span>
+              <ChevronLeft size={14} />
             </button>
           )}
 
@@ -94,91 +110,125 @@ export default function VocabStudyPage() {
                 navigate(`/vocab/${nextTopic.id}`);
                 setActiveTab('flashcard');
               }}
-              className="px-2.5 py-1.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer"
-              title={`Chủ đề kế tiếp: ${nextTopic.title}`}
+              className="w-7 h-7 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 active:scale-95"
+              title={`Chủ đề tiếp: ${nextTopic.title}`}
             >
-              <span className="hidden sm:inline">Chủ đề {nextTopic.id}</span>
-              <ChevronRight size={15} />
+              <ChevronRight size={14} />
+            </button>
+          )}
+
+          {masteredCount > 0 && (
+            <button
+              type="button"
+              onClick={() => setShowResetModal(true)}
+              className="w-7 h-7 rounded-lg bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 flex items-center justify-center active:scale-95 border border-amber-200/60 dark:border-amber-900/60"
+              title="Đặt lại tiến độ chủ đề này"
+            >
+              <RotateCcw size={12} />
             </button>
           )}
         </div>
       </div>
 
-      {/* Topic Header Card (Glassmorphic) */}
-      <div className="p-3.5 sm:p-7 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 text-white shadow-xl relative overflow-hidden">
-        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-4">
-          <div className="space-y-1 sm:space-y-1.5">
-            <div className="flex items-center justify-between sm:justify-start gap-2">
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-white/20 backdrop-blur-md text-[10px] sm:text-[11px] font-bold tracking-wider uppercase">
-                <Sparkles size={11} />
-                <span>Chủ Đề {topic.id} / 60</span>
-              </div>
+      {/* ========================================================
+          1B. DESKTOP HEADER & NAVIGATION (hidden sm:flex)
+          Spacious, Elegant, Never-truncated Title + Progress + Prev/Next
+          ======================================================== */}
+      <div className="hidden sm:flex items-center justify-between gap-4 p-3 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs">
+        {/* Left: Back Arrow + Topic Badge & FULL Title */}
+        <div className="flex items-center gap-3 min-w-0 flex-1">
+          <button
+            onClick={() => navigate('/vocab')}
+            className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors cursor-pointer shrink-0"
+            title="Về danh sách 60 chủ đề"
+          >
+            <ArrowLeft size={16} />
+          </button>
 
-              {/* Mobile inline progress + reset */}
-              <div className="flex sm:hidden items-center gap-2">
-                <span className="text-xs font-black text-amber-300">
-                  {masteredCount}/{words.length} từ ({progressPercent}%)
-                </span>
-                {masteredCount > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => setShowResetModal(true)}
-                    className="p-1 rounded-lg bg-white/15 hover:bg-white/25 text-white border border-white/20 cursor-pointer"
-                    title="Học lại từ đầu"
-                  >
-                    <RotateCcw size={12} />
-                  </button>
-                )}
-              </div>
-            </div>
-
-            <h1 className="text-lg sm:text-3xl font-black tracking-tight leading-snug">
-              {topic.title}
-            </h1>
-            <p className="hidden sm:block text-xs sm:text-sm text-blue-100">
-              Tổng cộng <strong>{words.length} từ vựng</strong> thiết yếu trong giao tiếp hàng ngày
-            </p>
-          </div>
-
-          {/* Desktop Mastered Progress Widget */}
-          <div className="hidden sm:flex p-3.5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex-col items-center justify-center gap-2 shrink-0 min-w-[145px] text-center">
-            <div className="text-center">
-              <span className="text-[11px] font-semibold text-blue-100 block">Đã ghi nhớ</span>
-              <span className="text-xl sm:text-2xl font-black text-amber-300">
-                {masteredCount}/{words.length} từ
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2">
+              <span className="text-[11px] font-black uppercase tracking-wider text-[#0071e3] dark:text-sky-400">
+                Chủ đề {topic.id} / 60
+              </span>
+              <span className="text-slate-300 dark:text-slate-700">•</span>
+              <span className="text-xs font-bold text-slate-500 dark:text-slate-400">
+                {words.length} từ vựng cốt lõi
               </span>
             </div>
-            <div className="w-full h-2 rounded-full bg-black/20 overflow-hidden">
+            <h1 className="text-lg lg:text-xl font-black text-slate-900 dark:text-white truncate" title={topic.title}>
+              {topic.title}
+            </h1>
+          </div>
+        </div>
+
+        {/* Right: Progress Pill + Reset + Prev/Next Navigation */}
+        <div className="flex items-center gap-2.5 shrink-0">
+          <div className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/70 dark:border-slate-700/60">
+            <div className="text-right">
+              <span className="text-[10px] font-bold text-slate-400 block uppercase leading-none">Đã thuộc</span>
+              <span className="text-xs font-black text-amber-600 dark:text-amber-400 leading-tight">
+                {masteredCount}/{words.length} <span className="text-[10px] text-slate-400 font-semibold">({progressPercent}%)</span>
+              </span>
+            </div>
+            <div className="w-14 h-1.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
               <div 
-                className="h-full bg-amber-300 rounded-full transition-all duration-500"
+                className="h-full bg-amber-400 rounded-full transition-all duration-300"
                 style={{ width: `${progressPercent}%` }}
               />
             </div>
-            {masteredCount > 0 && (
+          </div>
+
+          {masteredCount > 0 && (
+            <button
+              type="button"
+              onClick={() => setShowResetModal(true)}
+              className="p-2 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-900/50 border border-amber-200/60 dark:border-amber-900/40 transition-colors cursor-pointer"
+              title="Đặt lại tiến độ chủ đề này để học lại từ đầu"
+            >
+              <RotateCcw size={14} />
+            </button>
+          )}
+
+          <div className="flex items-center gap-1 border-l border-slate-200 dark:border-slate-800 pl-2">
+            {prevTopic && (
               <button
-                type="button"
-                onClick={() => setShowResetModal(true)}
-                className="mt-0.5 px-3 py-1 rounded-xl bg-white/15 hover:bg-white/25 active:scale-95 text-white text-[11px] font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-xs border border-white/20"
-                title="Đặt lại toàn bộ từ vựng chủ đề này để học lại từ đầu"
+                onClick={() => {
+                  navigate(`/vocab/${prevTopic.id}`);
+                  setActiveTab('flashcard');
+                }}
+                className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors cursor-pointer"
+                title={`Chủ đề trước: ${prevTopic.title}`}
               >
-                <RotateCcw size={12} />
-                <span>Học lại từ đầu</span>
+                <ChevronLeft size={15} />
+              </button>
+            )}
+
+            {nextTopic && (
+              <button
+                onClick={() => {
+                  navigate(`/vocab/${nextTopic.id}`);
+                  setActiveTab('flashcard');
+                }}
+                className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors cursor-pointer"
+                title={`Chủ đề kế tiếp: ${nextTopic.title}`}
+              >
+                <ChevronRight size={15} />
               </button>
             )}
           </div>
         </div>
-
-        {/* Decorative blur circle */}
-        <div className="absolute -right-12 -bottom-12 w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none" />
       </div>
 
-      {/* 4 Mode Tabs (Segmented on mobile, Apple-style Pills on desktop) */}
-      <div className="grid grid-cols-4 sm:flex items-center gap-1 p-1 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800">
+      {/* ========================================================
+          2. STUDY MODE TABS (Unified for Mobile & Desktop)
+          Segmented control bar: Flashcard 3D | Trắc nghiệm | Chính tả | Danh sách
+          ======================================================== */}
+      <div className="grid grid-cols-4 items-center gap-1 p-1 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
         {[
           { id: 'flashcard', label: 'Flashcard 3D', shortLabel: 'Flashcard', icon: Layers },
-          { id: 'quiz', label: 'Trắc Nghiệm Nhanh', shortLabel: 'Trắc nghiệm', icon: Zap },
-          { id: 'spelling', label: 'Gõ Chính Tả', shortLabel: 'Chính tả', icon: PenTool },
-          { id: 'list', label: `Danh Sách (${words.length})`, shortLabel: `Từ (${words.length})`, icon: ListOrdered }
+          { id: 'quiz', label: 'Trắc nghiệm', shortLabel: 'Trắc nghiệm', icon: Zap },
+          { id: 'spelling', label: 'Gõ chính tả', shortLabel: 'Chính tả', icon: PenTool },
+          { id: 'list', label: `Danh sách (${words.length})`, shortLabel: `Từ (${words.length})`, icon: ListOrdered }
         ].map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -186,15 +236,15 @@ export default function VocabStudyPage() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`sm:flex-1 py-2 sm:py-2.5 px-1.5 sm:px-3 rounded-xl font-bold text-[11px] sm:text-xs transition-all flex items-center justify-center gap-1 sm:gap-2 cursor-pointer ${
+              className={`py-2 px-1 sm:px-3 rounded-xl font-extrabold text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap ${
                 isActive
-                  ? 'bg-white dark:bg-slate-800 text-[#0071e3] dark:text-sky-400 shadow-sm'
+                  ? 'bg-white dark:bg-slate-800 text-[#0071e3] dark:text-sky-400 shadow-2xs'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               <Icon size={14} className="shrink-0" />
-              <span className="sm:hidden truncate">{tab.shortLabel}</span>
               <span className="hidden sm:inline">{tab.label}</span>
+              <span className="sm:hidden">{tab.shortLabel}</span>
             </button>
           );
         })}

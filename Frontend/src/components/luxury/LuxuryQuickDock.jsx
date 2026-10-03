@@ -135,10 +135,10 @@ export default function LuxuryQuickDock({
   return (
     <>
       {/* ===================================================================== */}
-      {/* 1. MOBILE ADAPTIVE DYNAMIC ISLAND & CONTROL SHEET (< 768px)           */}
-      {/* Sits at bottom-[74px] to never overlap the Mobile Bottom Tab Bar      */}
+      {/* 1. MOBILE DOCK: Disabled on mobile (< 768px) to eliminate clutter     */}
+      {/* (Mobile navigation is cleanly handled by the native Bottom TabBar)    */}
       {/* ===================================================================== */}
-      <div className="md:hidden">
+      <div className="hidden">
         {/* Backdrop when Mobile Control Center Sheet is Open */}
         <AnimatePresence>
           {isMobileSheetOpen && (

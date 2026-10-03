@@ -103,16 +103,16 @@ export default function FsrsMemoryShieldCard({
       {/* 1. Header / Compact Smart HUD Bar */}
       {showTitle && (
         <div
-          className={`relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-3 min-w-0 ${
-            isBodyExpanded ? 'pb-4 sm:pb-5 border-b border-slate-200/70 dark:border-slate-800' : ''
+          className={`relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 min-w-0 ${
+            isBodyExpanded ? 'pb-3.5 sm:pb-5 border-b border-slate-200/70 dark:border-slate-800' : ''
           }`}
         >
           {/* Left: Mini Shield Progress Ring + Title + Quick 3-Tier Pills */}
-          <div className="flex items-center gap-3 min-w-0">
+          <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
             {/* Mini SVG Health Gauge */}
             <div
               onClick={() => setIsBodyExpanded((prev) => !prev)}
-              className="relative w-11 h-11 sm:w-12 sm:h-12 shrink-0 flex items-center justify-center cursor-pointer"
+              className="relative w-10 h-10 sm:w-12 sm:h-12 shrink-0 flex items-center justify-center cursor-pointer active:scale-95 transition-transform"
               title="Bấm để đóng/mở chi tiết Lá Chắn Trí Nhớ"
             >
               <svg className="w-full h-full -rotate-90" viewBox="0 0 44 44">
@@ -138,34 +138,34 @@ export default function FsrsMemoryShieldCard({
                   className="transition-all duration-700"
                 />
               </svg>
-              <span className="absolute inset-0 flex items-center justify-center text-[11px] font-black text-slate-900 dark:text-white">
+              <span className="absolute inset-0 flex items-center justify-center text-[10.5px] sm:text-[11px] font-black text-slate-900 dark:text-white">
                 {shield.healthPercentage}%
               </span>
             </div>
 
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-                <h3 className="text-sm sm:text-lg font-extrabold tracking-tight text-slate-900 dark:text-white truncate">
+                <h3 className="text-xs sm:text-lg font-extrabold tracking-tight text-slate-900 dark:text-white truncate">
                   Lá Chắn Trí Nhớ FSRS
                 </h3>
-                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border ${shieldTheme.badge}`}>
+                <span className={`inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.2 sm:py-0.5 rounded-full text-[9.5px] sm:text-[10px] font-bold border ${shieldTheme.badge}`}>
                   <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: shieldTheme.shieldColor }} />
                   <span>{shield.tier.label}</span>
                 </span>
               </div>
 
               {/* Compact 3-Tier Summary Pills */}
-              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1 text-[11px] font-semibold text-slate-500 dark:text-slate-400">
+              <div className="flex flex-wrap items-center gap-x-2 sm:gap-x-3 gap-y-0.5 mt-0.5 sm:mt-1 text-[10px] sm:text-[11px] font-semibold text-slate-500 dark:text-slate-400">
                 <span className="inline-flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                  <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-500" />
                   <strong className="text-slate-700 dark:text-slate-200">{shield.solidCount}</strong> vững
                 </span>
                 <span className="inline-flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-full bg-amber-500" />
-                  <strong className="text-slate-700 dark:text-slate-200">{shield.fadingCount}</strong> mờ nhạt
+                  <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-amber-500" />
+                  <strong className="text-slate-700 dark:text-slate-200">{shield.fadingCount}</strong> mờ
                 </span>
                 <span className="inline-flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+                  <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-rose-500 animate-pulse" />
                   <strong className="text-rose-600 dark:text-rose-400">{shield.criticalCount}</strong> cần ôn
                 </span>
               </div>
@@ -173,52 +173,52 @@ export default function FsrsMemoryShieldCard({
           </div>
 
           {/* Right: 1-Tap Quick Action + Expand/Collapse Toggle + Info */}
-          <div className="flex flex-wrap items-center justify-between sm:justify-end gap-2 shrink-0 min-w-0">
+          <div className="flex items-center justify-between sm:justify-end gap-2 shrink-0 min-w-0 w-full sm:w-auto pt-1 sm:pt-0">
             {!isBodyExpanded && (
               <>
                 {shield.criticalCount > 0 ? (
                   <button
                     type="button"
                     onClick={() => handleStartReview(shield.criticalWords)}
-                    className="duo-btn duo-btn-red duo-btn-xs font-black animate-duo-pulse min-w-0"
+                    className="duo-btn duo-btn-red duo-btn-xs font-black animate-duo-pulse flex-1 sm:flex-initial min-w-0 text-[10.5px] sm:text-xs py-1.5 sm:py-2"
                   >
-                    <Shield size={13} className="shrink-0 animate-duo-wiggle" />
-                    <span className="truncate">ÔN NGAY {shield.criticalCount} TỪ ĐỎ (~{shield.estimatedReviewMinutes}p)</span>
+                    <Shield size={12} className="shrink-0 animate-duo-wiggle" />
+                    <span className="truncate">Ôn ngay {shield.criticalCount} từ đỏ (~{shield.estimatedReviewMinutes}p)</span>
                   </button>
                 ) : shield.fadingCount > 0 ? (
                   <button
                     type="button"
                     onClick={() => handleStartReview(shield.fadingWords)}
-                    className="duo-btn duo-btn-blue duo-btn-xs font-black min-w-0"
+                    className="duo-btn duo-btn-blue duo-btn-xs font-black flex-1 sm:flex-initial min-w-0 text-[10.5px] sm:text-xs py-1.5 sm:py-2"
                   >
-                    <Zap size={13} className="shrink-0 animate-duo-bounce" />
-                    <span className="truncate">CỦNG CỐ {shield.fadingCount} TỪ</span>
+                    <Zap size={12} className="shrink-0 animate-duo-bounce" />
+                    <span className="truncate">Củng cố {shield.fadingCount} từ</span>
                   </button>
                 ) : (
-                  <span className="duo-pill duo-pill-streak text-[11px] truncate">
-                    ✓ ĐỘ BỀN TỐI ĐA 100%
+                  <span className="duo-pill duo-pill-streak text-[10px] sm:text-[11px] truncate py-0.5 px-2">
+                    ✓ Bền vững 100%
                   </span>
                 )}
               </>
             )}
 
-            <div className="flex items-center gap-1.5 ml-auto sm:ml-0">
+            <div className="flex items-center gap-1.5 ml-auto sm:ml-0 shrink-0">
               <button
                 type="button"
                 onClick={() => setIsBodyExpanded((prev) => !prev)}
-                className="duo-btn duo-btn-white duo-btn-xs font-black"
+                className="duo-btn duo-btn-white duo-btn-xs font-black text-[10.5px] sm:text-xs py-1.5 sm:py-2 px-2.5"
               >
                 <span>{isBodyExpanded ? 'Thu gọn' : 'Chi tiết'}</span>
-                {isBodyExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                {isBodyExpanded ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
               </button>
 
               <button
                 type="button"
                 onClick={() => setShowInfoModal(true)}
-                className="duo-btn duo-btn-white w-8 h-8 rounded-xl p-0 font-black"
+                className="duo-btn duo-btn-white w-7 h-7 sm:w-8 sm:h-8 rounded-xl p-0 font-black"
                 title="Tìm hiểu về cơ chế Lá Chắn Trí Nhớ"
               >
-                <Info size={14} />
+                <Info size={13} />
               </button>
             </div>
           </div>

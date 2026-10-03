@@ -159,6 +159,23 @@ export default function BinoPlaylistModal() {
     }
   };
 
+  const handleCycleSpeed = () => {
+    const commonSpeeds = [0.75, 0.85, 0.95, 1.0, 1.15];
+    const curIdx = commonSpeeds.findIndex(s => Math.abs(s - audioSpeed) < 0.05);
+    const nextIdx = (curIdx + 1) % commonSpeeds.length;
+    handleChangeSpeed(commonSpeeds[nextIdx]);
+  };
+
+  const handleCycleRepeat = () => {
+    const modes = ['all', 'one', 'none'];
+    const curIdx = modes.indexOf(repeatMode);
+    const nextMode = modes[(curIdx + 1) % modes.length];
+    setRepeatMode(nextMode);
+    if (nextMode === 'all') toast.success('🔁 Lặp lại: Toàn bộ danh sách');
+    else if (nextMode === 'one') toast.success('🔂 Lặp lại: 1 bài liên tục');
+    else toast('⏹️ Tự dừng khi hết danh sách', { icon: '⏹️' });
+  };
+
   // Khi người dùng chuyển sang trang khác trong lúc Modal đang mở full -> Tự động thu nhỏ xuống góc màn hình và GIỮ NGUYÊN phát nhạc!
   useEffect(() => {
     if (prevPathnameRef.current !== location.pathname) {
@@ -204,7 +221,12 @@ export default function BinoPlaylistModal() {
   useEffect(() => {
     if (!isOpen || handOffPayload?.lesson) return;
     const targetIds = initialSelectedIds?.length ? initialSelectedIds : selectedIds;
-    if (targetIds.length === 0 && allDialogueIds.length === 0) return;
+    if (targetIds.length === 0) {
+      setPlaylist([]);
+      playlistRef.current = [];
+      setLoading(false);
+      return;
+    }
 
     setLoading(true);
     const idsParam =
@@ -227,6 +249,9 @@ export default function BinoPlaylistModal() {
               startPlayback(0, 0, res.data);
             }, 200);
           }
+        } else {
+          setPlaylist([]);
+          playlistRef.current = [];
         }
       })
       .catch(err => {
@@ -238,13 +263,13 @@ export default function BinoPlaylistModal() {
 
   // Cuộn mượt đến câu thoại đang phát
   useEffect(() => {
-    if (!isMinimized && currentLineIdx !== null && lineRefs.current[currentLineIdx]) {
+    if (!isMinimized && activeView === 'player' && currentLineIdx !== null && lineRefs.current[currentLineIdx]) {
       lineRefs.current[currentLineIdx].scrollIntoView({
         behavior: 'smooth',
         block: 'center'
       });
     }
-  }, [currentLineIdx, isMinimized]);
+  }, [currentLineIdx, isMinimized, activeView]);
 
   // Dừng phát âm thanh an toàn
   const stopPlayback = (stopKeepAlive = false) => {
@@ -469,100 +494,93 @@ export default function BinoPlaylistModal() {
 
   // ================= RENDER MINI FLOATING PLAYER =================
   if (isMinimized) {
+    const totalLines = currentLesson?.dialogueLines?.length || 1;
+    const progressPercent = Math.min(100, Math.round(((currentLineIdx + 1) / totalLines) * 100));
+
     return (
       <motion.div 
-        initial={{ opacity: 0, scale: 0.8, y: 20 }}
+        initial={{ opacity: 0, scale: 0.9, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.8, y: 20 }}
-        className="fixed bottom-20 md:bottom-5 right-3 sm:right-6 z-40 max-w-sm w-[calc(100vw-1.5rem)]"
+        exit={{ opacity: 0, scale: 0.9, y: 20 }}
+        className="fixed bottom-[calc(4.75rem+env(safe-area-inset-bottom,0px))] md:bottom-5 left-2.5 right-2.5 sm:left-auto sm:right-6 z-40 max-w-sm sm:w-96 select-none"
       >
-        <div className="glass-card p-3 sm:p-4 rounded-2xl sm:rounded-3xl border border-blue-200/80 dark:border-blue-900/60 shadow-2xl bg-gradient-to-r from-blue-500/10 via-white to-sky-500/10 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900 space-y-2 animate-pulse-glow">
-          <div className="flex items-center justify-between">
+        <div className="relative overflow-hidden p-2 sm:p-2.5 rounded-2xl bg-white/95 dark:bg-[#0c101a]/95 backdrop-blur-2xl border border-slate-200/90 dark:border-white/10 shadow-[0_12px_40px_rgba(0,0,0,0.18)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.6)] flex items-center justify-between gap-2.5">
+          {/* Subtle line progress bar across bottom */}
+          <div className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-slate-100 dark:bg-white/[0.06]">
             <div 
-              onClick={() => {
-                if (currentLesson?.id) {
-                  navigate(`/communication/dialogue/${currentLesson.id}`);
-                }
-              }}
-              className="flex items-center gap-2 truncate cursor-pointer group"
-              title="Bấm để mở trang bài hội thoại đang phát"
-            >
-              {isPlaying ? (
-                <div className="flex items-end gap-0.5 h-3.5 text-[#0071e3] shrink-0">
-                  <span className="equalizer-bar" />
-                  <span className="equalizer-bar" />
-                  <span className="equalizer-bar" />
-                </div>
-              ) : (
-                <span className="w-2.5 h-2.5 rounded-full bg-slate-400 shrink-0" />
-              )}
-              <div className="truncate">
-                <p className="text-[10px] font-black uppercase text-[#0071e3] dark:text-sky-400 truncate flex items-center gap-1">
-                  <span>{currentLesson ? `Chương ${currentLesson.chapterNumber} • Bài ${currentLesson.dialogueNumber}` : 'Đang tải...'}</span>
-                  <ExternalLink size={10} className="opacity-70 group-hover:opacity-100" />
-                </p>
-                <h4 className="text-xs font-black text-slate-900 dark:text-white group-hover:text-[#0071e3] dark:group-hover:text-sky-400 transition-colors truncate">
-                  {currentLesson?.title || 'Trình phát hội thoại'}
-                </h4>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-1 shrink-0">
-              <button
-                onClick={() => setMinimized(false)}
-                className="p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-900 transition-all cursor-pointer"
-                title="Mở rộng trình phát"
-              >
-                <Maximize2 size={14} />
-              </button>
-              <button
-                onClick={handleClose}
-                className="p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-rose-500 transition-all cursor-pointer"
-                title="Đóng trình phát"
-              >
-                <X size={14} />
-              </button>
-            </div>
+              className="h-full bg-gradient-to-r from-[#0071e3] to-sky-400 transition-all duration-300"
+              style={{ width: `${progressPercent}%` }}
+            />
           </div>
 
-          {currentLine && (
-            <div className="p-2 rounded-xl bg-blue-50/80 dark:bg-blue-950/40 border border-blue-200/60 dark:border-blue-900/40 text-xs">
-              <p className="font-bold text-slate-900 dark:text-white line-clamp-1 font-vietsub">
-                <span className="text-[#0071e3] dark:text-sky-400 mr-1.5 font-black uppercase text-[10px]">
-                  {currentLine.characterName}:
-                </span>
-                "{currentLine.englishText}"
-              </p>
+          {/* Left Avatar / Equalizer Box */}
+          <div 
+            onClick={() => setMinimized(false)}
+            className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0071e3] to-sky-500 text-white flex items-center justify-center shrink-0 shadow-sm cursor-pointer active:scale-95 transition-transform"
+            title="Bấm để mở rộng trình phát"
+          >
+            {isPlaying ? (
+              <div className="flex items-end gap-0.5 h-3.5">
+                <span className="equalizer-bar" />
+                <span className="equalizer-bar" />
+                <span className="equalizer-bar" />
+              </div>
+            ) : (
+              <ListMusic size={17} />
+            )}
+          </div>
+
+          {/* Center Info - Clicking expands to full player */}
+          <div 
+            onClick={() => setMinimized(false)}
+            className="min-w-0 flex-1 cursor-pointer group"
+            title="Bấm để mở rộng trình phát"
+          >
+            <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-400 dark:text-slate-500 truncate">
+              <span className="text-[#0071e3] dark:text-sky-400 font-extrabold">
+                {currentLesson ? `Bài ${currentLesson.dialogueNumber}` : 'Đang tải...'}
+              </span>
+              <span>•</span>
+              <span className="truncate">{currentLesson?.title || 'Hội thoại'}</span>
             </div>
-          )}
+            <p className="text-xs font-black text-slate-900 dark:text-white truncate leading-snug group-hover:text-[#0071e3] transition-colors">
+              {currentLine?.englishText ? `"${currentLine.englishText}"` : (currentLesson?.titleVi || 'Sẵn sàng phát...')}
+            </p>
+          </div>
 
-          <div className="flex items-center justify-between pt-1">
-            <span className="text-[11px] font-black text-slate-400">
-              Bài {currentLessonIdx + 1}/{playlist.length} • Phát nền 🎧
-            </span>
+          {/* Right Action Controls */}
+          <div className="flex items-center gap-1 shrink-0">
+            <button
+              onClick={togglePlayPause}
+              className="w-8 h-8 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white flex items-center justify-center shadow-sm shadow-blue-500/25 active:scale-90 transition-transform cursor-pointer"
+              title={isPlaying ? 'Tạm dừng' : 'Tiếp tục phát'}
+            >
+              {isPlaying ? <Pause size={13} /> : <Play size={13} fill="currentColor" className="ml-0.5" />}
+            </button>
 
-            <div className="flex items-center gap-1.5">
-              <button
-                onClick={() => playPrevLesson()}
-                className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition-all active:scale-90 cursor-pointer"
-              >
-                <SkipBack size={15} />
-              </button>
+            <button
+              onClick={() => playNextLesson()}
+              className="w-7 h-7 rounded-lg text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/[0.08] flex items-center justify-center active:scale-90 transition-all cursor-pointer"
+              title="Bài tiếp theo"
+            >
+              <SkipForward size={14} />
+            </button>
 
-              <button
-                onClick={togglePlayPause}
-                className="p-2.5 rounded-2xl bg-[#0071e3] hover:bg-[#0077ed] text-white shadow-md shadow-blue-500/25 transition-all active:scale-90 cursor-pointer"
-              >
-                {isPlaying ? <Pause size={16} /> : <Play size={16} fill="currentColor" />}
-              </button>
+            <button
+              onClick={() => setMinimized(false)}
+              className="w-7 h-7 rounded-lg text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/[0.08] flex items-center justify-center active:scale-90 transition-all cursor-pointer"
+              title="Mở rộng trình phát"
+            >
+              <Maximize2 size={13} />
+            </button>
 
-              <button
-                onClick={() => playNextLesson()}
-                className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition-all active:scale-90 cursor-pointer"
-              >
-                <SkipForward size={15} />
-              </button>
-            </div>
+            <button
+              onClick={handleClose}
+              className="w-7 h-7 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 flex items-center justify-center active:scale-90 transition-all cursor-pointer"
+              title="Đóng trình phát"
+            >
+              <X size={14} />
+            </button>
           </div>
         </div>
       </motion.div>
@@ -577,74 +595,125 @@ export default function BinoPlaylistModal() {
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 15 }}
         transition={{ duration: 0.25, ease: 'easeOut' }}
-        className="relative w-full max-w-5xl h-[92vh] max-h-[850px] flex flex-col bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200/90 dark:border-slate-800 overflow-hidden"
+        className="relative w-full max-w-5xl h-[94vh] sm:h-[92vh] sm:max-h-[850px] flex flex-col bg-white dark:bg-slate-900 rounded-t-[28px] sm:rounded-3xl shadow-2xl border border-slate-200/90 dark:border-slate-800 overflow-hidden"
       >
         
         {/* Top Header Bar */}
-        <div className="p-3.5 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3 shrink-0 bg-gradient-to-r from-blue-500/10 via-white to-sky-500/10 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="w-10 h-10 rounded-2xl bg-[#0071e3] text-white flex items-center justify-center shadow-md shadow-blue-500/25 shrink-0">
-              <ListMusic size={20} />
-            </div>
-            <div className="truncate">
-              <div className="flex items-center gap-2">
-                <h3 className="text-sm sm:text-lg font-black text-slate-900 dark:text-white truncate">
-                  Playlist Hội Thoại Thực Chiến
-                </h3>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-blue-100 text-[#0071e3] dark:bg-blue-950 dark:text-sky-300 shrink-0">
-                  Studio AI 🎙️
-                </span>
+        <div className="border-b border-slate-100 dark:border-slate-800 shrink-0 bg-gradient-to-r from-blue-500/10 via-white to-sky-500/10 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
+          {/* Mobile Top Drag Indicator */}
+          <div 
+            onClick={() => setMinimized(true)}
+            className="sm:hidden pt-2 pb-1 cursor-pointer flex justify-center"
+            title="Kéo hoặc bấm để thu nhỏ"
+          >
+            <div className="w-10 h-1 rounded-full bg-slate-300 dark:bg-slate-700" />
+          </div>
+
+          <div className="p-3 sm:p-5 flex items-center justify-between gap-3">
+            {/* Desktop Left: Title & Icon */}
+            <div className="hidden sm:flex items-center gap-3 min-w-0">
+              <div className="w-10 h-10 rounded-2xl bg-[#0071e3] text-white flex items-center justify-center shadow-md shadow-blue-500/25 shrink-0">
+                <ListMusic size={20} />
               </div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
-                Phát liên tục kể cả khi chuyển trang hoặc tắt màn hình điện thoại
-              </p>
+              <div className="truncate">
+                <div className="flex items-center gap-2">
+                  <h3 className="text-sm sm:text-lg font-black text-slate-900 dark:text-white truncate">
+                    Playlist Hội Thoại Thực Chiến
+                  </h3>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-blue-100 text-[#0071e3] dark:bg-blue-950 dark:text-sky-300 shrink-0">
+                    Studio AI 🎙️
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
+                  Phát liên tục kể cả khi chuyển trang hoặc tắt màn hình điện thoại
+                </p>
+              </div>
+            </div>
+
+            {/* Mobile Left: Back/Minimize button + Current Title */}
+            <div className="flex sm:hidden items-center gap-2 min-w-0 flex-1">
+              <button
+                onClick={() => setMinimized(true)}
+                className="p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 shrink-0 cursor-pointer"
+                title="Thu nhỏ xuống góc"
+              >
+                <ChevronDown size={20} />
+              </button>
+              <div className="min-w-0 flex-1">
+                <div className="text-[10px] font-black uppercase text-[#0071e3] dark:text-sky-400 truncate tracking-wide">
+                  {currentLesson ? `Chương ${currentLesson.chapterNumber} • Bài ${currentLesson.dialogueNumber} (${currentLessonIdx + 1}/${playlist.length})` : 'Playlist'}
+                </div>
+                <h3 className="text-xs font-black text-slate-900 dark:text-white truncate">
+                  {currentLesson?.title || 'Trình phát hội thoại'}
+                </h3>
+              </div>
+            </div>
+
+            {/* Action Buttons Right */}
+            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+              <button
+                onClick={() => setShowVietsub(!showVietsub)}
+                className={`p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl border text-xs font-bold flex items-center gap-1 transition-all cursor-pointer ${
+                  showVietsub
+                    ? 'border-blue-300 bg-blue-50 text-[#0071e3] dark:bg-blue-950/60 dark:text-sky-300 dark:border-blue-800'
+                    : 'border-slate-200 dark:border-slate-700 text-slate-400'
+                }`}
+                title={showVietsub ? 'Tắt dịch tiếng Việt' : 'Bật dịch tiếng Việt'}
+              >
+                {showVietsub ? <Eye size={14} className="text-[#0071e3] dark:text-sky-400" /> : <EyeOff size={14} />}
+                <span className="hidden sm:inline">{showVietsub ? 'Vietsub: Bật' : 'Vietsub: Tắt'}</span>
+              </button>
+
+              <button
+                onClick={() => setIsVoiceSettingsOpen(true)}
+                className="p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all text-xs font-bold flex items-center gap-1 cursor-pointer"
+                title="Cài đặt giọng đọc Studio Neural"
+              >
+                <Sparkles size={14} className="text-[#0071e3]" />
+                <span className="hidden sm:inline">Giọng đọc</span>
+              </button>
+
+              <button
+                onClick={() => setMinimized(true)}
+                className="hidden sm:flex p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all active:scale-95 cursor-pointer"
+                title="Thu nhỏ xuống góc màn hình"
+              >
+                <Minimize2 size={16} />
+              </button>
+
+              <button
+                onClick={handleClose}
+                className="p-1.5 sm:p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-rose-50 dark:hover:bg-rose-950/50 text-slate-400 hover:text-rose-600 transition-all active:scale-95 cursor-pointer"
+                title="Đóng trình phát"
+              >
+                <X size={16} />
+              </button>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 shrink-0">
-            {/* View Tab Switch on Mobile */}
-            <div className="flex sm:hidden p-1 bg-slate-100 dark:bg-slate-800 rounded-xl text-xs font-bold">
-              <button
-                onClick={() => setActiveView('player')}
-                className={`px-2.5 py-1 rounded-lg transition-all ${
-                  activeView === 'player' ? 'bg-white dark:bg-slate-700 text-[#0071e3] shadow-sm' : 'text-slate-500'
-                }`}
-              >
-                Đang phát
-              </button>
-              <button
-                onClick={() => setActiveView('selector')}
-                className={`px-2.5 py-1 rounded-lg transition-all ${
-                  activeView === 'selector' ? 'bg-white dark:bg-slate-700 text-blue-600 shadow-sm' : 'text-slate-500'
-                }`}
-              >
-                Chọn ({selectedIds.length})
-              </button>
-            </div>
-
+          {/* Segmented Interactive Switcher on Mobile (Lời thoại vs Chọn bài) */}
+          <div className="flex sm:hidden p-1 bg-slate-100/90 dark:bg-slate-800/90 border-t border-slate-200/60 dark:border-white/[0.06] grid grid-cols-2 gap-1 text-xs font-bold">
             <button
-              onClick={() => setIsVoiceSettingsOpen(true)}
-              className="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all text-xs font-bold hidden sm:flex items-center gap-1.5 cursor-pointer"
-              title="Cài đặt giọng đọc"
+              onClick={() => setActiveView('player')}
+              className={`py-1.5 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                activeView === 'player'
+                  ? 'bg-white dark:bg-slate-700 text-[#0071e3] dark:text-sky-300 shadow-xs font-black'
+                  : 'text-slate-500 hover:text-slate-800 dark:hover:text-white'
+              }`}
             >
-              <Sparkles size={14} className="text-[#0071e3]" />
-              <span>Giọng đọc</span>
+              <Music size={13} />
+              <span>Lời Thoại Bài Học</span>
             </button>
-
             <button
-              onClick={() => setMinimized(true)}
-              className="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all active:scale-95"
-              title="Thu nhỏ xuống góc màn hình"
+              onClick={() => setActiveView('selector')}
+              className={`py-1.5 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                activeView === 'selector'
+                  ? 'bg-white dark:bg-slate-700 text-[#0071e3] dark:text-sky-300 shadow-xs font-black'
+                  : 'text-slate-500 hover:text-slate-800 dark:hover:text-white'
+              }`}
             >
-              <Minimize2 size={16} />
-            </button>
-
-            <button
-              onClick={handleClose}
-              className="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-rose-50 dark:hover:bg-rose-950/50 text-slate-400 hover:text-rose-600 transition-all active:scale-95"
-              title="Đóng trình phát"
-            >
-              <X size={16} />
+              <ListMusic size={13} />
+              <span>Danh Sách Bài ({selectedIds.length})</span>
             </button>
           </div>
         </div>
@@ -821,83 +890,58 @@ export default function BinoPlaylistModal() {
               </div>
             ) : (
               <>
-                {/* Lesson Header Banner */}
-                <div className="p-3.5 sm:p-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 flex flex-wrap items-center justify-between gap-2.5 shrink-0">
-                  <div>
-                    <div className="flex items-center gap-2 text-[11px] font-bold text-[#0071e3] dark:text-sky-400">
-                      <span>Chương {currentLesson?.chapterNumber < 10 ? `0${currentLesson?.chapterNumber}` : currentLesson?.chapterNumber}: {currentLesson?.chapterTitle}</span>
-                      <span>•</span>
-                      <span>Hội thoại {currentLesson?.dialogueNumber}</span>
-                    </div>
-                    <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-white mt-0.5">
-                      {currentLesson?.title}
-                    </h2>
-                    {currentLesson?.titleVi && (
-                      <p className="text-xs text-slate-500 dark:text-slate-400 font-vietsub">
-                        {currentLesson.titleVi}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="flex items-center gap-2 shrink-0">
-                    <span className="px-3 py-1 rounded-xl text-xs font-black bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300">
-                      Bài {currentLessonIdx + 1}/{playlist.length}
-                    </span>
-                    <button
-                      onClick={() => setShowVietsub(!showVietsub)}
-                      className={`p-2 rounded-xl border text-xs font-bold flex items-center gap-1 transition-all cursor-pointer ${
-                        showVietsub
-                          ? 'border-emerald-300 bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-800'
-                          : 'border-slate-200 dark:border-slate-700 text-slate-400'
-                      }`}
-                    >
-                      {showVietsub ? <Eye size={14} /> : <EyeOff size={14} />}
-                      <span className="hidden sm:inline">Vietsub</span>
-                    </button>
-                  </div>
-                </div>
-
-                {/* Real-time Large Speaking Line Box */}
-                <div className="p-4 sm:p-5 bg-gradient-to-r from-blue-50/70 via-white to-sky-50/70 dark:from-slate-850 dark:via-slate-850 dark:to-slate-850 border-b border-slate-100 dark:border-slate-800 shrink-0">
-                  {currentLine ? (
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2">
-                        <span className={`px-2.5 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider ${
-                          ['leo', 'vbace', 'bino'].some(k => currentLine.characterName?.toLowerCase().includes(k))
-                            ? 'bg-[#0071e3] text-white shadow-sm'
-                            : 'bg-blue-600 text-white shadow-sm'
-                        }`}>
-                          {currentLine.characterName}
-                        </span>
-                        <span className="text-[11px] text-slate-400 font-semibold">
-                          Câu {currentLineIdx + 1}/{currentLesson?.dialogueLines?.length || 0}
-                        </span>
-                        {isPlaying && (
-                          <div className="flex items-end gap-0.5 h-3 text-[#0071e3] ml-1">
-                            <span className="equalizer-bar" />
-                            <span className="equalizer-bar" />
-                            <span className="equalizer-bar" />
-                          </div>
-                        )}
-                      </div>
-
-                      <p className="text-base sm:text-xl font-black text-slate-900 dark:text-white leading-relaxed">
-                        "{currentLine.englishText}"
-                      </p>
-
-                      {showVietsub && currentLine.vietnameseText && (
-                        <p className="text-xs sm:text-sm text-rose-600 dark:text-rose-400 font-vietsub font-semibold">
-                          ({currentLine.vietnameseText})
-                        </p>
+                {/* NOW PLAYING HERO CARD (Unified for clutter-free learning) */}
+                <div className="p-3 sm:p-4 bg-gradient-to-br from-blue-50/70 via-white to-sky-50/40 dark:from-slate-850 dark:via-slate-850 dark:to-slate-850 border-b border-slate-200/80 dark:border-slate-800 shrink-0 space-y-1.5 sm:space-y-2">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      <span className={`px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider ${
+                        currentLine && ['leo', 'vbace', 'bino'].some(k => currentLine.characterName?.toLowerCase().includes(k))
+                          ? 'bg-[#0071e3] text-white shadow-2xs'
+                          : 'bg-indigo-600 text-white shadow-2xs'
+                      }`}>
+                        {currentLine?.characterName || 'LEO'}
+                      </span>
+                      <span className="text-[10px] font-bold text-slate-400">
+                        Câu {currentLineIdx + 1}/{currentLesson?.dialogueLines?.length || 0}
+                      </span>
+                      {isPlaying && (
+                        <div className="flex items-end gap-0.5 h-3 text-[#0071e3] ml-1">
+                          <span className="equalizer-bar" />
+                          <span className="equalizer-bar" />
+                          <span className="equalizer-bar" />
+                        </div>
                       )}
                     </div>
-                  ) : (
-                    <p className="text-xs text-slate-400 italic">Sẵn sàng phát hội thoại...</p>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="text-[10px] font-bold text-slate-400 hidden sm:inline">
+                        Bài {currentLessonIdx + 1}/{playlist.length}
+                      </span>
+                      {/* Mini sentence progress bar */}
+                      <div className="w-16 sm:w-24 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-[#0071e3] rounded-full transition-all duration-300"
+                          style={{
+                            width: `${Math.min(100, Math.round(((currentLineIdx + 1) / (currentLesson?.dialogueLines?.length || 1)) * 100))}%`
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <p className="text-[15px] sm:text-lg font-black text-slate-900 dark:text-white leading-snug">
+                    "{currentLine?.englishText || 'Sẵn sàng phát hội thoại...'}"
+                  </p>
+
+                  {showVietsub && currentLine?.vietnameseText && (
+                    <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-vietsub font-medium leading-relaxed">
+                      ({currentLine.vietnameseText})
+                    </p>
                   )}
                 </div>
 
                 {/* Scrollable Dialogue Lines List */}
-                <div className="flex-1 overflow-y-auto p-3.5 sm:p-4 space-y-2.5 custom-scrollbar">
+                <div className="flex-1 overflow-y-auto p-2.5 sm:p-4 space-y-2 custom-scrollbar">
                   {currentLesson?.dialogueLines?.map((line, idx) => {
                     const isActive = idx === currentLineIdx;
                     const isBino = ['leo', 'vbace', 'bino'].some(k => line.characterName?.toLowerCase().includes(k));
@@ -910,17 +954,17 @@ export default function BinoPlaylistModal() {
                           if (isPlaying) speechService.stop();
                           playLineAt(currentLessonIdx, idx, playSessionTokenRef.current);
                         }}
-                        className={`p-3 sm:p-3.5 rounded-2xl border transition-all cursor-pointer ${
+                        className={`p-2.5 sm:p-3.5 rounded-2xl border transition-all cursor-pointer ${
                           isActive
-                            ? 'bg-blue-50/90 dark:bg-blue-950/40 border-blue-400 dark:border-blue-700 shadow-md ring-2 ring-blue-400/30'
-                            : 'bg-slate-50/60 dark:bg-slate-800/40 border-slate-200/80 dark:border-slate-800 hover:border-slate-300'
+                            ? 'bg-blue-50/90 dark:bg-blue-950/40 border-[#0071e3]/60 dark:border-sky-500 shadow-sm ring-1 ring-[#0071e3]/30 border-l-[4px] border-l-[#0071e3]'
+                            : 'bg-slate-50/60 dark:bg-slate-800/40 border-slate-200/80 dark:border-slate-800 hover:border-slate-300 border-l-[3px] border-l-transparent'
                         }`}
                       >
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="space-y-1 flex-1">
-                            <div className="flex items-center gap-2">
-                              <span className={`px-2 py-0.5 rounded-md text-[10px] font-black uppercase ${
-                                isBino ? 'bg-[#0071e3] text-white' : 'bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300'
+                        <div className="flex items-start justify-between gap-2.5">
+                          <div className="space-y-0.5 flex-1 min-w-0">
+                            <div className="flex items-center gap-1.5">
+                              <span className={`px-1.5 py-0.2 rounded text-[9px] font-black uppercase ${
+                                isBino ? 'bg-[#0071e3] text-white' : 'bg-slate-200 dark:bg-white/[0.1] text-slate-700 dark:text-slate-300'
                               }`}>
                                 {line.characterName}
                               </span>
@@ -936,7 +980,7 @@ export default function BinoPlaylistModal() {
                             </p>
 
                             {showVietsub && line.vietnameseText && (
-                              <p className="text-xs text-rose-600 dark:text-rose-400 font-vietsub font-medium">
+                              <p className="text-[11px] sm:text-xs text-slate-600 dark:text-slate-300 font-vietsub font-medium">
                                 ({line.vietnameseText})
                               </p>
                             )}
@@ -957,8 +1001,90 @@ export default function BinoPlaylistModal() {
                 </div>
 
                 {/* Bottom Media Controls Bar */}
-                <div className="p-3 sm:p-4 border-t border-slate-200/80 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-850 shrink-0 flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center justify-between gap-2.5 sm:gap-3 shadow-inner">
-                  {/* Speed selector (Hỗ trợ tốc độ chậm rãi nghe kỹ 0.6x, 0.75x, 0.85x) */}
+                {/* 1. Mobile Native Controls Bar (block sm:hidden) */}
+                <div className="block sm:hidden p-3 border-t border-slate-200/80 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md space-y-2 shrink-0">
+                  <div className="flex items-center justify-between gap-2">
+                    {/* Speed Cycle Button */}
+                    <button
+                      type="button"
+                      onClick={handleCycleSpeed}
+                      className="px-2.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-[11px] font-bold text-slate-700 dark:text-slate-200 flex items-center gap-1 active:scale-95 shadow-2xs cursor-pointer"
+                    >
+                      <Headphones size={12} className="text-[#0071e3]" />
+                      <span>{audioSpeed}x</span>
+                    </button>
+
+                    {/* Main playback buttons */}
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={() => playPrevLesson()}
+                        className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-90 transition-transform cursor-pointer"
+                        title="Bài trước đó"
+                      >
+                        <SkipBack size={18} />
+                      </button>
+
+                      <button
+                        onClick={togglePlayPause}
+                        className="w-12 h-12 rounded-full bg-gradient-to-r from-[#0071e3] to-sky-600 hover:from-[#0077ed] hover:to-sky-500 text-white flex items-center justify-center shadow-lg shadow-blue-500/30 active:scale-95 transition-transform cursor-pointer"
+                      >
+                        {isPlaying ? <Pause size={18} /> : <Play size={18} fill="currentColor" className="ml-0.5" />}
+                      </button>
+
+                      <button
+                        onClick={() => playNextLesson()}
+                        className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-90 transition-transform cursor-pointer"
+                        title="Bài tiếp theo"
+                      >
+                        <SkipForward size={18} />
+                      </button>
+                    </div>
+
+                    {/* Repeat Cycle Button */}
+                    <button
+                      type="button"
+                      onClick={handleCycleRepeat}
+                      className={`px-2.5 py-1.5 rounded-xl text-[11px] font-bold flex items-center gap-1 active:scale-95 shadow-2xs transition-colors cursor-pointer ${
+                        repeatMode === 'all'
+                          ? 'bg-blue-500/10 text-[#0071e3] dark:text-sky-300 border border-blue-500/30'
+                          : repeatMode === 'one'
+                          ? 'bg-blue-500/10 text-[#0071e3] dark:text-sky-300 border border-blue-500/30'
+                          : 'bg-slate-100 dark:bg-slate-800 text-slate-400'
+                      }`}
+                    >
+                      {repeatMode === 'one' ? <Repeat1 size={13} /> : <Repeat size={13} />}
+                      <span>{repeatMode === 'all' ? 'Toàn bộ' : repeatMode === 'one' ? '1 bài' : 'Dừng'}</span>
+                    </button>
+                  </div>
+
+                  {/* Mobile Quick Action Link to dialogue detail page */}
+                  {currentLesson?.id && (
+                    <div className="flex items-center justify-between pt-1 border-t border-slate-100 dark:border-white/[0.06] text-xs">
+                      <button
+                        onClick={() => {
+                          setMinimized(true);
+                          navigate(`/communication/dialogue/${currentLesson.id}`);
+                        }}
+                        className="text-[11px] font-bold text-[#0071e3] dark:text-sky-400 hover:underline flex items-center gap-1 cursor-pointer"
+                      >
+                        <span>📖 Mở trang học chi tiết bài này</span>
+                        <ArrowRight size={11} />
+                      </button>
+
+                      <button
+                        onClick={() => setIsVoiceSettingsOpen(true)}
+                        className="text-[11px] font-bold text-slate-500 hover:text-slate-800 dark:hover:text-white flex items-center gap-1 cursor-pointer"
+                      >
+                        <Sparkles size={11} className="text-[#0071e3]" />
+                        <span>Giọng AI</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                {/* 2. Desktop Controls Bar (hidden sm:flex) */}
+                <div className="hidden sm:flex p-3 sm:p-4 border-t border-slate-200/80 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-850 shrink-0 flex-row flex-wrap items-center justify-between gap-3 shadow-inner">
+                  {/* Desktop Speed Presets */}
                   <div className="flex items-center overflow-x-auto whitespace-nowrap hide-scrollbar rounded-xl bg-white dark:bg-slate-800 p-1 text-[11px] font-bold border border-slate-200 dark:border-slate-700 shadow-sm gap-0.5">
                     {SPEECH_SPEED_PRESETS.map((preset) => {
                       const isSelected = Math.abs(audioSpeed - preset.value) < 0.02;
@@ -968,7 +1094,7 @@ export default function BinoPlaylistModal() {
                           type="button"
                           onClick={() => handleChangeSpeed(preset.value)}
                           title={preset.desc}
-                          className={`px-2 py-1 sm:py-0.5 rounded-lg transition-colors flex items-center gap-1 shrink-0 cursor-pointer ${
+                          className={`px-2 py-1 rounded-lg transition-colors flex items-center gap-1 shrink-0 cursor-pointer ${
                             isSelected
                               ? preset.isSlow
                                 ? 'bg-emerald-600 text-white shadow-sm font-black'
@@ -983,7 +1109,7 @@ export default function BinoPlaylistModal() {
                     })}
                   </div>
 
-                  <div className="flex items-center justify-between sm:justify-end gap-2">
+                  <div className="flex items-center justify-end gap-2">
                     {/* Main Playback Buttons */}
                     <div className="flex items-center gap-1.5 sm:gap-2">
                       <button

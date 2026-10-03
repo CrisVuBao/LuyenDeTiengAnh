@@ -60,25 +60,327 @@ export default function BinoBookOverviewPage() {
   }) || [];
 
   return (
-    <div className="space-y-4 sm:space-y-8 w-full min-w-0 max-w-6xl mx-auto pb-12 sm:pb-16">
+    <div className="w-full min-w-0 max-w-6xl mx-auto pb-24 md:pb-16">
       <SeoMeta
         title="Giao Tiếp Thực Chiến"
         description="Chinh phục 12 chương, 72 bài hội thoại tiếng Anh đời thực với phương pháp phản xạ tương tác 1:1, Substitution Drilling và Flashcard FSRS."
       />
 
       {loading && <PageLoader />}
-      
+
       {/* ========================================================================= */}
-      {/* 1. HAUTE COUTURE HERO PAVILION — GLACIER SAPPHIRE PEARL × ROYAL SAPPHIRE  */}
-      {/*    Mobile-First Ultra-Compact Layout + Full Desktop Grandeur              */}
+      {/* 📱 1. MOBILE NATIVE APP VIEW (< lg / block lg:hidden)                    */}
+      {/* Gọn nhẹ, trực quan, 0 rối mắt — Trải nghiệm chuẩn App Mobile thực thụ    */}
       {/* ========================================================================= */}
+      <div className="block lg:hidden space-y-4 px-1 pb-4">
+        {/* 1.1 Mobile Hero Card: Compact & Glanceable */}
+        <div className="duo-card p-4 rounded-3xl bg-gradient-to-br from-white via-sky-50/40 to-blue-50/60 dark:from-slate-900 dark:via-slate-900 dark:to-blue-950/40 border-2 border-blue-200 dark:border-blue-800/80 border-b-6 border-b-[#0071e3] shadow-md space-y-3 relative overflow-hidden">
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#0071e3] to-transparent" />
+
+          {/* Header row: Badge + Progress */}
+          <div className="flex items-center justify-between">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#0071e3]/10 dark:bg-sky-500/20 text-[#0071e3] dark:text-sky-300 text-[10px] font-black uppercase tracking-wider">
+              <Sparkles size={11} className="animate-duo-bounce" />
+              <span>12 CHƯƠNG • 72 HỘI THOẠI</span>
+            </div>
+            <span className="text-[11px] font-black text-slate-500 dark:text-slate-400">
+              Đã học: <strong className="text-[#0071e3] dark:text-sky-400">{book?.completedLessonsCount || 0}/{book?.totalLessonsCount || 72}</strong> ({book?.progressPercentage || 0}%)
+            </span>
+          </div>
+
+          {/* Headline */}
+          <div className="space-y-0.5">
+            <h1 className="text-lg font-black text-slate-900 dark:text-white leading-tight">
+              Giao Tiếp Thực Chiến
+            </h1>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+              Luyện nói 1:1 nhập vai cùng Leo &amp; phản xạ câu tự nhiên
+            </p>
+          </div>
+
+          {/* Progress Bar */}
+          <div className="w-full bg-slate-100 dark:bg-slate-800 h-2.5 rounded-full overflow-hidden p-0.5 border border-slate-200 dark:border-slate-700">
+            <div
+              className="bg-[#0071e3] dark:bg-sky-400 h-full rounded-full transition-all duration-500"
+              style={{ width: `${Math.max(4, book?.progressPercentage || 0)}%` }}
+            />
+          </div>
+
+          {/* Quick Action Buttons */}
+          <div className="grid grid-cols-2 gap-2 pt-0.5">
+            <button
+              onClick={() => openPlaylistWith(null, true)}
+              className="duo-btn duo-btn-sapphire duo-btn-sm font-black flex items-center justify-center gap-1.5 shadow-md cursor-pointer"
+            >
+              <ListMusic size={14} className="shrink-0" />
+              <span className="truncate">Nghe 72 Bài</span>
+            </button>
+            <button
+              onClick={() => setIsGuideModalOpen(true)}
+              className="duo-btn duo-btn-white duo-btn-sm font-black flex items-center justify-center gap-1.5 text-[#0071e3] dark:text-sky-400 cursor-pointer shadow-xs"
+            >
+              <Lightbulb size={14} className="shrink-0" />
+              <span>Cách Học 4 Bước</span>
+            </button>
+          </div>
+        </div>
+
+        {/* 1.2 Sticky Chapter Selector Carousel */}
+        <div className="sticky top-14 z-30 -mx-1 px-1 py-2 bg-slate-50/95 dark:bg-slate-950/95 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 space-y-1.5">
+          <div className="flex items-center justify-between px-0.5">
+            <span className="text-[11px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+              <Compass size={13} className="text-[#0071e3]" /> CHỌN CHƯƠNG ({book?.chapters?.length || 12})
+            </span>
+            <span className="text-[10px] text-[#0071e3] dark:text-sky-400 font-black">
+              Vuốt ngang ➔
+            </span>
+          </div>
+
+          <div
+            className="flex gap-2 overflow-x-auto pb-1 no-scrollbar scroll-smooth snap-x w-full"
+            style={{ scrollbarWidth: 'none' }}
+          >
+            {book?.chapters?.map((chap) => {
+              const isSelected = chap.chapterNumber === selectedChapter;
+              return (
+                <button
+                  key={chap.id}
+                  onClick={() => setSelectedChapter(chap.chapterNumber)}
+                  className={`relative px-3 py-1.5 rounded-2xl text-xs font-black transition-all shrink-0 snap-start flex items-center gap-2 cursor-pointer border-2 border-b-4 ${
+                    isSelected
+                      ? 'bg-[#0071e3] text-white border-[#0055b3] border-b-[#003d80] shadow-sm'
+                      : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-800 border-b-slate-300 dark:border-b-slate-950 hover:border-slate-300'
+                  }`}
+                >
+                  <span
+                    className={`w-5 h-5 rounded-lg flex items-center justify-center text-[10px] font-black ${
+                      isSelected
+                        ? 'bg-white/20 text-white'
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
+                    }`}
+                  >
+                    {chap.chapterNumber < 10 ? `0${chap.chapterNumber}` : chap.chapterNumber}
+                  </span>
+
+                  <div className="text-left">
+                    <div className="truncate max-w-[100px] text-[11px] font-black leading-tight">
+                      {chap.title}
+                    </div>
+                    <div
+                      className={`text-[9px] font-bold leading-tight ${
+                        isSelected ? 'text-blue-100' : 'text-slate-400'
+                      }`}
+                    >
+                      {chap.completedLessons}/{chap.totalLessons} bài
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* 1.3 Chapter Focus Card (Tiêu điểm chương đang chọn) */}
+        {activeChapter && (
+          <div className="p-3.5 rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 border-b-4 border-b-slate-300 dark:border-b-slate-950 space-y-2.5 shadow-xs">
+            <div className="flex items-center justify-between gap-2">
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5 text-[10px] font-black text-[#0071e3] dark:text-sky-400 uppercase tracking-wider">
+                  <span>CHƯƠNG {activeChapter.chapterNumber < 10 ? `0${activeChapter.chapterNumber}` : activeChapter.chapterNumber}</span>
+                  <span>•</span>
+                  <span>{activeChapter.completedLessons || 0}/{activeChapter.totalLessons || 6} BÀI XONG</span>
+                </div>
+                <h3 className="text-sm font-black text-slate-900 dark:text-white truncate mt-0.5">
+                  {activeChapter.title}
+                </h3>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate font-medium">
+                  {activeChapter.titleVi || activeChapter.description}
+                </p>
+              </div>
+
+              <button
+                onClick={() => {
+                  const chapterDialogueIds = activeChapter.dialogues?.map((d) => d.id) || [];
+                  openPlaylistWith(chapterDialogueIds, true);
+                }}
+                className="duo-btn duo-btn-sapphire duo-btn-xs font-black shrink-0 flex items-center gap-1.5 shadow-xs cursor-pointer"
+                title={`Phát liên tục Chương ${activeChapter.chapterNumber}`}
+              >
+                <Play size={12} fill="currentColor" />
+                <span className="whitespace-nowrap">Nghe Ch.{activeChapter.chapterNumber}</span>
+              </button>
+            </div>
+
+            {/* Compact Search Bar */}
+            <div className="relative">
+              <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Tìm bài học theo tên hoặc số bài..."
+                className="w-full pl-8 pr-7 py-1.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 rounded-xl text-xs font-semibold text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-[#0071e3]"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400 hover:text-slate-600"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* 1.4 Danh Sách Bài Học Dạng Mobile App Rows */}
+        <div className="space-y-2">
+          {filteredDialogues.length === 0 ? (
+            <div className="p-6 text-center bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-200 dark:border-slate-800">
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-bold">
+                Không tìm thấy bài học nào phù hợp với "{searchQuery}"
+              </p>
+            </div>
+          ) : (
+            filteredDialogues.map((d) => (
+              <div
+                key={d.id}
+                onMouseEnter={() => binoApi.prefetchDialogue(d.id)}
+                onClick={() => navigate(`/communication/dialogue/${d.id}`)}
+                className={`p-3 rounded-2xl border-2 transition-all flex items-center justify-between gap-3 cursor-pointer active:translate-y-0.5 active:border-b-2 shadow-xs ${
+                  d.isCompleted
+                    ? 'bg-emerald-50/70 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800/60 border-b-4 border-b-emerald-400 dark:border-b-emerald-800'
+                    : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 border-b-4 border-b-slate-300 dark:border-b-slate-950 hover:border-blue-300'
+                }`}
+              >
+                <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                  <div
+                    className={`w-9 h-9 rounded-xl flex items-center justify-center font-black text-xs shrink-0 shadow-2xs ${
+                      d.isCompleted
+                        ? 'bg-[#58cc02] text-white border-b-2 border-[#46a302]'
+                        : 'bg-[#0071e3] text-white border-b-2 border-[#0055b3]'
+                    }`}
+                  >
+                    {d.isCompleted ? (
+                      <CheckCircle2 size={18} className="text-white" />
+                    ) : (
+                      <span>{d.dialogueNumber < 10 ? `0${d.dialogueNumber}` : d.dialogueNumber}</span>
+                    )}
+                  </div>
+
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-1.5">
+                      <h4 className="text-xs sm:text-sm font-black text-slate-900 dark:text-white truncate">
+                        {d.title}
+                      </h4>
+                      {d.isCompleted && (
+                        <span className="text-[9px] font-black text-emerald-600 dark:text-emerald-400 px-1 py-0.2 rounded bg-emerald-100 dark:bg-emerald-950/60 shrink-0">
+                          Xong
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5 font-medium">
+                      {d.titleVi || d.situationDescription || 'Tình huống giao tiếp thực tế'}
+                    </p>
+                    <div className="flex items-center gap-2 mt-1 text-[10px] font-semibold text-slate-400 dark:text-slate-500">
+                      <span>{d.vocabularyCount || 5} từ vựng</span>
+                      <span>•</span>
+                      <span className="text-[#0071e3] dark:text-sky-400">Video 1:1 &amp; Audio</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="shrink-0">
+                  <button
+                    className={`w-8 h-8 rounded-xl flex items-center justify-center transition-transform ${
+                      d.isCompleted
+                        ? 'bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300'
+                        : 'bg-blue-50 dark:bg-blue-950 text-[#0071e3] dark:text-sky-400'
+                    }`}
+                  >
+                    <Play size={14} fill="currentColor" className="ml-0.5" />
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* 1.5 Thẻ Mở Rộng Cuối Chương (Bonus Card Tinh Gọn) */}
+        {activeChapter?.hasBonus && (
+          <div
+            onMouseEnter={() => binoApi.prefetchBonus(activeChapter.chapterNumber)}
+            onClick={() => navigate(`/communication/chapter/${activeChapter.chapterNumber}/bonus`)}
+            className="p-3.5 rounded-2xl bg-gradient-to-br from-amber-50 to-orange-50/80 dark:from-amber-950/40 dark:to-slate-900 border-2 border-amber-200 dark:border-amber-800/80 border-b-4 border-b-[#f59e0b] dark:border-b-[#d97706] flex items-center justify-between gap-3 cursor-pointer shadow-xs active:translate-y-0.5 active:border-b-2 transition-all"
+          >
+            <div className="flex items-center gap-2.5 min-w-0 flex-1">
+              <div className="w-9 h-9 rounded-xl bg-amber-400 text-white flex items-center justify-center shrink-0 border-b-2 border-amber-600 shadow-2xs">
+                <Star size={17} className="fill-white" />
+              </div>
+              <div className="min-w-0">
+                <span className="text-[10px] font-black uppercase text-amber-700 dark:text-amber-400">
+                  GÓC CUỐI CHƯƠNG {activeChapter.chapterNumber}
+                </span>
+                <h4 className="text-xs font-black text-slate-900 dark:text-white truncate">
+                  Mẫu Câu Mở Rộng &amp; Mindset Leo
+                </h4>
+                <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate">
+                  Section B, C &amp; bài viết tư duy giao tiếp
+                </p>
+              </div>
+            </div>
+            <div className="shrink-0 flex items-center gap-1 text-[11px] font-black text-amber-700 dark:text-amber-300">
+              <span>Xem</span>
+              <ArrowRight size={13} />
+            </div>
+          </div>
+        )}
+
+        {/* 1.6 Tiện Ích Nhanh Đáy Trang */}
+        <div className="grid grid-cols-2 gap-2.5 pt-1">
+          <button
+            onClick={() => navigate('/communication/flashcards')}
+            className="p-3 rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 border-b-4 border-b-slate-300 dark:border-b-slate-950 flex items-center gap-2.5 text-left cursor-pointer active:translate-y-0.5 active:border-b-2 transition-all shadow-xs"
+          >
+            <div className="w-8 h-8 rounded-xl bg-lime-500 text-white flex items-center justify-center shrink-0 border-b-2 border-lime-700">
+              <Layers size={16} />
+            </div>
+            <div className="min-w-0">
+              <h5 className="text-xs font-black text-slate-900 dark:text-white leading-tight">
+                Ôn Từ Vựng
+              </h5>
+              <p className="text-[10px] text-slate-400 truncate">Thẻ FSRS</p>
+            </div>
+          </button>
+
+          <button
+            onClick={() => navigate('/communication/reader')}
+            className="p-3 rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 border-b-4 border-b-slate-300 dark:border-b-slate-950 flex items-center gap-2.5 text-left cursor-pointer active:translate-y-0.5 active:border-b-2 transition-all shadow-xs"
+          >
+            <div className="w-8 h-8 rounded-xl bg-[#0071e3] text-white flex items-center justify-center shrink-0 border-b-2 border-[#0055b3]">
+              <BookOpen size={16} />
+            </div>
+            <div className="min-w-0">
+              <h5 className="text-xs font-black text-slate-900 dark:text-white leading-tight">
+                Đọc Ebook
+              </h5>
+              <p className="text-[10px] text-slate-400 truncate">Giáo trình gốc</p>
+            </div>
+          </button>
+        </div>
+      </div>
+
       {/* ========================================================================= */}
-      {/* 1. DUOLINGO 3D CHUNKY HERO CARD — SAPPHIRE BLUE THEME                    */}
-      {/*    Sleek, Compact, Tactile & Responsive                                   */}
+      {/* 💻 2. DESKTOP & TABLET VIEW (>= lg / hidden lg:block)                     */}
+      {/* Giữ nguyên toàn bộ Hero Pavilion, 12 Chương Sidebar và Card Chi Tiết      */}
       {/* ========================================================================= */}
-      <div
-        className="relative overflow-hidden rounded-3xl sm:rounded-[36px] p-4 sm:p-7 lg:p-8 bg-[#f0f7ff] dark:bg-[#07162b] border-2 border-[#1cb0f6]/40 dark:border-blue-700/50 border-b-6 border-b-[#0071e3] dark:border-b-[#1e40af] shadow-[0_14px_40px_rgba(0,113,227,0.12)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.6)] mb-3 sm:mb-4 w-full min-w-0 max-w-full"
-      >
+      <div className="hidden lg:block space-y-6 lg:space-y-8">
+        {/* ========================================================================= */}
+        {/* 1. HAUTE COUTURE HERO PAVILION — GLACIER SAPPHIRE PEARL × ROYAL SAPPHIRE  */}
+        {/* ========================================================================= */}
+        <div
+          className="relative overflow-hidden rounded-3xl sm:rounded-[36px] p-4 sm:p-7 lg:p-8 bg-[#f0f7ff] dark:bg-[#07162b] border-2 border-[#1cb0f6]/40 dark:border-blue-700/50 border-b-6 border-b-[#0071e3] dark:border-b-[#1e40af] shadow-[0_14px_40px_rgba(0,113,227,0.12)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.6)] mb-3 sm:mb-4 w-full min-w-0 max-w-full"
+        >
         {/* Top Diamond Rim */}
         <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#0071e3] to-transparent" />
 
@@ -234,49 +536,7 @@ export default function BinoBookOverviewPage() {
       </div>
 
 
-      {/* ========================================================================= */}
-      {/* 2. MOBILE HORIZONTAL CHAPTERS SWIPE CAROUSEL (< lg) - LUXURY PILLS */}
-      {/* ========================================================================= */}
-      <div className="block lg:hidden sticky top-14 z-30 w-full min-w-0 max-w-full py-2 bg-slate-50/95 dark:bg-slate-950/95 backdrop-blur-md border-b border-slate-200/60 dark:border-slate-800/80 space-y-1.5">
-        <div className="flex items-center justify-between px-0.5">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-            <Compass size={13} className="text-[#0071e3]" /> Chọn Chương ({book?.chapters?.length || 12})
-          </span>
-          <span className="text-[10px] text-[#0071e3] dark:text-sky-400 font-bold">
-            Vuốt ngang ➔
-          </span>
-        </div>
 
-        <div className="flex gap-2 overflow-x-auto pb-1 hide-scrollbar scroll-smooth snap-x w-full max-w-full">
-          {book?.chapters?.map((chap) => {
-            const isSelected = chap.chapterNumber === selectedChapter;
-            return (
-              <button
-                key={chap.id}
-                onClick={() => setSelectedChapter(chap.chapterNumber)}
-                className={`relative px-3.5 py-2 rounded-2xl text-xs font-semibold transition-all shrink-0 snap-start flex items-center gap-2 border cursor-pointer ${
-                  isSelected
-                    ? 'bg-[#0071e3] text-white border-[#0071e3] shadow-[0_4px_16px_rgba(0,113,227,0.3)]'
-                    : 'bg-white/90 dark:bg-[#0c101a]/90 text-slate-700 dark:text-slate-300 border-slate-200/80 dark:border-white/[0.08] hover:border-slate-300'
-                }`}
-              >
-                <span className={`w-5 h-5 rounded-lg flex items-center justify-center text-[10px] font-mono font-bold ${
-                  isSelected ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-white/[0.08] text-slate-600 dark:text-slate-300'
-                }`}>
-                  {chap.chapterNumber < 10 ? `0${chap.chapterNumber}` : chap.chapterNumber}
-                </span>
-
-                <div className="text-left">
-                  <div className="truncate max-w-[110px] text-[11px] font-medium leading-tight">{chap.title}</div>
-                  <div className={`text-[9px] font-mono leading-tight ${isSelected ? 'text-white/80' : 'text-slate-400'}`}>
-                    {chap.completedLessons}/{chap.totalLessons} bài
-                  </div>
-                </div>
-              </button>
-            );
-          })}
-        </div>
-      </div>
 
       {/* ========================================================================= */}
       {/* 3. MAIN CURRICULUM LAYOUT (Desktop 2 cols, Mobile 1 col) */}
@@ -498,6 +758,7 @@ export default function BinoBookOverviewPage() {
             </div>
           )}
         </div>
+      </div>
       </div>
 
       {/* Cẩm Nang Hướng Dẫn Cách Học 4 Bước VBace */}

@@ -702,25 +702,25 @@ export default function BinoDialogueStudyPage() {
       <motion.div 
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex items-start sm:items-center justify-between gap-3"
+        className="flex items-center justify-between gap-2.5"
       >
-        <div className="flex items-start sm:items-center gap-3 min-w-0 flex-1">
+        <div className="flex items-center gap-2.5 min-w-0 flex-1">
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => navigate('/communication')}
-            className="p-2.5 rounded-full border border-slate-200/80 dark:border-white/10 bg-white/90 dark:bg-white/[0.06] hover:bg-slate-100 dark:hover:bg-white/[0.1] text-slate-700 dark:text-slate-200 transition-all shadow-2xs shrink-0 cursor-pointer"
+            className="p-2 sm:p-2.5 rounded-full border border-slate-200/80 dark:border-white/10 bg-white/90 dark:bg-white/[0.06] hover:bg-slate-100 dark:hover:bg-white/[0.1] text-slate-700 dark:text-slate-200 transition-all shadow-2xs shrink-0 cursor-pointer"
             title="Quay về danh sách chương"
           >
             <ArrowLeft size={16} />
           </motion.button>
           <div className="min-w-0">
-            <div className="flex items-center gap-1.5 text-[11px] sm:text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider truncate">
-              <span className="truncate">Chương {lesson.chapterNumber < 10 ? `0${lesson.chapterNumber}` : lesson.chapterNumber}: {lesson.chapterTitle}</span>
+            <div className="flex items-center gap-1.5 text-[10px] sm:text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider truncate">
+              <span className="truncate">Ch.{lesson.chapterNumber < 10 ? `0${lesson.chapterNumber}` : lesson.chapterNumber}: {lesson.chapterTitle}</span>
               <span>•</span>
               <span className="shrink-0 text-[#0071e3] dark:text-sky-400 font-bold">Bài {lesson.dialogueNumber}</span>
             </div>
-            <h1 className="text-lg sm:text-2xl font-black text-slate-950 dark:text-white tracking-[-0.025em] leading-snug line-clamp-2 sm:line-clamp-none">
+            <h1 className="text-base sm:text-2xl font-black text-slate-950 dark:text-white tracking-[-0.025em] leading-snug line-clamp-1 sm:line-clamp-none">
               {lesson.title}
             </h1>
           </div>
@@ -730,7 +730,7 @@ export default function BinoDialogueStudyPage() {
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.96 }}
           onClick={handleToggleComplete}
-          className={`shrink-0 px-4 py-2 rounded-full font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-2xs cursor-pointer ${
+          className={`shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-2xs cursor-pointer ${
             isCompleted
               ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30'
               : 'bg-white/90 dark:bg-white/[0.06] border border-slate-200/80 dark:border-white/10 text-slate-700 dark:text-slate-200 hover:border-slate-300'
@@ -765,10 +765,10 @@ export default function BinoDialogueStudyPage() {
       />
 
       {/* 3. SEGMENTED INTERACTIVE STUDY TABS (Apple Segmented Capsule) */}
-      <div className="relative p-1.5 bg-slate-100/90 dark:bg-white/[0.05] rounded-full grid grid-cols-3 gap-1.5 border border-slate-200/80 dark:border-white/[0.08]">
+      <div className="relative p-1 sm:p-1.5 bg-slate-100/90 dark:bg-white/[0.05] rounded-full grid grid-cols-3 gap-1 border border-slate-200/80 dark:border-white/[0.08]">
         {[
-          { id: 'lesson', label: 'Bài Học & Từ Khóa', shortLabel: 'Bài Học', icon: BookOpen },
-          { id: 'roleplay', label: 'Luyện Phản Xạ 1:1', shortLabel: 'Phản Xạ 1:1', icon: MessageSquare },
+          { id: 'lesson', label: 'Bài Học & Từ Khóa', shortLabel: 'Hội Thoại', icon: BookOpen },
+          { id: 'roleplay', label: 'Luyện Phản Xạ 1:1', shortLabel: 'Nhập Vai', icon: MessageSquare },
           { id: 'dictation', label: 'Chép Chính Tả', shortLabel: 'Chính Tả', icon: FileText },
         ].map(tab => {
           const Icon = tab.icon;
@@ -777,7 +777,7 @@ export default function BinoDialogueStudyPage() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`relative flex items-center justify-center gap-1.5 px-3 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
+              className={`relative flex items-center justify-center gap-1.5 px-2.5 sm:px-3 py-1.5 sm:py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
                 isActive
                   ? 'text-white font-bold'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
@@ -806,7 +806,7 @@ export default function BinoDialogueStudyPage() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
-          className="space-y-5 sm:space-y-8"
+          className="space-y-3.5 sm:space-y-8"
         >
           <BinoKeyVocabSection
             vocabularies={lesson.vocabularies}

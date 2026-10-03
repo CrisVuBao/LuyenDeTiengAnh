@@ -132,7 +132,7 @@ export default function DailyQuestsPanel() {
 
           <button
             onClick={() => navigate('/leaderboard')}
-            className="duo-btn duo-btn-green duo-btn-sm font-black shadow-sm"
+            className="hidden sm:flex duo-btn duo-btn-green duo-btn-sm font-black shadow-sm items-center gap-1.5"
           >
             <span>BẢNG XẾP HẠNG</span>
             <ArrowRight size={13} />

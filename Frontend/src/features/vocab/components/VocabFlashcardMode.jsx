@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Volume2, RotateCw, CheckCircle2, XCircle, ArrowLeft, ArrowRight, 
   Sparkles, Star, Shuffle, Play, Check, Trophy, CheckCheck, RotateCcw,
-  Brain, Square
+  Brain, Square, Zap
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import useVocabStore from '../store/useVocabStore';
@@ -400,7 +400,7 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
     return (
       <div className="max-w-lg mx-auto p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xl text-center space-y-6">
         <div className="w-20 h-20 mx-auto rounded-3xl bg-gradient-to-tr from-emerald-400 to-teal-300 flex items-center justify-center text-white shadow-lg shadow-emerald-500/25">
-          <CheckCheck size={42} className="text-slate-950" />
+          <CheckCheck size={42} className="text-white" />
         </div>
         <div>
           <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-3 py-1 rounded-full border border-emerald-200/60 dark:border-emerald-800/40">
@@ -538,151 +538,259 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
     : 0;
 
   return (
-    <div className="max-w-xl mx-auto space-y-3 sm:space-y-4">
+    <div className="max-w-2xl mx-auto space-y-3 sm:space-y-4">
       
-      {/* 1. Deck Filter Tabs (Apple Pill Design) */}
-      <div className="flex items-center gap-1 sm:gap-1.5 p-1 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-[11px] sm:text-xs">
-        <button
-          onClick={() => handleSwitchFilter('unmastered')}
-          className={`flex-1 py-1.5 px-2 sm:px-3 rounded-xl font-bold transition-all flex items-center justify-center gap-1 sm:gap-1.5 cursor-pointer ${
-            filterMode === 'unmastered'
-              ? 'bg-white dark:bg-slate-800 text-[#0071e3] dark:text-sky-400 shadow-sm'
-              : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
-          }`}
-          title="Chỉ hiển thị các từ bạn chưa ghi nhớ"
-        >
-          <span>Chưa thuộc</span>
-          <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-extrabold ${
-            filterMode === 'unmastered' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/60 dark:text-sky-300' : 'bg-slate-200 dark:bg-slate-800'
-          }`}>
-            {unmasteredList.length}
-          </span>
-        </button>
+      {/* ========================================================
+          1A. MOBILE APP COMPACT TOOLBAR (sm:hidden)
+          ======================================================== */}
+      <div className="sm:hidden space-y-1.5">
+        {/* Row 1: Deck Filter Pills + Quick Audio Controls */}
+        <div className="flex items-center justify-between gap-1 p-1 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800">
+          {/* Deck Filter Tabs (Chưa thuộc / Tất cả / Gắn sao) */}
+          <div className="flex items-center gap-1 min-w-0">
+            <button
+              onClick={() => handleSwitchFilter('unmastered')}
+              className={`py-1 px-2 rounded-lg font-extrabold text-[10.5px] transition-all flex items-center gap-1 cursor-pointer ${
+                filterMode === 'unmastered'
+                  ? 'bg-white dark:bg-slate-800 text-[#0071e3] dark:text-sky-400 shadow-2xs'
+                  : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <span>Chưa thuộc</span>
+              <span className="text-[9px] px-1 py-0.2 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/60 dark:text-sky-300 font-black">
+                {unmasteredList.length}
+              </span>
+            </button>
 
-        <button
-          onClick={() => handleSwitchFilter('all')}
-          className={`flex-1 py-1.5 px-2 sm:px-3 rounded-xl font-bold transition-all flex items-center justify-center gap-1 sm:gap-1.5 cursor-pointer ${
-            filterMode === 'all'
-              ? 'bg-white dark:bg-slate-800 text-[#0071e3] dark:text-sky-400 shadow-sm'
-              : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
-          }`}
-          title="Toàn bộ từ vựng trong chủ đề này"
-        >
-          <span>Tất cả</span>
-          <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-extrabold ${
-            filterMode === 'all' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/60 dark:text-sky-300' : 'bg-slate-200 dark:bg-slate-800'
-          }`}>
-            {words.length}
-          </span>
-        </button>
+            <button
+              onClick={() => handleSwitchFilter('all')}
+              className={`py-1 px-2 rounded-lg font-extrabold text-[10.5px] transition-all flex items-center gap-1 cursor-pointer ${
+                filterMode === 'all'
+                  ? 'bg-white dark:bg-slate-800 text-[#0071e3] dark:text-sky-400 shadow-2xs'
+                  : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <span>Tất cả</span>
+              <span className="text-[9px] px-1 py-0.2 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-black">
+                {words.length}
+              </span>
+            </button>
 
-        <button
-          onClick={() => handleSwitchFilter('starred')}
-          disabled={starredList.length === 0}
-          className={`flex-1 py-1.5 px-2 sm:px-3 rounded-xl font-bold transition-all flex items-center justify-center gap-1 sm:gap-1.5 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed ${
-            filterMode === 'starred'
-              ? 'bg-white dark:bg-slate-800 text-amber-600 dark:text-amber-400 shadow-sm'
-              : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
-          }`}
-          title={starredList.length === 0 ? 'Chưa có từ nào được đánh dấu sao' : 'Danh sách từ vựng bạn đã đánh dấu sao'}
-        >
-          <Star size={12} fill={starredList.length > 0 ? 'currentColor' : 'none'} className={`shrink-0 ${starredList.length > 0 ? 'text-amber-500' : ''}`} />
-          <span className="sm:hidden">Gắn sao</span>
-          <span className="hidden sm:inline">Đã gắn sao</span>
-          <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-extrabold ${
-            filterMode === 'starred' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/60 dark:text-amber-300' : 'bg-slate-200 dark:bg-slate-800'
-          }`}>
-            {starredList.length}
-          </span>
-        </button>
-      </div>
-
-      {/* 2. Top Controls: Session progress, Continuous Play & Settings */}
-      <div className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-2.5 sm:gap-4 pt-0.5 sm:pt-1">
-        <div className="flex-1 min-w-[120px]">
-          <div className="flex justify-between items-center text-[11px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">
-            <span>Thẻ {currentIndex + 1} / {sessionDeck.length}</span>
-            <span>{progressPercent}%</span>
+            <button
+              onClick={() => handleSwitchFilter('starred')}
+              disabled={starredList.length === 0}
+              className={`py-1 px-1.5 rounded-lg font-extrabold text-[10.5px] transition-all flex items-center gap-0.5 cursor-pointer disabled:opacity-40 ${
+                filterMode === 'starred'
+                  ? 'bg-white dark:bg-slate-800 text-amber-600 dark:text-amber-400 shadow-2xs'
+                  : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <Star size={11} fill={starredList.length > 0 ? 'currentColor' : 'none'} className={starredList.length > 0 ? 'text-amber-500' : ''} />
+              <span>{starredList.length}</span>
+            </button>
           </div>
-          <div className="w-full h-1.5 sm:h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
-            <motion.div 
-              className="h-full bg-gradient-to-r from-[#0071e3] to-sky-400 rounded-full"
-              initial={{ width: 0 }}
-              animate={{ width: `${progressPercent}%` }}
-              transition={{ duration: 0.25 }}
-            />
+
+          {/* Quick Audio & Shuffle Controls */}
+          <div className="flex items-center gap-1 shrink-0">
+            {currentIndex > 0 && (
+              <button
+                onClick={handlePrevCard}
+                className="p-1 rounded-lg bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[10px] cursor-pointer border border-slate-200/60 dark:border-slate-700/60"
+                title="Quay lại thẻ trước"
+              >
+                <ArrowLeft size={12} />
+              </button>
+            )}
+
+            <button
+              onClick={toggleContinuousPlay}
+              className={`px-2 py-1 rounded-lg text-[10.5px] font-black flex items-center gap-1 cursor-pointer transition-all ${
+                isAutoPlaying
+                  ? 'bg-rose-600 text-white shadow-2xs animate-pulse'
+                  : 'bg-blue-50 dark:bg-blue-950/60 text-[#0071e3] dark:text-sky-400'
+              }`}
+            >
+              {isAutoPlaying ? <Square size={10} fill="currentColor" /> : <Play size={10} fill="currentColor" />}
+              <span>{isAutoPlaying ? 'Dừng' : 'Tự phát'}</span>
+            </button>
+
+            <button
+              onClick={() => setSpeechRate(speechRate === 1.0 ? 0.8 : 1.0)}
+              className="px-1.5 py-1 rounded-lg bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-[10px] font-extrabold cursor-pointer border border-slate-200/60 dark:border-slate-700/60"
+            >
+              {speechRate}x
+            </button>
+
+            <button
+              onClick={handleShuffle}
+              className="p-1 rounded-lg bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 cursor-pointer border border-slate-200/60 dark:border-slate-700/60"
+              title="Đảo ngẫu nhiên"
+            >
+              <Shuffle size={12} />
+            </button>
           </div>
         </div>
 
-        <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
-          {currentIndex > 0 && (
-            <button
-              onClick={handlePrevCard}
-              title="Quay lại thẻ trước [P / ↓]"
-              className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-600 dark:text-slate-300 text-xs transition-colors cursor-pointer"
-            >
-              <ArrowLeft size={15} />
-            </button>
-          )}
-          <button
-            onClick={toggleContinuousPlay}
-            title={isAutoPlaying ? 'Dừng phát liên tục' : 'Phát liên tục toàn bộ thẻ'}
-            className={`px-2.5 py-1.5 rounded-xl text-[11px] sm:text-xs font-extrabold flex items-center gap-1 transition-all cursor-pointer ${
-              isAutoPlaying
-                ? 'bg-rose-600 hover:bg-rose-700 text-white shadow-sm animate-pulse'
-                : 'bg-blue-50 dark:bg-blue-950/60 hover:bg-blue-100 text-[#0071e3] dark:text-sky-400 border border-blue-200/60 dark:border-blue-800/60'
-            }`}
-          >
-            {isAutoPlaying ? <Square size={12} fill="currentColor" className="shrink-0" /> : <Play size={12} fill="currentColor" className="shrink-0" />}
-            <span className="sm:hidden">{isAutoPlaying ? 'Dừng' : 'Tự phát'}</span>
-            <span className="hidden sm:inline">{isAutoPlaying ? 'Dừng' : 'Phát liên tục'}</span>
-          </button>
-          <button
-            onClick={handleShuffle}
-            title="Đảo ngẫu nhiên danh sách"
-            className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-600 dark:text-slate-300 text-xs transition-colors cursor-pointer"
-          >
-            <Shuffle size={15} />
-          </button>
-          {words.length - unmasteredList.length > 0 && (
-            <button
-              onClick={() => setShowResetConfirmModal(true)}
-              title="Đặt lại toàn bộ tiến độ chủ đề này để học lại từ đầu"
-              className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-amber-100 dark:hover:bg-amber-950/60 text-slate-600 dark:text-slate-300 hover:text-amber-600 dark:hover:text-amber-400 text-xs transition-colors cursor-pointer"
-            >
-              <RotateCcw size={15} />
-            </button>
-          )}
-          <button
-            onClick={() => setSpeechRate(speechRate === 1.0 ? 0.8 : 1.0)}
-            title="Tốc độ giọng đọc"
-            className={`px-2 sm:px-2.5 py-1.5 rounded-xl text-xs font-bold transition-colors cursor-pointer ${
-              speechRate === 0.8 
-                ? 'bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 border border-amber-300' 
-                : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
-            }`}
-          >
-            {speechRate}x
-          </button>
+        {/* Row 2: Live Progress & FSRS Badge */}
+        <div className="flex items-center justify-between gap-2 px-1 text-[11px] font-bold text-slate-500 dark:text-slate-400">
+          <div className="flex items-center gap-2 flex-1 min-w-0">
+            <span className="shrink-0 text-slate-700 dark:text-slate-300 font-extrabold">
+              Thẻ {currentIndex + 1}/{sessionDeck.length}
+            </span>
+            <div className="flex-1 max-w-[120px] h-1.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+              <div 
+                className="h-full bg-gradient-to-r from-[#0071e3] to-sky-400 rounded-full transition-all duration-300"
+                style={{ width: `${progressPercent}%` }} 
+              />
+            </div>
+            <span className="text-[10px] text-slate-400 shrink-0">{progressPercent}%</span>
+          </div>
+
+          <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 text-[10px] font-black border border-indigo-200/60 dark:border-indigo-900/60 shrink-0">
+            <Brain size={11} />
+            <span>FSRS: {fsrsMetrics.statusLabel} ({fsrsMetrics.retrievability}%)</span>
+          </div>
         </div>
       </div>
 
-      {/* FSRS DSR Memory Model Status Strip */}
-      <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 text-[11px] font-bold">
-        <div className="flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400">
-          <Brain size={13} className="shrink-0" />
-          <span>FSRS AI • {fsrsMetrics.statusLabel}</span>
+      {/* ========================================================
+          1B. DESKTOP UNIFIED CONTROL HUD (hidden sm:block)
+          Spacious 2-tier HUD: Row 1 = Filter & FSRS, Row 2 = Progress & Controls
+          ======================================================== */}
+      <div className="hidden sm:block p-3 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs space-y-2.5">
+        {/* Row 1: Deck Filter Segmented Tabs + FSRS AI Status Pill */}
+        <div className="flex items-center justify-between gap-3">
+          {/* Deck Filter Tabs */}
+          <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/60 dark:border-slate-700/60 text-xs">
+            <button
+              onClick={() => handleSwitchFilter('unmastered')}
+              className={`py-1 px-3 rounded-lg font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                filterMode === 'unmastered'
+                  ? 'bg-white dark:bg-slate-900 text-[#0071e3] dark:text-sky-400 shadow-2xs'
+                  : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+              }`}
+              title="Chỉ hiển thị các từ bạn chưa ghi nhớ"
+            >
+              <span>Chưa thuộc</span>
+              <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-black ${
+                filterMode === 'unmastered' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/60 dark:text-sky-300' : 'bg-slate-200 dark:bg-slate-700 text-slate-500'
+              }`}>
+                {unmasteredList.length}
+              </span>
+            </button>
+
+            <button
+              onClick={() => handleSwitchFilter('all')}
+              className={`py-1 px-3 rounded-lg font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                filterMode === 'all'
+                  ? 'bg-white dark:bg-slate-900 text-[#0071e3] dark:text-sky-400 shadow-2xs'
+                  : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+              }`}
+              title="Toàn bộ từ vựng trong chủ đề này"
+            >
+              <span>Tất cả</span>
+              <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-black ${
+                filterMode === 'all' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/60 dark:text-sky-300' : 'bg-slate-200 dark:bg-slate-700 text-slate-500'
+              }`}>
+                {words.length}
+              </span>
+            </button>
+
+            <button
+              onClick={() => handleSwitchFilter('starred')}
+              disabled={starredList.length === 0}
+              className={`py-1 px-3 rounded-lg font-bold transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed ${
+                filterMode === 'starred'
+                  ? 'bg-white dark:bg-slate-900 text-amber-600 dark:text-amber-400 shadow-2xs'
+                  : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+              }`}
+              title={starredList.length === 0 ? 'Chưa có từ nào được đánh dấu sao' : 'Danh sách từ vựng đã đánh dấu sao'}
+            >
+              <Star size={12} fill={starredList.length > 0 ? 'currentColor' : 'none'} className={starredList.length > 0 ? 'text-amber-500' : ''} />
+              <span>Đã gắn sao</span>
+              <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-black ${
+                filterMode === 'starred' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/60 dark:text-amber-300' : 'bg-slate-200 dark:bg-slate-700 text-slate-500'
+              }`}>
+                {starredList.length}
+              </span>
+            </button>
+          </div>
+
+          {/* FSRS Status Badge with Hover Details */}
+          <div 
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 text-xs font-bold border border-indigo-200/70 dark:border-indigo-900/50 cursor-help shrink-0"
+            title={`Thuật toán FSRS DSR:\n• Trạng thái: ${fsrsMetrics.statusLabel}\n• Độ bền S: ${fsrsMetrics.stability > 0 ? `${fsrsMetrics.stability} ngày` : 'Từ mới'}\n• Độ khó D: ${fsrsMetrics.difficulty}/10\n• Khả năng gợi nhớ R: ${fsrsMetrics.retrievability}%`}
+          >
+            <Brain size={14} className="shrink-0 text-indigo-500" />
+            <span>FSRS AI: {fsrsMetrics.statusLabel} ({fsrsMetrics.retrievability}%)</span>
+          </div>
         </div>
-        <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 text-slate-500 dark:text-slate-400">
-          <span title="Stability (S): Độ bền trí nhớ (ngày)">
-            Độ bền S: <strong className="text-slate-800 dark:text-slate-200">{fsrsMetrics.stability > 0 ? `${fsrsMetrics.stability}d` : 'Mới'}</strong>
-          </span>
-          <span title="Difficulty (D): Độ khó của từ (1-10)">
-            Độ khó D: <strong className="text-slate-800 dark:text-slate-200">{fsrsMetrics.difficulty}/10</strong>
-          </span>
-          <span title="Retrievability (R): Xác suất gợi nhớ hiện tại">
-            Nhớ R: <strong className="text-emerald-600 dark:text-emerald-400">{fsrsMetrics.retrievability}%</strong>
-          </span>
+
+        {/* Row 2: Card Progress Bar + Player Controls */}
+        <div className="flex items-center justify-between gap-4 pt-1">
+          {/* Card Counter & Full Animated Progress Track */}
+          <div className="flex items-center gap-2.5 flex-1 min-w-0">
+            <span className="text-xs font-black text-slate-700 dark:text-slate-300 whitespace-nowrap shrink-0">
+              Thẻ {currentIndex + 1} <span className="text-slate-400 font-semibold">/ {sessionDeck.length}</span>
+            </span>
+            <div className="flex-1 h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+              <motion.div 
+                className="h-full bg-gradient-to-r from-[#0071e3] to-sky-400 rounded-full"
+                initial={{ width: 0 }}
+                animate={{ width: `${progressPercent}%` }}
+                transition={{ duration: 0.25 }}
+              />
+            </div>
+            <span className="text-xs font-bold text-slate-400 shrink-0">{progressPercent}%</span>
+          </div>
+
+          {/* Actions Cluster */}
+          <div className="flex items-center gap-1.5 shrink-0">
+            {currentIndex > 0 && (
+              <button
+                onClick={handlePrevCard}
+                title="Quay lại thẻ trước [P / ↓]"
+                className="p-1.5 px-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 text-xs font-bold transition-colors cursor-pointer flex items-center gap-1"
+              >
+                <ArrowLeft size={13} />
+                <span>Trước</span>
+              </button>
+            )}
+
+            <button
+              onClick={toggleContinuousPlay}
+              title={isAutoPlaying ? 'Dừng phát liên tục' : 'Phát liên tục toàn bộ thẻ'}
+              className={`px-3 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all cursor-pointer ${
+                isAutoPlaying
+                  ? 'bg-rose-600 hover:bg-rose-700 text-white shadow-xs animate-pulse'
+                  : 'bg-blue-50 dark:bg-blue-950/60 hover:bg-blue-100 text-[#0071e3] dark:text-sky-400 border border-blue-200/60 dark:border-blue-800/60'
+              }`}
+            >
+              {isAutoPlaying ? <Square size={12} fill="currentColor" /> : <Play size={12} fill="currentColor" />}
+              <span>{isAutoPlaying ? 'Dừng phát' : 'Tự phát'}</span>
+            </button>
+
+            <button
+              onClick={handleShuffle}
+              title="Đảo ngẫu nhiên danh sách"
+              className="p-1.5 px-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 text-xs font-bold transition-colors cursor-pointer flex items-center gap-1"
+            >
+              <Shuffle size={13} />
+              <span>Đảo</span>
+            </button>
+
+            <button
+              onClick={() => setSpeechRate(speechRate === 1.0 ? 0.8 : 1.0)}
+              title="Tốc độ giọng đọc"
+              className={`px-2.5 py-1.5 rounded-xl text-xs font-bold transition-colors cursor-pointer ${
+                speechRate === 0.8 
+                  ? 'bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 border border-amber-300' 
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
+              }`}
+            >
+              {speechRate}x
+            </button>
+          </div>
         </div>
       </div>
 
@@ -833,12 +941,58 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
       </div>
 
       {/* 4. FSRS 4-Grade Decision Buttons with Live Next-Interval Previews */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
+      {/* Mobile: Compact 4-column tactile row */}
+      <div className="grid grid-cols-4 gap-1.5 sm:hidden select-none">
         <button
           onClick={() => handleFsrsGrade(0)}
-          className="duo-btn duo-btn-red py-2.5 sm:py-3.5 px-2 rounded-2xl flex flex-col items-center gap-1 shadow-sm"
+          className="duo-btn duo-btn-red py-2 px-1 rounded-xl flex flex-col items-center justify-center gap-0.5 shadow-2xs active:scale-95"
         >
-          <span className="font-black text-xs sm:text-sm tracking-wide">Quên hẳn</span>
+          <span className="font-black text-xs">Quên</span>
+          <span className="text-[9px] px-1.5 py-0.2 rounded-full bg-black/20 font-black">
+            {fsrsPreviews[0]}
+          </span>
+        </button>
+
+        <button
+          onClick={() => handleFsrsGrade(1)}
+          className="duo-btn duo-btn-orange py-2 px-1 rounded-xl flex flex-col items-center justify-center gap-0.5 shadow-2xs active:scale-95"
+        >
+          <span className="font-black text-xs">Khó</span>
+          <span className="text-[9px] px-1.5 py-0.2 rounded-full bg-black/20 font-black">
+            {fsrsPreviews[1]}
+          </span>
+        </button>
+
+        <button
+          onClick={() => handleFsrsGrade(2)}
+          className="duo-btn duo-btn-blue py-2 px-1 rounded-xl flex flex-col items-center justify-center gap-0.5 shadow-2xs active:scale-95"
+        >
+          <span className="font-black text-xs">Tốt ✓</span>
+          <span className="text-[9px] px-1.5 py-0.2 rounded-full bg-black/20 font-black">
+            {fsrsPreviews[2]}
+          </span>
+        </button>
+
+        <button
+          onClick={() => handleFsrsGrade(3)}
+          className="duo-btn duo-btn-green py-2 px-1 rounded-xl flex flex-col items-center justify-center gap-0.5 shadow-2xs active:scale-95 text-white"
+        >
+          <span className="font-black text-xs text-white flex items-center justify-center gap-0.5">
+            Dễ <Zap size={11} className="fill-white text-white inline shrink-0" />
+          </span>
+          <span className="text-[9px] px-1.5 py-0.2 rounded-full bg-black/20 font-black text-white">
+            {fsrsPreviews[3]}
+          </span>
+        </button>
+      </div>
+
+      {/* Desktop: Full 4-button chunky grid with keyboard shortcuts */}
+      <div className="hidden sm:grid grid-cols-4 gap-3">
+        <button
+          onClick={() => handleFsrsGrade(0)}
+          className="duo-btn duo-btn-red py-3.5 px-2 rounded-2xl flex flex-col items-center gap-1 shadow-sm"
+        >
+          <span className="font-black text-sm tracking-wide">Quên hẳn</span>
           <span className="text-[10px] px-2 py-0.5 rounded-full bg-black/20 font-black">
             {fsrsPreviews[0]} [1/←]
           </span>
@@ -846,9 +1000,9 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
 
         <button
           onClick={() => handleFsrsGrade(1)}
-          className="duo-btn duo-btn-orange py-2.5 sm:py-3.5 px-2 rounded-2xl flex flex-col items-center gap-1 shadow-sm"
+          className="duo-btn duo-btn-orange py-3.5 px-2 rounded-2xl flex flex-col items-center gap-1 shadow-sm"
         >
-          <span className="font-black text-xs sm:text-sm tracking-wide">Thấy khó</span>
+          <span className="font-black text-sm tracking-wide">Thấy khó</span>
           <span className="text-[10px] px-2 py-0.5 rounded-full bg-black/20 font-black">
             {fsrsPreviews[1]} [2]
           </span>
@@ -856,9 +1010,9 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
 
         <button
           onClick={() => handleFsrsGrade(2)}
-          className="duo-btn duo-btn-blue py-2.5 sm:py-3.5 px-2 rounded-2xl flex flex-col items-center gap-1 shadow-sm"
+          className="duo-btn duo-btn-blue py-3.5 px-2 rounded-2xl flex flex-col items-center gap-1 shadow-sm"
         >
-          <span className="font-black text-xs sm:text-sm tracking-wide">Nhớ tốt ✓</span>
+          <span className="font-black text-sm tracking-wide">Nhớ tốt ✓</span>
           <span className="text-[10px] px-2 py-0.5 rounded-full bg-black/20 font-black">
             {fsrsPreviews[2]} [3/→]
           </span>
@@ -866,10 +1020,12 @@ export default function VocabFlashcardMode({ topic, onSwitchToQuiz, onReset }) {
 
         <button
           onClick={() => handleFsrsGrade(3)}
-          className="duo-btn duo-btn-green py-2.5 sm:py-3.5 px-2 rounded-2xl flex flex-col items-center gap-1 shadow-sm"
+          className="duo-btn duo-btn-green py-3.5 px-2 rounded-2xl flex flex-col items-center gap-1 shadow-sm text-white"
         >
-          <span className="font-black text-xs sm:text-sm tracking-wide">Quá dễ ⚡</span>
-          <span className="text-[10px] px-2 py-0.5 rounded-full bg-black/20 font-black">
+          <span className="font-black text-sm tracking-wide text-white flex items-center justify-center gap-1.5">
+            Quá dễ <Zap size={14} className="fill-white text-white inline shrink-0" />
+          </span>
+          <span className="text-[10px] px-2 py-0.5 rounded-full bg-black/20 font-black text-white">
             {fsrsPreviews[3]} [4]
           </span>
         </button>

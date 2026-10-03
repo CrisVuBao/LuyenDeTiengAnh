@@ -85,11 +85,11 @@ function VocabShowcaseSection({ sectionRevealVariants }) {
         <div className="grid grid-cols-2 sm:flex sm:flex-row items-stretch sm:items-center gap-2 sm:gap-2.5 w-full sm:w-auto min-w-0 shrink-0">
           <button
             onClick={() => navigate(`/vocab/${activeTopic.id}`)}
-            className="duo-btn duo-btn-green duo-btn-sm sm:duo-btn-md font-black shadow-sm w-full sm:w-auto flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer"
+            className="duo-btn duo-btn-green duo-btn-sm sm:duo-btn-md font-black shadow-sm w-full sm:w-auto flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer text-white"
           >
-            <Play size={15} fill="currentColor" className="shrink-0" />
-            <span className="truncate">Học Chủ Đề #{activeTopic.id}</span>
-            <ArrowRight size={15} className="shrink-0 hidden xs:inline" />
+            <Play size={15} fill="white" className="shrink-0 text-white" />
+            <span className="truncate text-white font-black">Học Chủ Đề #{activeTopic.id}</span>
+            <ArrowRight size={15} className="shrink-0 text-white hidden xs:inline" />
           </button>
           <button
             onClick={() => navigate('/vocab')}

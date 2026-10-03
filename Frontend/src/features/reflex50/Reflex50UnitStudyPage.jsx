@@ -219,17 +219,147 @@ export default function Reflex50UnitStudyPage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-3.5 sm:space-y-6 pb-12 sm:pb-16">
-      {/* 1. TOP HEADER & UNIT NAVIGATION */}
-      <div className="duo-card p-3.5 sm:p-6 rounded-3xl space-y-3.5 sm:space-y-5">
+    <div className="max-w-6xl mx-auto space-y-3 sm:space-y-6 pb-12 sm:pb-16">
+      {/* ===================================================================== */}
+      {/* 1A. NATIVE MOBILE APP COMPACT HEADER PAVILION (< sm)                   */}
+      {/* ===================================================================== */}
+      <div className="sm:hidden space-y-2">
+        {/* Unified Top Header Bar (~52px) */}
+        <div className="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-2.5 shadow-2xs space-y-2">
+          <div className="flex items-center justify-between gap-1.5">
+            {/* Back button */}
+            <button
+              onClick={() => navigate('/reflex-50')}
+              className="p-1.5 px-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center gap-1 cursor-pointer active:scale-90 transition-transform shrink-0"
+            >
+              <ArrowLeft size={14} />
+              <span>50 Chủ Đề</span>
+            </button>
+
+            {/* Stepper with Unit Number & Title */}
+            <div className="flex items-center gap-1 min-w-0 flex-1 justify-center px-1">
+              <button
+                disabled={uNum <= 1}
+                onClick={() => navigate(`/reflex-50/unit/${uNum - 1}?mode=${activeMode}`)}
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white disabled:opacity-20 cursor-pointer shrink-0"
+              >
+                <ChevronLeft size={15} />
+              </button>
+              <div className="min-w-0 text-center">
+                <div className="text-xs font-black text-slate-900 dark:text-white truncate leading-tight">
+                  Unit {uNum < 10 ? `0${uNum}` : uNum}: {unit.titleEn}
+                </div>
+                <div className="text-[10px] text-slate-400 truncate">
+                  {unit.titleVi}
+                </div>
+              </div>
+              <button
+                disabled={uNum >= 50}
+                onClick={() => navigate(`/reflex-50/unit/${uNum + 1}?mode=${activeMode}`)}
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white disabled:opacity-20 cursor-pointer shrink-0"
+              >
+                <ChevronRight size={15} />
+              </button>
+            </div>
+
+            {/* Quick Actions: Complete toggle + Tools */}
+            <div className="flex items-center gap-1 shrink-0">
+              <button
+                onClick={() => {
+                  const nextState = !unitStats.isCompleted;
+                  markUnitMastered(uNum, nextState);
+                  toast.success(
+                    nextState
+                      ? `Đã thuộc cả 30 câu Unit ${uNum}!`
+                      : `Đã bỏ thuộc Unit ${uNum}`
+                  );
+                }}
+                className={`p-1.5 px-2 rounded-xl text-[11px] font-bold flex items-center gap-1 transition-all cursor-pointer active:scale-95 ${
+                  unitStats.isCompleted
+                    ? 'bg-emerald-500 text-white'
+                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
+                }`}
+                title="Đánh dấu thuộc cả Unit"
+              >
+                <CheckCircle2 size={13} />
+                <span>{unitStats.isCompleted ? 'Xong' : 'Thuộc'}</span>
+              </button>
+
+              <button
+                onClick={() => setIsVoiceModalOpen(true)}
+                className="p-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 cursor-pointer active:scale-90"
+                title="Cài đặt giọng đọc AI"
+              >
+                <Headphones size={13} />
+              </button>
+            </div>
+          </div>
+
+          {/* Integrated Slim Edge Progress Line */}
+          <div className="flex items-center gap-2 pt-0.5 border-t border-slate-100 dark:border-slate-800/80">
+            <div className="flex-1 h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-gradient-to-r from-amber-400 to-[#0071e3] rounded-full transition-all duration-300"
+                style={{ width: `${Math.max(3, unitStats.percent)}%` }}
+              />
+            </div>
+            <span className="text-[10px] font-bold text-slate-400 shrink-0">
+              {unitStats.masteredCount}/30 câu ({unitStats.percent}%)
+            </span>
+          </div>
+        </div>
+
+        {/* 5 Mode Tabs Segmented Control */}
+        <div className="p-1 rounded-2xl bg-slate-100 dark:bg-slate-800/80 flex items-center gap-1 overflow-x-auto hide-scrollbar">
+          {[
+            { id: 'study', label: '30 Câu', icon: BookOpen },
+            { id: 'worksheet', label: 'Viết', icon: PenTool, badge: `${unitStats.writtenCount}/30` },
+            { id: 'speaking', label: 'Nói 3s', icon: Mic, badge: `${unitStats.spokenCount}/30` },
+            { id: 'listening', label: 'Chép', icon: Headphones },
+            { id: 'collocations', label: 'Từ vựng', icon: Layers, badge: unit.keyVocab.length }
+          ].map((tab) => {
+            const Icon = tab.icon;
+            const active = activeMode === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => handleModeChange(tab.id)}
+                className={`flex-1 shrink-0 flex items-center justify-center gap-1.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer active:scale-95 ${
+                  active
+                    ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-2xs'
+                    : 'text-slate-600 dark:text-slate-400'
+                }`}
+              >
+                <Icon size={12} />
+                <span>{tab.label}</span>
+                {tab.badge !== undefined && (
+                  <span
+                    className={`px-1 rounded-full text-[9px] font-black ${
+                      active
+                        ? 'bg-amber-500/20 text-[#c2781a] dark:text-[#fcd34d]'
+                        : 'bg-slate-200 dark:bg-slate-700 text-slate-500'
+                    }`}
+                  >
+                    {tab.badge}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ===================================================================== */}
+      {/* 1B. DESKTOP / TABLET HEADER & UNIT NAVIGATION (hidden sm:block)        */}
+      {/* ===================================================================== */}
+      <div className="hidden sm:block duo-card p-4 sm:p-6 rounded-3xl space-y-3.5 sm:space-y-5">
         <div className="flex items-center justify-between gap-1.5 sm:gap-3">
           <button
             onClick={() => navigate('/reflex-50')}
             className="duo-btn duo-btn-white duo-btn-xs inline-flex items-center gap-1.5 shrink-0"
           >
             <ArrowLeft size={14} />
-            <span className="hidden sm:inline">50 Chủ Đề Phản Xạ</span>
-            <span className="sm:hidden">50 Chủ đề</span>
+            <span>50 Chủ Đề Phản Xạ</span>
           </button>
 
           <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto whitespace-nowrap hide-scrollbar">
@@ -238,8 +368,7 @@ export default function Reflex50UnitStudyPage() {
               className="duo-btn duo-btn-blue duo-btn-xs inline-flex items-center gap-1 shrink-0"
             >
               <Sparkles size={12} />
-              <span className="hidden sm:inline">Phương pháp học</span>
-              <span className="sm:hidden">Cách học</span>
+              <span>Phương pháp học</span>
             </button>
 
             <button
@@ -247,8 +376,7 @@ export default function Reflex50UnitStudyPage() {
               className="duo-btn duo-btn-white duo-btn-xs inline-flex items-center gap-1 shrink-0"
             >
               <Headphones size={12} className="text-[#1cb0f6]" />
-              <span className="hidden sm:inline">Cài đặt Giọng AI</span>
-              <span className="sm:hidden">Giọng AI</span>
+              <span>Cài đặt Giọng AI</span>
             </button>
 
             {/* Prev / Next Unit */}
@@ -321,8 +449,7 @@ export default function Reflex50UnitStudyPage() {
               }`}
             >
               <CheckCircle2 size={13} />
-              <span className="hidden sm:inline">{unitStats.isCompleted ? 'Đã hoàn thành Unit' : 'Đánh dấu thuộc cả Unit'}</span>
-              <span className="sm:hidden">{unitStats.isCompleted ? 'Đã xong ✓' : 'Thuộc cả Unit'}</span>
+              <span>{unitStats.isCompleted ? 'Đã hoàn thành Unit' : 'Đánh dấu thuộc cả Unit'}</span>
             </button>
           </div>
         </div>
@@ -330,11 +457,11 @@ export default function Reflex50UnitStudyPage() {
         {/* 5 Main Mode Tabs */}
         <div className="flex items-center gap-1.5 overflow-x-auto whitespace-nowrap hide-scrollbar sm:flex-wrap pt-2.5 border-t border-slate-100 dark:border-slate-800">
           {[
-            { id: 'study', label: '1. Học Phản Xạ & Cụm Từ (30 câu)', shortLabel: '1. Học 30 câu', icon: BookOpen },
-            { id: 'worksheet', label: '2. Làm Bài Tập Viết (→ _____)', shortLabel: '2. Bài viết', icon: PenTool, badge: `${unitStats.writtenCount}/30` },
-            { id: 'speaking', label: '3. Phản Xạ Nói 3 Giây (AI chấm)', shortLabel: '3. Nói 3s', icon: Mic, badge: `${unitStats.spokenCount}/30` },
-            { id: 'listening', label: '4. Nghe & Chép Chính Tả', shortLabel: '4. Nghe chép', icon: Headphones },
-            { id: 'collocations', label: '5. Sổ Tay Collocations & Từ Vựng', shortLabel: '5. Từ vựng', icon: Layers, badge: unit.keyVocab.length }
+            { id: 'study', label: '1. Học Phản Xạ & Cụm Từ (30 câu)', icon: BookOpen },
+            { id: 'worksheet', label: '2. Làm Bài Tập Viết (→ _____)', icon: PenTool, badge: `${unitStats.writtenCount}/30` },
+            { id: 'speaking', label: '3. Phản Xạ Nói 3 Giây (AI chấm)', icon: Mic, badge: `${unitStats.spokenCount}/30` },
+            { id: 'listening', label: '4. Nghe & Chép Chính Tả', icon: Headphones },
+            { id: 'collocations', label: '5. Sổ Tay Collocations & Từ Vựng', icon: Layers, badge: unit.keyVocab.length }
           ].map((tab) => {
             const Icon = tab.icon;
             const active = activeMode === tab.id;
@@ -349,8 +476,7 @@ export default function Reflex50UnitStudyPage() {
                 }`}
               >
                 <Icon size={14} className="shrink-0" />
-                <span className="hidden sm:inline">{tab.label}</span>
-                <span className="sm:hidden">{tab.shortLabel}</span>
+                <span>{tab.label}</span>
                 {tab.badge !== undefined && (
                   <span
                     className={`px-1.5 py-0.2 rounded-full text-[10px] font-black ${
@@ -370,22 +496,23 @@ export default function Reflex50UnitStudyPage() {
 
       {/* 2. STICKY FILTER & SPEED TOOLBAR */}
       {activeMode !== 'collocations' && (
-        <div className="sticky top-14 z-30 rounded-2xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800 p-2 sm:p-3.5 shadow-xs flex flex-col lg:flex-row lg:items-center justify-between gap-1.5 sm:gap-3">
-          <div className="flex items-center gap-1 sm:gap-1.5 overflow-x-auto whitespace-nowrap hide-scrollbar">
+        <div className="sticky top-14 z-30 rounded-2xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800 p-2 sm:p-3 shadow-xs flex items-center justify-between gap-1.5 sm:gap-3">
+          {/* Scrollable Tier Filters */}
+          <div className="flex items-center gap-1 sm:gap-1.5 overflow-x-auto whitespace-nowrap hide-scrollbar flex-1 min-w-0">
             {[
               { id: 'all', label: 'Tất cả (30 câu)', shortLabel: 'Tất cả (30)' },
-              { id: 'basic', label: 'Tầng 1: Cơ bản (1–10)', shortLabel: 'Tầng 1 (1–10)' },
-              { id: 'intermediate', label: 'Tầng 2: Mở rộng (11–20)', shortLabel: 'Tầng 2 (11–20)' },
-              { id: 'advanced', label: 'Tầng 3: Nâng cao (21–30)', shortLabel: 'Tầng 3 (21–30)' },
+              { id: 'basic', label: 'Tầng 1: Cơ bản (1–10)', shortLabel: 'Tầng 1' },
+              { id: 'intermediate', label: 'Tầng 2: Mở rộng (11–20)', shortLabel: 'Tầng 2' },
+              { id: 'advanced', label: 'Tầng 3: Nâng cao (21–30)', shortLabel: 'Tầng 3' },
               { id: 'unmastered', label: `Chưa thuộc (${30 - unitStats.masteredCount})`, shortLabel: `Chưa thuộc (${30 - unitStats.masteredCount})` },
-              { id: 'starred', label: `Lưu Sao / Sai (${unitStats.starredCount + unitStats.weakCount})`, shortLabel: `Lưu Sao (${unitStats.starredCount + unitStats.weakCount})` }
+              { id: 'starred', label: `Lưu Sao / Sai (${unitStats.starredCount + unitStats.weakCount})`, shortLabel: `⭐ Lưu Sao` }
             ].map((tf) => (
               <button
                 key={tf.id}
                 onClick={() => setTierFilter(tf.id)}
-                className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-semibold transition-colors shrink-0 cursor-pointer ${
+                className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl text-[11px] sm:text-xs font-semibold transition-colors shrink-0 cursor-pointer ${
                   tierFilter === tf.id
-                    ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900'
+                    ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs'
                     : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200/70'
                 }`}
               >
@@ -395,8 +522,8 @@ export default function Reflex50UnitStudyPage() {
             ))}
           </div>
 
-          <div className="flex items-center overflow-x-auto whitespace-nowrap hide-scrollbar gap-1 bg-slate-100 dark:bg-slate-800 p-0.5 sm:p-1 rounded-full">
-            <span className="text-[10px] font-bold text-slate-400 pl-2 pr-1 sm:hidden shrink-0">Tốc độ:</span>
+          {/* Desktop full speeds */}
+          <div className="hidden sm:flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-full shrink-0">
             {SPEED_OPTIONS.map((sp) => {
               const active = Math.abs(playbackSpeed - sp.rate) < 0.03;
               return (
@@ -404,7 +531,7 @@ export default function Reflex50UnitStudyPage() {
                   key={sp.rate}
                   onClick={() => handleSpeedChange(sp.rate)}
                   title={sp.title}
-                  className={`px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-[11px] font-semibold flex items-center gap-1 transition-all shrink-0 cursor-pointer ${
+                  className={`px-2.5 py-1 rounded-full text-[11px] font-semibold flex items-center gap-1 transition-all shrink-0 cursor-pointer ${
                     active
                       ? 'bg-[#0071e3] text-white shadow-2xs'
                       : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
@@ -416,6 +543,22 @@ export default function Reflex50UnitStudyPage() {
               );
             })}
           </div>
+
+          {/* Mobile Speed Cycler Pill */}
+          <button
+            type="button"
+            onClick={() => {
+              const rates = [0.75, 0.95, 1.15];
+              const curIdx = rates.findIndex((r) => Math.abs(r - playbackSpeed) < 0.05);
+              const nextRate = rates[(curIdx + 1) % rates.length];
+              handleSpeedChange(nextRate);
+            }}
+            className="sm:hidden px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-[11px] font-bold flex items-center gap-1 shrink-0 cursor-pointer active:scale-95 shadow-2xs"
+            title="Đổi tốc độ đọc"
+          >
+            <Headphones size={11} className="text-[#0071e3]" />
+            <span>{playbackSpeed}x</span>
+          </button>
         </div>
       )}
 
